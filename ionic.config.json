@@ -1,0 +1,7 @@
+{
+  "name": "sostek",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
