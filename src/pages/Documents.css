@@ -1,0 +1,26 @@
+.title{
+    text-transform: uppercase;
+    font-size: medium;
+    font-family:system-ui;
+}
+.imageArticle{
+    border-radius: 20px;
+}
+
+.content {
+    font-size: medium;
+    font-family:sans-serif;
+    padding-left: 1.5em;
+    white-space: normal;
+    line-height: 1em;
+    word-wrap: break-word;
+    word-break: break-all;
+   
+}
+
+.content-row {
+    text-align: center;
+    text-align: justify;
+    margin: 1em;
+
+}
