@@ -44,11 +44,15 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import AppBarMenu from './components/AppBarMenu';
+import AppBarPopOver from './components/AppBarPopOver';
+
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
+    <AppBarPopOver></AppBarPopOver>
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
