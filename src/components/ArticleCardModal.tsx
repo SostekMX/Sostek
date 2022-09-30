@@ -17,7 +17,7 @@ const ArticleCardModal: React.FC<Props> = (props) => {
     const [isOpen, setIsOpen] = useState(true);
 
     return (
-            <IonModal ref={modal} isOpen={isOpen} presentingElement={presentingElement!}>
+            <IonModal ref={modal} isOpen={isOpen} presentingElement={presentingElement!} swipeToClose={true}>
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot="end">
