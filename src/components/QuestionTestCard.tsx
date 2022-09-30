@@ -1,70 +1,41 @@
 import './QuestionTestCard.css';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton } from '@ionic/react';
-import { pin, wifi, wine, warning, walk } from 'ionicons/icons';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonSelect, IonList, IonSelectOption } from '@ionic/react';
 
 interface props {
-  title: string;
+    title: string;
+    question: string;
+    options: {
+        ans1: string;   
+        ans2: string;   
+        ans3: string;   
+        ans4: string;   
+        ans5: string;   
+    }
 }
 
-const QuestionTestCard: React.FC<props> = ({ title }) => {
+const QuestionTestCard: React.FC<props> = ({ title, question, options }) => {
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>{title}</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
         <IonCard>
-          <IonCardHeader>
-            <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-            <IonCardTitle>Card Title</IonCardTitle>
-          </IonCardHeader>
+            <IonCardHeader>
+                <IonCardTitle>{title}</IonCardTitle>
+            </IonCardHeader>
 
-          <IonCardContent>
-            Keep close to Nature's heart... and break clear away, once in awhile,
-            and climb a mountain or spend a week in the woods. Wash your spirit clean.
-      </IonCardContent>
+            <IonCardContent>
+                <IonLabel>{question}</IonLabel>
+                <IonList>
+                    <IonItem>
+                        <IonSelect placeholder="Select fruit">
+                            <IonSelectOption value={options.ans1}>{options.ans1}</IonSelectOption>
+                            <IonSelectOption value={options.ans2}>{options.ans2}</IonSelectOption>
+                            <IonSelectOption value={options.ans3}>{options.ans3}</IonSelectOption>
+                            <IonSelectOption value={options.ans4}>{options.ans4}</IonSelectOption>
+                            <IonSelectOption value={options.ans5}>{options.ans5}</IonSelectOption>
+                        </IonSelect>
+                    </IonItem>
+                </IonList>
+            </IonCardContent>
         </IonCard>
-
-        <IonCard>
-          <IonItem>
-            <IonIcon icon={pin} slot="start" />
-            <IonLabel>ion-item in a card, icon left, button right</IonLabel>
-            <IonButton fill="outline" slot="end">View</IonButton>
-          </IonItem>
-
-          <IonCardContent>
-            This is content, without any paragraph or header tags,
-            within an ion-cardContent element.
-      </IonCardContent>
-        </IonCard>
-
-        <IonCard>
-          <IonItem href="#" className="ion-activated">
-            <IonIcon icon={wifi} slot="start" />
-            <IonLabel>Card Link Item 1 activated</IonLabel>
-          </IonItem>
-
-          <IonItem href="#">
-            <IonIcon icon={wine} slot="start" />
-            <IonLabel>Card Link Item 2</IonLabel>
-          </IonItem>
-
-          <IonItem className="ion-activated">
-            <IonIcon icon={warning} slot="start" />
-            <IonLabel>Card Button Item 1 activated</IonLabel>
-          </IonItem>
-
-          <IonItem>
-            <IonIcon icon={walk} slot="start" />
-            <IonLabel>Card Button Item 2</IonLabel>
-          </IonItem>
-        </IonCard>
-      </IonContent>
-    </IonPage>
   );
 };
-
 
 export default QuestionTestCard;
