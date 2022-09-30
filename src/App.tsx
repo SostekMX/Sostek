@@ -25,6 +25,7 @@ import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import { OverlayEventDetail } from '@ionic/core/components';
+import Documents from './pages/Documents';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -47,23 +48,28 @@ import './theme/variables.css';
 import AppBarMenu from './components/AppBarMenu';
 import AppBarPopOver from './components/AppBarPopOver';
 
-
 setupIonicReact();
 
+
+
 const App: React.FC = () => (
+ 
   <IonApp>
     <AppBarPopOver></AppBarPopOver>
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tab1">
-            <Tab1 />
+            <Tab1/>
           </Route>
           <Route exact path="/tab2">
             <Tab2 />
           </Route>
           <Route path="/tab3">
             <Tab3 />
+          </Route>
+          <Route exact path='/Documents/:id'>
+            <Documents/>
           </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
