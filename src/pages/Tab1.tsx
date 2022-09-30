@@ -1,7 +1,10 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import ArticleCardModal from '../components/ArticleCardModal';
+import { IonCol, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+//import ExploreContainer from '../components/ExploreContainer';
+import DocumentCard from '../components/DocumentCard';
 import './Tab1.css';
+import { dummyArticles } from './DocumentsData';
 
 const dummyArticle = {
   imageUrl : "/assets/article-img.jpeg",
@@ -27,6 +30,18 @@ const Tab1: React.FC = () => {
         </IonHeader>
         <ArticleCardModal imageUrl={dummyArticle.imageUrl} title={dummyArticle.title} subtitle={dummyArticle.subtitle} author={dummyArticle.author} body={dummyArticle.body} ></ArticleCardModal>
         <ExploreContainer name="Tab 1 page" />
+         <IonCol >
+        {dummyArticles.map((data,key) =>{
+            return(
+              <IonContent key={key}>
+                <DocumentCard  name= {data.title} 
+                description = {data.description} 
+                img_url= {data.url_img}  
+                id = {data.id}/>
+              </IonContent>
+            );
+          })}
+        </IonCol> 
       </IonContent>
     </IonPage>
   );
