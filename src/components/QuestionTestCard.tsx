@@ -1,41 +1,50 @@
 import './QuestionTestCard.css';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonSelect, IonList, IonSelectOption } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonRadioGroup, IonListHeader, IonLabel, IonRadio } from '@ionic/react';
+import { useState } from 'react';
 
 interface props {
-    title: string;
     question: string;
-    options: {
-        ans1: string;   
-        ans2: string;   
-        ans3: string;   
-        ans4: string;   
-        ans5: string;   
-    }
+    comments: string;
+    options: Array<string>;
 }
 
-const QuestionTestCard: React.FC<props> = ({ title, question, options }) => {
-  return (
+/* Question card component that requires a question, comments (could be specific instructions for particular questions),
+ * options (an array of all the options, doesn't matter the size).
+ */
+const QuestionTestCard: React.FC<props> = ({ question, comments, options }) => {
+    // Variable that holds the choice the user selected
+    const [selection, setSelection] = useState<string>();
+
+    return (
         <IonCard>
             <IonCardHeader>
-                <IonCardTitle>{title}</IonCardTitle>
+                <IonCardTitle>{question}</IonCardTitle>
             </IonCardHeader>
 
             <IonCardContent>
-                <IonLabel>{question}</IonLabel>
                 <IonList>
-                    <IonItem>
-                        <IonSelect placeholder="Select fruit">
-                            <IonSelectOption value={options.ans1}>{options.ans1}</IonSelectOption>
-                            <IonSelectOption value={options.ans2}>{options.ans2}</IonSelectOption>
-                            <IonSelectOption value={options.ans3}>{options.ans3}</IonSelectOption>
-                            <IonSelectOption value={options.ans4}>{options.ans4}</IonSelectOption>
-                            <IonSelectOption value={options.ans5}>{options.ans5}</IonSelectOption>
-                        </IonSelect>
-                    </IonItem>
+                    { 
+                        // Verifies if there are any comments, if no, it avoids displaying an empty string within the card
+                        comments &&
+                        <IonListHeader>
+                            <IonLabel>{comments}</IonLabel>
+                        </IonListHeader>
+                    }
+                    <IonRadioGroup onIonChange={e => setSelection(e.detail.value)}>
+                        {
+                            // Iterates through all the elements in the array to create option components in React
+                            options.map(option => (
+                                <IonItem>
+                                    <IonRadio slot="start" value={option} />
+                                    <IonLabel>{option}</IonLabel>
+                                </IonItem>
+                            ))
+                        }
+                    </IonRadioGroup>
                 </IonList>
             </IonCardContent>
         </IonCard>
-  );
+    );
 };
 
 export default QuestionTestCard;
