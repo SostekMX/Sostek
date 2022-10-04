@@ -11,7 +11,7 @@ import { IonCard,
  } from '@ionic/react';
  import { IonReactRouter } from '@ionic/react-router';
 
-import Documents from '../pages/Documents'
+import Documents from '../pages/document/Documents'
 import {Route } from 'react-router-dom';
 
 

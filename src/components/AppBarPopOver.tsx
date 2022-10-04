@@ -6,7 +6,7 @@ import { profile } from 'console';
 export const AppBarPopOver: React.FC = () => (
     <>
         <IonToolbar color="light">
-            <img src="/assets/sostek-logo.jpeg" width="80px" height="40px"/>
+            <a href="/tab1"><img src="/assets/sostek-logo.png" height="40px"/></a>
             <IonMenu contentId="main-content">
                 <IonHeader>
                 <IonToolbar>
