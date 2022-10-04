@@ -1,10 +1,10 @@
-import ExploreContainer from '../components/ExploreContainer';
-import ArticleCardModal from '../components/ArticleCardModal';
+import ExploreContainer from '../../components/ExploreContainer';
+import ArticleCardModal from '../../components/ArticleCardModal';
 import { IonCol, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 //import ExploreContainer from '../components/ExploreContainer';
-import DocumentCard from '../components/DocumentCard';
+import DocumentCard from '../../components/DocumentCard';
 import './Tab1.css';
-import { dummyArticles } from './DocumentsData';
+import { dummyArticles } from '../document/DocumentsData';
 
 const dummyArticle = {
   imageUrl : "/assets/article-img.jpeg",
