@@ -1,0 +1,27 @@
+.tutorial-card {
+    position: absolute;
+    width: 70vw;
+    height: fit-content;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    z-index: 10;
+}
+
+.tutorial-card-hide {
+    display: none;
+}
+
+.tutorial-card-button {
+    float: inline-end;
+    padding: 10px;
+    font-size: 14px;
+    background-color: none;
+}
+
+.tutorial-card-body {
+    padding: 10px 20px;
+    padding-top: 0px;
+}
