@@ -31,3 +31,13 @@
     padding: 10px 20px;
     padding-top: 0px;
 }
+
+.tutorial-card-body img {
+    max-width: 60%;
+}
+.left {
+    margin-right: 40%;
+}
+.right {
+    margin-left: 40%;
+}
