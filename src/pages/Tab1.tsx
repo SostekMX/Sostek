@@ -5,7 +5,8 @@ import './Tab1.css';
 
 const exampleCard = {
   message: 'Bienvenidos a Sostek, este es un tutorial.',
-  imageUrl: '/assets/gota.png'
+  character: 'gota1',
+  align: 'right'
 }
 
 const Tab1: React.FC = () => {
@@ -17,7 +18,7 @@ const Tab1: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <TutorialCard message={exampleCard.message} imageUrl={exampleCard.imageUrl}></TutorialCard>
+        <TutorialCard message={exampleCard.message} character={exampleCard.character} align={exampleCard.align}></TutorialCard>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Tab 1</IonTitle>
