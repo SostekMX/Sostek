@@ -42,9 +42,6 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id})
                 </IonCardContent>
             </IonCard>
         </IonContent>
-        
-        
-        
     );
 };
 
