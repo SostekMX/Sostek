@@ -5,16 +5,8 @@ import { profile } from 'console';
 
 export const AppBarMenu: React.FC = () => (
     <>
-        <IonToolbar color="light">
+        <IonToolbar>
             <img src="/assets/sostek-logo.jpeg" width="80px" height="40px"/>
-            <IonMenu contentId="main-content">
-                <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Menu Content</IonTitle>
-                </IonToolbar>
-                </IonHeader>
-                <IonContent className="ion-padding">This is the menu content.</IonContent>
-            </IonMenu>
             <IonButtons slot="primary">
                 <IonButton>
                     <IonIcon slot="icon-only" icon={search} />
@@ -25,14 +17,8 @@ export const AppBarMenu: React.FC = () => (
                     <IonMenuButton autoHide={false} ></IonMenuButton>
                 </IonButtons>
             </IonButtons>
-         
         </IonToolbar> 
         <IonMenu contentId="main-content">
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Menu</IonTitle>
-                </IonToolbar>
-            </IonHeader>
             <IonContent>
                 <IonList>
                     <IonItem>

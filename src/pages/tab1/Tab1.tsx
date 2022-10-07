@@ -6,6 +6,7 @@ import DocumentCard from '../../components/DocumentCard';
 import './Tab1.css';
 import { dummyArticles } from '../document/DocumentsData';
 
+
 const dummyArticle = {
   imageUrl : "/assets/article-img.jpeg",
   title : "Nombre del artículo",
@@ -17,12 +18,7 @@ const dummyArticle = {
 const Tab1: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
+      <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Tab 1</IonTitle>
