@@ -21,18 +21,11 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from 'ionicons/icons';
-<<<<<<< Updated upstream
 import Tab1 from './pages/tab1/Tab1';
 import Tab2 from './pages/tab2/Tab2';
 import Tab3 from './pages/tab3/Tab3';
 import { OverlayEventDetail } from '@ionic/core/components';
 import Documents from './pages/document/Documents';
-=======
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
-import Documents from './pages/Documents';
->>>>>>> Stashed changes
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -52,12 +45,8 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-<<<<<<< Updated upstream
 import AppBarMenu from './components/AppBarMenu';
 import AppBarPopOver from './components/AppBarPopOver';
-=======
-//import { useState } from 'react';
->>>>>>> Stashed changes
 
 setupIonicReact();
 

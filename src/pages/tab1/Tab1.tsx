@@ -1,10 +1,25 @@
 import ExploreContainer from '../../components/ExploreContainer';
 import ArticleCardModal from '../../components/ArticleCardModal';
+import TutorialCard from '../../components/TutorialCard';
 import { IonCol, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 //import ExploreContainer from '../components/ExploreContainer';
 import DocumentCard from '../../components/DocumentCard';
 import './Tab1.css';
 import { dummyArticles } from '../document/DocumentsData';
+
+const exampleCard = {
+  message: 'Bienvenidos a Sostek, este es un tutorial. Probamos mas texto para ver la alineacion del contenido.',
+  character: 'gota2',
+  align: 'right'
+}
+const exampleCard2 = {
+  message: 'Bienvenidos a Sostek, este es otro tutorial.',
+  character: 'mundo1',
+  align: 'left'
+}
+const tutorialSlides = {
+  slides: [exampleCard, exampleCard2]
+}
 
 const dummyArticle = {
   imageUrl : "/assets/article-img.jpeg",
@@ -23,6 +38,7 @@ const Tab1: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
+      <TutorialCard slides={tutorialSlides.slides}></TutorialCard>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Tab 1</IonTitle>
