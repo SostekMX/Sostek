@@ -5,6 +5,7 @@ import { IonCol, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@i
 import DocumentCard from '../../components/DocumentCard';
 import './Tab1.css';
 import { dummyArticles } from '../document/DocumentsData';
+import ArticleCarrousel from '../../components/ArticleCarrousel';
 
 
 const dummyArticle = {
@@ -26,18 +27,8 @@ const Tab1: React.FC = () => {
         </IonHeader>
         <ArticleCardModal imageUrl={dummyArticle.imageUrl} title={dummyArticle.title} subtitle={dummyArticle.subtitle} author={dummyArticle.author} body={dummyArticle.body} ></ArticleCardModal>
         <ExploreContainer name="Tab 1 page" />
-         <IonCol >
-        {dummyArticles.map((data,key) =>{
-            return(
-              <IonContent key={key}>
-                <DocumentCard  name= {data.title} 
-                description = {data.description} 
-                img_url= {data.url_img}  
-                id = {data.id}/>
-              </IonContent>
-            );
-          })}
-        </IonCol> 
+        <ArticleCarrousel></ArticleCarrousel>
+        
       </IonContent>
     </IonPage>
   );
