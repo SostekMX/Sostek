@@ -1,0 +1,25 @@
+.adjusted-content{
+    height:3em;
+}
+.filter-aligned{
+    justify-content: end;
+}
+
+.filter-list {
+    height: 3em;
+    margin: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding: 0;
+}
+.option-filter {
+    font-size: medium;
+}
+
+.no-spaces{
+    margin: 0;
+    margin-top: 0;
+    padding: 0;
+    padding-top: 0;
+    max-height: 30em;
+}
