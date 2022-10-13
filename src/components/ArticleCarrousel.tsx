@@ -9,9 +9,7 @@ interface RouteParams {
 
 const ArticleCarrousel: React.FC = () => {
     const [currentOption, setCurrentOption] = useState('');
-    
     return(
-        
             <IonCol className='no-spaces'>
                 <IonRow className='filter-aligned'>
                    
@@ -24,36 +22,34 @@ const ArticleCarrousel: React.FC = () => {
                             </IonSelect>
                         </IonItem>
                     </IonList>
-                 
-                    
                 </IonRow>
-            
                     {dummyArticles.map((data,key) =>{
                         if(currentOption === "ambos" || currentOption === ""){
                             return(
-                                <IonContent key={key} className= 'no-spaces'>
-                                    <DocumentCard  name= {data.title} 
-                                    description = {data.description} 
-                                    img_url= {data.url_img}  
-                                    id = {data.id}/>
-                                </IonContent>
+                                    <DocumentCard  
+                                        key={key}
+                                        name= {data.title} 
+                                        description = {data.description} 
+                                        img_url= {data.url_img}  
+                                        id = {data.id}
+                                    />
                                 );
                         }
                         else{
                             if(data.type === currentOption){
                                 return(
-                                    <IonContent key={key} className= 'no-spaces'>
-                                        <DocumentCard  name= {data.title} 
-                                        description = {data.description} 
-                                        img_url= {data.url_img}  
-                                        id = {data.id}/>
-                                    </IonContent>
+                                        <DocumentCard
+                                            key={key}
+                                            name= {data.title} 
+                                            description = {data.description} 
+                                            img_url= {data.url_img}  
+                                            id = {data.id}
+                                        />
+
                                     );
                             }
-                        }
-                        
+                        } 
                     })}
-                
             </IonCol>
             
            
