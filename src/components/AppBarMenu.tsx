@@ -39,8 +39,8 @@ export const AppBarMenu: React.FC = () => (
                     </IonItem>
                 </IonList>
             </IonContent>
-        </IonMenu>
-        <IonPage id="main-content"/></>
+        </IonMenu>``
+        </>
     
 );
 
