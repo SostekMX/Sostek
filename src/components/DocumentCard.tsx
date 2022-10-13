@@ -24,7 +24,7 @@ interface DocumentProps{
 
 const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id}) => {
     return(
-        <IonContent >
+        < >
             <IonReactRouter>
             <Route exact path='/Documents/:title/:img'>
                 <Documents/>
@@ -41,7 +41,7 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id})
                     </IonText>
                 </IonCardContent>
             </IonCard>
-        </IonContent>
+        </>
     );
 };
 
