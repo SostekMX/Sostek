@@ -146,8 +146,10 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-tint: var(--ion-color-greyish-blue-tint) !important;
 }
 
-
-@media (prefers-color-scheme: dark) {
+/**
+* COMMENT THIS IF YOU WANT TO DISABLE DARK THEME
+*/
+@media (prefers-color-scheme: light) {
   /*
    * Dark Colors
    * -------------------------------------------
