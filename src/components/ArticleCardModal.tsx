@@ -18,25 +18,25 @@ const ArticleCardModal: React.FC<Props> = (props) => {
 
     return (
             <IonModal ref={modal} isOpen={isOpen} presentingElement={presentingElement!} swipeToClose={true}>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="end">
-                        <IonButton onClick={() => setIsOpen(!isOpen)}>
-                            <IonIcon icon={close}></IonIcon>
-                        </IonButton>
-                    </IonButtons>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent className="ion-padding">
-                <img src={props.imageUrl}></img>
-                <h2>{props.title}</h2>
-                <h4>{props.subtitle}</h4>
-                <h6>Por: {props.author}</h6>
-                
-                <p>
-                    {props.body}
-                </p>
-            </IonContent>
+                <IonContent class="ion-padding bg-img">  
+                    <IonHeader>
+                        <IonToolbar class='transparent'>
+                            <IonButtons slot="end">
+                                <IonButton onClick={() => setIsOpen(!isOpen)}>
+                                    <IonIcon icon={close}></IonIcon>
+                                </IonButton>
+                            </IonButtons>
+                        </IonToolbar>
+                    </IonHeader>
+                        <img src={props.imageUrl}></img>
+                        <h2>{props.title}</h2>
+                        <h4>{props.subtitle}</h4>
+                        <h6>Por: {props.author}</h6>
+                        
+                        <p>
+                            {props.body}
+                        </p>
+                </IonContent>
             </IonModal>
     );
 }

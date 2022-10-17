@@ -1,0 +1,30 @@
+.adjusted-content{
+    height:3em;
+}
+.filter-aligned{
+    justify-content: end;
+}
+
+.filter-list {
+    height: 3em;
+    margin: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding: 0;
+}
+
+.filter-size{
+    padding-top: 0px;
+    padding-bottom: 0px;
+    min-height: auto;
+}
+
+.filter-rounded_border{
+    border-radius: .25rem;
+}
+.filter-item-size {
+    min-height: auto;
+}
+.option-filter {
+    font-size: medium;
+}

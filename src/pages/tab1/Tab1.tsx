@@ -6,6 +6,8 @@ import { IonCol, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@i
 import DocumentCard from '../../components/DocumentCard';
 import './Tab1.css';
 import { dummyArticles } from '../document/DocumentsData';
+import ArticleCarrousel from '../../components/ArticleCarrousel';
+
 
 const exampleCard = {
   message: 'Bienvenidos a Sostek, este es un tutorial. Probamos mas texto para ver la alineacion del contenido.',
@@ -32,32 +34,13 @@ const dummyArticle = {
 const Tab1: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-      <TutorialCard slides={tutorialSlides.slides}></TutorialCard>
+      <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 1</IonTitle>
-          </IonToolbar>
         </IonHeader>
+        <TutorialCard slides={tutorialSlides.slides}></TutorialCard>
         <ArticleCardModal imageUrl={dummyArticle.imageUrl} title={dummyArticle.title} subtitle={dummyArticle.subtitle} author={dummyArticle.author} body={dummyArticle.body} ></ArticleCardModal>
-        <ExploreContainer name="Tab 1 page" />
-         <IonCol >
-        {dummyArticles.map((data,key) =>{
-            return(
-              <IonContent key={key}>
-                <DocumentCard  name= {data.title} 
-                description = {data.description} 
-                img_url= {data.url_img}  
-                id = {data.id}/>
-              </IonContent>
-            );
-          })}
-        </IonCol> 
+        <ArticleCarrousel></ArticleCarrousel>
+        
       </IonContent>
     </IonPage>
   );

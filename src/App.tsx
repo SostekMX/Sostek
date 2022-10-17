@@ -45,8 +45,11 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import AppBarMenu from './components/AppBarMenu';
+import './App.css';
+
 import AppBarPopOver from './components/AppBarPopOver';
+import AppBarMenu from './components/AppBarMenu';
+//import { useState } from 'react';
 
 setupIonicReact();
 
@@ -55,39 +58,39 @@ setupIonicReact();
 const App: React.FC = () => (
  
   <IonApp>
-    <AppBarPopOver></AppBarPopOver>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1/>
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path='/Documents/:id'>
-            <Documents/>
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonLabel>APRENDE</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonLabel>JUEGA</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonLabel>EVALU&Aacute;TE</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
+      <AppBarPopOver></AppBarPopOver>
+      <IonReactRouter>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route exact path="/tab1">
+              <Tab1/>
+            </Route>
+            <Route exact path="/tab2">
+              <Tab2 />
+            </Route>
+            <Route path="/tab3">
+              <Tab3 />
+            </Route>
+            <Route exact path='/Documents/:id'>
+              <Documents/>
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/tab1" />
+            </Route>
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom">
+            <IonTabButton tab="tab1" href="/tab1">
+              <IonLabel>APRENDE</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab2" href="/tab2">
+              <IonLabel>JUEGA</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab3" href="/tab3">
+              <IonLabel>EVALU&Aacute;TE</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </IonReactRouter>
   </IonApp>
 );
 
