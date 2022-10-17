@@ -7,6 +7,8 @@ import DocumentCard from '../../components/DocumentCard';
 import './Tab1.css';
 import { dummyArticles } from '../document/DocumentsData';
 import ArticleCarrousel from '../../components/ArticleCarrousel';
+import { useEffect, useState } from 'react';
+import ArticleCardModalWrapper from '../../components/ArticleCardModalWrapper';
 
 
 const exampleCard = {
@@ -32,13 +34,58 @@ const dummyArticle = {
 }
 
 const Tab1: React.FC = () => {
+    const [files, setFiles] = useState([]);
+    const [lastFile, setLastFile] = useState({
+      driveId: "",
+      id: "1y5_4JtMlZIYY5EjMd9LeMiQDFdZxlcpvBj-Z16ppWz8",
+      kind:"",
+      mimeType: "",
+      name: "",
+      teamDriveId: ""
+    })
+    const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
+    let key = process.env.REACT_APP_PRIVATE_API_KEY;
+    let driveID = process.env.REACT_APP_DRIVE_ID;
+    useEffect(() => {
+        // 1. Initialize and get all files in drive folder (In this case are google sheets)
+    function start() {
+        // 2. Initialize the JavaScript client library.
+        gapi.client.init({
+        'apiKey': key,
+        // clientId and scope are optional if auth is not required.
+        }).then(function() {
+        // 3. Initialize and make the API request.
+        return gapi.client.request({
+            'path': `https://www.googleapis.com/drive/v3/files?includeItemsFromAllDrives=true&orderBy=createdTime&q='${driveID}'%20in%20parents%20and%20trashed%20%3D%20false&supportsAllDrives=true&key=${key}`,
+        })
+        // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
+        }).then(function(response) {
+        console.log("files", response.result.files);
+        setFiles(response.result.files);
+        setLastFile(response.result.files.at(-1));
+        }, function(reason) {
+        console.log('Error: ' + reason.result.error.message);
+        });
+    };
+    
+    if(hasNotBeenCalled) {
+        // 1. Load the JavaScript client library.
+        gapi.load('client', start);
+        setHasNotBeenCalled(false);
+    }
+    }, [])
+
   return (
     <IonPage>
       <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
         </IonHeader>
-        <ArticleCardModal imageUrl={dummyArticle.imageUrl} title={dummyArticle.title} subtitle={dummyArticle.subtitle} author={dummyArticle.author} body={dummyArticle.body} ></ArticleCardModal>
-        <ArticleCarrousel></ArticleCarrousel>
+        
+        {!hasNotBeenCalled && <> 
+          <ArticleCardModalWrapper fileId={lastFile.id} />
+          <ArticleCarrousel files={files} />
+        </>
+        }
         
       </IonContent>
     </IonPage>
