@@ -2,43 +2,59 @@ import React, { useState, useEffect } from 'react';
 import { IonCol, IonItem,  IonList, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
 import DocumentCard from './DocumentCard'
 import './ArticleCarrousel.css'
-import { dummyArticles } from '../pages/document/DocumentsData';
-import ArticleCardWrapper from './ArticleCardWrapper';
 
+interface props {
+    files: Array<{
+        driveId: "0AGxiS_Xq3bvYUk9PVA"
+        id: "1x1J2haBHZBTpVHkiQ19UN_lpYTSlxr1T44TOzqeSdgQ"
+        kind: "drive#file"
+        mimeType:"application/vnd.google-apps.spreadsheet"
+        name: "secondArticle"
+        teamDriveId: "0AGxiS_Xq3bvYUk9PVA"
+    }>;
+  }
 
-const ArticleCarrousel: React.FC = () => {
-    const [currentOption, setCurrentOption] = useState('');
-    const [files, setFiles] = useState([]);
-    const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
+const ArticleCarrousel: React.FC<props> = ({files}) => {
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
-    let driveID = process.env.REACT_APP_DRIVE_ID;
-    useEffect(() => {
-        // 1. Initialize and get all files in drive folder (In this case are google sheets)
-    function start() {
-        // 2. Initialize the JavaScript client library.
-        gapi.client.init({
-        'apiKey': key,
-        // clientId and scope are optional if auth is not required.
-        }).then(function() {
-        // 3. Initialize and make the API request.
-        return gapi.client.request({
-            'path': `https://www.googleapis.com/drive/v3/files?includeItemsFromAllDrives=true&orderBy=modifiedTime&q='${driveID}'%20in%20parents%20and%20trashed%20%3D%20false&supportsAllDrives=true&key=${key}`,
-        })
-        // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
-        }).then(function(response) {
-        console.log("files", response.result.files);
-        setFiles(response.result.files);
-        setHasNotBeenCalled(false);
-        }, function(reason) {
-        console.log('Error: ' + reason.result.error.message);
-        });
+    const [currentOption, setCurrentOption] = useState('');
+    const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
+    const [articlesData, setArticlesData] = useState(new Array<[]>());
+  useEffect(() => {
+
+    let allTheArticles = new Array<[]>();
+
+    async function makeRequest() {
+        for (let i = 0; i < files.length; i++) {
+            await gapi.client.request({
+                'path': `https://sheets.googleapis.com/v4/spreadsheets/${files[i].id}/values/A1%3AH2?key=${key}`,
+            }).then(function(response) {
+                console.log(`Response.result vuelta ${i}`,response.result.values[1]);
+                allTheArticles = [...allTheArticles, response.result.values[1]];
+            }, function(reason) {
+                console.log('Error: ' + reason.result.error.message);
+            })
+        }        
+    }
+
+    // 1. Initialize and get all files in drive folder (In this case are google sheets)
+    async function start(apiRequest : Function) {
+            // 2. Initialize the JavaScript client library.
+            await gapi.client.init({
+                'apiKey': key,
+                // clientId and scope are optional if auth is not required.
+            });
+            await makeRequest();
+            setHasNotBeenCalled(false);
+            setArticlesData(allTheArticles);
+            console.log(articlesData);
+
     };
     
-    if(hasNotBeenCalled) {
-        // 1. Load the JavaScript client library.
+    if(files.length > 0) {
         gapi.load('client', start);
+        console.log("After gapi.load", articlesData);
     }
-    }, [])
+  }, [files])
 
     return(
             <IonCol>
@@ -47,8 +63,8 @@ const ArticleCarrousel: React.FC = () => {
                     <IonList className='filter-size filter-rounded_border'>
                         <IonItem className='filter-item-size'>
                             <IonSelect placeholder="Filtrar   " interface='popover' onIonChange={(op) => setCurrentOption(op.detail.value)}>
-                            <IonSelectOption value="presentacion" className='option-filter' >Presentaciones</IonSelectOption>
-                            <IonSelectOption value="articulo" className='option-filter' >Artículos</IonSelectOption>
+                            <IonSelectOption value="article" className='option-filter' >Presentaciones</IonSelectOption>
+                            <IonSelectOption value="presentation" className='option-filter' >Artículos</IonSelectOption>
                             <IonSelectOption value="ambos" className='option-filter' >Ambos</IonSelectOption>
                             </IonSelect>
                         </IonItem>
@@ -56,36 +72,38 @@ const ArticleCarrousel: React.FC = () => {
                 </IonRow>
                 <div className="ion-content-scroll-host">
                     {
-                        files.length === 0 ? dummyArticles.map((data,key) =>{
-                            if(currentOption === "ambos" || currentOption === ""){
-                                return(
-                                        <DocumentCard  
-                                            key={key}
-                                            name= {data.title} 
-                                            description = {data.description} 
-                                            img_url= {data.url_img}  
-                                            id = {data.id}
-                                        />
-                                    );
-                            }
-                            else {
-                                if(data.type === currentOption){
-                                    return(
-                                            <DocumentCard
-                                                key={key}
-                                                name= {data.title} 
-                                                description = {data.description} 
-                                                img_url= {data.url_img}  
-                                                id = {data.id}
-                                            />
-
-                                        );
+                        !hasNotBeenCalled && articlesData.map((article : any, key) =>{
+                        if(currentOption === "ambos" || currentOption === ""){
+                            return(
+                                <div>
+                                {
+                                    article.length !== 0 && <DocumentCard 
+                                    name={article[1]} 
+                                    description={article[4]} 
+                                    img_url={article[5]} 
+                                    id={article[0]}
+                                    />
                                 }
+                                </div>
+                            );
+                        }
+                        else {
+                            console.log(article[3])
+                            if(article[3] === currentOption){
+                                return(
+                                    <div>
+                                    {
+                                        article.length !== 0 && <DocumentCard 
+                                        name={article[1]} 
+                                        description={article[4]} 
+                                        img_url={article[5]} 
+                                        id={article[0]}
+                                        />
+                                    }
+                                    </div>
+                                );
                             }
-                    }) : files.map((file : any, key) =>{
-                        return(
-                            <ArticleCardWrapper fileId={file.id} />
-                        );
+                        }
                 })
                     }
                     </div>

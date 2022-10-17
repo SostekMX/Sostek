@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonImg } from '@ionic/react';
 import DocumentCard from './DocumentCard';
+import ArticleCardModal from './ArticleCardModal';
 interface props {
   fileId: string;
 }
 
-const ArticleCardWrapper: React.FC<props> = ({fileId}) => {
+const ArticleCardModalWrapper: React.FC<props> = ({fileId}) => {
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     const [article, setArticle] = useState({
       values: [
+        ['title', 'subtitle', 'type', 'body', 'urlImage', 'author', 'isItDisplayed'],
+        ['TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE']
       ]
     });
     const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true)
@@ -23,13 +26,12 @@ const ArticleCardWrapper: React.FC<props> = ({fileId}) => {
       }).then(function() {
         // 3. Initialize and make the API request.
         return gapi.client.request({
-          'path': `https://sheets.googleapis.com/v4/spreadsheets/${fileId}/values/A1%3AF2?key=${key}`,
+          'path': `https://sheets.googleapis.com/v4/spreadsheets/${fileId}/values/A1%3AH2?key=${key}`,
 
         })
         // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
       }).then(function(response) {
-        console.log(response.result.values);
-        setArticle(response.result.values);
+        setArticle(response.result);
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message);
       });
@@ -39,7 +41,6 @@ const ArticleCardWrapper: React.FC<props> = ({fileId}) => {
       // 1. Load the JavaScript client library.
       gapi.load('client', start);
       setHasNotBeenCalled(false);
-
     }
   }, [])
   
@@ -47,15 +48,16 @@ const ArticleCardWrapper: React.FC<props> = ({fileId}) => {
   return (
     <div>
     {
-      !hasNotBeenCalled && <DocumentCard 
-          name={article.values[1][0]} 
-          description={article.values[1][3]} 
-          img_url={article.values[1][4]} 
-          id={article.values[1][1]}
+        !hasNotBeenCalled && <ArticleCardModal 
+            title={article.values[1][1]} 
+            subtitle={article.values[1][2]}
+            body={article.values[1][4]}
+            imageUrl={article.values[1][5]} 
+            author={article.values[1][6]}
         />
     }
     </div>
   )
 }
 
-export default ArticleCardWrapper;
+export default ArticleCardModalWrapper;
