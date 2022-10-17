@@ -20,15 +20,10 @@ const TutorialCard: React.FC<CardSlides> = (props) => {
   const onClickNext = () => nextSlide(currSlide+1);
   const [className, setClassName] = useState('tutorial-card');
   const onClickEnd = () => setClassName('tutorial-card-hide');
-  var currIcon;
-  var currAction;
   var dialogueClass = "dialogue-box db-"+props.slides[currSlide].align;
+  var showNext = 'tutorial-card-button';
   if(currSlide == nSlides-1){
-    currIcon = close;
-    currAction = onClickEnd;
-  }else{
-    currIcon = arrowForward;
-    currAction = onClickNext;
+    showNext = 'tutorial-card-hide';
   }
   var characterImgUrl:string[] = [];
   for(var i = 0; i < nSlides; i++){
@@ -38,9 +33,8 @@ const TutorialCard: React.FC<CardSlides> = (props) => {
 
   return (
     <div className={className}>
-      <div className="block-background"></div>
       <IonButtons className="tutorial-card-button">
-        <IonButton type="submit" onClick={currAction}><IonIcon icon={currIcon}></IonIcon></IonButton>
+        <IonButton type="submit" onClick={onClickEnd}><IonIcon icon={close}></IonIcon></IonButton>
       </IonButtons>
       <div className="tutorial-card-body">
         <div className={dialogueClass}>
@@ -48,6 +42,9 @@ const TutorialCard: React.FC<CardSlides> = (props) => {
         </div>
         <img src={characterImgUrl[currSlide]} className={props.slides[currSlide].align}></img>
       </div>
+      <IonButtons className={showNext}>
+        <IonButton type="submit" onClick={onClickNext}><IonIcon icon={arrowForward}></IonIcon></IonButton>
+      </IonButtons>
     </div>
   );
 };

@@ -3,7 +3,7 @@
 }
 
 .tutorial-card {
-    position: absolute;
+    position: fixed;
     width: 70vw;
     max-width: 360px;
     height: fit-content;
