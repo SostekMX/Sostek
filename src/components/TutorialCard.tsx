@@ -21,7 +21,7 @@ const TutorialCard: React.FC<CardSlides> = (props) => {
   const [className, setClassName] = useState('tutorial-card');
   const onClickEnd = () => setClassName('tutorial-card-hide');
   var dialogueClass = "dialogue-box db-"+props.slides[currSlide].align;
-  var showNext = 'tutorial-card-button';
+  var showNext = 'tutorial-card-button-bottom';
   if(currSlide == nSlides-1){
     showNext = 'tutorial-card-hide';
   }
@@ -40,11 +40,13 @@ const TutorialCard: React.FC<CardSlides> = (props) => {
         <div className={dialogueClass}>
           <p>{props.slides[currSlide].message}</p>
         </div>
-        <img src={characterImgUrl[currSlide]} className={props.slides[currSlide].align}></img>
+        <div className="img-arrow">
+          <img src={characterImgUrl[currSlide]} className={props.slides[currSlide].align}></img>
+          <IonButtons className={showNext}>
+            <IonButton type="submit" className="float-bottom" onClick={onClickNext}><IonIcon icon={arrowForward}></IonIcon></IonButton>
+          </IonButtons>
+        </div>
       </div>
-      <IonButtons className={showNext}>
-        <IonButton type="submit" onClick={onClickNext}><IonIcon icon={arrowForward}></IonIcon></IonButton>
-      </IonButtons>
     </div>
   );
 };
