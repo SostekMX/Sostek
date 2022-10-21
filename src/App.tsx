@@ -73,7 +73,7 @@ const App: React.FC = () => (
               <Tab3 />
             </Route>
             <Route exact path='/Documents/:id'>
-              <Documents name={dummyArticlesContent[0][0][1]} description={dummyArticlesContent[0][0][4]} img_url={dummyArticlesContent[0][0][4]}/>
+              <Documents />
             </Route>
             <Route exact path="/">
               <Redirect to="/tab1" />

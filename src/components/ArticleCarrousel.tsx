@@ -13,21 +13,25 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     const [currentOption, setCurrentOption] = useState('');
     const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
-    const [articlesData, setArticlesData] = useState<Array<Array<any>> | null>(null);
+    const [articlesData, setArticlesData] = useState<Array<Array<string>> | null>(null);
   useEffect(() => {
 
-    let allTheArticles : Array<Array<any>> = new Array<[]>();
+    let allTheArticles : Array<Array<string>> = new Array<Array<string>>();
 
     async function makeRequest() {
+        let currentId = files![0].id;
         for (let i = 0; i < files!.length; i++) {
+            currentId = files![i].id;
             await gapi.client.request({
                 'path': `https://sheets.googleapis.com/v4/spreadsheets/${files![i].id}/values/A1%3AH2?key=${key}`,
             }).then(function(response) {
+                console.log(files);
                 allTheArticles = [...allTheArticles, response.result.values[1]];
+                allTheArticles.at(-1)?.push(currentId);
             }, function(reason) {
                 console.log('Error: ' + reason.result.error.message);
             })
-        }        
+        }
     }
 
     // 1. Initialize and get all files in drive folder (In this case are google sheets)
@@ -72,13 +76,13 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                         !hasNotBeenCalled && articlesData!.map((article : any, key) =>{
                         if(currentOption === "ambos" || currentOption === ""){
                             return(
-                                <div>
+                                <div key={article[8]}>
                                 {
                                     article.length !== 0 && <DocumentCard 
                                     name={article[1]} 
                                     description={article[4]} 
                                     img_url={article[5]} 
-                                    id={article[0]}
+                                    id={article[8]}
                                     />
                                 }
                                 </div>
@@ -88,13 +92,13 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                             console.log(article[3])
                             if(article[3] === currentOption){
                                 return(
-                                    <div>
+                                    <div key={article[8]}>
                                     {
                                         article.length !== 0 && <DocumentCard 
                                         name={article[1]} 
                                         description={article[4]} 
                                         img_url={article[5]} 
-                                        id={article[0]}
+                                        id={article[8]}
                                         />
                                     }
                                     </div>

@@ -2,18 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonImg } from '@ionic/react';
 import DocumentCard from './DocumentCard';
 import ArticleCardModal from './ArticleCardModal';
+import { dummyArticlesContent } from '../pages/document/DocumentsData';
 interface props {
   fileId: string | null | undefined;
 }
 
 const ArticleCardModalWrapper: React.FC<props> = ({fileId}) => {
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
-    const [article, setArticle] = useState({
-      values: [
-        ['id', 'title', 'subtitle', 'type', 'body', 'urlImage', 'author', 'isItDisplayed'],
+    const [article, setArticle] = useState<Array<string>>(
         ['1','TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE']
-      ]
-    });
+    );
     const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true)
   useEffect(() => {
     // 1. Initialize and get all files in drive folder (In this case are google sheets)
@@ -29,31 +27,34 @@ const ArticleCardModalWrapper: React.FC<props> = ({fileId}) => {
           'path': `https://sheets.googleapis.com/v4/spreadsheets/${fileId}/values/A1%3AH2?key=${key}`,
 
         })
-        // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
+        // 2. If the response is succesful, then we have to set the information to get the info to display.
       }).then(function(response) {
-        setArticle(response.result);
+        console.log(response.result)
+        setArticle(response.result.values[1]);
+        setHasNotBeenCalled(false);
+
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message);
+        setArticle(dummyArticlesContent[0]);
       });
     };
     
     if (hasNotBeenCalled) {
       // 1. Load the JavaScript client library.
       gapi.load('client', start);
-      setHasNotBeenCalled(false);
     }
-  }, [])
+  }, [fileId])
   
 
   return (
     <div>
     {
         !hasNotBeenCalled && <ArticleCardModal 
-            title={article.values[1][1]} 
-            subtitle={article.values[1][2]}
-            body={article.values[1][4]}
-            imageUrl={article.values[1][5]} 
-            author={article.values[1][6]}
+            title={article[1]} 
+            subtitle={article[2]}
+            body={article[4]}
+            imageUrl={article[5]} 
+            author={article[6]}
         />
     }
     </div>
