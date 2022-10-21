@@ -11,3 +11,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.document-card-image {
+    height: 33vh;
+    object-fit: cover;
+}

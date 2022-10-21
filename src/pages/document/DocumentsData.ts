@@ -11,7 +11,6 @@ export const dummyArticlesContent : Array<Array<any>> = [
     ['1','TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE', "1rk0FDGDRPSz3p8IqyEy1Sy5HGbzYy6xls5cwtpDAlsk"]
 
 ]
-
 export const dummyArticles : Array<File> | null =
 [
     {
