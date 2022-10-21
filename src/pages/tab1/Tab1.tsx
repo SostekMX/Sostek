@@ -84,6 +84,7 @@ const Tab1: React.FC = () => {
     <IonPage>
       <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
+      
         </IonHeader>
         
         {!hasNotBeenCalled && <> 

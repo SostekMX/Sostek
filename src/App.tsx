@@ -1,31 +1,17 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonPage,
-  IonItem,
-  IonInput,
+  
   IonApp,
-  IonIcon,
-  IonLabel,
+ 
   IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
+  
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/tab1/Tab1';
-import Tab2 from './pages/tab2/Tab2';
-import Tab3 from './pages/tab3/Tab3';
-import { OverlayEventDetail } from '@ionic/core/components';
-import Documents from './pages/document/Documents';
+
+
+import MainMenu from './pages/mainMenu/MainMenu';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -56,8 +42,7 @@ setupIonicReact();
 
 
 
-const App: React.FC = () => (
- 
+const App: React.FC = () => ( 
   <IonApp>
       <AppBarPopOver></AppBarPopOver>
       <IonReactRouter>
