@@ -6,6 +6,7 @@ import { IonCard,
     IonCardSubtitle, 
     IonContent, 
     IonImg, 
+    IonItem, 
     IonText,
 
  } from '@ionic/react';
@@ -26,9 +27,9 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id})
     console.log("DOCUMENT CARD", name, description, id)
     return(
         < >
-            <IonCard button routerDirection='forward'  href={'/Documents/'+id}>
+            <IonCard button routerDirection='forward'  href={`/Documents/${id}`}>
                 <IonCardHeader>
-                    <IonImg src={img_url}></IonImg> 
+                    <IonImg src={img_url} className="document-card-image"/>
                 </IonCardHeader>
                 <IonCardContent >
                     <IonCardSubtitle className='title'>{name}</IonCardSubtitle>

@@ -1,12 +1,13 @@
 import React from 'react';
-import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList } from '@ionic/react';
+import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonImg } from '@ionic/react';
 import { personCircle, search, settings, logOut, heart } from 'ionicons/icons';
 import { profile } from 'console';
 
 export const AppBarMenu: React.FC = () => (
     <>
         <IonToolbar>
-            <img src="/assets/sostek-logo.jpeg" width="80px" height="40px"/>
+            <IonImg src="/assets/sostek-logo.jpeg">
+            </IonImg>
             <IonButtons slot="primary">
                 <IonButton>
                     <IonIcon slot="icon-only" icon={search} />
