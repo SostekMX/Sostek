@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover } from '@ionic/react';
 import { personCircle, search, settings, logOut, heart } from 'ionicons/icons';
 import { profile } from 'console';
 
-export const AppBarPopOver: React.FC = () => (
-    <>
-        <IonToolbar color='primary' /* class="transparent" */  > 
-            <a href="/tab1"><img src="/assets/sostek-logo.png" height="40px"/></a>
+export const AppBarPopOver: React.FC = () => {
+    const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
+    return <>
+        <IonToolbar color='primary' /* class="transparent" */>
+            <a href="/tab1"><img src="/assets/sostek-logo.png" height="40px" /></a>
             <IonMenu contentId="main-content">
                 <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Menu Content</IonTitle>
-                </IonToolbar>
+                    <IonToolbar>
+                        <IonTitle>Menu Content</IonTitle>
+                    </IonToolbar>
                 </IonHeader>
                 <IonContent className="ion-padding">This is the menu content.</IonContent>
             </IonMenu>
@@ -22,34 +23,41 @@ export const AppBarPopOver: React.FC = () => (
             </IonButtons>
             <IonButtons slot="primary">
                 <IonButtons slot="end">
-                    <IonMenuButton id="open-menu" autoHide={false} ></IonMenuButton>
+                    <IonMenuButton id="open-menu" autoHide={false}></IonMenuButton>
                 </IonButtons>
                 <IonPopover trigger="open-menu" triggerAction="click">
                     <IonContent>
                         <IonList>
+                        {isUserLogged &&
                             <IonItem>
                                 <IonIcon icon={heart} color='secondary'></IonIcon> &nbsp;
-                                <IonLabel>  Favoritos</IonLabel>
+                                 <IonLabel>  Favoritos</IonLabel>
                             </IonItem>
+                            }
                             <IonItem>
                                 <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;
-                                <IonLabel>Perfil</IonLabel>
+                                { isUserLogged &&<IonLabel>Perfil</IonLabel>}
+                                { !isUserLogged &&<IonLabel
+                                    onClick={(e) => {setIsUserLogged(true)}}>Iniciar Sesi&oacute;n</IonLabel>}
                             </IonItem>
-                            <IonItem>
+                            {isUserLogged && <IonItem>
                                 <IonIcon icon={settings} color='secondary'></IonIcon> &nbsp;
-                                <IonLabel>Ajustes</IonLabel>
+                                 <IonLabel>Ajustes</IonLabel>
                             </IonItem>
-                            <IonItem>
+                            }
+                            {isUserLogged && <IonItem>
                                 <IonIcon icon={logOut} color='secondary'></IonIcon> &nbsp;
-                                <IonLabel>Log Out</IonLabel>
+                                <IonLabel
+                                    onClick={(e) => {setIsUserLogged(false)}}>Log Out</IonLabel>
                             </IonItem>
+                            }
                         </IonList>
                     </IonContent>
                 </IonPopover>
-            </IonButtons>     
-        </IonToolbar> 
-       </>
+            </IonButtons>
+        </IonToolbar>
+    </>;
     
-);
+};
 
 export default AppBarPopOver;
