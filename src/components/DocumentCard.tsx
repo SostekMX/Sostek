@@ -23,7 +23,7 @@ interface DocumentProps{
 }
 
 const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id}) => {
-    console.log(name, description, img_url, id)
+    console.log("DOCUMENT CARD", name, description, id)
     return(
         < >
             <IonCard button routerDirection='forward'  href={'/Documents/'+id}>
