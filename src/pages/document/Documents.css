@@ -1,4 +1,9 @@
-.title{
+.bg {
+    background-color: var(--ion-color-primary);
+}
+
+.title__document{
+    color: var(--ion-color-primary-contrast);
     text-transform: uppercase;
     font-size: medium;
     font-family:system-ui;
@@ -7,7 +12,8 @@
     border-radius: 20px;
 }
 
-.content {
+.content__document {
+    color: var(--ion-color-primary-contrast);
     font-size: medium;
     font-family:sans-serif;
     padding-left: 1.5em;
@@ -22,5 +28,4 @@
     text-align: center;
     text-align: justify;
     margin: 1em;
-
 }

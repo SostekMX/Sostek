@@ -1,32 +1,40 @@
 import React from 'react';
 import { IonCol, IonContent, IonHeader, IonImg, IonRow, IonText, IonTitle} from '@ionic/react';
 import './Documents.css'
-import { useParams } from 'react-router';
-import { dummyArticles } from './DocumentsData';
+import { RouteComponentProps, useParams } from 'react-router';
+import { dummyArticlesContent } from './DocumentsData';
 
-interface RouteParams {
-    id:string
-
+interface RouteParams{
+    id:string,
 }
-const Documents: React.FC = () => {
-    const {id} = useParams<RouteParams>();
-    const article = dummyArticles.find((article) => article.id === id);
+
+interface DocumentProps {
+    name: string,
+    description: string,
+    img_url: string
+}
+const Documents: React.FC<DocumentProps> = ({name, description, img_url}) => {
+    name = name || dummyArticlesContent[0][2]
+    description= description || dummyArticlesContent[0][4]
+    img_url= img_url || dummyArticlesContent[0][5]
+    console.log(name, description, img_url)
+
     return(
-       <IonContent>
+       <IonContent fullscreen class='bg'>
            <IonHeader>
-                <img src={article?.url_img} className="imageArticle"></img>
+                <img src={img_url} className="imageArticle" />
            </IonHeader>
            <br></br>
            <IonCol>
                 <IonRow>
-                    <IonTitle className='title'>
-                        {article?.title}
+                    <IonTitle className='title__document'>
+                        {name}
                     </IonTitle>
                 </IonRow>
                 <br></br>
-                <IonRow className = 'content-row'>
+                <IonRow className = 'content-row content__document'>
                     <IonText>
-                        {article?.content}
+                        {description}
                     </IonText>
                 </IonRow>
             </IonCol>

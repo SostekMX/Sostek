@@ -1,26 +1,36 @@
-export const dummyArticles = [
+import { File } from "../../models/File";
+
+export const dummyArticlesContent : Array<Array<any>> = [
+    ['1','TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE'],
+    ['1','TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE'],
+    ['1','TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE']
+
+]
+
+export const dummyArticles : Array<File> | null =
+[
     {
-        "id": "123", 
-        "title" : "Desarrollo Sostenible", 
-        "description": "Breve deescripción para mostrar", 
-        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pulvinar accumsan ligula id venenatis. Ut a arcu est. Nulla venenatis quam et dolor gravida efficitur. Quisque ac sapien turpis. Praesent tristique ut dui id vulputate. Pellentesque rutrum vel nisi vel cursus. Etiam in placerat mi. Nunc mattis gravida nisl vitae luctus. Aenean in nibh posuere, vulputate lectus ac, efficitur lectus. Duis porttitor sollicitudin convallis. Ut condimentum vehicula dolor at condimentum. Cras iaculis, justo varius dignissim gravida, nisi augue egestas urna, id rhoncus magna urna a orci. Ut eu dui leo. Morbi nisl ipsum, finibus quis dolor ut, viverra venenatis lectus. Quisque at nunc sit amet neque tempor ullamcorper id at urna.", 
-        "url_img": "https://cevad.net/wp-content/uploads/2021/02/Desarrollo_sostenible.jpg",
-        "type": "articulo"
+        driveId: "0AGxiS_Xq3bvYUk9PVA",
+        id: "1x1J2haBHZBTpVHkiQ19UN_lpYTSlxr1T44TOzqeSdgQ",
+        kind: "drive#file",
+        mimeType: "application/vnd.google-apps.spreadsheet",
+        name: "FirstArticle",
+        teamDriveId: "0AGxiS_Xq3bvYUk9PVA",
     },
     {
-        "id": "234", 
-        "title" : "Desarrollo Sostenible 2", 
-        "description": "Breve deescripción para mostrar", 
-        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pulvinar accumsan ligula id venenatis. Ut a arcu est. Nulla venenatis quam et dolor gravida efficitur. Quisque ac sapien turpis. Praesent tristique ut dui id vulputate. Pellentesque rutrum vel nisi vel cursus. Etiam in placerat mi. Nunc mattis gravida nisl vitae luctus. Aenean in nibh posuere, vulputate lectus ac, efficitur lectus. Duis porttitor sollicitudin convallis. Ut condimentum vehicula dolor at condimentum. Cras iaculis, justo varius dignissim gravida, nisi augue egestas urna, id rhoncus magna urna a orci. Ut eu dui leo. Morbi nisl ipsum, finibus quis dolor ut, viverra venenatis lectus. Quisque at nunc sit amet neque tempor ullamcorper id at urna.", 
-        "url_img": "https://s1.significados.com/foto/9dd4-des-sus_bg.jpg",
-        "type": "presentacion"
+        driveId: "0AGxiS_Xq3bvYUk9PVA",
+        id: "1y5_4JtMlZIYY5EjMd9LeMiQDFdZxlcpvBj-Z16ppWz8",
+        kind: "drive#file",
+        mimeType: "application/vnd.google-apps.spreadsheet",
+        name: "secondArticle",
+        teamDriveId: "0AGxiS_Xq3bvYUk9PVA",
     },
     {
-        "id": "567", 
-        "title" : "Desarrollo Sostenible 3", 
-        "description": "Breve deescripción para mostrar", 
-        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pulvinar accumsan ligula id venenatis. Ut a arcu est. Nulla venenatis quam et dolor gravida efficitur. Quisque ac sapien turpis. Praesent tristique ut dui id vulputate. Pellentesque rutrum vel nisi vel cursus. Etiam in placerat mi. Nunc mattis gravida nisl vitae luctus. Aenean in nibh posuere, vulputate lectus ac, efficitur lectus. Duis porttitor sollicitudin convallis. Ut condimentum vehicula dolor at condimentum. Cras iaculis, justo varius dignissim gravida, nisi augue egestas urna, id rhoncus magna urna a orci. Ut eu dui leo. Morbi nisl ipsum, finibus quis dolor ut, viverra venenatis lectus. Quisque at nunc sit amet neque tempor ullamcorper id at urna.", 
-        "url_img": "https://static9.depositphotos.com/1641036/1122/v/450/depositphotos_11227376-stock-illustration-green-earth-sustainable-development-concept.jpg",
-        "type": "articulo"
-    },
+        driveId: "0AGxiS_Xq3bvYUk9PVA",
+        id: "1rk0FDGDRPSz3p8IqyEy1Sy5HGbzYy6xls5cwtpDAlsk",
+        kind: "drive#file",
+        mimeType: "application/vnd.google-apps.spreadsheet",
+        name: "firstPresentation",
+        teamDriveId: "0AGxiS_Xq3bvYUk9PVA",
+    }
 ]
