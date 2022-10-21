@@ -3,15 +3,15 @@ import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, 
 import DocumentCard from './DocumentCard';
 import ArticleCardModal from './ArticleCardModal';
 interface props {
-  fileId: string;
+  fileId: string | null | undefined;
 }
 
 const ArticleCardModalWrapper: React.FC<props> = ({fileId}) => {
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     const [article, setArticle] = useState({
       values: [
-        ['title', 'subtitle', 'type', 'body', 'urlImage', 'author', 'isItDisplayed'],
-        ['TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE']
+        ['id', 'title', 'subtitle', 'type', 'body', 'urlImage', 'author', 'isItDisplayed'],
+        ['1','TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE']
       ]
     });
     const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true)

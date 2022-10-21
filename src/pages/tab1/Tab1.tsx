@@ -34,15 +34,9 @@ const dummyArticle = {
 }
 
 const Tab1: React.FC = () => {
-    const [files, setFiles] = useState([]);
-    const [lastFile, setLastFile] = useState({
-      driveId: "",
-      id: "1y5_4JtMlZIYY5EjMd9LeMiQDFdZxlcpvBj-Z16ppWz8",
-      kind:"",
-      mimeType: "",
-      name: "",
-      teamDriveId: ""
-    })
+    
+    const [files, setFiles] = useState<Array<File> | null | undefined>(null);
+    const [lastFile, setLastFile] = useState<File | null | undefined>(null);
     const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     let driveID = process.env.REACT_APP_DRIVE_ID;
@@ -60,21 +54,23 @@ const Tab1: React.FC = () => {
         })
         // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
         }).then(function(response) {
-        console.log("files", response.result.files);
+        //console.log("files", response.result.files);
         setFiles(response.result.files);
         setLastFile(response.result.files.at(-1));
         }, function(reason) {
         console.log('Error: ' + reason.result.error.message);
-        });
+        setFiles(dummyArticles);
+        setLastFile(dummyArticles?.at(-1));
+        })
     };
     
     if(hasNotBeenCalled) {
         // 1. Load the JavaScript client library.
         gapi.load('client', start);
         setHasNotBeenCalled(false);
+        
     }
     }, [])
-
   return (
     <IonPage>
       <IonContent fullscreen class='bg-img'> 
@@ -82,7 +78,7 @@ const Tab1: React.FC = () => {
         </IonHeader>
         
         {!hasNotBeenCalled && <> 
-          <ArticleCardModalWrapper fileId={lastFile.id} />
+          <ArticleCardModalWrapper fileId={lastFile?.id} />
           <ArticleCarrousel files={files} />
         </>
         }

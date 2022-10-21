@@ -1,34 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { IonCol, IonItem,  IonList, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
-import DocumentCard from './DocumentCard'
+import DocumentCard from './DocumentCard';
+import { File } from '../models/File';
+import { dummyArticlesContent } from '../pages/document/DocumentsData';
 import './ArticleCarrousel.css'
 
 interface props {
-    files: Array<{
-        driveId: "0AGxiS_Xq3bvYUk9PVA"
-        id: "1x1J2haBHZBTpVHkiQ19UN_lpYTSlxr1T44TOzqeSdgQ"
-        kind: "drive#file"
-        mimeType:"application/vnd.google-apps.spreadsheet"
-        name: "secondArticle"
-        teamDriveId: "0AGxiS_Xq3bvYUk9PVA"
-    }>;
+    files: Array<File> | null | undefined;
   }
 
 const ArticleCarrousel: React.FC<props> = ({files}) => {
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     const [currentOption, setCurrentOption] = useState('');
     const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
-    const [articlesData, setArticlesData] = useState(new Array<[]>());
+    const [articlesData, setArticlesData] = useState<Array<Array<any>> | null>(null);
   useEffect(() => {
 
-    let allTheArticles = new Array<[]>();
+    let allTheArticles : Array<Array<any>> = new Array<[]>();
 
     async function makeRequest() {
-        for (let i = 0; i < files.length; i++) {
+        for (let i = 0; i < files!.length; i++) {
             await gapi.client.request({
-                'path': `https://sheets.googleapis.com/v4/spreadsheets/${files[i].id}/values/A1%3AH2?key=${key}`,
+                'path': `https://sheets.googleapis.com/v4/spreadsheets/${files![i].id}/values/A1%3AH2?key=${key}`,
             }).then(function(response) {
-                console.log(`Response.result vuelta ${i}`,response.result.values[1]);
                 allTheArticles = [...allTheArticles, response.result.values[1]];
             }, function(reason) {
                 console.log('Error: ' + reason.result.error.message);
@@ -45,12 +39,15 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
             });
             await makeRequest();
             setHasNotBeenCalled(false);
-            setArticlesData(allTheArticles);
-            console.log(articlesData);
-
+            if (allTheArticles.length == 0) {
+                setArticlesData(dummyArticlesContent);
+            }
+            else {
+                setArticlesData(allTheArticles);
+            }
     };
     
-    if(files.length > 0) {
+    if(files != null) {
         gapi.load('client', start);
         console.log("After gapi.load", articlesData);
     }
@@ -72,7 +69,7 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                 </IonRow>
                 <div className="ion-content-scroll-host">
                     {
-                        !hasNotBeenCalled && articlesData.map((article : any, key) =>{
+                        !hasNotBeenCalled && articlesData!.map((article : any, key) =>{
                         if(currentOption === "ambos" || currentOption === ""){
                             return(
                                 <div>

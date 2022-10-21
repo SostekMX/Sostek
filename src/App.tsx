@@ -49,6 +49,7 @@ import './App.css';
 
 import AppBarPopOver from './components/AppBarPopOver';
 import AppBarMenu from './components/AppBarMenu';
+import { dummyArticlesContent } from './pages/document/DocumentsData';
 //import { useState } from 'react';
 
 setupIonicReact();
@@ -72,7 +73,7 @@ const App: React.FC = () => (
               <Tab3 />
             </Route>
             <Route exact path='/Documents/:id'>
-              <Documents/>
+              <Documents name={dummyArticlesContent[0][0][1]} description={dummyArticlesContent[0][0][4]} img_url={dummyArticlesContent[0][0][4]}/>
             </Route>
             <Route exact path="/">
               <Redirect to="/tab1" />
