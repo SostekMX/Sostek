@@ -21,6 +21,7 @@ const Tab1: React.FC = () => {
     <IonPage>
       <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
+      
         </IonHeader>
         <ArticleCardModal imageUrl={dummyArticle.imageUrl} title={dummyArticle.title} subtitle={dummyArticle.subtitle} author={dummyArticle.author} body={dummyArticle.body} ></ArticleCardModal>
         <ArticleCarrousel></ArticleCarrousel>
