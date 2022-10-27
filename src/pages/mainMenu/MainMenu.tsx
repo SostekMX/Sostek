@@ -48,6 +48,7 @@ import '../../App.css';
 
 import AppBarPopOver from '../../components/AppBarPopOver';
 import AppBarMenu from '../../components/AppBarMenu';
+import Profile from '../profile/Profile';
 
 //import { useState } from 'react';
 
@@ -57,25 +58,28 @@ setupIonicReact();
 
 const MainMenu: React.FC = () => {
     return(
-        <IonApp>
-            <AppBarPopOver></AppBarPopOver>
+        <IonContent>
+            
             <IonReactRouter>
                 <IonTabs>
                 <IonRouterOutlet>
                     <Route exact path="/tab1">
-                    <Tab1/>
+                        <Tab1/>
                     </Route>
                     <Route exact path="/tab2">
-                    <Tab2 />
+                        <Tab2 />
                     </Route>
                     <Route path="/tab3">
-                    <Tab3 />
+                        <Tab3 />
                     </Route>
                     <Route exact path='/Documents/:id'>
-                    <Documents/>
+                        <Documents/>
                     </Route>
                     <Route exact path='/MainMenu'>
-                    <Redirect to ="/tab1"/>
+                        <Redirect to ="/tab1"/>
+                    </Route>
+                    <Route path="/Profile">
+                        <Profile />
                     </Route>
                 
                 </IonRouterOutlet>
@@ -93,7 +97,7 @@ const MainMenu: React.FC = () => {
                 </IonTabBar>
                 </IonTabs>
             </IonReactRouter>
-        </IonApp>
+        </IonContent>
     );
 
   
