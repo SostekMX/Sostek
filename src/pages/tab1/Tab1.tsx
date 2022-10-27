@@ -6,6 +6,7 @@ import DocumentCard from '../../components/DocumentCard';
 import './Tab1.css';
 import { dummyArticles } from '../document/DocumentsData';
 import ArticleCarrousel from '../../components/ArticleCarrousel';
+import AppBarPopOver from '../../components/AppBarPopOver';
 
 
 const dummyArticle = {
@@ -19,6 +20,7 @@ const dummyArticle = {
 const Tab1: React.FC = () => {
   return (
     <IonPage>
+      <AppBarPopOver></AppBarPopOver>
       <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
       

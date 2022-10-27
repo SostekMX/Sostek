@@ -6,7 +6,7 @@ import { profile } from 'console';
 export const AppBarPopOver: React.FC = () => (
     <>
         <IonToolbar color='primary' /* class="transparent" */  > 
-            <a href="/tab1"><img src="/assets/sostek-logo.png" height="40px"/></a>
+            <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
             <IonMenu contentId="main-content">
                 <IonHeader>
                 <IonToolbar>
@@ -31,7 +31,7 @@ export const AppBarPopOver: React.FC = () => (
                                 <IonIcon icon={heart} color='secondary'></IonIcon> &nbsp;
                                 <IonLabel>  Favoritos</IonLabel>
                             </IonItem>
-                            <IonItem>
+                            <IonItem href='/Profile'>
                                 <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;
                                 <IonLabel>Perfil</IonLabel>
                             </IonItem>

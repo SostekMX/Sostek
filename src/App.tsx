@@ -36,6 +36,10 @@ import './App.css';
 
 import LogIn from './pages/logIn/LogIn';
 import SignUp from './pages/signUp/SignUp';
+import Tab1 from './pages/tab1/Tab1';
+import Tab2 from './pages/tab2/Tab2';
+import Tab3 from './pages/tab3/Tab3';
+import Profile from './pages/profile/Profile';
 //import { useState } from 'react';
 
 setupIonicReact();
@@ -54,6 +58,18 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/SignUp">
               <SignUp/>
+          </Route>
+          <Route exact path="/tab1">
+              <Tab1/>
+          </Route>
+          <Route exact path="/tab2">
+              <Tab2 />
+          </Route>
+          <Route path="/tab3">
+              <Tab3 />
+          </Route>
+          <Route path="/Profile">
+              <Profile />
           </Route>
       </IonRouterOutlet>
     </IonReactRouter>
