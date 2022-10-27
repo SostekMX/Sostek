@@ -10,6 +10,7 @@ import ArticleCarrousel from '../../components/ArticleCarrousel';
 import { useEffect, useState } from 'react';
 import ArticleCardModalWrapper from '../../components/ArticleCardModalWrapper';
 import { File } from '../../models/File';
+import AppBarPopOver from '../../components/AppBarPopOver';
 
 const exampleCard = {
   message: 'Bienvenidos a Sostek, este es un tutorial.',
@@ -82,6 +83,7 @@ const Tab1: React.FC = () => {
     }, [])
   return (
     <IonPage>
+      <AppBarPopOver></AppBarPopOver>
       <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
       
