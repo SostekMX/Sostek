@@ -25,7 +25,7 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
             await gapi.client.request({
                 'path': `https://sheets.googleapis.com/v4/spreadsheets/${files![i].id}/values/A1%3AH2?key=${key}`,
             }).then(function(response) {
-                console.log(files);
+                //console.log(files);
                 allTheArticles = [...allTheArticles, response.result.values[1]];
                 allTheArticles.at(-1)?.push(currentId);
             }, function(reason) {
@@ -53,7 +53,7 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
     
     if(files != null) {
         gapi.load('client', start);
-        console.log("After gapi.load", articlesData);
+        //console.log("After gapi.load", articlesData);
     }
   }, [files])
 
@@ -89,7 +89,7 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                             );
                         }
                         else {
-                            console.log(article[3])
+                            //console.log(article[3])
                             if(article[3] === currentOption){
                                 return(
                                     <div key={article[8]}>

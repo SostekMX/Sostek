@@ -3,6 +3,7 @@ import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, 
 import DocumentCard from './DocumentCard';
 import ArticleCardModal from './ArticleCardModal';
 import { dummyArticlesContent } from '../pages/document/DocumentsData';
+import { NativeStorage } from '@ionic-native/native-storage';
 interface props {
   fileId: string | null | undefined;
 }
@@ -29,27 +30,37 @@ const ArticleCardModalWrapper: React.FC<props> = ({fileId}) => {
         })
         // 2. If the response is succesful, then we have to set the information to get the info to display.
       }).then(function(response) {
-        console.log(response.result)
+        //.log(response.result)
         setArticle(response.result.values[1]);
         setHasNotBeenCalled(false);
-
+        NativeStorage.setItem('lastFile', JSON.stringify(article))
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message);
         setArticle(dummyArticlesContent[0]);
       });
-    };
+    }
     
     if (hasNotBeenCalled) {
       // 1. Load the JavaScript client library.
       gapi.load('client', start);
     }
+
+    // NativeStorage.getItem('lastFile').then(
+    //   data => {
+    //     setArticle(data)
+    //   },
+    //   error => {
+    //     gapi.load('cliente', start)
+    //   }
+    // )
+
   }, [fileId])
   
 
   return (
     <div>
     {
-        !hasNotBeenCalled && <ArticleCardModal 
+        <ArticleCardModal 
             title={article[1]} 
             subtitle={article[2]}
             body={article[4]}
