@@ -1,0 +1,21 @@
+.modify-form {
+    margin-top: 2em;
+    justify-content: center;
+
+}
+
+.align-center {
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    
+}
+
+.space {
+    height: 2em;
+}
+
+.input-field {
+    min-width: 20em;
+}
