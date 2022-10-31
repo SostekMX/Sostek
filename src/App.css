@@ -33,7 +33,7 @@ ion-toolbar.transparent {
 
 ion-content {
     --background: none;
-    --padding-top: 10%;
+    --padding-top: 0px;
 }
     
 ion-content.bg-img {

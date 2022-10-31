@@ -7,7 +7,7 @@ export const AppBarPopOver: React.FC = () => {
     const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
     return <>
         <IonToolbar color='primary' /* class="transparent" */>
-        <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>z
+        <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
             <IonMenu contentId="main-content">
                 <IonHeader>
                     <IonToolbar>
