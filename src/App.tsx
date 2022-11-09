@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
   
   IonApp,
@@ -40,41 +40,56 @@ import Tab1 from './pages/tab1/Tab1';
 import Tab2 from './pages/tab2/Tab2';
 import Tab3 from './pages/tab3/Tab3';
 import Profile from './pages/profile/Profile';
+import AppContext from './context/AppContext';
+import useInitialState from './hooks/useInitialState';
+import Presentation from './pages/presentation/Presentation';
+import Documents from './pages/document/Documents';
 //import { useState } from 'react';
 
 setupIonicReact();
 
 
 
-const App: React.FC = () => ( 
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-          <Route exact path="/MainMenu">
-            <MainMenu/>
-          </Route>
-          <Route exact path="/">
-              <LogIn/>
-          </Route>
-          <Route exact path="/SignUp">
-              <SignUp/>
-          </Route>
-          <Route exact path="/tab1">
-              <Tab1/>
-          </Route>
-          <Route exact path="/tab2">
-              <Tab2 />
-          </Route>
-          <Route path="/tab3">
-              <Tab3 />
-          </Route>
-          <Route path="/Profile">
-              <Profile />
-          </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
+const App: React.FC = () => {
+  const initialState = useInitialState();
+  return (
+  //<AppContext.Provider value={initialState}>
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+            <Route exact path="/MainMenu">
+              <MainMenu/>
+            </Route>
+            <Route exact path="/">
+                <LogIn/>
+            </Route>
+            <Route exact path="/SignUp">
+                <SignUp/>
+            </Route>
+            <Route exact path="/tab1">
+                <Tab1/>
+            </Route>
+            <Route exact path="/tab2">
+                <Tab2 />
+            </Route>
+            <Route path="/tab3">
+                <Tab3 />
+            </Route>
+            <Route path="/Profile">
+                <Profile />
+            </Route>
+            <Route exact path='/Documents/:id'>
+                        <Documents/>
+                    </Route>
+            <Route exact path="/presentation/:driveId">
+            <Presentation />
+            </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  //</AppContext.Provider>
 
-  </IonApp>
-);
+  );
+}
 
 export default App;

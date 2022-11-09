@@ -1,17 +1,12 @@
-import ExploreContainer from '../../components/ExploreContainer';
-import ArticleCardModal from '../../components/ArticleCardModal';
 import TutorialCard from '../../components/TutorialCard';
-import { IonCol, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-//import ExploreContainer from '../components/ExploreContainer';
-import DocumentCard from '../../components/DocumentCard';
+import {  IonContent, IonHeader, IonLoading, IonPage } from '@ionic/react';
 import './Tab1.css';
-import { dummyArticles } from '../document/DocumentsData';
 import ArticleCarrousel from '../../components/ArticleCarrousel';
-import { useEffect, useState } from 'react';
 import ArticleCardModalWrapper from '../../components/ArticleCardModalWrapper';
-import { File } from '../../models/File';
 import AppBarPopOver from '../../components/AppBarPopOver';
-
+import useGetDocuments from '../../hooks/useGetDocuments';
+import React, { useContext } from 'react';
+import AppContext from '../../context/AppContext';
 const exampleCard = {
   message: 'Bienvenidos a Sostek, este es un tutorial.',
   character: 'gota2',
@@ -44,43 +39,11 @@ const tutorialSlides = {
 }
 
 const Tab1: React.FC = () => {
-    
-    const [files, setFiles] = useState<Array<File> | null | undefined>(null);
-    const [lastFile, setLastFile] = useState<File | null | undefined>(null);
-    const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
-    let key = process.env.REACT_APP_PRIVATE_API_KEY;
-    let driveID = process.env.REACT_APP_DRIVE_ID;
-    useEffect(() => {
-        // 1. Initialize and get all files in drive folder (In this case are google sheets)
-    function start() {
-        // 2. Initialize the JavaScript client library.
-        gapi.client.init({
-        'apiKey': key,
-        // clientId and scope are optional if auth is not required.
-        }).then(function() {
-        // 3. Initialize and make the API request.
-        return gapi.client.request({
-            'path': `https://www.googleapis.com/drive/v3/files?includeItemsFromAllDrives=true&orderBy=createdTime&q='${driveID}'%20in%20parents%20and%20trashed%20%3D%20false&supportsAllDrives=true&key=${key}`,
-        })
-        // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
-        }).then(function(response) {
-        //console.log("files", response.result.files);
-        setFiles(response.result.files);
-        setLastFile(response.result.files.at(-1));
-        }, function(reason) {
-        console.log('Error: ' + reason.result.error.message);
-        setFiles(dummyArticles);
-        setLastFile(dummyArticles?.at(-1));
-        })
-    };
-    
-    if(hasNotBeenCalled) {
-        // 1. Load the JavaScript client library.
-        gapi.load('client', start);
-        setHasNotBeenCalled(false);
-        
-    }
-    }, [])
+  //const { addToFiles } = useContext(AppContext);
+  let driveID = process.env.REACT_APP_DRIVE_ID;
+  const {files, lastFile, loading } = useGetDocuments(driveID);
+  //addToFiles(files);
+
   return (
     <IonPage>
       <AppBarPopOver></AppBarPopOver>
@@ -88,14 +51,16 @@ const Tab1: React.FC = () => {
         <IonHeader collapse="condense">
       
         </IonHeader>
-        
-        {!hasNotBeenCalled && <> 
-          <ArticleCardModalWrapper fileId={lastFile?.id} />
-          <TutorialCard slides={tutorialSlides.slides} />
-          <ArticleCarrousel files={files} />
-        </>
+        {
+          loading && <IonLoading isOpen={loading} duration={5000}  />
         }
-        
+        {
+          !loading && <> 
+            <ArticleCardModalWrapper files={lastFile} />
+            <TutorialCard slides={tutorialSlides.slides} />
+            <ArticleCarrousel files={files} />
+          </>
+        }
       </IonContent>
     </IonPage>
   );

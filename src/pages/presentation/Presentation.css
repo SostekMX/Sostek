@@ -1,0 +1,9 @@
+.rotate {
+    transform: rotate(90deg);
+
+}
+
+.presentation-size {
+    width: calc(100vh - 50px);
+    height: calc(100vw);
+}

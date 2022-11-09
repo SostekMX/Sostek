@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { IonCol, IonItem,  IonList, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
+import React, { useState } from 'react';
+import { IonCol, IonItem,  IonList, IonLoading, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
 import DocumentCard from './DocumentCard';
 import { File } from '../models/File';
-import { dummyArticlesContent } from '../pages/document/DocumentsData';
 import './ArticleCarrousel.css'
+import useGetArticlesData from '../hooks/useGetArticlesData';
 
 interface props {
     files: Array<File> | null | undefined;
   }
 
 const ArticleCarrousel: React.FC<props> = ({files}) => {
+  const [currentOption, setCurrentOption] = useState('');
+
+  const {articlesData, loading} = useGetArticlesData(files);
+    /*
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     const [currentOption, setCurrentOption] = useState('');
     const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
@@ -56,7 +60,7 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
         console.log("After gapi.load", articlesData);
     }
   }, [files])
-
+*/
     return(
             <IonCol>
                 <IonRow className='filter-aligned'>
@@ -73,15 +77,18 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                 </IonRow>
                 <div className="ion-content-scroll-host">
                     {
-                        !hasNotBeenCalled && articlesData!.map((article : any, key) =>{
+                        loading && <IonLoading isOpen={loading} duration={5000} />
+                    }
+                    {
+                        !loading && articlesData!.map((article : any, key) =>{
                         if(currentOption === "ambos" || currentOption === ""){
                             return(
                                 <div key={article[8]}>
                                 {
                                     article.length !== 0 && <DocumentCard 
-                                    name={article[1]} 
-                                    description={article[4]} 
-                                    img_url={article[5]} 
+                                    name={article[0]} 
+                                    description={article[3]} 
+                                    img_url={article[4]} 
                                     id={article[8]}
                                     />
                                 }
@@ -95,9 +102,9 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                                     <div key={article[8]}>
                                     {
                                         article.length !== 0 && <DocumentCard 
-                                        name={article[1]} 
-                                        description={article[4]} 
-                                        img_url={article[5]} 
+                                        name={article[0]} 
+                                        description={article[3]} 
+                                        img_url={article[4]} 
                                         id={article[8]}
                                         />
                                     }
