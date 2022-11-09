@@ -4,18 +4,10 @@ import { IonCard,
     IonCardContent,
     IonCardHeader,
     IonCardSubtitle, 
-    IonContent, 
     IonImg, 
-    IonItem, 
     IonText,
 
  } from '@ionic/react';
- import { IonReactRouter } from '@ionic/react-router';
-
-import Documents from '../pages/document/Documents'
-import {Route } from 'react-router-dom';
-
-
 interface DocumentProps{
     name: string,
     description: string,
@@ -24,7 +16,6 @@ interface DocumentProps{
 }
 
 const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id}) => {
-    console.log("DOCUMENT CARD", name, description, id)
     return(
         < >
             <IonCard button routerDirection='forward'  href={`/Documents/${id}`}>
