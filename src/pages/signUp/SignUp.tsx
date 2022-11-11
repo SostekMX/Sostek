@@ -1,15 +1,15 @@
-
 import {
-
   IonContent,
   IonItem,
   IonInput,
   IonLabel,
-
+  IonAlert,
   setupIonicReact,
   IonRow,
   IonButton
 } from '@ionic/react';
+
+import { useHistory } from "react-router-dom";
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -32,15 +32,40 @@ import '@ionic/react/css/display.css';
 import '../../theme/variables.css';
 import '../../App.css';
 
-
-
-//import { useState } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 
 setupIonicReact();
 
-
-
 const SignUp: React.FC = () => {
+
+    const [email, setEmail] = useState<string | null>('');
+    const [password, setPassword] = useState<string | null>('');
+    const [name, setName] = useState<string | null>('');
+    const [surname, setSurname] = useState<string | null>('');
+    const [message, setMessage] = useState<string>('');
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const history = useHistory();
+
+    function signUpUser() {
+        axios.post('http://localhost:8080/user/signup', {
+            email: email,
+            password: password,
+            name: name,
+            surname: surname
+        }).then(function (response) {
+            if(response.data.success){
+                history.push("/");
+            }else{ 
+                setMessage(response.data.error)
+                setShowAlert(true)
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+
     return(
         <IonContent fullscreen class='bg-img'>
             <IonRow class='align-center'>
@@ -53,22 +78,38 @@ const SignUp: React.FC = () => {
             <IonRow class='space'></IonRow>
             <IonRow className='align-center'>
                 <IonItem color='none' className='input-field'>
-                    <IonLabel position='stacked'  >Nombre: </IonLabel> 
-                    <IonInput type='text'></IonInput>
+                    <IonLabel position='stacked'>Nombre: </IonLabel> 
+                    <IonInput type='text'
+                    value={name} onIonChange={(e) => setName(e.target.value as string)}></IonInput>
+                </IonItem>
+                <IonItem color='none' className='input-field'>
+                    <IonLabel position='stacked'  >Apellido: </IonLabel> 
+                    <IonInput type='text'
+                    value={surname} onIonChange={(e) => setSurname(e.target.value as string)}></IonInput>
                 </IonItem>
                 <IonItem color='none' className='input-field'>
                     <IonLabel position='stacked'  >Correo: </IonLabel> 
-                    <IonInput type='email'></IonInput>
+                    <IonInput type='email'
+                    value={email} onIonChange={(e) => setEmail(e.target.value as string)} ></IonInput>
                 </IonItem>
                 <IonItem color='none' className='input-field'>
                     <IonLabel position='stacked'  >Contraseña: </IonLabel> 
-                    <IonInput type='password'></IonInput>
+                    <IonInput type='password'
+                        value={password} onIonChange={(e) => setPassword(e.target.value as string)}
+                    ></IonInput>
                 </IonItem>
             </IonRow>
             <IonRow class='space'></IonRow>
             <IonRow className='align-center'>
-                <IonButton color='greyish-blue' href=''>Registrarme</IonButton>
+                <IonButton color='greyish-blue' onClick={signUpUser}>Registrarme</IonButton>
             </IonRow>
+            <IonAlert
+                isOpen={showAlert}
+                onDidDismiss={() => setShowAlert(false)}
+                header="Error al crear usuario"
+                message={message}
+                buttons={['OK']}
+            />
         </IonContent>
     );
 };
