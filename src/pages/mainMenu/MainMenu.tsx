@@ -38,6 +38,7 @@ import '../../App.css';
 import AppBarPopOver from '../../components/AppBarPopOver';
 import AppBarMenu from '../../components/AppBarMenu';
 import Profile from '../profile/Profile';
+import Presentation from '../presentation/Presentation';
 
 //import { useState } from 'react';
 
@@ -69,6 +70,9 @@ const MainMenu: React.FC = () => {
                     </Route>
                     <Route path="/Profile">
                         <Profile />
+                    </Route>
+                    <Route exact path="/presentation/:driveId">
+                        <Presentation />
                     </Route>
                 
                 </IonRouterOutlet>

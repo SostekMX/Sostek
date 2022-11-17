@@ -4,63 +4,64 @@ import DocumentCard from './DocumentCard';
 import { File } from '../models/File';
 import './ArticleCarrousel.css'
 import useGetArticlesData from '../hooks/useGetArticlesData';
+import useGetFirstImageOfPresentations from '../hooks/useGetFirstImageOfPresentations';
 
 interface props {
     files: Array<File> | null | undefined;
+    presentations: Array<File>| null | undefined;
   }
 
-const ArticleCarrousel: React.FC<props> = ({files}) => {
+const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
   const [currentOption, setCurrentOption] = useState('');
-
+  const [currentSearch, setCurrentSearch] = useState('');
   const {articlesData, loading} = useGetArticlesData(files);
-    /*
-    let key = process.env.REACT_APP_PRIVATE_API_KEY;
-    const [currentOption, setCurrentOption] = useState('');
-    const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
-    const [articlesData, setArticlesData] = useState<Array<Array<string>> | null>(null);
-  useEffect(() => {
+    let presentationsAsStringArrayById = presentations?.map((url) => {
+         return url.id;
+    });
+    let presentationsAsStringArrayTitle = presentations?.map((url) => {
+        return url.name;
+   });
+    const { urlImages } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
+    console.log(urlImages);
+    console.log(articlesData);
 
-    let allTheArticles : Array<Array<string>> = new Array<Array<string>>();
 
-    async function makeRequest() {
-        let currentId = files![0].id;
-        for (let i = 0; i < files!.length; i++) {
-            currentId = files![i].id;
-            await gapi.client.request({
-                'path': `https://sheets.googleapis.com/v4/spreadsheets/${files![i].id}/values/A1%3AH2?key=${key}`,
-            }).then(function(response) {
-                console.log(files);
-                allTheArticles = [...allTheArticles, response.result.values[1]];
-                allTheArticles.at(-1)?.push(currentId);
-            }, function(reason) {
-                console.log('Error: ' + reason.result.error.message);
-            })
+    let articleCards = !loading && articlesData!.map((article : any) => {
+        if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
+            return(
+                <div key={article[8]}>
+                {
+                    article.length !== 0 && <DocumentCard 
+                    name={article[0]} 
+                    description={article[3]} 
+                    img_url={article[4]} 
+                    id={article[8]}
+                    type={article[2]}
+                    />
+                }
+                </div>
+            );
         }
-    }
+    });
 
-    // 1. Initialize and get all files in drive folder (In this case are google sheets)
-    async function start(apiRequest : Function) {
-            // 2. Initialize the JavaScript client library.
-            await gapi.client.init({
-                'apiKey': key,
-                // clientId and scope are optional if auth is not required.
-            });
-            await makeRequest();
-            setHasNotBeenCalled(false);
-            if (allTheArticles.length == 0) {
-                setArticlesData(dummyArticlesContent);
-            }
-            else {
-                setArticlesData(allTheArticles);
-            }
-    };
-    
-    if(files != null) {
-        gapi.load('client', start);
-        console.log("After gapi.load", articlesData);
-    }
-  }, [files])
-*/
+    let presentationCards = !loading && presentationsAsStringArrayById!.map((presentation : any, index) => {
+        if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(currentSearch.toLowerCase()))) {
+            return(
+                <div key={presentation}>
+                {
+                    presentation.length !== 0 && <DocumentCard 
+                    name={presentationsAsStringArrayTitle![index]} 
+                    description={""} 
+                    img_url={`https://drive.google.com/uc?id=${presentation}`} 
+                    id={presentation}
+                    type={"presentation"}
+                    />
+                }
+                </div>
+            );
+        }
+    });
+
     return(
             <IonCol>
                 <IonRow className='filter-aligned'>
@@ -70,7 +71,7 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                             <IonSelect placeholder="Filtrar   " interface='popover' onIonChange={(op) => setCurrentOption(op.detail.value)}>
                             <IonSelectOption value="article" className='option-filter' >Presentaciones</IonSelectOption>
                             <IonSelectOption value="presentation" className='option-filter' >Artículos</IonSelectOption>
-                            <IonSelectOption value="ambos" className='option-filter' >Ambos</IonSelectOption>
+                            <IonSelectOption value="" className='option-filter' >Ambos</IonSelectOption>
                             </IonSelect>
                         </IonItem>
                     </IonList>
@@ -80,8 +81,19 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                         loading && <IonLoading isOpen={loading} duration={5000} />
                     }
                     {
+                        !loading && currentOption === "" ? <div>
+                            {articleCards}
+                            {presentationCards}
+                             </div> : currentOption === "article" ? <div> 
+                             {articleCards}
+                             </div> : <div>
+                             {presentationCards} 
+                                </div>
+                    }
+                    {/*
+                    {
                         !loading && articlesData!.map((article : any, key) =>{
-                        if(currentOption === "ambos" || currentOption === ""){
+                        if((currentOption === "ambos" || currentOption === "") && (article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))){
                             return(
                                 <div key={article[8]}>
                                 {
@@ -96,8 +108,7 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                             );
                         }
                         else {
-                            console.log(article[3])
-                            if(article[3] === currentOption){
+                            if(article[3] === currentOption && (article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))){
                                 return(
                                     <div key={article[8]}>
                                     {
@@ -114,18 +125,9 @@ const ArticleCarrousel: React.FC<props> = ({files}) => {
                         }
                 })
                     }
+                    */}
                     </div>
             </IonCol>
-            
-           
-           
-           
-        
-        
-       
-        
-       
-    
     );
 };
 
