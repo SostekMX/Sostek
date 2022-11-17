@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './DocumentCard.css';
 import { IonCard, 
     IonCardContent,
@@ -12,15 +12,20 @@ interface DocumentProps{
     name: string,
     description: string,
     img_url :string,
-    id:string
+    id:string,
+    type: string
 }
 
-const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id}) => {
+const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id, type}) => {
+    const [imgLoading, setImgLoading] = useState(true);
     return(
         < >
-            <IonCard button routerDirection='forward'  href={`/Documents/${id}`}>
+            <IonCard button routerDirection='forward'  href={type === "article" ? `/Documents/${id}` : `/presentation/${id}` }>
                 <IonCardHeader>
-                    <IonImg src={img_url} className="document-card-image"/>
+                    <IonImg className="document-card-image"
+                    onIonImgDidLoad={() => {setImgLoading(false)}}
+                    src={imgLoading ? "https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" : img_url} 
+                    />
                 </IonCardHeader>
                 <IonCardContent >
                     <IonCardSubtitle className='title'>{name}</IonCardSubtitle>

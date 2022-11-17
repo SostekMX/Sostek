@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { IonCol, IonContent, IonHeader, IonImg, IonRow, IonText, IonTitle} from '@ionic/react';
+import { IonCol, IonContent, IonHeader, IonImg, IonPage, IonRow, IonText, IonTitle} from '@ionic/react';
 import './Documents.css'
 import { RouteComponentProps, useParams } from 'react-router';
 import { dummyArticlesContent } from './DocumentsData';
+import AppBarPopOver from '../../components/AppBarPopOver';
 
 interface RouteParams{
     id:string,
@@ -10,8 +11,6 @@ interface RouteParams{
 
 const Documents: React.FC= () => {
     const {id} = useParams<RouteParams>();
-
-
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     const [article, setArticle] = useState<Array<string>>(
         ['1','TheTitle', 'SubtitleThe', 'article', 'Había una vez', 'https://img.freepik.com/free-photo/environmental-conservation-garden-children_1150-15276.jpg?w=740&t=st=1665674411~exp=1665675011~hmac=cce6c0e4a24265f927554dfb1b11ba792faed308b59d78e398087f7006b664ff', 'Grecia', 'TRUE']
@@ -48,26 +47,29 @@ const Documents: React.FC= () => {
   }, [])
 
     return(
+      <IonPage>
+        <AppBarPopOver></AppBarPopOver>
        <IonContent fullscreen class='bg'>
            <IonHeader>
-                <img src={article[5]} className="imageArticle" />
+                <img src={article[4]} className="imageArticle" />
            </IonHeader>
            <br></br>
            <IonCol>
                 <IonRow>
                     <IonText className='content-row title__document ion-text-wrap'>
-                        {article[1]}
+                        {article[0]}
                     </IonText>
                 </IonRow>
                 <br></br>
                 <IonRow className = 'content-row content__document'>
                     <IonText>
-                        {article[4]}
+                        {article[3]}
                     </IonText>
                 </IonRow>
             </IonCol>
             
        </IonContent>
+       </IonPage>
     );
 };
 

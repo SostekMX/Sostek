@@ -7,6 +7,7 @@ import AppBarPopOver from '../../components/AppBarPopOver';
 import useGetDocuments from '../../hooks/useGetDocuments';
 import React, { useContext } from 'react';
 import AppContext from '../../context/AppContext';
+import useGetPresentations from '../../hooks/useGetPresentations';
 const exampleCard = {
   message: 'Bienvenidos a Sostek, este es un tutorial.',
   character: 'gota2',
@@ -41,7 +42,9 @@ const tutorialSlides = {
 const Tab1: React.FC = () => {
   //const { addToFiles } = useContext(AppContext);
   let driveID = process.env.REACT_APP_DRIVE_ID;
+  let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
   const {files, lastFile, loading } = useGetDocuments(driveID);
+  const {presentations} = useGetPresentations(presentationDriveID); 
   //addToFiles(files);
 
   return (
@@ -58,7 +61,7 @@ const Tab1: React.FC = () => {
           !loading && <> 
             <ArticleCardModalWrapper files={lastFile} />
             <TutorialCard slides={tutorialSlides.slides} />
-            <ArticleCarrousel files={files} />
+            <ArticleCarrousel files={files} presentations={presentations}/>
           </>
         }
       </IonContent>

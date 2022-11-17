@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { IonContent, IonImg, IonPage } from '@ionic/react';
+import { IonContent, IonImg, IonLoading, IonPage } from '@ionic/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy } from 'swiper';
 import AppBarPopOver from '../../components/AppBarPopOver';
@@ -23,29 +23,29 @@ const Presentation: React.FC = () => {
     <IonPage>
         <AppBarPopOver></AppBarPopOver>
         <IonContent fullscreen class='bg-img'>
-        {//Still not working. Swipe doesnt work properly.
-        }
-        <div className='rotate'>
-        {!loading && <Swiper className='rotate'
+        <>
+        {
+        !loading && <Swiper
+        className='mySwiper'
+        direction={"vertical"}
         modules={[Pagination, Lazy]}
         pagination={true}
         lazy={true}
-        direction="vertical"
         >
           {
             urlImages?.map((url : any) => {
                 console.log(url.id);
                 return (
-                    <SwiperSlide className='presentation-size'>
+                    <SwiperSlide>
                       <IonImg 
                     onIonImgDidLoad={() => {setImgLoading(false)}}
-                    src={`https://drive.google.com/uc?id=${url.id}`}/></SwiperSlide>
+                    src={ imgLoading ? "https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" : `https://drive.google.com/uc?id=${url.id}`}/></SwiperSlide>
                 )
             })
           }
         </Swiper>
         }
-        </div>
+        </>
       </IonContent>
       </IonPage>
   )
