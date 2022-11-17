@@ -39,6 +39,7 @@ const Presentation: React.FC = () => {
                     <SwiperSlide>
                       <IonImg 
                     onIonImgDidLoad={() => {setImgLoading(false)}}
+                    onError={(e) => {console.log(e)}}
                     src={ imgLoading ? "https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" : `https://drive.google.com/uc?id=${url.id}`}/></SwiperSlide>
                 )
             })

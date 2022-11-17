@@ -1,24 +1,31 @@
 import React, { useState } from 'react';
-import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover } from '@ionic/react';
+import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
 import { personCircle, search, settings, logOut, heart } from 'ionicons/icons';
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 export const AppBarPopOver: React.FC = () => {
     const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
+    const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [searchContent, setSearchContent] = useLocalStorage("search", "");
+
     return <>
         <IonToolbar color='primary' /* class="transparent" */>
         <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
-            <IonMenu contentId="main-content">
-                <IonHeader>
-                    <IonToolbar>
-                        <IonTitle>Menu Content</IonTitle>
-                    </IonToolbar>
-                </IonHeader>
-                <IonContent className="ion-padding">This is the menu content.</IonContent>
-            </IonMenu>
             <IonButtons slot="primary">
+                {isSearching && 
                 <IonButton>
-                    <IonIcon slot="icon-only" icon={search} />
+                    <IonSearchbar style={{"width":"50vw", "margin":"auto" }}
+                 animated={true} 
+                 onIonBlur= {() => {setIsSearching(false)}}
+                 onIonInput= { (e) => {setSearchContent(e.target.value)}}
+                 value={searchContent}
+                 placeholder="Búsqueda..."></IonSearchbar>
                 </IonButton>
+                }
+                {!isSearching && <IonButton
+                onClick={() => {setIsSearching(true)}}>
+                    <IonIcon slot="icon-only" icon={search} />
+                </IonButton>}
             </IonButtons>
             <IonButtons slot="primary">
                 <IonButtons slot="end">

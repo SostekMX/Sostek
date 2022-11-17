@@ -3,7 +3,7 @@ import { File } from '../models/File';
 
 const useGetPresentations = (driveID : string | undefined) => {
     const [presentations, setPresentations] = useState<Array<File> | null | undefined>(null);
-    const [loading, setLoading] = useState(true);
+    const [loadingForAllPresentations, setLoadingForAllPresentations] = useState(true);
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     useEffect(() => {
         // 1. Initialize and get all files in drive folder (In this case are google sheets)
@@ -32,16 +32,16 @@ const useGetPresentations = (driveID : string | undefined) => {
         //setPresentations(dummyArticles);
         //setLastFile(dummyArticles?.at(-1));
         }).then(function() {
-            setLoading(false);
+            setLoadingForAllPresentations(false);
         })
     };
     
-    if(loading) {
+    if(loadingForAllPresentations) {
         // 1. Load the JavaScript client library.
         gapi.load('client', start);
     }
     }, [])
-    return {presentations, loading};
+    return {presentations, loadingForAllPresentations};
 }
 
 export default useGetPresentations;

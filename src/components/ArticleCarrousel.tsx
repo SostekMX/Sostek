@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonCol, IonItem,  IonList, IonLoading, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
 import DocumentCard from './DocumentCard';
 import { File } from '../models/File';
 import './ArticleCarrousel.css'
 import useGetArticlesData from '../hooks/useGetArticlesData';
 import useGetFirstImageOfPresentations from '../hooks/useGetFirstImageOfPresentations';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 interface props {
     files: Array<File> | null | undefined;
@@ -14,6 +15,10 @@ interface props {
 const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
   const [currentOption, setCurrentOption] = useState('');
   const [currentSearch, setCurrentSearch] = useState('');
+  useEffect(()=> {
+    setCurrentSearch(localStorage.getItem("search") ?? "");
+  }, [currentSearch]);
+
   const {articlesData, loading} = useGetArticlesData(files);
     let presentationsAsStringArrayById = presentations?.map((url) => {
          return url.id;
@@ -21,10 +26,9 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
     let presentationsAsStringArrayTitle = presentations?.map((url) => {
         return url.name;
    });
-    const { urlImages } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
+    const { urlImages, loadingForPresentation } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
     console.log(urlImages);
     console.log(articlesData);
-
 
     let articleCards = !loading && articlesData!.map((article : any) => {
         if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
@@ -44,7 +48,7 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
         }
     });
 
-    let presentationCards = !loading && presentationsAsStringArrayById!.map((presentation : any, index) => {
+    let presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
         if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(currentSearch.toLowerCase()))) {
             return(
                 <div key={presentation}>
@@ -61,6 +65,47 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
             );
         }
     });
+
+    useEffect(() => {
+        articleCards = !loading && articlesData!.map((article : any) => {
+            if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
+                return(
+                    <div key={article[8]}>
+                    {
+                        article.length !== 0 && <DocumentCard 
+                        name={article[0]} 
+                        description={article[3]} 
+                        img_url={article[4]} 
+                        id={article[8]}
+                        type={article[2]}
+                        />
+                    }
+                    </div>
+                );
+            }
+        });
+    
+        presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
+            if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(currentSearch.toLowerCase()))) {
+                return(
+                    <div key={presentation}>
+                    {
+                        presentation.length !== 0 && <DocumentCard 
+                        name={presentationsAsStringArrayTitle![index]} 
+                        description={""} 
+                        img_url={`https://drive.google.com/uc?id=${presentation}`} 
+                        id={presentation}
+                        type={"presentation"}
+                        />
+                    }
+                    </div>
+                );
+            }
+        });
+    }, [currentSearch])
+
+
+    
 
     return(
             <IonCol>
@@ -81,13 +126,14 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                         loading && <IonLoading isOpen={loading} duration={5000} />
                     }
                     {
-                        !loading && currentOption === "" ? <div>
+                        !loading  && !loadingForPresentation && currentOption === "" ? <div>
                             {articleCards}
                             {presentationCards}
                              </div> : currentOption === "article" ? <div> 
-                             {articleCards}
-                             </div> : <div>
                              {presentationCards} 
+
+                             </div> : <div>
+                             {articleCards}
                                 </div>
                     }
                     {/*
