@@ -10,7 +10,7 @@ import AppContext from '../../context/AppContext';
 import useGetPresentations from '../../hooks/useGetPresentations';
 const exampleCard = {
   message: 'Bienvenidos a Sostek, este es un tutorial.',
-  character: 'gota2',
+  character: 'gota1',
   align: 'right'
 }
 const exampleCard1 = {
@@ -20,19 +20,19 @@ const exampleCard1 = {
 }
 const exampleCard2 = {
   message: 'Si solo te interesa un tipo, puedes filtrarlos con el botón arriba de mí.',
-  character: 'mundo1',
+  character: 'gota3',
   align: 'right'
 }
 
 const exampleCard3 = {
   message: 'También debo recordarte que esta pestaña se actualiza quincenalmente.',
-  character: 'mundo1',
+  character: 'maceta1',
   align: 'right'
 }
 
 const exampleCard4 = {
   message: 'Esto es todo por el momento, mientras avances en la app te seguiremos guiando.',
-  character: 'gota2',
+  character: 'mundo1',
   align: 'left'
 }
 const tutorialSlides = {
@@ -44,7 +44,7 @@ const Tab1: React.FC = () => {
   let driveID = process.env.REACT_APP_DRIVE_ID;
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
   const {files, lastFile, loading } = useGetDocuments(driveID);
-  const {presentations} = useGetPresentations(presentationDriveID); 
+  const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID); 
   //addToFiles(files);
 
   return (
@@ -55,10 +55,10 @@ const Tab1: React.FC = () => {
       
         </IonHeader>
         {
-          loading && <IonLoading isOpen={loading} duration={5000}  />
+          loading && loadingForAllPresentations && <IonLoading isOpen={loading} duration={5000}  />
         }
         {
-          !loading && <> 
+          !loading && !loadingForAllPresentations && <> 
             <ArticleCardModalWrapper files={lastFile} />
             <TutorialCard slides={tutorialSlides.slides} />
             <ArticleCarrousel files={files} presentations={presentations}/>

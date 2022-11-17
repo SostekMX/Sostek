@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 const useGetFirstImageOfPresentations = (driveID : string[] | undefined) => {
     const [urlImages, setUrlImages] = useState<Array<string> | undefined | null>(undefined);
-    const [loading, setLoading] = useState(true);
+    const [loadingForPresentation, setLoadingForPresentation] = useState(true);
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     useEffect(() => {
 
@@ -37,7 +37,7 @@ const useGetFirstImageOfPresentations = (driveID : string[] | undefined) => {
         });
         // 3. Initialize and make the API request.
         await makeRequest();
-        setLoading(false);
+        setLoadingForPresentation(false);
         if (allTheThumbnails.length == 0) {
         }
         else {
@@ -50,7 +50,7 @@ const useGetFirstImageOfPresentations = (driveID : string[] | undefined) => {
         gapi.load('client', start);
     }
     }, [])
-    return {urlImages, loading};
+    return {urlImages, loadingForPresentation};
 }
 
 export default useGetFirstImageOfPresentations;
