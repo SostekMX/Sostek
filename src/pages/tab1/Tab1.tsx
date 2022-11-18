@@ -5,7 +5,8 @@ import ArticleCarrousel from '../../components/ArticleCarrousel';
 import ArticleCardModalWrapper from '../../components/ArticleCardModalWrapper';
 import AppBarPopOver from '../../components/AppBarPopOver';
 import useGetDocuments from '../../hooks/useGetDocuments';
-import React, { useContext } from 'react';
+import { NativeStorage } from '@ionic-native/native-storage';
+import React, { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import useGetPresentations from '../../hooks/useGetPresentations';
 const exampleCard = {

@@ -6,7 +6,9 @@ import {
   IonAlert,
   setupIonicReact,
   IonRow,
-  IonButton
+  IonButton,
+  IonSelect,
+  IonSelectOption
 } from '@ionic/react';
 
 import { useHistory } from "react-router-dom";
@@ -43,6 +45,9 @@ const SignUp: React.FC = () => {
     const [password, setPassword] = useState<string | null>('');
     const [name, setName] = useState<string | null>('');
     const [surname, setSurname] = useState<string | null>('');
+    const [birthDate, setBirthDate] = useState<string | null>('');
+    const [occupation, setOccupation] = useState<string | null>('');
+    const [gender, setGender] = useState<string | null>('');
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const history = useHistory();
@@ -52,7 +57,10 @@ const SignUp: React.FC = () => {
             email: email,
             password: password,
             name: name,
-            surname: surname
+            surname: surname,
+            birth_date: birthDate,
+            occupation: occupation,
+            gender: gender
         }).then(function (response) {
             if(response.data.success){
                 history.push("/");
@@ -98,10 +106,26 @@ const SignUp: React.FC = () => {
                         value={password} onIonChange={(e) => setPassword(e.target.value as string)}
                     ></IonInput>
                 </IonItem>
+                <IonItem color='none' className='input-field'>
+                    <IonLabel position='stacked' >Año de nacimiento</IonLabel> 
+                    <IonInput value={birthDate} onIonChange={(e) => setBirthDate(e.target.value as string)} type='date'></IonInput>
+                </IonItem>
+                <IonItem color='none' className='input-field'>
+                    <IonLabel position='stacked' >Ocupación</IonLabel> 
+                    <IonInput value={occupation} onIonChange={(e) => setOccupation(e.target.value as string)} type='text' placeholder='[Ocupación actual]'></IonInput>
+                </IonItem>
+                <IonItem color='none' className='input-field'>
+                    <IonLabel position='stacked' >Sexo</IonLabel> 
+                    <IonSelect value={gender} onIonChange={(e) => setGender(e.target.value as string)}>
+                      <IonSelectOption value="masculino">Masculino</IonSelectOption>
+                      <IonSelectOption value="femenino">Femenino</IonSelectOption>
+                    </IonSelect>
+                </IonItem>
             </IonRow>
             <IonRow class='space'></IonRow>
             <IonRow className='align-center'>
                 <IonButton color='greyish-blue' onClick={signUpUser}>Registrarme</IonButton>
+                <IonButton href="/"> Regresar  </IonButton>
             </IonRow>
             <IonAlert
                 isOpen={showAlert}
