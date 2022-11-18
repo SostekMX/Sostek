@@ -1,6 +1,7 @@
-import { IonButton, IonAlert, IonContent, IonInput, IonItem, IonLabel, IonRow } from '@ionic/react';
-import { useState } from 'react';
+import { IonButton, IonAlert, IonContent, IonInput, IonItem, IonLabel, IonRow, IonPage } from '@ionic/react';
+import { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
+import { NativeStorage } from '@ionic-native/native-storage';
 import  axios  from 'axios';
 
 
@@ -12,11 +13,17 @@ import './LogIn.css'
 
 const LogIn: React.FC = () => {
 
-    const [email, setEmail] = useState<string | null>('');
+    const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string | null>('');
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const history = useHistory();
+
+    useEffect(() => {
+        //NativeStorage.setItem('login', false);
+        sessionStorage.setItem('login', 'false');
+    }, [])
+
 
     function loginUser() {
         axios.post('http://localhost:8080/user/login', {
@@ -24,6 +31,10 @@ const LogIn: React.FC = () => {
             password: password,
         }).then(function (response) {
             if (response.data.success){
+                //NativeStorage.setItem('login', true);
+                //NativeStorage.setItem('user_email', email);
+                sessionStorage.setItem('login', 'true');
+                sessionStorage.setItem('user_email', email);
                 history.push("/tab1");
             }else{
                 setMessage(response.data.error)
@@ -35,7 +46,8 @@ const LogIn: React.FC = () => {
     }
     
     return(
-        <IonContent fullscreen class='bg-img'>
+        <IonPage>
+            <IonContent fullscreen class='bg-img'>
             <IonRow class='logo-display '>
                 <img src="/assets/sostek-logo.png" height="100px"/>
             </IonRow>
@@ -79,7 +91,8 @@ const LogIn: React.FC = () => {
             />
            
             
-        </IonContent>
+            </IonContent>
+        </IonPage>
     );
 
 };
