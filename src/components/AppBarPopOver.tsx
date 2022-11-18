@@ -1,9 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover } from '@ionic/react';
 import { personCircle, search, settings, logOut, heart } from 'ionicons/icons';
+import { NativeStorage } from '@ionic-native/native-storage';
+import { useHistory } from "react-router-dom";
 
 export const AppBarPopOver: React.FC = () => {
     const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
+    const history = useHistory();
+
+    useEffect(() => {
+        // NativeStorage.getItem("login").then(
+        //   data => setIsUserLogged(data)
+        // )
+        let isTrue  = sessionStorage.getItem("login") === 'true';
+        setIsUserLogged(isTrue)
+    }, [])
+
+    function logOutUser(){
+        sessionStorage.setItem("login", 'false');
+        //NativeStorage.setItem("login", false);
+        history.goBack();
+    }
+    
     return <>
         <IonToolbar color='primary' /* class="transparent" */>
         <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
@@ -32,13 +50,20 @@ export const AppBarPopOver: React.FC = () => {
                                     <IonIcon icon={heart} color='secondary'></IonIcon> &nbsp;
                                     <IonLabel>  Favoritos</IonLabel>
                                 </IonItem>
-                        }
-                                <IonItem href='/Profile'>
-                                        <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;
-                                        {isUserLogged && <IonLabel>Perfil</IonLabel>}
-                                        {!isUserLogged && <IonLabel
-                                            onClick={(e) => { setIsUserLogged(true); } }>Iniciar Sesi&oacute;n</IonLabel>}
-                                    </IonItem>
+                        } 
+                        {isUserLogged &&
+                            <IonItem  href='/Profile'>
+                                    <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;
+                                    <IonLabel>  Perfil</IonLabel>
+                            </IonItem>
+                        } 
+                        {!isUserLogged &&
+                            <IonItem  href='/'>
+                                    <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;
+                                    <IonLabel>Iniciar Sesi&oacute;n
+                                    </IonLabel>
+                            </IonItem>
+                        } 
                             {isUserLogged && <IonItem>
                                 <IonIcon icon={settings} color='secondary'></IonIcon> &nbsp;
                                  <IonLabel>Ajustes</IonLabel>
@@ -47,7 +72,7 @@ export const AppBarPopOver: React.FC = () => {
                             {isUserLogged && <IonItem>
                                 <IonIcon icon={logOut} color='secondary'></IonIcon> &nbsp;
                                 <IonLabel
-                                    onClick={(e) => {setIsUserLogged(false)}}>Log Out</IonLabel>
+                                    onClick={logOutUser}>Log Out</IonLabel>
                             </IonItem>
                             }
                         </IonList>

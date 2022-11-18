@@ -5,7 +5,8 @@ import ArticleCarrousel from '../../components/ArticleCarrousel';
 import ArticleCardModalWrapper from '../../components/ArticleCardModalWrapper';
 import AppBarPopOver from '../../components/AppBarPopOver';
 import useGetDocuments from '../../hooks/useGetDocuments';
-import React, { useContext } from 'react';
+import { NativeStorage } from '@ionic-native/native-storage';
+import React, { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import useGetPresentations from '../../hooks/useGetPresentations';
 const exampleCard = {
@@ -43,8 +44,8 @@ const Tab1: React.FC = () => {
   //const { addToFiles } = useContext(AppContext);
   let driveID = process.env.REACT_APP_DRIVE_ID;
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
-  const {files, lastFile, loading } = useGetDocuments(driveID);
-  const {presentations} = useGetPresentations(presentationDriveID); 
+  //const {files, lastFile, loading } = useGetDocuments(driveID);
+  //const {presentations} = useGetPresentations(presentationDriveID); 
   //addToFiles(files);
 
   return (
@@ -54,7 +55,7 @@ const Tab1: React.FC = () => {
         <IonHeader collapse="condense">
       
         </IonHeader>
-        {
+        {/* {
           loading && <IonLoading isOpen={loading} duration={5000}  />
         }
         {
@@ -63,7 +64,7 @@ const Tab1: React.FC = () => {
             <TutorialCard slides={tutorialSlides.slides} />
             <ArticleCarrousel files={files} presentations={presentations}/>
           </>
-        }
+        } */}
       </IonContent>
     </IonPage>
   );
