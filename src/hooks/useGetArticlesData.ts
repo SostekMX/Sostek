@@ -13,7 +13,7 @@ useEffect(() => {
       for (let i = 0; i < files!.length; i++) {
           currentId = files![i].id;
           await gapi.client.request({
-              'path': `https://sheets.googleapis.com/v4/spreadsheets/${files![i].id}/values/A1%3AH2?key=${key}`,
+              'path': `https://sheets.googleapis.com/v4/spreadsheets/${files![i].id}/values/A1%3AJ2?key=${key}`,
           }).then(function(response) {
               //console.log(response.result.values);
               allTheArticles = [...allTheArticles, response.result.values[1]];

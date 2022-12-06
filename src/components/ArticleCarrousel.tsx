@@ -33,14 +33,16 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
     let articleCards = !loading && articlesData!.map((article : any) => {
         if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
             return(
-                <div key={article[8]}>
+                <div key={article[10]}>
                 {
                     article.length !== 0 && <DocumentCard 
-                    name={article[0]} 
-                    description={article[3]} 
-                    img_url={article[4]} 
-                    id={article[8]}
-                    type={article[2]}
+                        name={article[0]}
+                        description={article[3]}
+                        img_url={article[4]}
+                        id={article[10]}
+                        type={article[2]} 
+                        imgAuthor={article[8] != " " ? article[8] : undefined} 
+                        imgPage={article[9] != " " ? article[9] : undefined}
                     />
                 }
                 </div>
@@ -54,12 +56,11 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                 <div key={presentation}>
                 {
                     presentation.length !== 0 && <DocumentCard 
-                    name={presentationsAsStringArrayTitle![index]} 
-                    description={""} 
-                    img_url={`https://drive.google.com/uc?id=${presentation}`} 
-                    id={presentation}
-                    type={"presentation"}
-                    />
+                            name={presentationsAsStringArrayTitle![index]}
+                            description={""}
+                            img_url={`https://drive.google.com/uc?id=${presentation}`}
+                            id={presentation}
+                            type={"presentation"} imgAuthor={undefined} imgPage={undefined}                    />
                 }
                 </div>
             );
@@ -70,15 +71,14 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
         articleCards = !loading && articlesData!.map((article : any) => {
             if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
                 return(
-                    <div key={article[8]}>
+                    <div key={article[10]}>
                     {
                         article.length !== 0 && <DocumentCard 
-                        name={article[0]} 
-                        description={article[3]} 
-                        img_url={article[4]} 
-                        id={article[8]}
-                        type={article[2]}
-                        />
+                                name={article[0]}
+                                description={article[3]}
+                                img_url={article[4]}
+                                id={article[10]}
+                                type={article[2]} imgAuthor={undefined} imgPage={undefined}                        />
                     }
                     </div>
                 );
@@ -91,12 +91,11 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                     <div key={presentation}>
                     {
                         presentation.length !== 0 && <DocumentCard 
-                        name={presentationsAsStringArrayTitle![index]} 
-                        description={""} 
-                        img_url={`https://drive.google.com/uc?id=${presentation}`} 
-                        id={presentation}
-                        type={"presentation"}
-                        />
+                                name={presentationsAsStringArrayTitle![index]}
+                                description={""}
+                                img_url={`https://drive.google.com/uc?id=${presentation}`}
+                                id={presentation}
+                                type={"presentation"} imgAuthor={undefined} imgPage={undefined}                        />
                     }
                     </div>
                 );
@@ -141,13 +140,13 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                         !loading && articlesData!.map((article : any, key) =>{
                         if((currentOption === "ambos" || currentOption === "") && (article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))){
                             return(
-                                <div key={article[8]}>
+                                <div key={article[10]}>
                                 {
                                     article.length !== 0 && <DocumentCard 
                                     name={article[0]} 
                                     description={article[3]} 
                                     img_url={article[4]} 
-                                    id={article[8]}
+                                    id={article[10]}
                                     />
                                 }
                                 </div>
@@ -156,13 +155,13 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                         else {
                             if(article[3] === currentOption && (article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))){
                                 return(
-                                    <div key={article[8]}>
+                                    <div key={article[10]}>
                                     {
                                         article.length !== 0 && <DocumentCard 
                                         name={article[0]} 
                                         description={article[3]} 
                                         img_url={article[4]} 
-                                        id={article[8]}
+                                        id={article[10]}
                                         />
                                     }
                                     </div>
