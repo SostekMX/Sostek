@@ -1,7 +1,32 @@
 {
   "name": "sostek",
+  "description": "Get bi-weekly news of sustainability topics for students",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "ionic build",
+    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
     "@awesome-cordova-plugins/core": "^6.2.0",
     "@awesome-cordova-plugins/native-storage": "^6.2.0",
@@ -48,36 +73,11 @@
     "workbox-strategies": "^5.1.4",
     "workbox-streams": "^5.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
     "@capacitor/cli": "4.3.0",
     "@types/gapi": "^0.0.43",
     "@types/gapi.client": "^1.0.5",
     "@types/gapi.client.docs": "^1.0.1",
     "@types/gapi.client.drive": "^3.0.14"
-  },
-  "description": "An Ionic project"
+  }
 }
