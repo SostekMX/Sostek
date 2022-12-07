@@ -17,7 +17,16 @@ useEffect(() => {
           }).then(function(response) {
               //console.log(response.result.values);
               allTheArticles = [...allTheArticles, response.result.values[1]];
-              allTheArticles.at(-1)?.push(currentId);
+              /**
+               * Here are two options. We must fix where the ID will be because
+               * if we add data to sheets we can make it easier without chaning our app
+               * logic.
+               */
+              //This option appends the id of the document at the final
+                //allTheArticles.at(-1)?.push(currentId);
+              //This option appends the id of the document at the 10 position.
+                allTheArticles[allTheArticles.length - 1][10] = currentId;
+
           }, function(reason) {
               console.log('Error: ' + reason.result.error.message);
           })

@@ -11,7 +11,7 @@ const useGetFirstImageOfPresentations = (driveID : string[] | undefined) => {
             let currentId = driveID![0];
             for (let i = 0; i < driveID!.length; i++) {
                 currentId = driveID![i];
-                console.log(currentId)
+                //console.log(currentId)
                 await gapi.client.request({
                     // For getting all files in folder
                     'path': `https://www.googleapis.com/drive/v3/files?includeItemsFromAllDrives=true&orderBy=createdTime&q='${currentId}'%20in%20parents%20and%20trashed%20%3D%20false&supportsAllDrives=true&fields=files(id)&key=${key}`,

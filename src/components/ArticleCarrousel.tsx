@@ -27,8 +27,8 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
         return url.name;
    });
     const { urlImages, loadingForPresentation } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
-    console.log(urlImages);
-    console.log(articlesData);
+    //console.log(urlImages);
+    //console.log(articlesData);
 
     let articleCards = !loading && articlesData!.map((article : any) => {
         if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
@@ -78,7 +78,9 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                                 description={article[3]}
                                 img_url={article[4]}
                                 id={article[10]}
-                                type={article[2]} imgAuthor={undefined} imgPage={undefined}                        />
+                                type={article[2]}
+                                imgAuthor={article[8] != " " ? article[8] : undefined} 
+                                imgPage={article[9] != " " ? article[9] : undefined}                       />
                     }
                     </div>
                 );

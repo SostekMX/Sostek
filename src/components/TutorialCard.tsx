@@ -19,7 +19,10 @@ const TutorialCard: React.FC<CardSlides> = (props) => {
   const [currSlide, nextSlide] = useState(0);
   const onClickNext = () => nextSlide(currSlide+1);
   const [className, setClassName] = useState('tutorial-card');
-  const onClickEnd = () => setClassName('tutorial-card-hide');
+  const onClickEnd = () => {
+    sessionStorage.setItem("tutorial", "false");
+    setClassName('tutorial-card-hide');
+  }
   var dialogueClass = "dialogue-box db-"+props.slides[currSlide].align;
   var showNext = 'tutorial-card-button-bottom';
   if(currSlide == nSlides-1){

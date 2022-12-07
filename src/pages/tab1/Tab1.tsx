@@ -9,45 +9,25 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import React, { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import useGetPresentations from '../../hooks/useGetPresentations';
-const exampleCard = {
-  message: 'Bienvenidos a Sostek, este es un tutorial.',
-  character: 'gota1',
-  align: 'right'
-}
-const exampleCard1 = {
-  message: 'En esta pestaña puedes informarte con artículos y presentaciones.',
-  character: 'gota2',
-  align: 'left'
-}
-const exampleCard2 = {
-  message: 'Si solo te interesa un tipo, puedes filtrarlos con el botón arriba de mí.',
-  character: 'gota3',
-  align: 'right'
-}
-
-const exampleCard3 = {
-  message: 'También debo recordarte que esta pestaña se actualiza quincenalmente.',
-  character: 'maceta1',
-  align: 'right'
-}
-
-const exampleCard4 = {
-  message: 'Esto es todo por el momento, mientras avances en la app te seguiremos guiando.',
-  character: 'mundo1',
-  align: 'left'
-}
-const tutorialSlides = {
-  slides: [exampleCard, exampleCard1, exampleCard2, exampleCard3, exampleCard4]
-}
+import InitialTutorial from '../../components/tutorial/InitialTutorial';
 
 const Tab1: React.FC = () => {
   //const { addToFiles } = useContext(AppContext);
   let driveID = process.env.REACT_APP_DRIVE_ID;
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
   const {files, lastFile, loading } = useGetDocuments(driveID);
+  const [displayTutorial, setDisplayTutorial] = useState<boolean>(false);
+
   const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID); 
   //addToFiles(files);
+  useEffect(() => {
+    // NativeStorage.getItem("login").then(
+    //   data => setIsUserLogged(data)
+    // )
+    let isTrue  = sessionStorage.getItem("tutorial") === 'true';
+    setDisplayTutorial(isTrue);
 
+}, [sessionStorage])
   return (
     <IonPage>
       <AppBarPopOver></AppBarPopOver>
@@ -61,7 +41,7 @@ const Tab1: React.FC = () => {
         {
           !loading && !loadingForAllPresentations && <> 
             <ArticleCardModalWrapper files={lastFile} />
-            <TutorialCard slides={tutorialSlides.slides} />
+             {displayTutorial &&<InitialTutorial />}
             <ArticleCarrousel files={files} presentations={presentations}/>
           </>
         }
