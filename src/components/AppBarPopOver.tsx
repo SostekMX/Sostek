@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
-import { personCircle, search, settings, logOut, heart } from 'ionicons/icons';
+import { personCircle, search, settings, logOut, heart, informationCircleOutline } from 'ionicons/icons';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -22,6 +22,9 @@ export const AppBarPopOver: React.FC = () => {
         sessionStorage.setItem("login", 'false');
         //NativeStorage.setItem("login", false);
         history.goBack();
+    }
+    function activateTutorial() {
+        sessionStorage.setItem("tutorial", "true")
     }
     
     return <>
@@ -74,6 +77,12 @@ export const AppBarPopOver: React.FC = () => {
                                  <IonLabel>Ajustes</IonLabel>
                             </IonItem>
                             }
+                            <IonItem>
+                            <IonIcon icon={informationCircleOutline} color='secondary' /> &nbsp;
+                                 <IonLabel
+                                    onClick={activateTutorial}
+                                >Tutorial</IonLabel>
+                            </IonItem>
                             {isUserLogged && <IonItem>
                                 <IonIcon icon={logOut} color='secondary'></IonIcon> &nbsp;
                                 <IonLabel
