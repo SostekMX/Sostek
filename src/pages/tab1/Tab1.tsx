@@ -27,7 +27,7 @@ const Tab1: React.FC = () => {
     if (localStorage.getItem("tutorial") === undefined) {
       isTrue = true;
     }
-    setDisplayTutorial(isTrue === tutorial);
+    setDisplayTutorial(isTrue == true && tutorial === true);
 
 }, [localStorage, tutorial])
   return (
