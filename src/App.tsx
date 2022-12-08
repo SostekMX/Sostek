@@ -1,15 +1,10 @@
 import { Route } from 'react-router-dom';
 import {
-  
   IonApp,
- 
   IonRouterOutlet,
-  
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-
-
 import MainMenu from './pages/mainMenu/MainMenu';
 
 
@@ -40,20 +35,18 @@ import Tab1 from './pages/tab1/Tab1';
 import Tab2 from './pages/tab2/Tab2';
 import Tab3 from './pages/tab3/Tab3';
 import Profile from './pages/profile/Profile';
-import AppContext from './context/AppContext';
 import useInitialState from './hooks/useInitialState';
 import Presentation from './pages/presentation/Presentation';
 import Documents from './pages/document/Documents';
-//import { useState } from 'react';
+import { AppProvider } from './context/AppContext';
+import { useState } from 'react';
 
 setupIonicReact();
 
-
-
 const App: React.FC = () => {
-  const initialState = useInitialState();
+
   return (
-  //<AppContext.Provider value={initialState}>
+    <AppProvider>
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
@@ -87,9 +80,8 @@ const App: React.FC = () => {
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
-  //</AppContext.Provider>
-
+    </AppProvider>
   );
-}
+};
 
 export default App;

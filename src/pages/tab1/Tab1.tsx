@@ -7,27 +7,29 @@ import AppBarPopOver from '../../components/AppBarPopOver';
 import useGetDocuments from '../../hooks/useGetDocuments';
 import { NativeStorage } from '@ionic-native/native-storage';
 import React, { useContext, useEffect, useState } from 'react';
-import AppContext from '../../context/AppContext';
 import useGetPresentations from '../../hooks/useGetPresentations';
 import InitialTutorial from '../../components/tutorial/InitialTutorial';
+import AppContext from '../../context/AppContext';
 
 const Tab1: React.FC = () => {
-  //const { addToFiles } = useContext(AppContext);
   let driveID = process.env.REACT_APP_DRIVE_ID;
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
   const {files, lastFile, loading } = useGetDocuments(driveID);
   const [displayTutorial, setDisplayTutorial] = useState<boolean>(false);
-
-  const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID); 
+  const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID);
+  const { tutorial } = useContext(AppContext); 
   //addToFiles(files);
   useEffect(() => {
     // NativeStorage.getItem("login").then(
     //   data => setIsUserLogged(data)
     // )
-    let isTrue  = sessionStorage.getItem("tutorial") === 'true';
-    setDisplayTutorial(isTrue);
+    let isTrue  = localStorage.getItem("tutorial") === 'true';
+    if (localStorage.getItem("tutorial") === undefined) {
+      isTrue = true;
+    }
+    setDisplayTutorial(isTrue === tutorial);
 
-}, [sessionStorage])
+}, [localStorage, tutorial])
   return (
     <IonPage>
       <AppBarPopOver></AppBarPopOver>

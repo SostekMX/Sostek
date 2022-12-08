@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { IonCol, IonItem,  IonList, IonLoading, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
 import DocumentCard from './DocumentCard';
 import { File } from '../models/File';
@@ -6,6 +6,7 @@ import './ArticleCarrousel.css'
 import useGetArticlesData from '../hooks/useGetArticlesData';
 import useGetFirstImageOfPresentations from '../hooks/useGetFirstImageOfPresentations';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import AppContext from '../context/AppContext';
 
 interface props {
     files: Array<File> | null | undefined;
@@ -14,10 +15,7 @@ interface props {
 
 const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
   const [currentOption, setCurrentOption] = useState('');
-  const [currentSearch, setCurrentSearch] = useState('');
-  useEffect(()=> {
-    setCurrentSearch(localStorage.getItem("search") ?? "");
-  }, [currentSearch]);
+  const {search} = useContext(AppContext);
 
   const {articlesData, loading} = useGetArticlesData(files);
     let presentationsAsStringArrayById = presentations?.map((url) => {
@@ -31,7 +29,7 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
     //console.log(articlesData);
 
     let articleCards = !loading && articlesData!.map((article : any) => {
-        if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
+        if ((article[6].toLowerCase().includes(search.toLowerCase()) || article[0].toLowerCase().includes(search.toLowerCase()))) {
             return(
                 <div key={article[10]}>
                 {
@@ -51,7 +49,7 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
     });
 
     let presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
-        if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(currentSearch.toLowerCase()))) {
+        if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(search.toLowerCase()))) {
             return(
                 <div key={presentation}>
                 {
@@ -66,10 +64,10 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
             );
         }
     });
-
+/*
     useEffect(() => {
         articleCards = !loading && articlesData!.map((article : any) => {
-            if ((article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))) {
+            if ((article[6].toLowerCase().includes(search.toLowerCase()) || article[0].toLowerCase().includes(search.toLowerCase()))) {
                 return(
                     <div key={article[10]}>
                     {
@@ -88,7 +86,7 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
         });
     
         presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
-            if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(currentSearch.toLowerCase()))) {
+            if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(search.toLowerCase()))) {
                 return(
                     <div key={presentation}>
                     {
@@ -103,8 +101,8 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                 );
             }
         });
-    }, [currentSearch])
-
+    }, [search])
+*/
 
     
 
