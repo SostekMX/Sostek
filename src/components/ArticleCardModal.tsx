@@ -17,7 +17,7 @@ const ArticleCardModal: React.FC<Props> = (props) => {
     const [isOpen, setIsOpen] = useState(true);
 
     return (
-            <IonModal ref={modal} isOpen={isOpen} presentingElement={presentingElement!} swipeToClose={true}>
+            <IonModal ref={modal} isOpen={isOpen} presentingElement={presentingElement!} canDismiss={true}>
                 <IonContent class="ion-padding bg-img">  
                     <IonHeader>
                         <IonToolbar class='transparent'>

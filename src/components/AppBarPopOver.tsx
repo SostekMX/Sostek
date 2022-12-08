@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
-import { personCircle, search, settings, logOut, heart, informationCircleOutline } from 'ionicons/icons';
+import { personCircle, settings, logOut, heart, informationCircleOutline } from 'ionicons/icons';
+import { search as iconSearch } from 'ionicons/icons' ;
 import { NativeStorage } from '@ionic-native/native-storage';
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import AppContext from '../context/AppContext';
 export const AppBarPopOver: React.FC = () => {
     const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
     const [isSearching, setIsSearching] = useState<boolean>(false);
-    const [searchContent, setSearchContent] = useLocalStorage("search", "");
+    //const [searchContent, setSearchContent] = useLocalStorage("search", "");
+    const {search, tutorial, changeSearch, toggleTutorial} = useContext(AppContext)
     const history = useHistory();
 
     useEffect(() => {
@@ -24,7 +27,8 @@ export const AppBarPopOver: React.FC = () => {
         history.goBack();
     }
     function activateTutorial() {
-        sessionStorage.setItem("tutorial", "true")
+        localStorage.setItem("tutorial", "true");
+        toggleTutorial!(true);
     }
     
     return <>
@@ -33,17 +37,19 @@ export const AppBarPopOver: React.FC = () => {
             <IonButtons slot="primary">
                 {isSearching && 
                 <IonButton>
-                    <IonSearchbar style={{"width":"50vw", "margin":"auto" }}
+                    <IonSearchbar color="primary" style={{"width":"50vw", "margin":"auto", }}
                  animated={true} 
                  onIonBlur= {() => {setIsSearching(false)}}
-                 onIonInput= { (e) => {setSearchContent(e.target.value)}}
-                 value={searchContent}
+                 onIonFocus={ () => {setIsSearching(true)}}
+                 onIonInput= { (e) => {changeSearch!(e.target.value!)}}
+                 onIonClear={() => {changeSearch!("")}}
+                 value={search}
                  placeholder="Búsqueda..."></IonSearchbar>
                 </IonButton>
                 }
                 {!isSearching && <IonButton
                 onClick={() => {setIsSearching(true)}}>
-                    <IonIcon slot="icon-only" icon={search} />
+                    <IonIcon slot="icon-only" icon={iconSearch} />
                 </IonButton>}
             </IonButtons>
             <IonButtons slot="primary">

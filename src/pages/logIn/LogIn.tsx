@@ -22,7 +22,6 @@ const LogIn: React.FC = () => {
     useEffect(() => {
         //NativeStorage.setItem('login', false);
         sessionStorage.setItem('login', 'false');
-        sessionStorage.setItem('tutorial', 'true');
     }, [])
 
 

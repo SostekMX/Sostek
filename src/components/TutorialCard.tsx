@@ -1,7 +1,8 @@
 import { IonIcon, IonButton, IonButtons } from "@ionic/react";
 import { Icon } from "ionicons/dist/types/components/icon/icon";
 import { arrowForward, close } from "ionicons/icons";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import AppContext from "../context/AppContext";
 import './TutorialCard.css';
 
 interface CardProps {
@@ -15,13 +16,15 @@ interface CardSlides {
 }
 
 const TutorialCard: React.FC<CardSlides> = (props) => {
+  const {tutorial, toggleTutorial} = useContext(AppContext);
   const nSlides = props.slides.length;
   const [currSlide, nextSlide] = useState(0);
   const onClickNext = () => nextSlide(currSlide+1);
   const [className, setClassName] = useState('tutorial-card');
   const onClickEnd = () => {
-    sessionStorage.setItem("tutorial", "false");
-    setClassName('tutorial-card-hide');
+    localStorage.setItem("tutorial", "false");
+    toggleTutorial!(false);
+    //setClassName('tutorial-card-hide');
   }
   var dialogueClass = "dialogue-box db-"+props.slides[currSlide].align;
   var showNext = 'tutorial-card-button-bottom';
