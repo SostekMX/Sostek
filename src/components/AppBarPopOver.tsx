@@ -83,11 +83,11 @@ export const AppBarPopOver: React.FC = () => {
                                  <IonLabel>Ajustes</IonLabel>
                             </IonItem>
                             }
-                            <IonItem>
+                            <IonItem
+                                onClick={activateTutorial}
+                            >
                             <IonIcon icon={informationCircleOutline} color='secondary' /> &nbsp;
-                                 <IonLabel
-                                    onClick={activateTutorial}
-                                >Tutorial</IonLabel>
+                                <IonLabel>Tutorial</IonLabel>
                             </IonItem>
                             {isUserLogged && <IonItem>
                                 <IonIcon icon={logOut} color='secondary'></IonIcon> &nbsp;
