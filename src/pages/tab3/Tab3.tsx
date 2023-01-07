@@ -1,17 +1,36 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonLoading, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { useContext, useState } from 'react';
+import AppBarPopOver from '../../components/AppBarPopOver';
 import ExploreContainer from '../../components/ExploreContainer';
+import QuestionTestCard from '../../components/QuestionTestCard';
+import AppContext from '../../context/AppContext';
+import useGetDocuments from '../../hooks/useGetDocuments';
+import useGetEvaluationData from '../../hooks/useGetEvaluationData';
 import './Tab3.css';
+import EvaluationCard from '../../components/EvaluationCard';
 
 const Tab3: React.FC = () => {
+  let driveID = process.env.REACT_APP_EVALUATION_DRIVE_ID;
+  const {files, loading } = useGetDocuments(driveID);
   return (
     <IonPage>
-      <IonContent fullscreen class='bg-img'>
+      <AppBarPopOver></AppBarPopOver>
+      <IonContent fullscreen class='bg-img'> 
         <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 3</IonTitle>
-          </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Tab 3 page" />
+        <div>
+        {
+          loading && <IonLoading isOpen={loading} duration={3000}  />
+        }
+        {
+          !loading && files?.map((file) => {
+            return <EvaluationCard 
+            name={file.name} 
+            img={''} 
+            id={file.id} />
+          })
+        }
+        </div>
       </IonContent>
     </IonPage>
   );
