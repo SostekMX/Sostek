@@ -1,0 +1,18 @@
+.title {
+    font-size: medium;
+
+}
+
+.description {
+    font-size: small;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-card-image {
+    height: 33vh;
+    object-fit: cover;
+}

@@ -40,6 +40,7 @@ import Presentation from './pages/presentation/Presentation';
 import Documents from './pages/document/Documents';
 import { AppProvider } from './context/AppContext';
 import { useState } from 'react';
+import Evaluation from './pages/evaluation/Evaluation';
 
 setupIonicReact();
 
@@ -77,6 +78,10 @@ const App: React.FC = () => {
             <Route exact path="/presentation/:driveId">
             <Presentation />
             </Route>
+            <Route exact path="/Evaluation/:name/:id" >
+              <Evaluation />
+            </Route>
+
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

@@ -1,20 +1,32 @@
 import './QuestionTestCard.css';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonRadioGroup, IonListHeader, IonLabel, IonRadio } from '@ionic/react';
-import { useState } from 'react';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonRadioGroup, IonListHeader, IonLabel, IonRadio, IonCheckbox } from '@ionic/react';
+import { useContext, useState } from 'react';
+import AppContext from '../context/AppContext';
 
 interface props {
-    question: string;
-    comments: string;
-    options: Array<string>;
+    question: string | undefined;
+    comments: string | undefined;
+    options: Array<string> | undefined;
+    points: Array<string> | undefined;
 }
 
 /* Question card component that requires a question, comments (could be specific instructions for particular questions),
  * options (an array of all the options, doesn't matter the size).
  */
-const QuestionTestCard: React.FC<props> = ({ question, comments, options }) => {
+const QuestionTestCard: React.FC<props> = ({ question, comments, options, points }) => {
     // Variable that holds the choice the user selected
     const [selection, setSelection] = useState<string>();
+    let sumArray : Array<boolean> = [];
 
+    const { addScore } = useContext(AppContext);
+
+    function logicForSumAndDecrease(value : number, index : number) {
+        let myValue = addScore!(value, sumArray[index]);
+        console.log(myValue);
+        sumArray[index] = myValue;
+        console.log(index);
+        console.log(sumArray)
+    }
     return (
         <IonCard>
             <IonCardHeader>
@@ -30,17 +42,19 @@ const QuestionTestCard: React.FC<props> = ({ question, comments, options }) => {
                             <IonLabel>{comments}</IonLabel>
                         </IonListHeader>
                     }
-                    <IonRadioGroup onIonChange={e => setSelection(e.detail.value)}>
                         {
                             // Iterates through all the elements in the array to create option components in React
-                            options.map(option => (
-                                <IonItem>
-                                    <IonRadio slot="start" value={option} />
-                                    <IonLabel>{option}</IonLabel>
+                            options && options.map((option, index) => (
+                                <IonItem class="item-text-wrap">
+                                    <IonCheckbox
+                                    onIonChange={(e) => logicForSumAndDecrease(e.detail.value, index)} 
+                                    class="item-text-wrap"
+                                    slot="start" 
+                                    value={Number(points![index])} />
+                                    <IonLabel class="item-text-wrap">{option}</IonLabel>
                                 </IonItem>
                             ))
                         }
-                    </IonRadioGroup>
                 </IonList>
             </IonCardContent>
         </IonCard>
