@@ -14,10 +14,7 @@ interface RouteParams{
 const Evaluation: React.FC = () => {
     const {name, id} = useParams<RouteParams>();
   const {evaluation, loading } = useGetEvaluationData(id);
-  const { score, addScore } = useContext(AppContext);
-  console.log(evaluation?.at(0));
-  console.log(evaluation?.at(1));
-  console.log(evaluation?.at(2))
+  const { score } = useContext(AppContext);
 
   return (
     <IonPage>
@@ -41,7 +38,6 @@ const Evaluation: React.FC = () => {
             options={evaluation![1].values[index]} 
             points={evaluation![2].values[index]}/>
           })
-          //!loading && <QuestionTestCard question={evaluation![0].values[0][1]} comments={undefined} options={evaluation![1].values[0]} />
         }
         <h1 className='footer__title' 
         style={{color:"white", textAlign:"center"}}>

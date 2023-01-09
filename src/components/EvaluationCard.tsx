@@ -16,24 +16,24 @@ interface EvaluationCardProps{
 
 const EvaluationCard: React.FC<EvaluationCardProps> = ({name, img, id}) => {
     const [imgLoading, setImgLoading] = useState(true);
-    console.log(name);
-    console.log("id", id)
     return(
-        < >
-            <IonCard button routerDirection='forward'  href={`/Evaluation/${name}/${id}` }>
-                <IonImg className="document-card-image"
+        <div className='evaluation__container'>
+            <IonCard
+            className='evaluation__card' 
+            button 
+            routerDirection='forward'  
+            href={`/Evaluation/${name}/${id}` }>
+                <IonImg className="evaluation-card-image"
                     onIonImgDidLoad={() => {setImgLoading(false)}}
                     src={imgLoading ? 
                         "https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" 
                         : "https://images.squarespace-cdn.com/content/v1/5e45e5757350894b2a8b7b22/1594786912198-9XNHE7NDFGDN0M9JEHYJ/image-asset.jpeg?format=750w"} 
                 />
-                <IonCardHeader>
-                </IonCardHeader>
-                <IonCardContent >
-                    <IonCardSubtitle className='title'>{name}</IonCardSubtitle>
-                </IonCardContent>
+                <br />
+                    <IonCardSubtitle className='title ion-text-center'>{name}</IonCardSubtitle>
+                    <br />
             </IonCard>
-        </>
+        </div>
     );
 };
 

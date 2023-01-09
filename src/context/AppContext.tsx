@@ -5,17 +5,19 @@ interface IAppContext {
     search: string;
     tutorial: boolean;
     score: number;
+    currentAnswersAndScores: Map<string, number>,
     changeSearch?: (currentSearch : string) => void;
     toggleDark?: () => void;
     toggleTutorial?: (value : boolean) => void;
-    addScore?: (value : number, notSum : boolean) => boolean;
+    addScore?: (answer : string, value : number) => void;
 }
 
 const defaultState = {
     dark: false,
     search: "",
     tutorial: true,
-    score: 0
+    score: 0,
+    currentAnswersAndScores: new Map()
 }
 
 const AppContext = createContext<IAppContext>(defaultState);
@@ -30,6 +32,7 @@ export const AppProvider: FC<Children> = ({children}) => {
     const [search, setSearch] = useState(defaultState.search);
     const [tutorial, setTutorial] = useState(defaultState.tutorial);
     const [score, setScore] = useState(defaultState.score);
+    const [currentAnswersAndScores, setCurrentAnswersAndScores] = useState(defaultState.currentAnswersAndScores);
     const toggleDark = () => {
       setDark(!dark);
     };
@@ -39,15 +42,16 @@ export const AppProvider: FC<Children> = ({children}) => {
     const toggleTutorial = (value : boolean) => {
       setTutorial(value);
     };
-    const addScore = (value : number, notSum : boolean) => {
-      console.log(notSum);
-      if (notSum) {
-        setScore(score - value);
-        return true;
+    const addScore = (answer : string, value : number) => {
+      console.log(answer, value)
+      console.log(currentAnswersAndScores.has(answer))
+      if(currentAnswersAndScores.has(answer)) {
+        setScore(score - currentAnswersAndScores.get(answer)!);
+        currentAnswersAndScores.delete(answer);
       }
       else {
         setScore(score + value);
-        return false;
+        currentAnswersAndScores.set(answer, value);
       }
     }
 
@@ -62,7 +66,8 @@ export const AppProvider: FC<Children> = ({children}) => {
           changeSearch,
           toggleTutorial,
           score,
-          addScore
+          addScore,
+          currentAnswersAndScores
 
         }}
       >

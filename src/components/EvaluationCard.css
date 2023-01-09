@@ -1,3 +1,10 @@
+.evaluation__container {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    width: 50vw;
+
+}
+
 .title {
     font-size: medium;
 
@@ -12,7 +19,7 @@
     text-overflow: ellipsis;
 }
 
-.document-card-image {
-    height: 33vh;
+.evaluation-card-image {
+    height: 15vh;
     object-fit: cover;
 }
