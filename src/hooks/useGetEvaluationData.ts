@@ -19,9 +19,6 @@ const useGetEvaluationData = (sheetsID : string | undefined) => {
         })
         // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
         }).then(function(response) {
-        console.log("evaluation", response.result.valueRanges);
-        console.log("evaluation", response.result.valueRanges.range);
-
         setEvaluation(response.result.valueRanges);
         }, function(reason) {
         console.log('Error: ' + reason.result.error.message);

@@ -20,13 +20,6 @@ const QuestionTestCard: React.FC<props> = ({ question, comments, options, points
 
     const { addScore } = useContext(AppContext);
 
-    function logicForSumAndDecrease(value : number, index : number) {
-        let myValue = addScore!(value, sumArray[index]);
-        console.log(myValue);
-        sumArray[index] = myValue;
-        console.log(index);
-        console.log(sumArray)
-    }
     return (
         <IonCard>
             <IonCardHeader>
@@ -45,13 +38,14 @@ const QuestionTestCard: React.FC<props> = ({ question, comments, options, points
                         {
                             // Iterates through all the elements in the array to create option components in React
                             options && options.map((option, index) => (
-                                <IonItem class="item-text-wrap">
+                                <IonItem class="ion-text-wrap">
                                     <IonCheckbox
-                                    onIonChange={(e) => logicForSumAndDecrease(e.detail.value, index)} 
-                                    class="item-text-wrap"
+                                    // The answer has the question and score added to prevent another answer to conflict in sumScore
+                                    onIonChange={(e) => addScore!(`${question}${option}${points![index]}`, index)} 
+                                    class="ion-text-wrap"
                                     slot="start" 
                                     value={Number(points![index])} />
-                                    <IonLabel class="item-text-wrap">{option}</IonLabel>
+                                    <IonLabel class="ion-text-wrap">{option}</IonLabel>
                                 </IonItem>
                             ))
                         }
