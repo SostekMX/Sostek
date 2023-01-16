@@ -26,11 +26,10 @@ const useGetDocuments = (driveID : string | undefined) => {
         })
         // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
         }).then(function(response) {
-        console.log("files", response.result.files);
         setFiles(response.result.files.reverse());
         setLastFile([response.result.files.at(0)]);
         }, function(reason) {
-        console.log(driveID);
+        // console.log(driveID);
 
         console.log('Error: ' + reason.result.error.message);
         //setFiles(dummyArticles);

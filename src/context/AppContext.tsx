@@ -43,8 +43,8 @@ export const AppProvider: FC<Children> = ({children}) => {
       setTutorial(value);
     };
     const addScore = (answer : string, value : number) => {
-      console.log(answer, value)
-      console.log(currentAnswersAndScores.has(answer))
+      // console.log(answer, value)
+      // console.log(currentAnswersAndScores.has(answer))
       if(currentAnswersAndScores.has(answer)) {
         setScore(score - currentAnswersAndScores.get(answer)!);
         currentAnswersAndScores.delete(answer);

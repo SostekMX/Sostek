@@ -16,8 +16,8 @@ const TutorialComponent : React.FC<props> = ({files}) => {
       align: `${tutorial[2]}`
     }
   })
-  console.log(articlesData);
-  console.log(createTutorialCards);
+  // console.log(articlesData);
+  // console.log(createTutorialCards);
   return (
     <>
     { loading ?

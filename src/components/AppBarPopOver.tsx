@@ -33,26 +33,28 @@ export const AppBarPopOver: React.FC = () => {
     
     return <>
         <IonToolbar color='primary' /* class="transparent" */>
-        <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
-            <IonButtons slot="primary">
+            <IonButtons slot='start'>
+                 <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
+            </IonButtons>
+            <IonButtons  slot="end">
                 {isSearching && 
-                <IonButton>
-                    <IonSearchbar color="primary" style={{"width":"50vw", "margin":"auto", }}
-                 animated={true} 
-                 onIonBlur= {() => {setIsSearching(false)}}
-                 onIonFocus={ () => {setIsSearching(true)}}
-                 onIonInput= { (e) => {changeSearch!(e.target.value!)}}
-                 onIonClear={() => {changeSearch!("")}}
-                 value={search}
-                 placeholder="Búsqueda..."></IonSearchbar>
-                </IonButton>
+                    <IonSearchbar className='appbar__searchbar'
+                        color="primary" style={{ "--box-shadow":"0px", "background":"rgba(0,0,0,.15)", "border-radius":"16px"}}
+                        animated={true} 
+                        onIonBlur= {() => {setIsSearching(false)}}
+                        onIonFocus={ () => {setIsSearching(true)}}
+                        onIonInput= { (e) => {changeSearch!(e.target.value!)}}
+                        onIonClear={() => {changeSearch!("")}}
+                        showClearButton="always"
+                        value={search}
+                        placeholder="Búsqueda..."></IonSearchbar>
                 }
                 {!isSearching && <IonButton
                 onClick={() => {setIsSearching(true)}}>
                     <IonIcon slot="icon-only" icon={iconSearch} />
                 </IonButton>}
             </IonButtons>
-            <IonButtons slot="primary">
+            <IonButtons slot="end">
                 <IonButtons slot="end">
                     <IonMenuButton id="open-menu" autoHide={false}></IonMenuButton>
                 </IonButtons>

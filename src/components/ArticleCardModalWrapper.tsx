@@ -22,6 +22,7 @@ const ArticleCardModalWrapper: React.FC<props> = ({files}) => {
               body={article[3]}
               imageUrl={article[4]} 
               author={article[5]}
+              id={article[10]}
         />
           )
         })

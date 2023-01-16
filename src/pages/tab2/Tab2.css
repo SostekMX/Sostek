@@ -1,0 +1,28 @@
+.under_construction-container{
+    width: 100%;
+    padding-inline: 5%;
+}
+.under_construction_text{
+    color: white;
+    text-align: center;
+}
+
+.under_construction_link{
+    text-align: center;
+}
+
+.video-container{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+}
+.video-container__title{
+    color: white;
+}
+.video-container__video {
+    display: flex;
+    width: 90%;
+}
