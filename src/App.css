@@ -50,3 +50,11 @@ h1, h2 {
 h3, h4 {
     font-family: 'Cinzel';
 }
+.tab-bar__label {
+    font-size: 1rem;
+}
+
+.article-modal__title{
+    color: black;
+    text-decoration:underline rgba(0, 0, 0, .75) 1.5px;
+}

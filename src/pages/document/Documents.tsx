@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { IonCol, IonContent, IonHeader, IonImg, IonPage, IonRow, IonText, IonTitle} from '@ionic/react';
+import { IonCardSubtitle, IonCol, IonContent, IonHeader, IonImg, IonPage, IonRow, IonText, IonTitle} from '@ionic/react';
 import './Documents.css'
 import { RouteComponentProps, useParams } from 'react-router';
 import { dummyArticlesContent } from './DocumentsData';
 import AppBarPopOver from '../../components/AppBarPopOver';
 
-interface RouteParams{
-    id:string,
+interface PropsParams{
+  imgAuthor? : string,
+  imgPage? : string
 }
 
-const Documents: React.FC= () => {
+interface RouteParams{
+    id:string,
+    imgAuthor? : string,
+    imgPage? : string
+}
+
+const Documents: React.FC<PropsParams>= ({imgAuthor, imgPage}) => {
     const {id} = useParams<RouteParams>();
     let key = process.env.REACT_APP_PRIVATE_API_KEY;
     const [article, setArticle] = useState<Array<string>>(
@@ -50,9 +57,19 @@ const Documents: React.FC= () => {
       <IonPage>
         <AppBarPopOver></AppBarPopOver>
        <IonContent fullscreen class='bg'>
-           <IonHeader>
-                <img src={article[4]} className="imageArticle" />
-           </IonHeader>
+           <img src={article[4]} className="imageArticle" />
+           { (imgPage || imgAuthor) &&
+                <IonCardSubtitle>
+                    Imagen
+                    {
+                        imgPage &&
+                        <>{` de ${imgPage}`}</>
+                    }
+                    { imgAuthor && 
+                        <>{` por ${imgAuthor}`}</>
+                    }
+                </IonCardSubtitle>
+                }
            <br></br>
            <IonCol>
                 <IonRow>

@@ -27,7 +27,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({name, img, id}) => {
                     onIonImgDidLoad={() => {setImgLoading(false)}}
                     src={imgLoading ? 
                         "https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" 
-                        : "https://images.squarespace-cdn.com/content/v1/5e45e5757350894b2a8b7b22/1594786912198-9XNHE7NDFGDN0M9JEHYJ/image-asset.jpeg?format=750w"} 
+                        : img} 
                 />
                 <br />
                     <IonCardSubtitle className='title ion-text-center'>{name}</IonCardSubtitle>

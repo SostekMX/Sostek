@@ -4,15 +4,14 @@
 
 .title__document{
     color: var(--ion-color-primary-contrast);
-    text-transform: uppercase;
     font-size: medium;
     font-weight: bold;
     font-family:system-ui;
-    word-wrap: break-word;
-    margin-inline: auto;
+    text-transform: uppercase;
 }
 .imageArticle{
-    border-radius: 20px;
+    border-bottom-left-radius: 60px;
+    border-bottom-right-radius: 60px;
     height: 75vh;
     width: 100vw;
     object-fit: cover;
@@ -21,16 +20,9 @@
 
 .content__document {
     color: var(--ion-color-primary-contrast);
-    font-size: medium;
     font-family:sans-serif;
-    white-space: normal;
-    line-height: 1em;
-    word-wrap: break-word;
-   
 }
 
 .content-row {
-    text-align: center;
-    text-align: justify;
     margin-inline: 1rem;
 }

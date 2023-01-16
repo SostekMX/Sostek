@@ -78,14 +78,14 @@ const MainMenu: React.FC = () => {
                 </IonRouterOutlet>
                 <IonTabBar slot="bottom">
                     <IonTabButton tab="tab1" href="/tab1">
-                    <IonLabel>APRENDE</IonLabel>
+                    <IonLabel className='tab-bar__label'><strong>APRENDE</strong></IonLabel>
                     </IonTabButton>
                     <IonTabButton tab="tab2" href="/tab2">
-                    <IonLabel>JUEGA</IonLabel>
+                    <IonLabel className='tab-bar__label'><b>JUEGA</b></IonLabel>
                     </IonTabButton>
                     
                     <IonTabButton tab="tab3" href="/tab3">
-                    <IonLabel>EVALU&Aacute;TE</IonLabel>
+                    <IonLabel className='tab-bar__label'><strong>EVALU&Aacute;TE</strong></IonLabel>
                     </IonTabButton>
                 </IonTabBar>
                 </IonTabs>

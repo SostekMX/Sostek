@@ -23,10 +23,10 @@ const Tab3: React.FC = () => {
           loading && <IonLoading isOpen={loading} duration={3000}  />
         }
         {
-          !loading && files?.map((file) => {
+          !loading && files?.map((file, index) => {
             return <EvaluationCard 
             name={file.name} 
-            img={''} 
+            img={`/assets/test${files.length - index}.jpg`} 
             id={file.id} />
           })
         }
