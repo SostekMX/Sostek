@@ -28,9 +28,14 @@ const Evaluation: React.FC = () => {
           </h1>
         </IonHeader>
         {
-          loading && <IonLoading isOpen={loading} duration={5000}  />
+          <img className={loading ? "imageArticleLoading visible"
+              : "imageArticleLoading hidden"}
+              src="/assets/Spinner-1s-200px_transparent.svg"
+              alt="loading image" 
+              style={{"position":"fixed"}}/>
         }
-        {
+          <div className={loading ? "hidden evaluation__questions" : "visible evaluation__questions"}>
+          {
           !loading && evaluation?.at(0)?.values.map( (question, index) => {
             return <QuestionTestCard 
             question={question[1]} 
@@ -38,13 +43,15 @@ const Evaluation: React.FC = () => {
             options={evaluation![1].values[index]} 
             points={evaluation![2].values[index]}/>
           })
-        }
-        <h1 className='footer__title' 
+          }
+          </div>
+        
+        {!loading && <h1 className='evaluation__footer__title' 
         style={{color:"white", textAlign:"center"}}>
         {
           `Resultado final: ${score}`
         }
-        </h1>
+        </h1>}
       </IonContent>
     </IonPage>
   );

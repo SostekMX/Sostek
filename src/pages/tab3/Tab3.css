@@ -2,3 +2,8 @@
     color: white;
     text-align: center;
 }
+
+.evaluate__container__filter{
+    margin-right: 1rem;
+    margin-top: 1rem;
+}

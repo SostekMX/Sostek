@@ -23,11 +23,14 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id, 
     return(
         < >
             <IonCard button routerDirection='forward'  href={type === "article" ? `/Documents/${id}` : `/presentation/${id}` }>
-                <IonImg className="document-card-image"
+                <img className={imgLoading ? "image-card-loading visible" : "image-card-loading hidden"}
+                    src="/assets/Spinner-1s-200px_transparent.svg"
+                    alt="loading image" />
+                <IonImg className={imgLoading ? "document-card-image hidden" : "document-card-image visible"}
                     onIonImgDidLoad={() => {setImgLoading(false)}}
-                    src={imgLoading ? "https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" : img_url} 
+                    src={imgLoading ? "/assets/Spinner-1s-200px_transparent.svg" : img_url} 
                 />
-                <IonCardHeader>
+                <IonCardHeader style={{"padding-top":"10px", "padding-bottom":"5px"}}>
                 { (imgPage || imgAuthor) &&
                 <IonCardSubtitle>
                     Imagen
@@ -42,8 +45,8 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id, 
                 }
                 </IonCardHeader>
                 <IonCardContent >
-                    <IonCardSubtitle className='title'>{name}</IonCardSubtitle>
-                    <IonText className='description'>
+                    <IonCardSubtitle className='document-card__title'>{name}</IonCardSubtitle>
+                    <IonText className='document-card__description'>
                         {description}
                     </IonText>
                 </IonCardContent>

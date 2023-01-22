@@ -38,9 +38,6 @@ const Tab1: React.FC = () => {
       
         </IonHeader>
         {
-          loading && loadingForAllPresentations && <IonLoading isOpen={loading} duration={5000}  />
-        }
-        {
           !loading && !loadingForAllPresentations && <> 
             <ArticleCardModalWrapper files={lastFile} />
              {displayTutorial &&<InitialTutorial />}

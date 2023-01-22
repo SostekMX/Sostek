@@ -58,3 +58,23 @@ h3, h4 {
     color: black;
     text-decoration:underline rgba(0, 0, 0, .75) 1.5px;
 }
+.appbar__searchbar-active {
+    width: 75%;
+    margin-inline: 10%;
+}
+
+.appbar__searchbar {
+    padding: unset;
+    --box-shadow: 0px;
+    background: rgba(0, 0, 0, .15);
+    border-radius: 16px;
+    
+}
+.appbar__searchbar-container ion-searchbar {
+    height: 36px;
+    margin-block: 4px;
+    padding-top: 10px;
+}
+.appbar__searchbar-container ion-searchbar  div input {
+    background: inherit !important;
+}

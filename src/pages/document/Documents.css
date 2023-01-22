@@ -1,6 +1,19 @@
 .bg {
     background-color: var(--novus-article-background);
 }
+.colorful_appbar_document, 
+.transparent_appbar_document{
+    top: 0;
+    position: absolute;
+    width: 100%;
+}
+.colorful_appbar_document {
+    transition: all 1s ease-out;
+}
+
+.transparent_appbar_document{
+    transition: all 1s ease-in;
+}
 
 .title__document{
     color: var(--ion-color-primary-contrast);
@@ -8,14 +21,43 @@
     font-weight: bold;
     font-family:system-ui;
     text-transform: uppercase;
+    text-align: center;
+    background: rgba(0, 0, 0, .50);
+    border-radius: 16px;
+    padding-block: 5px;
 }
+
 .imageArticle{
     border-bottom-left-radius: 60px;
     border-bottom-right-radius: 60px;
-    height: 75vh;
+    height: 80vh;
     width: 100vw;
     object-fit: cover;
+    position: absolute;
+    top: 0;
+    transition: all 1s ease-in;
+}
 
+.imageArticleLoading{
+    transition: all 1s ease-out;
+    height: 80vh;
+    width: 100vw;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.visible {
+    opacity: 1;
+}
+
+.content__container {
+    position: absolute;
+    top: 70vh;
 }
 
 .content__document {

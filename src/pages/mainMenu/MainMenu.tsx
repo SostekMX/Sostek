@@ -39,6 +39,8 @@ import AppBarPopOver from '../../components/AppBarPopOver';
 import AppBarMenu from '../../components/AppBarMenu';
 import Profile from '../profile/Profile';
 import Presentation from '../presentation/Presentation';
+import { useContext } from 'react';
+import AppContext from '../../context/AppContext';
 
 //import { useState } from 'react';
 
@@ -47,6 +49,7 @@ setupIonicReact();
 
 
 const MainMenu: React.FC = () => {
+    const {changeSearch} = useContext(AppContext);
     return(
         <IonContent>
             
@@ -76,7 +79,14 @@ const MainMenu: React.FC = () => {
                     </Route>
                 
                 </IonRouterOutlet>
-                <IonTabBar slot="bottom">
+                <IonTabBar slot="bottom"
+                onIonTabsWillChange={() => {
+                    changeSearch!("")
+                }}
+                // onIonTabsDidChange={() => {
+                //     changeSearch!("")
+                // }}
+                >
                     <IonTabButton tab="tab1" href="/tab1">
                     <IonLabel className='tab-bar__label'><strong>APRENDE</strong></IonLabel>
                     </IonTabButton>
