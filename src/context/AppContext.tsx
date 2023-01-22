@@ -6,10 +6,12 @@ interface IAppContext {
     tutorial: boolean;
     score: number;
     currentAnswersAndScores: Map<string, number>,
+    transparentToolbar: boolean,
     changeSearch?: (currentSearch : string) => void;
     toggleDark?: () => void;
     toggleTutorial?: (value : boolean) => void;
     addScore?: (answer : string, value : number) => void;
+    toggleTransparent?: (value : boolean) => void;
 }
 
 const defaultState = {
@@ -17,7 +19,8 @@ const defaultState = {
     search: "",
     tutorial: true,
     score: 0,
-    currentAnswersAndScores: new Map()
+    currentAnswersAndScores: new Map(),
+    transparentToolbar: false,
 }
 
 const AppContext = createContext<IAppContext>(defaultState);
@@ -33,6 +36,12 @@ export const AppProvider: FC<Children> = ({children}) => {
     const [tutorial, setTutorial] = useState(defaultState.tutorial);
     const [score, setScore] = useState(defaultState.score);
     const [currentAnswersAndScores, setCurrentAnswersAndScores] = useState(defaultState.currentAnswersAndScores);
+    const [transparentToolbar, setTransparentToolbar] = useState(defaultState.transparentToolbar);
+    
+    const toggleTransparent = (value : boolean) => {
+      setTransparentToolbar(value);
+    };
+
     const toggleDark = () => {
       setDark(!dark);
     };
@@ -67,8 +76,9 @@ export const AppProvider: FC<Children> = ({children}) => {
           toggleTutorial,
           score,
           addScore,
-          currentAnswersAndScores
-
+          currentAnswersAndScores,
+          transparentToolbar,
+          toggleTransparent
         }}
       >
         {children}

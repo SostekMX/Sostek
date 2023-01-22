@@ -1,9 +1,9 @@
-.title {
+.document-card__title {
     font-size: medium;
-
+    padding-bottom: 0px;
 }
 
-.description {
+.document-card__description {
     font-size: small;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -12,7 +12,25 @@
     text-overflow: ellipsis;
 }
 
+.image-card-loading{
+    position: absolute;
+    transition: all 1s ease-out;
+    height: 33vh;
+    object-fit: cover;
+    width: 100%;
+}
+
 .document-card-image {
     height: 33vh;
     object-fit: cover;
+    opacity: 0;
+    transition: all 1s ease-in;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.visible {
+    opacity: 1;
 }

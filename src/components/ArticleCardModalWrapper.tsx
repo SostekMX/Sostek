@@ -1,5 +1,4 @@
 import React from 'react';
-import { IonLoading } from '@ionic/react';
 import ArticleCardModal from './ArticleCardModal';
 import { File } from '../models/File';
 import useGetArticlesData from '../hooks/useGetArticlesData';
@@ -9,10 +8,8 @@ interface props {
 
 const ArticleCardModalWrapper: React.FC<props> = ({files}) => {
   const {articlesData, loading} = useGetArticlesData(files);
-
   return (
     <div>
-      <IonLoading isOpen={loading} duration={5000}/>
     {
         !loading && articlesData?.map((article : any) => {
           return (

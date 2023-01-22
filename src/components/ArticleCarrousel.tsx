@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { IonCol, IonItem,  IonList, IonLoading, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
+import { IonCol, IonHeader, IonIcon, IonItem,  IonList, IonLoading, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
 import DocumentCard from './DocumentCard';
 import { File } from '../models/File';
 import './ArticleCarrousel.css'
@@ -64,53 +64,12 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
             );
         }
     });
-/*
-    useEffect(() => {
-        articleCards = !loading && articlesData!.map((article : any) => {
-            if ((article[6].toLowerCase().includes(search.toLowerCase()) || article[0].toLowerCase().includes(search.toLowerCase()))) {
-                return(
-                    <div key={article[10]}>
-                    {
-                        article.length !== 0 && <DocumentCard 
-                                name={article[0]}
-                                description={article[3]}
-                                img_url={article[4]}
-                                id={article[10]}
-                                type={article[2]}
-                                imgAuthor={article[8] != " " ? article[8] : undefined} 
-                                imgPage={article[9] != " " ? article[9] : undefined}                       />
-                    }
-                    </div>
-                );
-            }
-        });
-    
-        presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
-            if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(search.toLowerCase()))) {
-                return(
-                    <div key={presentation}>
-                    {
-                        presentation.length !== 0 && <DocumentCard 
-                                name={presentationsAsStringArrayTitle![index]}
-                                description={""}
-                                img_url={`https://drive.google.com/uc?id=${presentation}`}
-                                id={presentation}
-                                type={"presentation"} imgAuthor={undefined} imgPage={undefined}                        />
-                    }
-                    </div>
-                );
-            }
-        });
-    }, [search])
-*/
-
-    
 
     return(
             <IonCol>
-                <IonRow className='filter-aligned'>
-                   
-                    <IonList className='filter-size filter-rounded_border'>
+                <IonHeader>
+                <IonRow className='filter-aligned'>                   
+                <IonList className='filter-size filter-rounded_border'>
                         <IonItem className='filter-item-size'>
                             <IonSelect placeholder="Filtrar   " interface='popover' onIonChange={(op) => setCurrentOption(op.detail.value)}>
                             <IonSelectOption value="article" className='option-filter' >Presentaciones</IonSelectOption>
@@ -119,11 +78,25 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                             </IonSelect>
                         </IonItem>
                     </IonList>
+                            {/* Tried to implement a different filter button
+                             <IonSelect className='ion-select-article' interface='popover' onIonChange={(op) => setCurrentOption(op.detail.value)}>
+                            <IonSelectOption value="article" className='option-filter' >Presentaciones</IonSelectOption>
+                            <IonSelectOption value="presentation" className='option-filter' >Artículos</IonSelectOption>
+                            <IonSelectOption value="" className='option-filter' >Ambos</IonSelectOption>
+                            </IonSelect> */}
                 </IonRow>
-                <div className="ion-content-scroll-host">
-                    {
-                        loading && <IonLoading isOpen={loading} duration={5000} />
-                    }
+                </IonHeader>
+                {
+                    <div>
+                        <img className={loading ? "imageArticleLoading visible"
+                        : "imageArticleLoading hidden"}
+                        src="/assets/Spinner-1s-200px_transparent.svg"
+                        alt="loading image" 
+                        style={{"position":"fixed"}}/>
+                    </div>
+                }
+                <div className={loading ? "ion-content-scroll-host hidden" : "ion-content-scroll-host visible"}>
+
                     {
                         !loading  && !loadingForPresentation && currentOption === "" ? <div>
                             {articleCards}

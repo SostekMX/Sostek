@@ -5,21 +5,20 @@
 
 }
 
-.title {
+.evaluation__title {
     font-size: medium;
     padding-inline: 5px;
+    padding-block: 3vh;
 }
 
-.description {
-    font-size: small;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.evaluation-card-image {
+.evaluationCard__image {
     height: 15vh;
     object-fit: cover;
+    transition: all 1s ease-in;
+}
+
+.evaluation-card__title-container{
+    height: 15vh;
+    /* display: flex;
+    align-items: center; */
 }
