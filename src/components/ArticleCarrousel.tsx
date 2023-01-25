@@ -7,37 +7,42 @@ import useGetArticlesData from '../hooks/useGetArticlesData';
 import useGetFirstImageOfPresentations from '../hooks/useGetFirstImageOfPresentations';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import AppContext from '../context/AppContext';
+import useGetDocuments from '../hooks/useGetDocuments';
 
 interface props {
-    files: Array<File> | null | undefined;
+    articlesData: Array<Array<string>> | null | undefined;
+    articlesIdData: Array<string>;
+    loadingData: boolean;
     presentations: Array<File>| null | undefined;
   }
 
-const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
+const ArticleCarrousel: React.FC<props> = ({articlesData, articlesIdData, loadingData, presentations}) => {
+    let driveID = process.env.REACT_APP_DRIVE_ID;
   const [currentOption, setCurrentOption] = useState('');
   const {search} = useContext(AppContext);
 
-  const {articlesData, loading} = useGetArticlesData(files);
+  //const {articlesData, loading} = useGetArticlesData(files);
     let presentationsAsStringArrayById = presentations?.map((url) => {
          return url.id;
     });
+
     let presentationsAsStringArrayTitle = presentations?.map((url) => {
         return url.name;
    });
-    const { urlImages, loadingForPresentation } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
+    const { loadingForPresentation } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
     //console.log(urlImages);
     //console.log(articlesData);
 
-    let articleCards = !loading && articlesData!.map((article : any) => {
+    let articleCards = !loadingData && articlesData!.map((article : any, index) => {
         if ((article[6].toLowerCase().includes(search.toLowerCase()) || article[0].toLowerCase().includes(search.toLowerCase()))) {
             return(
-                <div key={article[10]}>
+                <div key={articlesIdData![index]}>
                 {
                     article.length !== 0 && <DocumentCard 
                         name={article[0]}
                         description={article[3]}
                         img_url={article[4]}
-                        id={article[10]}
+                        id={index.toString()}
                         type={article[2]} 
                         imgAuthor={article[8] != " " ? article[8] : undefined} 
                         imgPage={article[9] != " " ? article[9] : undefined}
@@ -88,17 +93,17 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                 </IonHeader>
                 {
                     <div>
-                        <img className={loading ? "imageArticleLoading visible"
+                        <img className={loadingData ? "imageArticleLoading visible"
                         : "imageArticleLoading hidden"}
                         src="/assets/Spinner-1s-200px_transparent.svg"
                         alt="loading image" 
                         style={{"position":"fixed"}}/>
                     </div>
                 }
-                <div className={loading ? "ion-content-scroll-host hidden" : "ion-content-scroll-host visible"}>
+                <div className={loadingData ? "ion-content-scroll-host hidden" : "ion-content-scroll-host visible"}>
 
                     {
-                        !loading  && !loadingForPresentation && currentOption === "" ? <div>
+                        !loadingData  && !loadingForPresentation && currentOption === "" ? <div>
                             {articleCards}
                             {presentationCards}
                              </div> : currentOption === "article" ? <div> 
