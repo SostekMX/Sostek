@@ -22,7 +22,7 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id, 
     const [imgLoading, setImgLoading] = useState(true);
     return(
         < >
-            <IonCard button routerDirection='forward'  href={type === "article" ? `/Documents/${id}` : `/presentation/${id}` }>
+            <IonCard button routerDirection='forward'  routerLink={type === "article" ? `/Documents/${id}` : `/presentation/${id}` }>
                 <img className={imgLoading ? "image-card-loading visible" : "image-card-loading hidden"}
                     src="/assets/Spinner-1s-200px_transparent.svg"
                     alt="loading image" />

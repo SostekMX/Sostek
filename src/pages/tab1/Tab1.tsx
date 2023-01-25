@@ -10,14 +10,23 @@ import React, { useContext, useEffect, useState } from 'react';
 import useGetPresentations from '../../hooks/useGetPresentations';
 import InitialTutorial from '../../components/tutorial/InitialTutorial';
 import AppContext from '../../context/AppContext';
+import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
+import ArticleCardModal from '../../components/ArticleCardModal';
 
 const Tab1: React.FC = () => {
   let driveID = process.env.REACT_APP_DRIVE_ID;
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
-  const {files, lastFile, loading } = useGetDocuments(driveID);
+  //const {files, lastFile, loading } = useGetDocuments(driveID);
+  const { articlesData, lastArticleData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
+  const { files, loading } = useGetDocuments(driveID);
+
+  let articlesAsStringArrayById = files?.map((url) => {
+    return url.id;
+  })
   const [displayTutorial, setDisplayTutorial] = useState<boolean>(false);
   const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID);
   const { tutorial } = useContext(AppContext); 
+  const articlesDataReversed = loadingData ? [[]] :  [...articlesData!].reverse();
   //addToFiles(files);
   useEffect(() => {
     // NativeStorage.getItem("login").then(
@@ -38,10 +47,18 @@ const Tab1: React.FC = () => {
       
         </IonHeader>
         {
-          !loading && !loadingForAllPresentations && <> 
-            <ArticleCardModalWrapper files={lastFile} />
+          !loadingData && !loading && !loadingForAllPresentations && <> 
+            {/* <ArticleCardModalWrapper files={lastFile} /> */}
+            <ArticleCardModal 
+              title={lastArticleData![0]} 
+              subtitle={lastArticleData![1]}
+              body={lastArticleData![3]}
+              imageUrl={lastArticleData![4]} 
+              author={lastArticleData![5]}
+              id={articlesAsStringArrayById?.at(0)!}
+        />
              {displayTutorial &&<InitialTutorial />}
-            <ArticleCarrousel files={files} presentations={presentations}/>
+            <ArticleCarrousel articlesData={articlesDataReversed} articlesIdData={articlesAsStringArrayById!} loadingData={loadingData} presentations={presentations}/>
           </>
         }
       </IonContent>
