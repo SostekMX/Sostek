@@ -2,7 +2,7 @@
 
 ## Previo
 Antes de empenzar con la instalación y ejecución del repositorio, se debe de cumplir con los siguientes criterios:
-- El usuario debe haber instalado el ambiente para Ionic. Más información en [https://ionicframework.com/docs/intro/environment](este enlace).
+- El usuario debe haber instalado el ambiente para Ionic. Más información en [este enlace](https://ionicframework.com/docs/intro/environment)
     - Instalar Node
     - Instalar el Ionic CLI
     - Instalar Git
