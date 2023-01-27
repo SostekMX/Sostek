@@ -43,20 +43,21 @@ ion-content.bg-img {
     background-size: cover;
 }
 
-h1, h2 {
+/* h1, h2 {
     font-family: 'Kiona-Regular';
 }
 
 h3, h4 {
     font-family: 'Cinzel';
-}
+} */
 .tab-bar__label {
     font-size: 1rem;
 }
-
+.article-modal__link{
+    text-decoration: none;
+}
 .article-modal__title{
     color: black;
-    text-decoration:underline rgba(0, 0, 0, .75) 1.5px;
 }
 .appbar__searchbar-active {
     width: 75%;

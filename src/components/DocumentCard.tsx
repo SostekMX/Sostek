@@ -12,7 +12,7 @@ interface DocumentProps{
     name: string,
     description: string,
     img_url :string,
-    id:string,
+    id:number,
     type: string,
     imgAuthor: string | undefined,
     imgPage: string | undefined
@@ -30,7 +30,7 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id, 
                     onIonImgDidLoad={() => {setImgLoading(false)}}
                     src={imgLoading ? "/assets/Spinner-1s-200px_transparent.svg" : img_url} 
                 />
-                <IonCardHeader style={{"padding-top":"10px", "padding-bottom":"5px"}}>
+                <IonCardHeader style={{"paddingTop":"10px", "paddingBottom":"5px"}}>
                 { (imgPage || imgAuthor) &&
                 <IonCardSubtitle>
                     Imagen

@@ -18,7 +18,11 @@ export const AppBarPopOver: React.FC = () => {
         //   data => setIsUserLogged(data)
         // )
         let isTrue  = sessionStorage.getItem("login") === 'true';
-        setIsUserLogged(isTrue)
+        setIsUserLogged(isTrue);
+        if(sessionStorage.getItem("search")) {
+            changeSearch!(sessionStorage.getItem("search")!);
+        }
+        
     }, [])
 
     function logOutUser(){
@@ -34,7 +38,9 @@ export const AppBarPopOver: React.FC = () => {
     return <>
         <IonToolbar color={transparentToolbar ? 'transparent ': 'primary'}>
             <IonButtons slot='start'>
-                 <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
+                 <a onClick={(_e) => {
+                    changeSearch!("");
+                 }} href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
             </IonButtons>
             <IonButtons className={isSearching ? "appbar__searchbar-container appbar__searchbar-active" : "appbar__searchbar-container"}  slot="end">
                 {isSearching && 

@@ -11,13 +11,11 @@ import useGetDocuments from '../hooks/useGetDocuments';
 
 interface props {
     articlesData: Array<Array<string>> | null | undefined;
-    articlesIdData: Array<string>;
     loadingData: boolean;
     presentations: Array<File>| null | undefined;
   }
 
-const ArticleCarrousel: React.FC<props> = ({articlesData, articlesIdData, loadingData, presentations}) => {
-    let driveID = process.env.REACT_APP_DRIVE_ID;
+const ArticleCarrousel: React.FC<props> = ({articlesData, loadingData, presentations}) => {
   const [currentOption, setCurrentOption] = useState('');
   const {search} = useContext(AppContext);
 
@@ -34,39 +32,74 @@ const ArticleCarrousel: React.FC<props> = ({articlesData, articlesIdData, loadin
     //console.log(articlesData);
 
     let articleCards = !loadingData && articlesData!.map((article : any, index) => {
-        if ((article[6].toLowerCase().includes(search.toLowerCase()) || article[0].toLowerCase().includes(search.toLowerCase()))) {
-            return(
-                <div key={articlesIdData![index]}>
-                {
-                    article.length !== 0 && <DocumentCard 
-                        name={article[0]}
-                        description={article[3]}
-                        img_url={article[4]}
-                        id={index.toString()}
-                        type={article[2]} 
-                        imgAuthor={article[8] != " " ? article[8] : undefined} 
-                        imgPage={article[9] != " " ? article[9] : undefined}
-                    />
-                }
-                </div>
-            );
+        if (
+          article[6]
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .includes(
+              search
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+                .toLowerCase()
+            ) ||
+          article[0]
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .includes(
+              search
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+                .toLowerCase()
+            )
+        ) {
+          return (
+            <div key={index}>
+              {article.length !== 0 && (
+                <DocumentCard
+                  name={article[0]}
+                  description={article[3]}
+                  img_url={article[4]}
+                  id={articlesData!.length - 1 - index}
+                  type={article[2]}
+                  imgAuthor={article[8] != " " ? article[8] : undefined}
+                  imgPage={article[9] != " " ? article[9] : undefined}
+                />
+              )}
+            </div>
+          );
         }
     });
 
     let presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
-        if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(search.toLowerCase()))) {
-            return(
-                <div key={presentation}>
-                {
-                    presentation.length !== 0 && <DocumentCard 
-                            name={presentationsAsStringArrayTitle![index]}
-                            description={""}
-                            img_url={`https://drive.google.com/uc?id=${presentation}`}
-                            id={presentation}
-                            type={"presentation"} imgAuthor={undefined} imgPage={undefined}                    />
-                }
-                </div>
-            );
+        if (
+          presentationsAsStringArrayTitle![index]
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .includes(
+              search
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+            )
+        ) {
+          return (
+            <div key={presentation}>
+              {presentation.length !== 0 && (
+                <DocumentCard
+                  name={presentationsAsStringArrayTitle![index]}
+                  description={""}
+                  img_url={`https://drive.google.com/uc?id=${presentation}`}
+                  id={presentation}
+                  type={"presentation"}
+                  imgAuthor={undefined}
+                  imgPage={undefined}
+                />
+              )}
+            </div>
+          );
         }
     });
 
