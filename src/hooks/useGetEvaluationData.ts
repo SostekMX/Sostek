@@ -15,7 +15,7 @@ const useGetEvaluationData = (sheetsID : string | undefined) => {
         }).then(function() {
         // 3. Initialize and make the API request.
         return gapi.client.request({
-            'path': `https://sheets.googleapis.com/v4/spreadsheets/${sheetsID}/values:batchGet?ranges=preguntas!A2%3AB9&ranges=respuestas!A2%3AG9&ranges=puntos!A2%3AG9&key=${key}`,
+            'path': `https://sheets.googleapis.com/v4/spreadsheets/${sheetsID}/values:batchGet?ranges=preguntas!A2%3AB50&ranges=respuestas!A2%3AG50&ranges=puntos!A2%3AG50&key=${key}`,
         })
         // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
         }).then(function(response) {

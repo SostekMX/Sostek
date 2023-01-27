@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import './EvaluationCard.css';
 import { IonCard, 
-    IonCardContent,
-    IonCardHeader,
     IonCardSubtitle, 
-    IonImg, 
-    IonText,
-
+    IonImg
  } from '@ionic/react';
 interface EvaluationCardProps{
     name: string,

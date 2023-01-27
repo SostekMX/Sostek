@@ -17,16 +17,11 @@ const Tab1: React.FC = () => {
   let driveID = process.env.REACT_APP_DRIVE_ID;
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
   //const {files, lastFile, loading } = useGetDocuments(driveID);
-  const { articlesData, lastArticleData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
-  const { files, loading } = useGetDocuments(driveID);
+  const { articlesDataReversed, lastArticleData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
 
-  let articlesAsStringArrayById = files?.map((url) => {
-    return url.id;
-  })
   const [displayTutorial, setDisplayTutorial] = useState<boolean>(false);
   const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID);
   const { tutorial } = useContext(AppContext); 
-  const articlesDataReversed = loadingData ? [[]] :  [...articlesData!].reverse();
   //addToFiles(files);
   useEffect(() => {
     // NativeStorage.getItem("login").then(
@@ -47,7 +42,7 @@ const Tab1: React.FC = () => {
       
         </IonHeader>
         {
-          !loadingData && !loading && !loadingForAllPresentations && <> 
+          !loadingData && !loadingForAllPresentations && <> 
             {/* <ArticleCardModalWrapper files={lastFile} /> */}
             <ArticleCardModal 
               title={lastArticleData![0]} 
@@ -55,10 +50,10 @@ const Tab1: React.FC = () => {
               body={lastArticleData![3]}
               imageUrl={lastArticleData![4]} 
               author={lastArticleData![5]}
-              id={articlesAsStringArrayById?.at(0)!}
+              id={articlesDataReversed!.length - 1}
         />
              {displayTutorial &&<InitialTutorial />}
-            <ArticleCarrousel articlesData={articlesDataReversed} articlesIdData={articlesAsStringArrayById!} loadingData={loadingData} presentations={presentations}/>
+            <ArticleCarrousel articlesData={articlesDataReversed} loadingData={loadingData} presentations={presentations}/>
           </>
         }
       </IonContent>

@@ -4,6 +4,8 @@ const useGetSingleExcelAllData = (sheetsID : string | null | undefined) => {
   const [loadingData, setLoadingData] = useState(true);
   const [articlesData, setArticlesData] = useState<Array<Array<string>> | null | undefined>(null);
   const [lastArticleData, setLastArticleData] = useState<Array<string> | null | undefined>(null);
+  const [articlesDataReversed, setArticlesDataReversed] = useState<Array<Array<string>> | null | undefined>([[]]);
+
 useEffect(() => {
 
   // 1. Initialize and get all files in drive folder (In this case are google sheets)
@@ -21,10 +23,11 @@ useEffect(() => {
         })
         // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
         }).then(function(response) {
-            console.log(response.result.valueRanges[0].values)
         setArticlesData(response.result.valueRanges[0].values);
+        localStorage.setItem("articles", JSON.stringify(response.result.valueRanges[0].values))
         setLastArticleData(response.result.valueRanges[0].values.at(-1));
-        lastArticleData ? console.log(lastArticleData) : console.log("");
+        setArticlesDataReversed([...response.result.valueRanges[0].values].reverse());
+        console.log(response.result.valueRanges[0].values);
         }, function(reason) {
         console.log('Error: ' + reason.result.error.message);
         }).then(function() {
@@ -32,13 +35,20 @@ useEffect(() => {
         })
   };
   
-  if(loadingData) {
+  if(localStorage.getItem("articles")) {
+    const parsedArticles = JSON.parse(localStorage.getItem("articles")!)
+    console.log(parsedArticles)
+    setLastArticleData(parsedArticles.at(-1));
+    setArticlesDataReversed([...parsedArticles].reverse());
+    setLoadingData(false);
+  }
+  else if(loadingData) {
         // 1. Load the JavaScript client library.
         gapi.load('client', start);
     }
     }, []);
 
-  return {articlesData, lastArticleData, loadingData};
+  return {articlesData, articlesDataReversed, lastArticleData, loadingData};
 }
 
 export default useGetSingleExcelAllData;

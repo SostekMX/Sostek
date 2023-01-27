@@ -5,6 +5,7 @@ import AppContext from '../context/AppContext';
 
 interface props {
     question: string | undefined;
+    category: string | undefined;
     comments: string | undefined;
     options: Array<string> | undefined;
     points: Array<string> | undefined;
@@ -13,7 +14,7 @@ interface props {
 /* Question card component that requires a question, comments (could be specific instructions for particular questions),
  * options (an array of all the options, doesn't matter the size).
  */
-const QuestionTestCard: React.FC<props> = ({ question, comments, options, points }) => {
+const QuestionTestCard: React.FC<props> = ({ question, category, comments, options, points }) => {
     // Variable that holds the choice the user selected
     const [selection, setSelection] = useState<string>();
     let sumArray : Array<boolean> = [];
@@ -41,7 +42,7 @@ const QuestionTestCard: React.FC<props> = ({ question, comments, options, points
                                 <IonItem class="ion-text-wrap">
                                     <IonCheckbox
                                     // The answer has the question and score added to prevent another answer to conflict in sumScore
-                                    onIonChange={(e) => addScore!(`${question}${option}${points![index]}`, index)} 
+                                    onIonChange={(_e: any) => addScore!(category!,`${question}${option}${points![index]}`, index)} 
                                     class="ion-text-wrap"
                                     slot="start" 
                                     value={Number(points![index])} />

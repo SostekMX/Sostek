@@ -7,6 +7,7 @@ import AppBarPopOver from '../../components/AppBarPopOver';
 import { AppBarMenu } from '../../components/AppBarMenu';
 import useGetDocumentData from '../../hooks/useGetDocumentData';
 import AppContext from '../../context/AppContext';
+import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
 
 interface PropsParams{
   imgAuthor? : string,
@@ -21,24 +22,20 @@ interface RouteParams{
 
 const Documents: React.FC<PropsParams>= ({imgAuthor, imgPage}) => {
     const {id} = useParams<RouteParams>();
-    const {article, loading} = useGetDocumentData(id);
-    const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
-  useEffect(() => {
-
-  }, [loading]);
-
+    // const {article, loading} = useGetDocumentData(id);
+  const { articlesData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
     return(
       <IonPage>
-        <div className={loading ? 'colorful_appbar_document' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
-        <div className={loading ? 'transparent_appbar_document' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
+        <div className={loadingData ? 'colorful_appbar_document' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
+        <div className={loadingData ? 'transparent_appbar_document' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
         
        {/* <IonContent fullscreen class='bg-img'> */}
         <IonContent fullscreen class='bg-img'>
-          <img className={loading ? "imageArticleLoading visible" : "imageArticleLoading hidden"}
+          <img className={loadingData ? "imageArticleLoading visible" : "imageArticleLoading hidden"}
           src="/assets/Spinner-1s-200px_transparent.svg"
           alt="loading image" />
-          <img className={loading ? "imageArticle hidden" : "imageArticle visible"}
-          src={loading ? "/assets/Spinner-1s-200px_transparent.svg" : article[4]} 
+          <img className={loadingData ? "imageArticle hidden" : "imageArticle visible"}
+          src={loadingData ? "/assets/Spinner-1s-200px_transparent.svg" : articlesData![Number(id)][4]} 
         />
         
            { (imgPage || imgAuthor) &&
@@ -57,13 +54,17 @@ const Documents: React.FC<PropsParams>= ({imgAuthor, imgPage}) => {
            <IonCol className='content__container'>
                 <IonRow>
                     <IonText className='content-row title__document ion-text-wrap'>
-                        {article[0]}
+                        {
+                            !loadingData && articlesData![Number(id)][0]
+                        }
                     </IonText>
                 </IonRow>
                 <br></br>
                 <IonRow className = 'content-row content__document'>
                     <IonText>
-                        {article[3]}
+                        {
+                        !loadingData && articlesData![Number(id)][3]
+                        }
                     </IonText>
                 </IonRow>
             </IonCol>

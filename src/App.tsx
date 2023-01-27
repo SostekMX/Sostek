@@ -41,6 +41,7 @@ import Documents from './pages/document/Documents';
 import { AppProvider } from './context/AppContext';
 import { useState } from 'react';
 import Evaluation from './pages/evaluation/Evaluation';
+import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
 
 setupIonicReact();
 
@@ -66,7 +67,7 @@ const App: React.FC = () => {
             <Route exact path="/tab2">
                 <Tab2 />
             </Route>
-            <Route path="/tab3">
+            <Route exact path="/tab3">
                 <Tab3 />
             </Route>
             <Route path="/Profile">
@@ -80,6 +81,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/Evaluation/:name/:id" >
               <Evaluation />
+            </Route>
+            <Route exact path="/score/:name" >
+              <FinalScoreEvaluation />
             </Route>
 
         </IonRouterOutlet>
