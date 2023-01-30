@@ -1,14 +1,9 @@
-import { useState, useEffect } from 'react';
-import { dummyArticlesContent } from '../pages/document/DocumentsData';
-
-const useGetDocumentData = (sheetsID : string | undefined) => {
-        const [article, setArticle] = useState<Array<string>>(
-        ['','', '', '', '', '', '', '']
-    );
-    const [loading, setLoading] = useState(true);
-    let key = process.env.REACT_APP_PRIVATE_API_KEY;
+const useGetConfiguration =  async(sheetsID : string | undefined, configurationsArray: Array<string>, indexOfConfiguration: Array<number>) => {
+    // let sheets: Array<string> =[];
+    let sheets: string = "";
     
-    useEffect(() => {
+    let loading: boolean = true;
+    let key = process.env.REACT_APP_PRIVATE_API_KEY;
         // 1. Initialize and get all files in drive folder (In this case are google sheets)
     function start() {
         // 2. Initialize the JavaScript client library.
@@ -20,14 +15,14 @@ const useGetDocumentData = (sheetsID : string | undefined) => {
         return gapi.client.request({
             'path': `https://sheets.googleapis.com/v4/spreadsheets/${sheetsID}/values/A1%3AJ2?key=${key}`,
         })
-        // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
+        // 4.1. If the response is succesful, get the info to display.
         }).then(function(response) {
-            setArticle(response.result.values[1]);
+            sheets = response.result.values[1][0];
+            // console.log(response.result.values[1]);
         }, function(reason) {
-            setArticle(dummyArticlesContent[0]);
             console.log('Error: ' + reason.result.error.message);
         }).then(function() {
-            setLoading(false);
+            loading = false;
         })
     };
     
@@ -35,8 +30,7 @@ const useGetDocumentData = (sheetsID : string | undefined) => {
         // 1. Load the JavaScript client library.
         gapi.load('client', start);
     }
-    }, [])
-    return {article, loading};
+    return {sheets, loading};
 }
 
-export default useGetDocumentData;
+export default useGetConfiguration;

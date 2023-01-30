@@ -35,7 +35,7 @@ const FinalScoreEvaluation: React.FC = () => {
         <IonHeader collapse="condense"></IonHeader>
         <div className="under_construction-container">
           <p className="under_construction_text">
-            <b>El resultado de la evaluación que realizaste es de:</b>
+            <b>El resultado de la evaluación {name} que realizaste es de:</b>
           </p>
           <p className="under_construction_text">
             <b>{score}</b>
