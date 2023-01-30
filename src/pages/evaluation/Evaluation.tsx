@@ -3,13 +3,10 @@ import {
   IonButton,
   IonContent,
   IonHeader,
-  IonLoading,
   IonPage,
   IonRow,
-  IonTitle,
-  IonToolbar,
 } from "@ionic/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useParams } from "react-router";
 import AppBarPopOver from "../../components/AppBarPopOver";
 import QuestionTestCard from "../../components/QuestionTestCard";
@@ -25,7 +22,7 @@ const Evaluation: React.FC = () => {
   const { name, id } = useParams<RouteParams>();
   const { evaluation, loading } = useGetEvaluationData(id);
   const { score, currentAnswersAndScores } = useContext(AppContext);
-  console.log(evaluation);
+  // console.log(evaluation);
   function setFinalScore() {
     let arrayOfCategories: string[] = [];
     let arrayOfScore: number[] = [];
@@ -75,7 +72,7 @@ const Evaluation: React.FC = () => {
                 : "imageArticleLoading hidden"
             }
             src="/assets/Spinner-1s-200px_transparent.svg"
-            alt="loading image"
+            alt="loading"
             style={{ position: "fixed" }}
           />
         }

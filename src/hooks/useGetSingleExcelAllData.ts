@@ -27,7 +27,7 @@ useEffect(() => {
         localStorage.setItem("articles", JSON.stringify(response.result.valueRanges[0].values))
         setLastArticleData(response.result.valueRanges[0].values.at(-1));
         setArticlesDataReversed([...response.result.valueRanges[0].values].reverse());
-        console.log(response.result.valueRanges[0].values);
+        // console.log(response.result.valueRanges[0].values);
         }, function(reason) {
         console.log('Error: ' + reason.result.error.message);
         }).then(function() {
@@ -37,8 +37,9 @@ useEffect(() => {
   
   if(localStorage.getItem("articles")) {
     const parsedArticles = JSON.parse(localStorage.getItem("articles")!)
-    console.log(parsedArticles)
+    // console.log(parsedArticles)
     setLastArticleData(parsedArticles.at(-1));
+    setArticlesData(parsedArticles);
     setArticlesDataReversed([...parsedArticles].reverse());
     setLoadingData(false);
   }

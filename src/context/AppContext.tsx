@@ -56,8 +56,8 @@ export const AppProvider: FC<Children> = ({children}) => {
       // console.log(answer, value)
       // console.log(currentAnswersAndScores.has(answer))
       if(currentAnswersAndScores.has(answer)) {
-        console.log(typeof(score))
-        console.log(typeof(currentAnswersAndScores.get(answer)!.value))
+        // console.log(typeof(score))
+        // console.log(typeof(currentAnswersAndScores.get(answer)!.value))
 
         setScore(score - currentAnswersAndScores.get(answer)!.value);
         currentAnswersAndScores.delete(answer);

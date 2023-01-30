@@ -12,13 +12,13 @@ import InitialTutorial from '../../components/tutorial/InitialTutorial';
 import AppContext from '../../context/AppContext';
 import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
 import ArticleCardModal from '../../components/ArticleCardModal';
+import useGetConfiguration from '../../hooks/useGetConfiguration';
 
 const Tab1: React.FC = () => {
-  let driveID = process.env.REACT_APP_DRIVE_ID;
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
+
   //const {files, lastFile, loading } = useGetDocuments(driveID);
   const { articlesDataReversed, lastArticleData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
-
   const [displayTutorial, setDisplayTutorial] = useState<boolean>(false);
   const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID);
   const { tutorial } = useContext(AppContext); 

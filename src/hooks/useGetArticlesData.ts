@@ -60,7 +60,7 @@ useEffect(() => {
   if(files != null) {
       gapi.load('client', start);
   }
-}, [files])
+}, [])
 
   return {articlesData, loading};
 }
