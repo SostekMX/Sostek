@@ -93,7 +93,7 @@ const App: React.FC = () => {
             </IonRouterOutlet>
               <IonTabBar className={window.location.pathname == '/' ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom"
                     onIonTabsWillChange={() => {
-                        changeSearch! //no se si este bien -> changeSearch!("") //change
+                        changeSearch!
                     }}>
                 <IonTabButton tab="tab1" href="/tab1">
                   <IonLabel className='tab-bar__label'><strong>APRENDE</strong></IonLabel>
