@@ -45,9 +45,11 @@ export const AppProvider: FC<Children> = ({children}) => {
     const toggleDark = () => {
       setDark(!dark);
     };
+    
     const changeSearch = (currentSearch : string) => {
       setSearch(currentSearch);
     }
+
     const toggleTutorial = (value : boolean) => {
       setTutorial(value);
     };
