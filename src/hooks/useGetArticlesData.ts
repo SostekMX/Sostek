@@ -1,5 +1,12 @@
 import { useState, useEffect} from 'react';
 import { File } from '../models/File';
+
+/**
+ * @deprecated
+ * @description Pending change to 'useGetSingleExcelAllData'. Many files depends on this logic.
+ * @param files 
+ * @returns 
+ */
 const useGetArticlesData = (files: Array<File> | null | undefined) => {
   let key = process.env.REACT_APP_PRIVATE_API_KEY;
   const [loading, setLoading] = useState(true);
@@ -53,7 +60,7 @@ useEffect(() => {
   if(files != null) {
       gapi.load('client', start);
   }
-}, [files])
+}, [])
 
   return {articlesData, loading};
 }

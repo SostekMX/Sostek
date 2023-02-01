@@ -46,6 +46,7 @@ import Documents from './pages/document/Documents';
 import AppContext, { AppProvider } from './context/AppContext';
 import { useContext, useState } from 'react';
 import Evaluation from './pages/evaluation/Evaluation';
+import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
 
 setupIonicReact();
 
@@ -89,6 +90,7 @@ const App: React.FC = () => {
                 <Route exact path="/Evaluation/:name/:id" >
                   <Evaluation />
                 </Route>
+
 
             </IonRouterOutlet>
               <IonTabBar className={window.location.pathname == '/' ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom"

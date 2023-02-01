@@ -5,12 +5,12 @@ interface IAppContext {
     search: string;
     tutorial: boolean;
     score: number;
-    currentAnswersAndScores: Map<string, number>,
+    currentAnswersAndScores: Map<string, {category: string, value: number}>,
     transparentToolbar: boolean,
     changeSearch?: (currentSearch : string) => void;
     toggleDark?: () => void;
     toggleTutorial?: (value : boolean) => void;
-    addScore?: (answer : string, value : number) => void;
+    addScore?: (category: string, answer : string, value : number) => void;
     toggleTransparent?: (value : boolean) => void;
 }
 
@@ -47,22 +47,26 @@ export const AppProvider: FC<Children> = ({children}) => {
     };
     
     const changeSearch = (currentSearch : string) => {
+      sessionStorage.setItem("search", currentSearch);
       setSearch(currentSearch);
     }
 
     const toggleTutorial = (value : boolean) => {
       setTutorial(value);
     };
-    const addScore = (answer : string, value : number) => {
+    const addScore = (category: string, answer : string, value : number) => {
       // console.log(answer, value)
       // console.log(currentAnswersAndScores.has(answer))
       if(currentAnswersAndScores.has(answer)) {
-        setScore(score - currentAnswersAndScores.get(answer)!);
+        // console.log(typeof(score))
+        // console.log(typeof(currentAnswersAndScores.get(answer)!.value))
+
+        setScore(score - currentAnswersAndScores.get(answer)!.value);
         currentAnswersAndScores.delete(answer);
       }
       else {
         setScore(score + value);
-        currentAnswersAndScores.set(answer, value);
+        currentAnswersAndScores.set(answer, {category: category, value: value});
       }
     }
 

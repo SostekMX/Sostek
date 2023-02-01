@@ -12,7 +12,7 @@ interface DocumentProps{
     name: string,
     description: string,
     img_url :string,
-    id:string,
+    id:number,
     type: string,
     imgAuthor: string | undefined,
     imgPage: string | undefined
@@ -22,7 +22,7 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id, 
     const [imgLoading, setImgLoading] = useState(true);
     return(
         < >
-            <IonCard button routerDirection='forward'  href={type === "article" ? `/Documents/${id}` : `/presentation/${id}` }>
+            <IonCard button routerDirection='forward'  routerLink={type === "article" ? `/Documents/${id}` : `/presentation/${id}` }>
                 <img className={imgLoading ? "image-card-loading visible" : "image-card-loading hidden"}
                     src="/assets/Spinner-1s-200px_transparent.svg"
                     alt="loading image" />
@@ -30,7 +30,7 @@ const DocumentCard: React.FC<DocumentProps> = ({name, description, img_url, id, 
                     onIonImgDidLoad={() => {setImgLoading(false)}}
                     src={imgLoading ? "/assets/Spinner-1s-200px_transparent.svg" : img_url} 
                 />
-                <IonCardHeader style={{"padding-top":"10px", "padding-bottom":"5px"}}>
+                <IonCardHeader style={{"paddingTop":"10px", "paddingBottom":"5px"}}>
                 { (imgPage || imgAuthor) &&
                 <IonCardSubtitle>
                     Imagen

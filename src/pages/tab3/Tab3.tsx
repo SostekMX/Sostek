@@ -21,7 +21,7 @@ const Tab3: React.FC = () => {
         case 'architect':
           if (file.name.toLowerCase().includes('arquitectura')){
             return (
-              <EvaluationCard 
+              <EvaluationCard key={file.id}
                 name={file.name} 
                 img={`/assets/test${index + 1}.jpg`} 
                 id={file.id} />

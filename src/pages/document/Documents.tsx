@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { IonCardSubtitle, IonCol, IonContent, IonHeader, IonImg, IonPage, IonRow, IonText, IonTitle} from '@ionic/react';
+import React from 'react';
+import { IonCardSubtitle, IonCol, IonContent, IonPage, IonRow, IonText} from '@ionic/react';
 import './Documents.css'
-import { RouteComponentProps, useParams } from 'react-router';
-import { dummyArticlesContent } from './DocumentsData';
+import { useParams } from 'react-router';
 import AppBarPopOver from '../../components/AppBarPopOver';
 import { AppBarMenu } from '../../components/AppBarMenu';
-import useGetDocumentData from '../../hooks/useGetDocumentData';
-import AppContext from '../../context/AppContext';
+import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
 
 interface PropsParams{
   imgAuthor? : string,
@@ -14,31 +12,28 @@ interface PropsParams{
 }
 
 interface RouteParams{
-    id:string,
+    id: string,
     imgAuthor? : string,
     imgPage? : string
 }
 
 const Documents: React.FC<PropsParams>= ({imgAuthor, imgPage}) => {
     const {id} = useParams<RouteParams>();
-    const {article, loading} = useGetDocumentData(id);
-    const [hasNotBeenCalled, setHasNotBeenCalled] = useState(true);
-  useEffect(() => {
-
-  }, [loading]);
-
+  const { articlesData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
+//   console.log(articlesData);
     return(
       <IonPage>
-        <div className={loading ? 'colorful_appbar_document' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
-        <div className={loading ? 'transparent_appbar_document' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
+        <div className={loadingData ? 'colorful_appbar_document' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
+        <div className={loadingData ? 'transparent_appbar_document' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
         
        {/* <IonContent fullscreen class='bg-img'> */}
         <IonContent fullscreen class='bg-img'>
-          <img className={loading ? "imageArticleLoading visible" : "imageArticleLoading hidden"}
+          <img className={loadingData ? "imageArticleLoading visible" : "imageArticleLoading hidden"}
           src="/assets/Spinner-1s-200px_transparent.svg"
-          alt="loading image" />
-          <img className={loading ? "imageArticle hidden" : "imageArticle visible"}
-          src={loading ? "/assets/Spinner-1s-200px_transparent.svg" : article[4]} 
+          alt="loading" />
+          <img className={loadingData ? "imageArticle hidden" : "imageArticle visible"}
+          src={loadingData ? "/assets/Spinner-1s-200px_transparent.svg" : articlesData![Number(id)][4]} 
+          alt={loadingData ? "loading" : articlesData![Number(id)][0]}
         />
         
            { (imgPage || imgAuthor) &&
@@ -57,13 +52,17 @@ const Documents: React.FC<PropsParams>= ({imgAuthor, imgPage}) => {
            <IonCol className='content__container'>
                 <IonRow>
                     <IonText className='content-row title__document ion-text-wrap'>
-                        {article[0]}
+                        {
+                            !loadingData && articlesData![Number(id)][0]
+                        }
                     </IonText>
                 </IonRow>
                 <br></br>
                 <IonRow className = 'content-row content__document'>
                     <IonText>
-                        {article[3]}
+                        {
+                        !loadingData && articlesData![Number(id)][3]
+                        }
                     </IonText>
                 </IonRow>
             </IonCol>

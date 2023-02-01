@@ -18,7 +18,7 @@ const Presentation: React.FC = () => {
   const {driveId} = useParams<RouteParams>();
   const {urlImages, loading} = useGetPresentationImages(driveId);
   const [imgLoading, setImgLoading] = useState(true);
-  console.log(urlImages)
+  // console.log(urlImages)
   return (
     <IonPage>
         <AppBarPopOver></AppBarPopOver>
@@ -34,7 +34,7 @@ const Presentation: React.FC = () => {
         >
           {
             urlImages?.map((url : any) => {
-                console.log(url.id);
+                // console.log(url.id);
                 return (
                     <SwiperSlide>
                       <IonImg 

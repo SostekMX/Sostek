@@ -1,0 +1,8 @@
+.finalScoreEvaluation__category {
+    color: var(--ion-color-primary);
+}
+
+.finalScoreEvaluation__button{
+    margin-inline: auto;
+    display: flex;
+}

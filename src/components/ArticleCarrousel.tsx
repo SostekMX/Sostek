@@ -7,61 +7,99 @@ import useGetArticlesData from '../hooks/useGetArticlesData';
 import useGetFirstImageOfPresentations from '../hooks/useGetFirstImageOfPresentations';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import AppContext from '../context/AppContext';
+import useGetDocuments from '../hooks/useGetDocuments';
 
 interface props {
-    files: Array<File> | null | undefined;
+    articlesData: Array<Array<string>> | null | undefined;
+    loadingData: boolean;
     presentations: Array<File>| null | undefined;
   }
 
-const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
+const ArticleCarrousel: React.FC<props> = ({articlesData, loadingData, presentations}) => {
   const [currentOption, setCurrentOption] = useState('');
   const {search} = useContext(AppContext);
 
-  const {articlesData, loading} = useGetArticlesData(files);
+  //const {articlesData, loading} = useGetArticlesData(files);
     let presentationsAsStringArrayById = presentations?.map((url) => {
          return url.id;
     });
+
     let presentationsAsStringArrayTitle = presentations?.map((url) => {
         return url.name;
    });
-    const { urlImages, loadingForPresentation } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
+    const { loadingForPresentation } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
     //console.log(urlImages);
     //console.log(articlesData);
 
-    let articleCards = !loading && articlesData!.map((article : any) => {
-        if ((article[6].toLowerCase().includes(search.toLowerCase()) || article[0].toLowerCase().includes(search.toLowerCase()))) {
-            return(
-                <div key={article[10]}>
-                {
-                    article.length !== 0 && <DocumentCard 
-                        name={article[0]}
-                        description={article[3]}
-                        img_url={article[4]}
-                        id={article[10]}
-                        type={article[2]} 
-                        imgAuthor={article[8] != " " ? article[8] : undefined} 
-                        imgPage={article[9] != " " ? article[9] : undefined}
-                    />
-                }
-                </div>
-            );
+    let articleCards = !loadingData && articlesData!.map((article : any, index) => {
+        if (
+          article[6]
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .includes(
+              search
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+                .toLowerCase()
+            ) ||
+          article[0]
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .includes(
+              search
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+                .toLowerCase()
+            )
+        ) {
+          return (
+            <div key={index}>
+              {article.length !== 0 && (
+                <DocumentCard
+                  name={article[0]}
+                  description={article[3]}
+                  img_url={article[4]}
+                  id={articlesData!.length - 1 - index}
+                  type={article[2]}
+                  imgAuthor={article[8] != " " ? article[8] : undefined}
+                  imgPage={article[9] != " " ? article[9] : undefined}
+                />
+              )}
+            </div>
+          );
         }
     });
 
     let presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
-        if ((presentationsAsStringArrayTitle![index].toLowerCase().includes(search.toLowerCase()))) {
-            return(
-                <div key={presentation}>
-                {
-                    presentation.length !== 0 && <DocumentCard 
-                            name={presentationsAsStringArrayTitle![index]}
-                            description={""}
-                            img_url={`https://drive.google.com/uc?id=${presentation}`}
-                            id={presentation}
-                            type={"presentation"} imgAuthor={undefined} imgPage={undefined}                    />
-                }
-                </div>
-            );
+        if (
+          presentationsAsStringArrayTitle![index]
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .includes(
+              search
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+            )
+        ) {
+          return (
+            <div key={presentation}>
+              {presentation.length !== 0 && (
+                <DocumentCard
+                  name={presentationsAsStringArrayTitle![index]}
+                  description={""}
+                  img_url={`https://drive.google.com/uc?id=${presentation}`}
+                  id={presentation}
+                  type={"presentation"}
+                  imgAuthor={undefined}
+                  imgPage={undefined}
+                />
+              )}
+            </div>
+          );
         }
     });
 
@@ -88,17 +126,17 @@ const ArticleCarrousel: React.FC<props> = ({files, presentations}) => {
                 </IonHeader>
                 {
                     <div>
-                        <img className={loading ? "imageArticleLoading visible"
+                        <img className={loadingData ? "imageArticleLoading visible"
                         : "imageArticleLoading hidden"}
                         src="/assets/Spinner-1s-200px_transparent.svg"
                         alt="loading image" 
                         style={{"position":"fixed"}}/>
                     </div>
                 }
-                <div className={loading ? "ion-content-scroll-host hidden" : "ion-content-scroll-host visible"}>
+                <div className={loadingData ? "ion-content-scroll-host hidden" : "ion-content-scroll-host visible"}>
 
                     {
-                        !loading  && !loadingForPresentation && currentOption === "" ? <div>
+                        !loadingData  && !loadingForPresentation && currentOption === "" ? <div>
                             {articleCards}
                             {presentationCards}
                              </div> : currentOption === "article" ? <div> 
