@@ -79,3 +79,12 @@ h3, h4 {
 .appbar__searchbar-container ion-searchbar  div input {
     background: inherit !important;
 }
+
+.tab-bar--hidden{
+    display: none;
+    opacity: 0;
+}
+
+.tab-bar--visible{
+    opacity: 1;
+}

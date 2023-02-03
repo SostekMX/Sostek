@@ -45,10 +45,12 @@ export const AppProvider: FC<Children> = ({children}) => {
     const toggleDark = () => {
       setDark(!dark);
     };
+    
     const changeSearch = (currentSearch : string) => {
       sessionStorage.setItem("search", currentSearch);
       setSearch(currentSearch);
     }
+
     const toggleTutorial = (value : boolean) => {
       setTutorial(value);
     };

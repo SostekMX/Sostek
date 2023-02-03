@@ -79,7 +79,7 @@ const MainMenu: React.FC = () => {
                     </Route>
                 
                 </IonRouterOutlet>
-                <IonTabBar slot="bottom"
+                {/* <IonTabBar slot="bottom"
                 onIonTabsWillChange={() => {
                     changeSearch!("")
                 }}
@@ -97,7 +97,7 @@ const MainMenu: React.FC = () => {
                     <IonTabButton tab="tab3" href="/tab3">
                     <IonLabel className='tab-bar__label'><strong>EVALU&Aacute;TE</strong></IonLabel>
                     </IonTabButton>
-                </IonTabBar>
+                </IonTabBar> */}
                 </IonTabs>
             </IonReactRouter>
         </IonContent>
