@@ -18,13 +18,23 @@ interface RouteParams{
 }
 
 const Documents: React.FC<PropsParams>= ({imgAuthor, imgPage}) => {
+    const [changeColorClass, setChangeColorClass] = useState <boolean> (true);
+
+    window.onscroll = () => {
+        if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+            setChangeColorClass(true);
+        } else {
+            setChangeColorClass(false);
+        }
+    }
+
     const {id} = useParams<RouteParams>();
   const { articlesData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
 //   console.log(articlesData);
     return(
       <IonPage>
-        <div className={loadingData ? 'colorful_appbar_document' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
-        <div className={loadingData ? 'transparent_appbar_document' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
+        <div className={loadingData || changeColorClass ? 'colorful_appbar_document visible' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
+        <div className={loadingData || changeColorClass ? 'transparent_appbar_document hidden' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
         
        {/* <IonContent fullscreen class='bg-img'> */}
         <IonContent fullscreen class='bg-img'>
