@@ -42,28 +42,18 @@ const FinalScoreEvaluation: React.FC = () => {
           </p>
           {
             <>
-              {score >= 150 && (
+              {score >= 90 && (
                 <p className="under_construction_text">
                   Felicidades, tuviste una puntuación alta
                 </p>
               )}
-              {score >= 120 && score < 150 && (
+              {score >= 75 && score < 90 && (
                 <p className="under_construction_text">
                   Tu proyecto cuenta con una buena base pero todavia tienes
                   &aacute;reas por mejorar
                 </p>
               )}
-              {score >= 90 && score < 120 && (
-                <p className="under_construction_text">
-                  Felicidades, tuviste una puntuación alta
-                </p>
-              )}
-              {score >= 50 && score < 90 && (
-                <p className="under_construction_text">
-                  Felicidades, tuviste una puntuación alta
-                </p>
-              )}
-              {score < 50 && (
+              {score < 75 && (
                 <div>
                   <p className="under_construction_text">
                     Este resultado indica que tienes areas que mejorar.
@@ -87,7 +77,8 @@ const FinalScoreEvaluation: React.FC = () => {
                     color="light-green"
                     className="finalScoreEvaluation__button"
                     onClick={(e) => {
-                      changeSearch!(weakestCategory);
+                      //changeSearch!(weakestCategory);
+                      sessionStorage.setItem("search", weakestCategory);
                       for (
                         let i = 0;
                         i < Number(sessionStorage.getItem("totalCategories"));

@@ -51,66 +51,80 @@ import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluat
 setupIonicReact();
 
 const App: React.FC = () => {
-  const {changeSearch} = useContext(AppContext);
+          const { changeSearch } = useContext(AppContext);
+
+
 
   return (
     <AppProvider>
-    <IonApp>
-      <IonContent>
-        <IonReactRouter>
-          <IonTabs>
-            <IonRouterOutlet>
+      <IonApp>
+        <IonContent>
+          <IonReactRouter>
+            <IonTabs>
+              <IonRouterOutlet>
                 <Route exact path="/MainMenu">
-                  <Tab1/>
+                  <Tab1 />
                 </Route>
                 <Route exact path="/">
-                    <LogIn/>
+                  <LogIn />
                 </Route>
                 <Route exact path="/SignUp">
-                    <SignUp/>
+                  <SignUp />
                 </Route>
                 <Route exact path="/tab1">
-                    <Tab1/>
+                  <Tab1 />
                 </Route>
                 <Route exact path="/tab2">
-                    <Tab2 />
+                  <Tab2 />
                 </Route>
                 <Route path="/tab3">
-                    <Tab3 />
+                  <Tab3 />
                 </Route>
                 <Route path="/Profile">
-                    <Profile />
+                  <Profile />
                 </Route>
-                <Route exact path='/Documents/:id'>
-                            <Documents/>
-                        </Route>
+                <Route exact path="/Documents/:id">
+                  <Documents />
+                </Route>
                 <Route exact path="/presentation/:driveId">
-                <Presentation />
+                  <Presentation />
                 </Route>
-                <Route exact path="/Evaluation/:name/:id" >
+                <Route exact path="/Evaluation/:name/:id">
                   <Evaluation />
                 </Route>
-
-
-            </IonRouterOutlet>
-              <IonTabBar className={window.location.pathname == '/' ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom"
-                    onIonTabsWillChange={() => {
-                        changeSearch!
-                    }}>
+                <Route exact path="/score/:name">
+                  <FinalScoreEvaluation />
+                </Route>
+              </IonRouterOutlet>
+              <IonTabBar
+                className={
+                  window.location.pathname == "/"
+                    ? "tab-bar--hidden"
+                    : "tab-bar--visible"
+                }
+                slot="bottom"
+                onIonTabsWillChange={() => {changeSearch("");}}
+              >
                 <IonTabButton tab="tab1" href="/tab1">
-                  <IonLabel className='tab-bar__label'><strong>APRENDE</strong></IonLabel>
+                  <IonLabel className="tab-bar__label">
+                    <strong>APRENDE</strong>
+                  </IonLabel>
                 </IonTabButton>
                 <IonTabButton tab="tab2" href="/tab2">
-                  <IonLabel className='tab-bar__label'><b>JUEGA</b></IonLabel>
-                </IonTabButton>              
+                  <IonLabel className="tab-bar__label">
+                    <b>JUEGA</b>
+                  </IonLabel>
+                </IonTabButton>
                 <IonTabButton tab="tab3" href="/tab3">
-                  <IonLabel className='tab-bar__label'><strong>EVALU&Aacute;TE</strong></IonLabel>
+                  <IonLabel className="tab-bar__label">
+                    <strong>EVALU&Aacute;TE</strong>
+                  </IonLabel>
                 </IonTabButton>
               </IonTabBar>
-          </IonTabs>
-        </IonReactRouter>
-      </IonContent>
-    </IonApp>
+            </IonTabs>
+          </IonReactRouter>
+        </IonContent>
+      </IonApp>
     </AppProvider>
   );
 };

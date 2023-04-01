@@ -97,7 +97,7 @@ const Tab3: React.FC = () => {
         </div>
         <div>
           <div className='under_construction-container'>
-            {!loading && <p className='under_construction_text'><b>Proximamente abr&aacute; otras evaluaciones.</b></p>}
+            {!loading && <p className='under_construction_text'><b>Proximamente habr&aacute;n otras evaluaciones.</b></p>}
           </div>
         </div>
       </IonContent>

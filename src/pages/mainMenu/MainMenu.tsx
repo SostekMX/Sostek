@@ -41,6 +41,7 @@ import Profile from '../profile/Profile';
 import Presentation from '../presentation/Presentation';
 import { useContext } from 'react';
 import AppContext from '../../context/AppContext';
+import FinalScoreEvaluation from '../finalScoreEvaluation/FinalScoreEvaluation';
 
 //import { useState } from 'react';
 
@@ -50,36 +51,37 @@ setupIonicReact();
 
 const MainMenu: React.FC = () => {
     const {changeSearch} = useContext(AppContext);
-    return(
-        <IonContent>
-            
-            <IonReactRouter>
-                <IonTabs>
-                <IonRouterOutlet>
-                    <Route exact path="/tab1">
-                        <Tab1/>
-                    </Route>
-                    <Route exact path="/tab2">
-                        <Tab2 />
-                    </Route>
-                    <Route path="/tab3">
-                        <Tab3 />
-                    </Route>
-                    <Route exact path='/Documents/:id'>
-                        <Documents/>
-                    </Route>
-                    <Route exact path='/MainMenu'>
-                        <Redirect to ="/tab1"/>
-                    </Route>
-                    <Route path="/Profile">
-                        <Profile />
-                    </Route>
-                    <Route exact path="/presentation/:driveId">
-                        <Presentation />
-                    </Route>
-                
-                </IonRouterOutlet>
-                {/* <IonTabBar slot="bottom"
+    return (
+      <IonContent>
+        <IonReactRouter>
+          <IonTabs>
+            <IonRouterOutlet>
+              <Route exact path="/tab1">
+                <Tab1 />
+              </Route>
+              <Route exact path="/tab2">
+                <Tab2 />
+              </Route>
+              <Route path="/tab3">
+                <Tab3 />
+              </Route>
+              <Route exact path="/Documents/:id">
+                <Documents />
+              </Route>
+              <Route exact path="/MainMenu">
+                <Redirect to="/tab1" />
+              </Route>
+              <Route path="/Profile">
+                <Profile />
+              </Route>
+              <Route exact path="/presentation/:driveId">
+                <Presentation />
+              </Route>
+              <Route exact path="/score/:name">
+                <FinalScoreEvaluation />
+              </Route>
+            </IonRouterOutlet>
+            {/* <IonTabBar slot="bottom"
                 onIonTabsWillChange={() => {
                     changeSearch!("")
                 }}
@@ -98,9 +100,9 @@ const MainMenu: React.FC = () => {
                     <IonLabel className='tab-bar__label'><strong>EVALU&Aacute;TE</strong></IonLabel>
                     </IonTabButton>
                 </IonTabBar> */}
-                </IonTabs>
-            </IonReactRouter>
-        </IonContent>
+          </IonTabs>
+        </IonReactRouter>
+      </IonContent>
     );
 
   

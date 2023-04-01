@@ -7,7 +7,7 @@ interface IAppContext {
     score: number;
     currentAnswersAndScores: Map<string, {category: string, value: number}>,
     transparentToolbar: boolean,
-    changeSearch?: (currentSearch : string) => void;
+    changeSearch: (currentSearch : string) => void;
     toggleDark?: () => void;
     toggleTutorial?: (value : boolean) => void;
     addScore?: (category: string, answer : string, value : number) => void;
@@ -21,6 +21,9 @@ const defaultState = {
     score: 0,
     currentAnswersAndScores: new Map(),
     transparentToolbar: false,
+    changeSearch: (currentSearch : string) => {
+      sessionStorage.setItem("search", currentSearch);
+    }
 }
 
 const AppContext = createContext<IAppContext>(defaultState);

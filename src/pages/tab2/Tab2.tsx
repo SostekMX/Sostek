@@ -15,7 +15,7 @@ const Tab2: React.FC = () => {
           <p className='under_construction_link'><a href="https://drive.google.com/file/d/1ZBfQKAAVHg7BtDwt1iblhgKk3ykbTOO3/view">Descargar versi&oacute;n f&iacute;sica</a></p>
         </div>
         <div className='video-container'>
-          <h1 className='video-container__title'><b>Survivor</b></h1>
+          <h1 className='video-container__title'><b>Survival</b></h1>
           <video className='video-container__video' controls width="100%">
             <source src="/assets/survivor.m4v"/>
           </video>
