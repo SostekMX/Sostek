@@ -52,19 +52,19 @@ const LogIn: React.FC = () => {
                 <img src="/assets/sostek-logo.png" height="100px"/>
             </IonRow>
             <IonRow class='login-form'>
-                <h2 >Inicio de sesión</h2>
+                <h2 className='title__color'>Inicio de sesión</h2>
             </IonRow>
             <IonRow class='space'></IonRow>
             <IonRow className='align-center'>
                 <IonItem color='none' className='input-field'>
-                    <IonLabel position='stacked'  >Correo: </IonLabel> 
-                    <IonInput type='email'
+                    <IonLabel position='stacked' color="light" >Correo: </IonLabel> 
+                    <IonInput type='email' color="light"
                     value={email} onIonChange={(e) => setEmail(e.target.value as string)} ></IonInput>
                 </IonItem>
 
                 <IonItem color='none' className='input-field'>
-                    <IonLabel position='stacked'  >Contraseña: </IonLabel> 
-                    <IonInput type='password'
+                    <IonLabel position='stacked' color="light" >Contraseña: </IonLabel> 
+                    <IonInput type='password' color="light"
                         value={password} onIonChange={(e) => setPassword(e.target.value as string)}
                     ></IonInput>
                 </IonItem>
