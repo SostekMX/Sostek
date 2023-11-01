@@ -1,0 +1,24 @@
+.evaluation__container {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    width: 50vw;
+
+}
+
+.evaluation__title {
+    font-size: medium;
+    padding-inline: 5px;
+    padding-block: 3vh;
+}
+
+.evaluationCard__image {
+    height: 15vh;
+    object-fit: cover;
+    transition: all 1s ease-in;
+}
+
+.evaluation-card__title-container{
+    height: 15vh;
+    /* display: flex;
+    align-items: center; */
+}

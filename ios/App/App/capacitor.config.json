@@ -1,0 +1,6 @@
+{
+	"appId": "com.itesm.sostek",
+	"appName": "sostek",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

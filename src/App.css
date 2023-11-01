@@ -1,0 +1,90 @@
+
+/* Imported fonts */
+@font-face {
+    font-family: 'Kiona-Regular';  /* Títulos h1, h2 */
+    font-style: normal;
+    font-weight: normal;
+    src: url('../public/assets/fonts/Kiona-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Raleway';  /* Cuerpo */
+    font-style: normal;
+    font-weight: normal;
+    src: url('../public/assets/fonts/Raleway.ttf');
+}
+
+@font-face {
+    font-family: 'Cinzel';  /* Subtítutlos h3, h4,  */
+    font-style: normal;
+    font-weight: normal;
+    src: url('../public/assets/fonts/Cinzel.ttf');
+}
+
+.header-collapse-condense ion-toolbar {
+    --background: transparent;
+    --ion-color-base: transparent !important;
+}
+
+ion-toolbar.transparent {
+    --background: transparent;
+    --ion-color-base: transparent !important;
+}
+
+ion-content {
+    --background: none;
+    --padding-top: 0px;
+}
+    
+ion-content.bg-img {
+    background-image: url('../public/assets/bg-img.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* h1, h2 {
+    font-family: 'Kiona-Regular';
+}
+
+h3, h4 {
+    font-family: 'Cinzel';
+} */
+.tab-bar__label {
+    font-size: 1rem;
+}
+.article-modal__link{
+    text-decoration: none;
+}
+.article-modal__title{
+    color: black;
+}
+.appbar__searchbar-active {
+    width: 75%;
+    margin-inline: 10%;
+}
+
+.appbar__searchbar {
+    padding: unset;
+    --box-shadow: 0px;
+    background: rgba(0, 0, 0, .15);
+    border-radius: 16px;
+    
+}
+.appbar__searchbar-container ion-searchbar {
+    height: 36px;
+    margin-block: 4px;
+    padding-top: 10px;
+}
+.appbar__searchbar-container ion-searchbar  div input {
+    background: inherit !important;
+}
+
+.tab-bar--hidden{
+    display: none;
+    opacity: 0;
+}
+
+.tab-bar--visible{
+    opacity: 1;
+}

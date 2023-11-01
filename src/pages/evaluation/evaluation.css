@@ -1,0 +1,7 @@
+.evaluation__questions {
+    transition: all 1000ms ease-in;
+}
+.evaluation__footer__title {
+    color: white;
+    text-align: center;
+}
