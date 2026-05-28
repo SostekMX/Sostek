@@ -168,7 +168,7 @@ ion-popover ion-item {
 
 .auth-overlay {
     min-height: 100vh;
-    background: rgba(10, 20, 10, 0.54);
+    background: linear-gradient(160deg, #0d1f0d 0%, #1c3e1c 55%, #2f6b22 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -222,11 +222,11 @@ ion-popover ion-item {
 }
 
 .auth-label {
-    color: #5a7260 !important;
-    font-size: 0.74rem !important;
-    font-weight: 600 !important;
+    color: #3d5e40 !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
     margin-bottom: 2px;
 }
 
