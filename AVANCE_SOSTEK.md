@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-05-28 (sesión 3)  
+> Última actualización: 2026-05-28 (revisado contra código real)  
 > Rama activa: `development`  
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Google APIs
 
@@ -24,10 +24,6 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### ✅ IMPLEMENTADO Y FUNCIONAL
 
-> Resuelto en sesión 2:
-> - Pantalla gris al entrar como invitado — hooks ahora terminan loading siempre (`.catch()` + optional chaining + guards en Tab1 y ArticleCarrousel)
-> - Repositorio reorganizado — archivos muertos eliminados, `components/layout/` creado, imports limpiados
-
 - **Login / Registro** — formularios completos, integración con backend (`/user/login`, `/user/signup`). Sesión guardada en `sessionStorage`.
 - **Tab 1 — APRENDE**
   - Artículos cargados desde Google Sheets (hook `useGetSingleExcelAllData`)
@@ -46,19 +42,17 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 - **Resultado de evaluación** (`/score/:name`) — muestra puntaje, categoría más débil, botón de artículos recomendados
 - **Tutorial inicial** — slides con personaje al primer acceso (contenido desde Drive)
 - **AppBar** — búsqueda, menú lateral con logout, acceso a perfil, reactivación de tutorial
-- **Perfil** — edición de nombre y apellido (`/user/edit`)
+- **Perfil** — edición de nombre, apellido, fecha de nacimiento, ocupación y sexo (`POST /user/edit`)
+- **Resultado de evaluación** (`/score/:name`) — ruta registrada, mensajes de feedback diferenciados por rango (≥150, ≥120, ≥90, ≥50, <50)
 
 ---
 
-### 🐛 BUGS RESUELTOS
+### 🐛 BUGS CONOCIDOS (rompen funcionalidad)
 
-1. ✅ **Pantalla gris al entrar como invitado** — hooks con `.catch()` + optional chaining + guards en Tab1 y ArticleCarrousel
-2. ✅ **Ruta `/score/:name` registrada en `App.tsx`** — flujo de evaluación completo
-3. ✅ **Mensajes de resultado reescritos** — `FinalScoreEvaluation` con lógica limpia y 5 rangos distintos
-4. ✅ **Profile campos reconectados** — `birthDate`, `occupation`, `gender` conectados al estado y al POST
-5. ✅ **README rehecho** — comando correcto, estructura, variables de entorno
-6. ✅ **`NativeStorage` eliminado** — reemplazado por `sessionStorage` en `Evaluation.tsx` y demás archivos
-7. ✅ **Repositorio reorganizado** — archivos muertos eliminados, `components/layout/` creado
+1. **README dice `node run start`** (incorrecto) — debe ser `npm run start`.
+
+2. **`NativeStorage` — import activo en `Tab1.tsx:7`**  
+   Las llamadas a `NativeStorage` están comentadas en `AppBarMenu.tsx`, `AppBarPopOver.tsx` y `Tab1.tsx`, pero el `import { NativeStorage }` sigue sin comentar en `Tab1.tsx:7`. No genera error en runtime pero es código muerto que debe eliminarse.
 
 ---
 
@@ -71,7 +65,6 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 | Modo oscuro | `AppContext.tsx` | Variable `dark` definida, nunca aplicada a la UI |
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
 | Categoría "Otros" en evaluaciones | `Tab3.tsx:42` | Retorna `<div></div>` vacío, sin contenido |
-| `FinalScoreEvaluation` | `App.tsx` | ~~Importado pero sin ruta registrada~~ import limpiado, **la ruta sigue faltando** (ver bug #1) |
 
 ---
 
@@ -92,15 +85,13 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### 🔴 Urgente (bugs que bloquean flujos completos)
 
-1. **Registrar la ruta `/score/:name`** en `App.tsx` → desbloquea el flujo completo de evaluación
-2. **Corregir mensajes de resultado** en `FinalScoreEvaluation.tsx` → feedback real al usuario
-3. **Reconectar campos del perfil** en `Profile.tsx` → guardar todos los campos
+*(No hay bugs bloqueantes activos en este momento)*
 
 ### 🟡 Importante (mejoras de calidad)
 
-4. Eliminar todas las llamadas a `NativeStorage` y usar solo `sessionStorage` / `localStorage` en web
-5. Cambiar `sessionStorage` por `localStorage` en el login → sesión persistente al refrescar
-6. Corregir README: `npm run start`
+1. Eliminar el `import { NativeStorage }` sin usar en `Tab1.tsx:7`
+2. Cambiar `sessionStorage` por `localStorage` en el login → sesión persistente al refrescar
+3. Corregir README: `npm run start`
 
 ### 🟢 Backlog (funcionalidades nuevas)
 
