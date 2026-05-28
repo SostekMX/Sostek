@@ -21,7 +21,7 @@ const LogIn: React.FC = () => {
 
     useEffect(() => {
         //NativeStorage.setItem('login', false);
-        sessionStorage.setItem('login', 'false');
+        localStorage.setItem('login', 'false');
     }, [])
 
 
@@ -33,8 +33,8 @@ const LogIn: React.FC = () => {
             if (response.data.success){
                 //NativeStorage.setItem('login', true);
                 //NativeStorage.setItem('user_email', email);
-                sessionStorage.setItem('login', 'true');
-                sessionStorage.setItem('user_email', email);
+                localStorage.setItem('login', 'true');
+                localStorage.setItem('user_email', email);
                 history.push("/tab1");
             }else{
                 setMessage(response.data.error)
