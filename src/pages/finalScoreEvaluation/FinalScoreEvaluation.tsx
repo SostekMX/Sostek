@@ -1,115 +1,121 @@
 import { IonPage, IonContent, IonHeader, IonButton } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import AppBarPopOver from '../../components/AppBarPopOver';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import AppContext from '../../context/AppContext';
 import './FinalScoreEvaluation.css';
 
 interface Params {
     name: string
 }
+
+interface Feedback {
+  titulo: string;
+  mensaje: string;
+}
+
+function getFeedback(score: number): Feedback {
+  if (score >= 150) return {
+    titulo: "¡Excelente!",
+    mensaje: "Tu proyecto demuestra un alto compromiso con la sostenibilidad en todas sus dimensiones. ¡Sigue así!"
+  };
+  if (score >= 120) return {
+    titulo: "Muy bien",
+    mensaje: "Tu proyecto tiene una base sólida de sostenibilidad. Hay algunas áreas que puedes seguir fortaleciendo para alcanzar el nivel óptimo."
+  };
+  if (score >= 90) return {
+    titulo: "Buen avance",
+    mensaje: "Tu proyecto va por buen camino, pero aún hay aspectos de sostenibilidad que requieren mayor atención y desarrollo."
+  };
+  if (score >= 50) return {
+    titulo: "En desarrollo",
+    mensaje: "Tu proyecto tiene potencial, pero necesita trabajar más en varias de sus dimensiones de sostenibilidad para cumplir con los estándares requeridos."
+  };
+  return {
+    titulo: "Por mejorar",
+    mensaje: "Tu proyecto necesita replantear su enfoque de sostenibilidad. Te recomendamos revisar los artículos disponibles para orientar el desarrollo de tu proyecto."
+  };
+}
+
+function clearScoreSession(totalCategories: number) {
+  for (let i = 0; i < totalCategories; i++) {
+    sessionStorage.removeItem(`categoryScore${i}`);
+    sessionStorage.removeItem(`category${i}`);
+  }
+  sessionStorage.removeItem("finalScore");
+  sessionStorage.removeItem("totalCategories");
+}
+
 const FinalScoreEvaluation: React.FC = () => {
     const [score, setScore] = useState<number>(0);
     const [weakestCategory, setWeakestCategory] = useState<string>("");
     const { changeSearch } = useContext(AppContext);
+
     useEffect(() => {
-        // NativeStorage.getItem("login").then(
-        //   data => setIsUserLogged(data)
-        // )
         setScore(Number(sessionStorage.getItem("finalScore")));
-        let lowPunctuation = 1001;
-        let lowCategory: string | null = "";
-        for(let i = 0; i < Number(sessionStorage.getItem("totalCategories")); i++) {
-            if(lowPunctuation > Number(sessionStorage.getItem(`categoryScore${i}`))) {
-                lowPunctuation = Number(sessionStorage.getItem(`categoryScore${i}`));
-                lowCategory = sessionStorage.getItem(`category${i}`);
+        const totalCategories = Number(sessionStorage.getItem("totalCategories"));
+        let lowPunctuation = Infinity;
+        let lowCategory = "";
+        for (let i = 0; i < totalCategories; i++) {
+            const categoryScore = Number(sessionStorage.getItem(`categoryScore${i}`));
+            if (categoryScore < lowPunctuation) {
+                lowPunctuation = categoryScore;
+                lowCategory = sessionStorage.getItem(`category${i}`) ?? "";
             }
         }
-        setWeakestCategory(lowCategory!);
-    }, [])
+        setWeakestCategory(lowCategory);
+    }, []);
+
     const { name } = useParams<Params>();
-  return (
-    <IonPage>
-      <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class="bg-img">
-        <IonHeader collapse="condense"></IonHeader>
-        <div className="under_construction-container">
-          <p className="under_construction_text">
-            <b>El resultado de la evaluación {name} que realizaste es de:</b>
-          </p>
-          <p className="under_construction_text">
-            <b>{score}</b>
-          </p>
-          {
-            <>
-              {score >= 150 && (
-                <p className="under_construction_text">
-                  Felicidades, tuviste una puntuación alta
-                </p>
-              )}
-              {score >= 120 && score < 150 && (
-                <p className="under_construction_text">
-                  Tu proyecto cuenta con una buena base pero todavia tienes
-                  &aacute;reas por mejorar
-                </p>
-              )}
-              {score >= 90 && score < 120 && (
-                <p className="under_construction_text">
-                  Felicidades, tuviste una puntuación alta
-                </p>
-              )}
-              {score >= 50 && score < 90 && (
-                <p className="under_construction_text">
-                  Felicidades, tuviste una puntuación alta
-                </p>
-              )}
-              {score < 50 && (
-                <div>
-                  <p className="under_construction_text">
-                    Este resultado indica que tienes areas que mejorar.
-                  </p>
+    const { titulo, mensaje } = getFeedback(score);
+    const totalCategories = Number(sessionStorage.getItem("totalCategories"));
+
+    return (
+        <IonPage>
+            <AppBarPopOver />
+            <IonContent fullscreen class="bg-img">
+                <IonHeader collapse="condense"></IonHeader>
+                <div className="under_construction-container">
+                    <p className="under_construction_text">
+                        <b>Resultado de la evaluación: {name}</b>
+                    </p>
+                    <p className="under_construction_text" style={{ fontSize: "2rem" }}>
+                        <b>{score} pts</b>
+                    </p>
+                    <p className="under_construction_text">
+                        <b>{titulo}</b>
+                    </p>
+                    <p className="under_construction_text">
+                        {mensaje}
+                    </p>
+                    {weakestCategory && (
+                        <>
+                            <p className="under_construction_text">
+                                Tu área con menor puntaje es:{" "}
+                                <b className="finalScoreEvaluation__category">
+                                    {weakestCategory}
+                                </b>
+                            </p>
+                            <p className="under_construction_text">
+                                Encuentra artículos relacionados para reforzar esta área:
+                            </p>
+                            <IonButton
+                                href="/MainMenu"
+                                color="light-green"
+                                className="finalScoreEvaluation__button"
+                                onClick={() => {
+                                    changeSearch!(weakestCategory);
+                                    clearScoreSession(totalCategories);
+                                }}
+                            >
+                                Artículos recomendados
+                            </IonButton>
+                        </>
+                    )}
                 </div>
-              )}
-              {score < 150 && (
-                <>
-                  <p className="under_construction_text">
-                    T&uacute; &aacute;rea a mejorar es{" "}
-                    <b className="finalScoreEvaluation__category">
-                      {weakestCategory}
-                    </b>
-                  </p>
-                  <p className="under_construction_text">
-                    Puedes dar click al siguiente botón para recomendarte
-                    artículos en tus áreas más debiles
-                  </p>
-                  <IonButton
-                    href="/MainMenu"
-                    color="light-green"
-                    className="finalScoreEvaluation__button"
-                    onClick={(e) => {
-                      changeSearch!(weakestCategory);
-                      for (
-                        let i = 0;
-                        i < Number(sessionStorage.getItem("totalCategories"));
-                        i++
-                      ) {
-                        sessionStorage.removeItem(`categoryScore${i}`);
-                        sessionStorage.removeItem(`category${i}`);
-                      }
-                      sessionStorage.removeItem(`finalScore`);
-                      sessionStorage.removeItem(`totalCategories`);
-                    }}
-                  >
-                    Art&iacute;culos recomendados
-                  </IonButton>
-                </>
-              )}
-            </>
-          }
-        </div>
-      </IonContent>
-    </IonPage>
-  );
+            </IonContent>
+        </IonPage>
+    );
 }
 
 export default FinalScoreEvaluation;

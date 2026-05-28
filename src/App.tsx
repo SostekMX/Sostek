@@ -1,4 +1,4 @@
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
   IonContent,
   IonApp,
@@ -10,7 +10,6 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import MainMenu from './pages/mainMenu/MainMenu';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -40,7 +39,6 @@ import Tab1 from './pages/tab1/Tab1';
 import Tab2 from './pages/tab2/Tab2';
 import Tab3 from './pages/tab3/Tab3';
 import Profile from './pages/profile/Profile';
-import useInitialState from './hooks/useInitialState';
 import Presentation from './pages/presentation/Presentation';
 import Documents from './pages/document/Documents';
 import AppContext, { AppProvider } from './context/AppContext';
@@ -89,6 +87,9 @@ const App: React.FC = () => {
                 </Route>
                 <Route exact path="/Evaluation/:name/:id" >
                   <Evaluation />
+                </Route>
+                <Route path="/score/:name">
+                  <FinalScoreEvaluation />
                 </Route>
 
 
