@@ -2,18 +2,19 @@
 
 .login-split {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
     background: #0e1a0e;
 }
 
 /* ─── Panel izquierdo (marca) ─── */
 .login-brand {
-    display: none;
+    display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 48px 44px;
+    padding: 36px 28px 28px;
     background: linear-gradient(155deg, #163016 0%, #245620 55%, #3a7c28 100%);
-    flex: 0 0 44%;
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
 }
@@ -94,6 +95,11 @@
     margin: 0;
     position: relative;
     z-index: 1;
+}
+
+/* Ocultar copyright en mobile */
+.login-brand__footer {
+    display: none;
 }
 
 /* ─── Panel derecho (formulario) ─── */
@@ -259,13 +265,28 @@
     color: rgba(255, 255, 255, 0.88);
 }
 
-/* ─── Desktop: mostrar panel izquierdo, ocultar logo mobile ─── */
+/* Logo mobile — ocultar en mobile porque el panel de marca ya muestra el logo */
+.login-logo-mobile {
+    display: none;
+}
+
+/* ─── Desktop: layout horizontal, restituir elementos de escritorio ─── */
 @media (min-width: 640px) {
-    .login-brand {
-        display: flex;
+    .login-split {
+        flex-direction: row;
     }
 
-    .login-logo-mobile {
-        display: none;
+    .login-brand {
+        flex: 0 0 44%;
+        padding: 48px 44px;
+        min-height: unset;
+    }
+
+    .login-brand__footer {
+        display: block;
+    }
+
+    .login-form-panel {
+        min-height: 100vh;
     }
 }
