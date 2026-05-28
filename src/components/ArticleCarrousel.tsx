@@ -3,9 +3,7 @@ import { IonCol, IonHeader, IonIcon, IonItem,  IonList, IonLoading, IonRow, IonS
 import DocumentCard from './DocumentCard';
 import { File } from '../models/File';
 import './ArticleCarrousel.css'
-import useGetArticlesData from '../hooks/useGetArticlesData';
 import useGetFirstImageOfPresentations from '../hooks/useGetFirstImageOfPresentations';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import AppContext from '../context/AppContext';
 import useGetDocuments from '../hooks/useGetDocuments';
 
@@ -31,7 +29,8 @@ const ArticleCarrousel: React.FC<props> = ({articlesData, loadingData, presentat
     //console.log(urlImages);
     //console.log(articlesData);
 
-    let articleCards = !loadingData && articlesData!.map((article : any, index) => {
+    let articleCards = !loadingData && articlesData && articlesData.map((article : any, index) => {
+        if (!article || !article[6]) return null;
         if (
           article[6]
             .normalize("NFD")
@@ -72,7 +71,8 @@ const ArticleCarrousel: React.FC<props> = ({articlesData, loadingData, presentat
         }
     });
 
-    let presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
+    let presentationCards = !loadingForPresentation && presentationsAsStringArrayById && presentationsAsStringArrayById.map((presentation : any, index) => {
+        if (!presentationsAsStringArrayTitle?.[index]) return null;
         if (
           presentationsAsStringArrayTitle![index]
             .normalize("NFD")

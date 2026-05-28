@@ -28,12 +28,10 @@ const useGetDocuments = (driveID : string | undefined) => {
         setFiles(response.result.files.reverse());
         setLastFile([response.result.files.at(0)]);
         }, function(reason) {
-        // console.log(driveID);
-
-        console.log('Error: ' + reason.result.error.message);
-        //setFiles(dummyArticles);
-        //setLastFile(dummyArticles?.at(-1));
+        console.log('Error: ' + reason?.result?.error?.message);
         }).then(function() {
+            setLoading(false);
+        }).catch(function() {
             setLoading(false);
         })
     };

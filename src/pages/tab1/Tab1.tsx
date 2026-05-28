@@ -2,8 +2,7 @@ import TutorialCard from '../../components/TutorialCard';
 import {  IonContent, IonHeader, IonLoading, IonPage } from '@ionic/react';
 import './Tab1.css';
 import ArticleCarrousel from '../../components/ArticleCarrousel';
-import ArticleCardModalWrapper from '../../components/ArticleCardModalWrapper';
-import AppBarPopOver from '../../components/AppBarPopOver';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import useGetDocuments from '../../hooks/useGetDocuments';
 import { NativeStorage } from '@ionic-native/native-storage';
 import React, { useContext, useEffect, useState } from 'react';
@@ -12,7 +11,6 @@ import InitialTutorial from '../../components/tutorial/InitialTutorial';
 import AppContext from '../../context/AppContext';
 import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
 import ArticleCardModal from '../../components/ArticleCardModal';
-import useGetConfiguration from '../../hooks/useGetConfiguration';
 
 const Tab1: React.FC = () => {
   let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
@@ -42,16 +40,15 @@ const Tab1: React.FC = () => {
       
         </IonHeader>
         {
-          !loadingData && !loadingForAllPresentations && <> 
-            {/* <ArticleCardModalWrapper files={lastFile} /> */}
-            <ArticleCardModal 
-              title={lastArticleData![0]} 
-              subtitle={lastArticleData![1]}
-              body={lastArticleData![3]}
-              imageUrl={lastArticleData![4]} 
-              author={lastArticleData![5]}
+          !loadingData && !loadingForAllPresentations && <>
+            {lastArticleData && <ArticleCardModal
+              title={lastArticleData[0]}
+              subtitle={lastArticleData[1]}
+              body={lastArticleData[3]}
+              imageUrl={lastArticleData[4]}
+              author={lastArticleData[5]}
               id={articlesDataReversed!.length - 1}
-        />
+            />}
              {displayTutorial &&<InitialTutorial />}
             <ArticleCarrousel articlesData={articlesDataReversed} loadingData={loadingData} presentations={presentations}/>
           </>

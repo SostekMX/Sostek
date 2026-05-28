@@ -25,13 +25,12 @@ const useGetPresentations = (driveID : string | undefined) => {
         })
         // 2. If the response is succesful, then we have to iterate over all the documents to get the info to display.
         }).then(function(response) {
-        //console.log("files", response.result.files);
         setPresentations(response.result.files);
         }, function(reason) {
-        console.log('Error: ' + reason.result.error.message);
-        //setPresentations(dummyArticles);
-        //setLastFile(dummyArticles?.at(-1));
+        console.log('Error: ' + reason?.result?.error?.message);
         }).then(function() {
+            setLoadingForAllPresentations(false);
+        }).catch(function() {
             setLoadingForAllPresentations(false);
         })
     };

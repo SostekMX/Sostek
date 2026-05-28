@@ -27,10 +27,11 @@ useEffect(() => {
         localStorage.setItem("articles", JSON.stringify(response.result.valueRanges[0].values))
         setLastArticleData(response.result.valueRanges[0].values.at(-1));
         setArticlesDataReversed([...response.result.valueRanges[0].values].reverse());
-        // console.log(response.result.valueRanges[0].values);
         }, function(reason) {
-        console.log('Error: ' + reason.result.error.message);
+        console.log('Error: ' + reason?.result?.error?.message);
         }).then(function() {
+            setLoadingData(false);
+        }).catch(function() {
             setLoadingData(false);
         })
   };

@@ -21,8 +21,10 @@ const useGetEvaluationData = (sheetsID : string | undefined) => {
         }).then(function(response) {
         setEvaluation(response.result.valueRanges);
         }, function(reason) {
-        console.log('Error: ' + reason.result.error.message);
+        console.log('Error: ' + reason?.result?.error?.message);
         }).then(function() {
+            setLoading(false);
+        }).catch(function() {
             setLoading(false);
         })
     };
