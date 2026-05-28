@@ -1,41 +1,32 @@
-
 /* Imported fonts */
 @font-face {
-    font-family: 'Kiona-Regular';  /* Títulos h1, h2 */
+    font-family: 'Kiona-Regular';
     font-style: normal;
     font-weight: normal;
     src: url('../public/assets/fonts/Kiona-Regular.ttf');
 }
 
 @font-face {
-    font-family: 'Raleway';  /* Cuerpo */
+    font-family: 'Raleway';
     font-style: normal;
     font-weight: normal;
     src: url('../public/assets/fonts/Raleway.ttf');
 }
 
 @font-face {
-    font-family: 'Cinzel';  /* Subtítutlos h3, h4,  */
+    font-family: 'Cinzel';
     font-style: normal;
     font-weight: normal;
     src: url('../public/assets/fonts/Cinzel.ttf');
 }
 
-.header-collapse-condense ion-toolbar {
-    --background: transparent;
-    --ion-color-base: transparent !important;
-}
-
-ion-toolbar.transparent {
-    --background: transparent;
-    --ion-color-base: transparent !important;
-}
+/* === GLOBAL RESETS === */
 
 ion-content {
     --background: none;
     --padding-top: 0px;
 }
-    
+
 ion-content.bg-img {
     background-image: url('../public/assets/bg-img.png');
     background-position: center center;
@@ -43,48 +34,232 @@ ion-content.bg-img {
     background-size: cover;
 }
 
-/* h1, h2 {
-    font-family: 'Kiona-Regular';
+.header-collapse-condense ion-toolbar,
+ion-toolbar.transparent {
+    --background: transparent;
+    --ion-color-base: transparent !important;
 }
 
-h3, h4 {
-    font-family: 'Cinzel';
-} */
+/* === TAB BAR === */
+
+ion-tab-bar {
+    --background: #ffffff;
+    --border: none;
+    box-shadow: 0 -1px 0 rgba(26, 46, 26, 0.08), 0 -6px 18px rgba(26, 46, 26, 0.06);
+    height: 58px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+ion-tab-button {
+    --color: #5a7260;
+    --color-selected: #80b259;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+}
+
 .tab-bar__label {
-    font-size: 1rem;
+    font-size: 0.67rem;
+    letter-spacing: 0.9px;
+    font-weight: 700;
 }
-.article-modal__link{
-    text-decoration: none;
+
+.tab-bar--hidden {
+    display: none;
+    opacity: 0;
 }
-.article-modal__title{
-    color: black;
+
+.tab-bar--visible {
+    opacity: 1;
 }
+
+/* === SEARCH BAR === */
+
 .appbar__searchbar-active {
-    width: 75%;
-    margin-inline: 10%;
+    width: 72%;
+    margin-inline: 6%;
 }
 
 .appbar__searchbar {
     padding: unset;
-    --box-shadow: 0px;
-    background: rgba(0, 0, 0, .15);
-    border-radius: 16px;
-    
+    --box-shadow: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
 }
+
 .appbar__searchbar-container ion-searchbar {
     height: 36px;
     margin-block: 4px;
     padding-top: 10px;
 }
-.appbar__searchbar-container ion-searchbar  div input {
+
+.appbar__searchbar-container ion-searchbar div input {
     background: inherit !important;
 }
 
-.tab-bar--hidden{
-    display: none;
+/* === POPOVER MENU === */
+
+ion-popover ion-list {
+    padding: 8px 0;
+}
+
+ion-popover ion-item {
+    --min-height: 48px;
+    --padding-start: 16px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+/* === LOADING SPINNER === */
+
+.imageArticleLoading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 72px;
+    height: 72px;
+    z-index: 100;
+}
+
+/* === UTILITY === */
+
+.hidden {
     opacity: 0;
 }
 
-.tab-bar--visible{
+.visible {
     opacity: 1;
+}
+
+.article-modal__link {
+    text-decoration: none;
+}
+
+.article-modal__title {
+    color: var(--sos-text-primary, #1a2e1a);
+}
+
+/* === SHARED: Section messages === */
+
+.under_construction-container {
+    width: 100%;
+    padding: 20px 20px 32px;
+}
+
+.under_construction_text {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.under_construction_link {
+    text-align: center;
+}
+
+.under_construction_link a {
+    color: #deebd7;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* === AUTH PAGES (LogIn + SignUp) === */
+
+.auth-overlay {
+    min-height: 100vh;
+    background: rgba(10, 20, 10, 0.54);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.auth-wrapper {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.auth-logo {
+    height: 72px;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+}
+
+.auth-card {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    padding: 28px 22px 22px;
+    box-shadow: 0 12px 40px rgba(10, 26, 10, 0.28);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-title {
+    text-align: center;
+    color: #1a2e1a;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.auth-input-item {
+    --background: #f2f7ee;
+    --border-radius: 10px;
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --inner-padding-end: 0;
+    --highlight-color-focused: #80b259;
+    border-radius: 10px;
+}
+
+.auth-label {
+    color: #5a7260 !important;
+    font-size: 0.74rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.auth-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.auth-actions ion-button {
+    --border-radius: 100px;
+    height: 48px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.auth-guest-btn {
+    --color: rgba(255, 255, 255, 0.92) !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* === SHARED FORM (Profile) === */
+
+.align-center {
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+}
+
+.space {
+    height: 1.5em;
 }
