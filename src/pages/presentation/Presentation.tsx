@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { IonContent, IonImg, IonLoading, IonPage } from '@ionic/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy } from 'swiper';
-import AppBarPopOver from '../../components/AppBarPopOver';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import useGetPresentationImages from '../../hooks/useGetPresentationImages';
 import './Presentation.css';
 import 'swiper/css';

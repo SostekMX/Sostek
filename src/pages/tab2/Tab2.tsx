@@ -1,6 +1,5 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import AppBarPopOver from '../../components/AppBarPopOver';
-import ExploreContainer from '../../components/ExploreContainer';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab2.css';
 
 const Tab2: React.FC = () => {

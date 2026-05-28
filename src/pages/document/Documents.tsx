@@ -2,8 +2,8 @@ import React from 'react';
 import { IonCardSubtitle, IonCol, IonContent, IonPage, IonRow, IonText} from '@ionic/react';
 import './Documents.css'
 import { useParams } from 'react-router';
-import AppBarPopOver from '../../components/AppBarPopOver';
-import { AppBarMenu } from '../../components/AppBarMenu';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
+import { AppBarMenu } from '../../components/layout/AppBarMenu';
 import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
 
 interface PropsParams{

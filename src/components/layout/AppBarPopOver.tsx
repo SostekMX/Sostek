@@ -2,11 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
 import { personCircle, settings, logOut, heart, informationCircleOutline } from 'ionicons/icons';
 import { search as iconSearch } from 'ionicons/icons' ;
-import { NativeStorage } from '@ionic-native/native-storage';
 import { useHistory } from "react-router-dom";
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import AppContext from '../context/AppContext';
-export const AppBarMenu: React.FC = () => {
+import AppContext from '../../context/AppContext';
+export const AppBarPopOver: React.FC = () => {
     const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
     const [isSearching, setIsSearching] = useState<boolean>(false);
     //const [searchContent, setSearchContent] = useLocalStorage("search", "");
@@ -17,12 +15,16 @@ export const AppBarMenu: React.FC = () => {
         // NativeStorage.getItem("login").then(
         //   data => setIsUserLogged(data)
         // )
-        let isTrue  = sessionStorage.getItem("login") === 'true';
-        setIsUserLogged(isTrue)
+        let isTrue  = localStorage.getItem("login") === 'true';
+        setIsUserLogged(isTrue);
+        if(sessionStorage.getItem("search")) {
+            changeSearch!(sessionStorage.getItem("search")!);
+        }
+        
     }, [])
 
     function logOutUser(){
-        sessionStorage.setItem("login", 'false');
+        localStorage.setItem("login", 'false');
         //NativeStorage.setItem("login", false);
         history.goBack();
     }
@@ -32,9 +34,29 @@ export const AppBarMenu: React.FC = () => {
     }
     
     return <>
-        <IonToolbar color='transparent'>
+        <IonToolbar color={transparentToolbar ? 'transparent ': 'primary'}>
             <IonButtons slot='start'>
-                 <a href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
+                 <a onClick={(_e) => {
+                    changeSearch!("");
+                 }} href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
+            </IonButtons>
+            <IonButtons className={isSearching ? "appbar__searchbar-container appbar__searchbar-active" : "appbar__searchbar-container"}  slot="end">
+                {isSearching && 
+                    <IonSearchbar className={`appbar__searchbar`}
+                        color="primary"
+                        animated={true} 
+                        onIonBlur= {() => {setIsSearching(false)}}
+                        onIonFocus={ () => {setIsSearching(true)}}
+                        onIonInput= { (e) => {changeSearch!(e.target.value!)}}
+                        onIonClear={() => {changeSearch!("")}}
+                        showClearButton="always"
+                        value={search}
+                        placeholder="Búsqueda..."></IonSearchbar>
+                }
+                {!isSearching && <IonButton
+                onClick={() => {setIsSearching(true)}}>
+                    <IonIcon slot="icon-only" icon={iconSearch} />
+                </IonButton>}
             </IonButtons>
             <IonButtons slot="end">
                 <IonButtons slot="end">
@@ -88,4 +110,4 @@ export const AppBarMenu: React.FC = () => {
     
 };
 
-export default AppBarMenu;
+export default AppBarPopOver;
