@@ -1,10 +1,8 @@
-import { IonContent, IonHeader, IonItem, IonList, IonLoading, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonItem, IonList, IonPage, IonRow, IonSelect, IonSelectOption } from '@ionic/react';
 import { useContext, useState } from 'react';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
-import QuestionTestCard from '../../components/QuestionTestCard';
 import AppContext from '../../context/AppContext';
 import useGetDocuments from '../../hooks/useGetDocuments';
-import useGetEvaluationData from '../../hooks/useGetEvaluationData';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
 
@@ -90,8 +88,8 @@ const Tab3: React.FC = () => {
               style={{"position":"fixed"}}/>
         }
         {
-          !loading && 
-          <div>{evaluationCards}</div>
+          !loading &&
+          <div className='evaluation-grid'>{evaluationCards}</div>
           // !loading && files?.sort((a, b) => { return a.name.localeCompare(b.name)}).map((file, index) => {
           //   return <EvaluationCard 
           //   name={file.name} 

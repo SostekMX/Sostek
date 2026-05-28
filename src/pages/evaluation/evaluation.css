@@ -1,7 +1,18 @@
 .evaluation__questions {
-    transition: all 1000ms ease-in;
+    transition: opacity 600ms ease-in;
+    padding-bottom: 16px;
 }
+
 .evaluation__footer__title {
-    color: white;
+    color: #ffffff;
     text-align: center;
+}
+
+.header__title {
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 8px 16px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }

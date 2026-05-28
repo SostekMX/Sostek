@@ -1,9 +1,30 @@
 .header__title {
-    color: white;
+    color: #ffffff;
     text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
 }
 
-.evaluate__container__filter{
-    margin-right: 1rem;
-    margin-top: 1rem;
+.evaluate__container__filter {
+    margin-right: 4px;
+    margin-top: 8px;
+}
+
+.evaluation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px 12px 20px;
+}
+
+@media (max-width: 360px) {
+    .evaluation-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 600px) {
+    .evaluation-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
