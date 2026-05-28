@@ -1,7 +1,6 @@
 import { IonContent, IonHeader, IonItem, IonList, IonLoading, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
 import { useContext, useState } from 'react';
-import AppBarPopOver from '../../components/AppBarPopOver';
-import ExploreContainer from '../../components/ExploreContainer';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import QuestionTestCard from '../../components/QuestionTestCard';
 import AppContext from '../../context/AppContext';
 import useGetDocuments from '../../hooks/useGetDocuments';
@@ -39,9 +38,15 @@ const Tab3: React.FC = () => {
           }
         break;
         case 'others':
-          return (
-            <div></div>
+          if (!file.name.toLowerCase().includes('arquitectura') && !file.name.toLowerCase().includes('industrial')){
+            return (
+              <EvaluationCard
+                key={file.id}
+                name={file.name}
+                img={`/assets/test${index + 1}.jpg`}
+                id={file.id} />
             )
+          }
           break;
         default:
         return (
