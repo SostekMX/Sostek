@@ -1,24 +1,41 @@
 .evaluation__container {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    width: 50vw;
-
+    padding: 0;
 }
 
-.evaluation__title {
-    font-size: medium;
-    padding-inline: 5px;
-    padding-block: 3vh;
+.evaluation__card {
+    border-radius: 16px !important;
+    box-shadow: 0 2px 12px rgba(26, 46, 26, 0.1) !important;
+    margin: 0 !important;
+    overflow: hidden;
+    border: 1px solid rgba(221, 235, 213, 0.6);
 }
 
 .evaluationCard__image {
-    height: 15vh;
+    height: 120px;
     object-fit: cover;
-    transition: all 1s ease-in;
+    transition: opacity 0.8s ease-in;
+    width: 100%;
+    display: block;
 }
 
-.evaluation-card__title-container{
-    height: 15vh;
-    /* display: flex;
-    align-items: center; */
+.image-card-loading {
+    position: absolute;
+    transition: opacity 0.8s ease-out;
+    height: 120px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.evaluation-card__title-container {
+    padding: 10px 10px 12px;
+}
+
+.evaluation__title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #1a2e1a;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.3;
+    margin: 0;
 }

@@ -1,0 +1,29 @@
+ion-card ion-card-header ion-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a2e1a;
+    line-height: 1.4;
+}
+
+ion-card ion-card-content ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --background: transparent;
+    --border-color: #ddebd5;
+    font-size: 0.88rem;
+}
+
+ion-card ion-card-content ion-label {
+    white-space: normal !important;
+    font-size: 0.88rem;
+    color: #1a2e1a;
+    line-height: 1.4;
+}
+
+ion-checkbox {
+    --background-checked: #80b259;
+    --border-color-checked: #80b259;
+    --checkmark-color: #ffffff;
+    --border-radius: 5px;
+    margin-inline-end: 10px;
+}
