@@ -1,4 +1,4 @@
-import { Route } from 'react-router-dom';
+import { Route, useLocation } from 'react-router-dom';
 import {
   IonContent,
   IonApp,
@@ -10,7 +10,6 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -32,7 +31,6 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './App.css';
 
-
 import LogIn from './pages/logIn/LogIn';
 import SignUp from './pages/signUp/SignUp';
 import Tab1 from './pages/tab1/Tab1';
@@ -42,76 +40,60 @@ import Profile from './pages/profile/Profile';
 import Presentation from './pages/presentation/Presentation';
 import Documents from './pages/document/Documents';
 import AppContext, { AppProvider } from './context/AppContext';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import Evaluation from './pages/evaluation/Evaluation';
 import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
 
 setupIonicReact();
 
-const App: React.FC = () => {
-  const {changeSearch} = useContext(AppContext);
+const HIDE_TABBAR_PATHS = ['/', '/SignUp'];
+
+/* Dentro del router para poder usar useLocation */
+const MainTabs: React.FC = () => {
+  const location = useLocation();
+  const hidden = HIDE_TABBAR_PATHS.includes(location.pathname);
 
   return (
+    <IonTabs>
+      <IonRouterOutlet>
+        <Route exact path="/MainMenu"><Tab1 /></Route>
+        <Route exact path="/"><LogIn /></Route>
+        <Route exact path="/SignUp"><SignUp /></Route>
+        <Route exact path="/tab1"><Tab1 /></Route>
+        <Route exact path="/tab2"><Tab2 /></Route>
+        <Route path="/tab3"><Tab3 /></Route>
+        <Route path="/Profile"><Profile /></Route>
+        <Route exact path='/Documents/:id'><Documents /></Route>
+        <Route exact path="/presentation/:driveId"><Presentation /></Route>
+        <Route exact path="/Evaluation/:name/:id"><Evaluation /></Route>
+        <Route path="/score/:name"><FinalScoreEvaluation /></Route>
+      </IonRouterOutlet>
+
+      <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
+        <IonTabButton tab="tab1" href="/tab1">
+          <IonLabel className='tab-bar__label'><strong>APRENDE</strong></IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="tab2" href="/tab2">
+          <IonLabel className='tab-bar__label'><b>JUEGA</b></IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="tab3" href="/tab3">
+          <IonLabel className='tab-bar__label'><strong>EVALU&Aacute;TE</strong></IonLabel>
+        </IonTabButton>
+      </IonTabBar>
+    </IonTabs>
+  );
+};
+
+const App: React.FC = () => {
+  return (
     <AppProvider>
-    <IonApp>
-      <IonContent>
-        <IonReactRouter>
-          <IonTabs>
-            <IonRouterOutlet>
-                <Route exact path="/MainMenu">
-                  <Tab1/>
-                </Route>
-                <Route exact path="/">
-                    <LogIn/>
-                </Route>
-                <Route exact path="/SignUp">
-                    <SignUp/>
-                </Route>
-                <Route exact path="/tab1">
-                    <Tab1/>
-                </Route>
-                <Route exact path="/tab2">
-                    <Tab2 />
-                </Route>
-                <Route path="/tab3">
-                    <Tab3 />
-                </Route>
-                <Route path="/Profile">
-                    <Profile />
-                </Route>
-                <Route exact path='/Documents/:id'>
-                            <Documents/>
-                        </Route>
-                <Route exact path="/presentation/:driveId">
-                <Presentation />
-                </Route>
-                <Route exact path="/Evaluation/:name/:id" >
-                  <Evaluation />
-                </Route>
-                <Route path="/score/:name">
-                  <FinalScoreEvaluation />
-                </Route>
-
-
-            </IonRouterOutlet>
-              <IonTabBar className={window.location.pathname == '/' ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom"
-                    onIonTabsWillChange={() => {
-                        changeSearch!
-                    }}>
-                <IonTabButton tab="tab1" href="/tab1">
-                  <IonLabel className='tab-bar__label'><strong>APRENDE</strong></IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab2" href="/tab2">
-                  <IonLabel className='tab-bar__label'><b>JUEGA</b></IonLabel>
-                </IonTabButton>              
-                <IonTabButton tab="tab3" href="/tab3">
-                  <IonLabel className='tab-bar__label'><strong>EVALU&Aacute;TE</strong></IonLabel>
-                </IonTabButton>
-              </IonTabBar>
-          </IonTabs>
-        </IonReactRouter>
-      </IonContent>
-    </IonApp>
+      <IonApp>
+        <IonContent>
+          <IonReactRouter>
+            <MainTabs />
+          </IonReactRouter>
+        </IonContent>
+      </IonApp>
     </AppProvider>
   );
 };
