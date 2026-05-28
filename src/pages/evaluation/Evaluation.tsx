@@ -1,4 +1,3 @@
-import { NativeStorage } from "@ionic-native/native-storage";
 import {
   IonButton,
   IonContent,
@@ -8,7 +7,7 @@ import {
 } from "@ionic/react";
 import { useContext } from "react";
 import { useParams } from "react-router";
-import AppBarPopOver from "../../components/AppBarPopOver";
+import AppBarPopOver from "../../components/layout/AppBarPopOver";
 import QuestionTestCard from "../../components/QuestionTestCard";
 import AppContext from "../../context/AppContext";
 import useGetEvaluationData from "../../hooks/useGetEvaluationData";
@@ -35,25 +34,11 @@ const Evaluation: React.FC = () => {
       }
     });
 
-    NativeStorage.setItem(
-      `totalCategories`,
-      arrayOfCategories.length.toLocaleString()
-    );
-    sessionStorage.setItem(
-      `totalCategories`,
-      arrayOfCategories.length.toLocaleString()
-    );
+    sessionStorage.setItem("totalCategories", arrayOfCategories.length.toLocaleString());
     for (let i = 0; i < arrayOfCategories.length; i++) {
-      NativeStorage.setItem(`category${i}`, arrayOfCategories[i]);
       sessionStorage.setItem(`category${i}`, arrayOfCategories[i]);
-      NativeStorage.setItem(`categoryScore${i}`, arrayOfScore[i]);
-      sessionStorage.setItem(
-        `categoryScore${i}`,
-        arrayOfScore[i].toLocaleString()
-      );
+      sessionStorage.setItem(`categoryScore${i}`, arrayOfScore[i].toLocaleString());
     }
-
-    NativeStorage.setItem("finalScore", score);
     sessionStorage.setItem("finalScore", score.toLocaleString());
   }
 
