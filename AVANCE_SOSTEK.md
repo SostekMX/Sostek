@@ -24,7 +24,7 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### ✅ IMPLEMENTADO Y FUNCIONAL
 
-- **Login / Registro** — formularios completos, integración con backend (`/user/login`, `/user/signup`). Sesión guardada en `sessionStorage`.
+- **Login / Registro** — formularios completos, integración con backend (`/user/login`, `/user/signup`). ⚠️ El token JWT de la respuesta no se guarda — ver bugs conocidos.
 - **Tab 1 — APRENDE**
   - Artículos cargados desde Google Sheets (hook `useGetSingleExcelAllData`)
   - Modal del artículo más reciente al entrar
@@ -49,7 +49,12 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### 🐛 BUGS CONOCIDOS (rompen funcionalidad)
 
-*(No hay bugs conocidos activos en este momento)*
+| Bug | Archivo | Detalle |
+|-----|---------|---------|
+| Token JWT no se guarda al hacer login | `LogIn.tsx:25` | La respuesta del backend incluye `token` pero nunca se hace `localStorage.setItem('token', ...)`. Sin el token, todos los endpoints protegidos fallan |
+| Token JWT no se guarda al hacer signup | `SignUp.tsx:45` | Mismo problema — el usuario hace signup pero queda sin sesión activa |
+| `POST /user/edit` no envía header JWT | `Profile.tsx:22` | El backend ahora requiere `Authorization: Bearer <token>`. Sin el header, devuelve `Token requerido` y no guarda ningún cambio |
+| Perfil no carga datos del usuario | `Profile.tsx` | Solo lee el email de `localStorage`. Nunca llama a `GET /user/profile`, por lo que nombre, apellido y demás campos siempre aparecen vacíos |
 
 ---
 
@@ -72,7 +77,7 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 - Pantalla de ajustes
 - Modo oscuro funcional
 - Backend incluido en el repo (está desacoplado — se asume servidor local en `:8080`)
-- Autenticación persistente (al refrescar la app, la sesión se pierde porque usa `sessionStorage`)
+- Autenticación persistente completa (el token se guarda en `localStorage` pero los endpoints protegidos aún no lo usan — ver bugs urgentes)
 - Recuperación de contraseña
 - Notificaciones push
 
@@ -82,19 +87,25 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### 🔴 Urgente (bugs que bloquean flujos completos)
 
-*(No hay bugs bloqueantes activos en este momento)*
+1. **Guardar token JWT en login y signup** — en `LogIn.tsx` y `SignUp.tsx`, agregar `localStorage.setItem('token', response.data.token)` al recibir respuesta exitosa. Sin esto, todos los endpoints protegidos están rotos
+2. **Agregar header JWT a `POST /user/edit`** — en `Profile.tsx`, enviar `{ headers: { Authorization: \`Bearer ${localStorage.getItem('token')}\` } }` en la llamada Axios
+3. **Cargar datos del usuario en perfil con `GET /user/profile`** — en `Profile.tsx`, llamar al endpoint al montar el componente para poblar nombre, apellido y demás campos
 
 ### 🟡 Importante (mejoras de calidad)
 
-*(Sin pendientes urgentes — los bugs conocidos fueron resueltos)*
+4. **Validación de contraseña mínimo 6 caracteres en signup** — en `SignUp.tsx`, validar antes de llamar al backend para dar feedback inmediato al usuario
+5. **Llamar a `POST /user/score` al terminar una evaluación** — en `FinalScoreEvaluation.tsx`, si el usuario está logueado, enviar el puntaje final al backend para persistirlo en su cuenta
+6. **Logout debe limpiar el token** — en `AppBarPopOver.tsx:logOutUser`, agregar `localStorage.removeItem('token')` además del `login: 'false'` existente
 
 ### 🟢 Backlog (funcionalidades nuevas)
 
-7. Implementar pantalla de Favoritos
-8. Implementar pantalla de Ajustes (toggle modo oscuro, idioma, etc.)
-9. Implementar modo oscuro completo
-10. Juego online en Tab 2 (Unity WebGL)
-11. Agregar contenido a la categoría "Otros" en Tab 3
+7. **Opción "Eliminar cuenta"** en perfil o ajustes — llama a `DELETE /user` con el token JWT
+8. **Llamar a `POST /user/score` al terminar el juego** — cuando la versión online de Tab 2 esté implementada
+9. Implementar pantalla de Favoritos
+10. Implementar pantalla de Ajustes (toggle modo oscuro, idioma, etc.)
+11. Implementar modo oscuro completo
+12. Juego online en Tab 2 (Unity WebGL)
+13. Agregar contenido a la categoría "Otros" en Tab 3
 
 ---
 
