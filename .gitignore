@@ -23,6 +23,7 @@
 .env.production.local
 .vscode
 .idea
+CLAUDE.md
 
 npm-debug.log*
 yarn-debug.log*
