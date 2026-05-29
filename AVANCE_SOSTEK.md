@@ -49,10 +49,7 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### 🐛 BUGS CONOCIDOS (rompen funcionalidad)
 
-1. **README dice `node run start`** (incorrecto) — debe ser `npm run start`.
-
-2. **`NativeStorage` — import activo en `Tab1.tsx:7`**  
-   Las llamadas a `NativeStorage` están comentadas en `AppBarMenu.tsx`, `AppBarPopOver.tsx` y `Tab1.tsx`, pero el `import { NativeStorage }` sigue sin comentar en `Tab1.tsx:7`. No genera error en runtime pero es código muerto que debe eliminarse.
+*(No hay bugs conocidos activos en este momento)*
 
 ---
 
@@ -89,9 +86,7 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### 🟡 Importante (mejoras de calidad)
 
-1. Eliminar el `import { NativeStorage }` sin usar en `Tab1.tsx:7`
-2. Cambiar `sessionStorage` por `localStorage` en el login → sesión persistente al refrescar
-3. Corregir README: `npm run start`
+*(Sin pendientes urgentes — los bugs conocidos fueron resueltos)*
 
 ### 🟢 Backlog (funcionalidades nuevas)
 

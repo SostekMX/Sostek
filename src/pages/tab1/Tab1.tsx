@@ -4,7 +4,6 @@ import './Tab1.css';
 import ArticleCarrousel from '../../components/ArticleCarrousel';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import useGetDocuments from '../../hooks/useGetDocuments';
-import { NativeStorage } from '@ionic-native/native-storage';
 import React, { useContext, useEffect, useState } from 'react';
 import useGetPresentations from '../../hooks/useGetPresentations';
 import InitialTutorial from '../../components/tutorial/InitialTutorial';
