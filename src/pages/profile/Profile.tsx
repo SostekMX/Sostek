@@ -16,12 +16,30 @@ const Profile: React.FC = () => {
 
     useEffect(() => {
         setEmail(localStorage.getItem('user_email') ?? '');
+        const token = localStorage.getItem('token');
+        axios.get('http://localhost:8080/user/profile', {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(function (response) {
+            if (response.data.success) {
+                const u = response.data.user;
+                setName(u.name ?? '');
+                setSurname(u.surname ?? '');
+                setBirthDate(u.birth_date ?? '');
+                setOccupation(u.occupation ?? '');
+                setGender(u.gender ?? '');
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
     }, []);
 
     function editUser() {
+        const token = localStorage.getItem('token');
         axios.post('http://localhost:8080/user/edit', {
             email, name, surname,
             birth_date: birthDate, occupation, gender,
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
         }).then(function (response) {
             setMessage(response.data.message);
             setShowAlert(true);
