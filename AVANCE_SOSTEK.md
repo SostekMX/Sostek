@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-05-28 (revisado contra código real)  
+> Última actualización: 2026-05-30  
 > Rama activa: `development`  
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Google APIs
 
@@ -24,7 +24,8 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ### ✅ IMPLEMENTADO Y FUNCIONAL
 
-- **Login / Registro** — formularios completos, integración con backend (`/user/login`, `/user/signup`). ⚠️ El token JWT de la respuesta no se guarda — ver bugs conocidos.
+- **Login / Registro** — formularios completos, integración con backend (`/user/login`, `/user/signup`). Token JWT guardado en `localStorage` al hacer login y signup. Redirige a Tab1 tras registro exitoso.
+- **Perfil** — carga datos del usuario desde `GET /user/profile` al montar. Envía header `Authorization: Bearer <token>` en `POST /user/edit`.
 - **Tab 1 — APRENDE**
   - Artículos cargados desde Google Sheets (hook `useGetSingleExcelAllData`)
   - Modal del artículo más reciente al entrar
@@ -42,19 +43,23 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 - **Resultado de evaluación** (`/score/:name`) — muestra puntaje, categoría más débil, botón de artículos recomendados
 - **Tutorial inicial** — slides con personaje al primer acceso (contenido desde Drive)
 - **AppBar** — búsqueda, menú lateral con logout, acceso a perfil, reactivación de tutorial
-- **Perfil** — edición de nombre, apellido, fecha de nacimiento, ocupación y sexo (`POST /user/edit`)
+- **Perfil** — edición de nombre, apellido, fecha de nacimiento, ocupación y sexo (`POST /user/edit`) con header JWT. Carga datos reales desde `GET /user/profile` al abrir la pantalla.
 - **Resultado de evaluación** (`/score/:name`) — ruta registrada, mensajes de feedback diferenciados por rango (≥150, ≥120, ≥90, ≥50, <50)
 
 ---
 
+### ✅ BUGS RESUELTOS (2026-05-30)
+
+| Bug | Archivo | Solución |
+|-----|---------|---------|
+| Token JWT no se guarda al hacer login | `LogIn.tsx` | `localStorage.setItem('token', response.data.token)` al recibir respuesta exitosa |
+| Token JWT no se guarda al hacer signup | `SignUp.tsx` | Igual que login + redirige a Tab1 en lugar de volver al login |
+| `POST /user/edit` no envía header JWT | `Profile.tsx` | Agrega `{ headers: { Authorization: \`Bearer ${token}\` } }` en la llamada Axios |
+| Perfil no carga datos del usuario | `Profile.tsx` | `useEffect` llama a `GET /user/profile` con JWT y puebla todos los campos |
+
 ### 🐛 BUGS CONOCIDOS (rompen funcionalidad)
 
-| Bug | Archivo | Detalle |
-|-----|---------|---------|
-| Token JWT no se guarda al hacer login | `LogIn.tsx:25` | La respuesta del backend incluye `token` pero nunca se hace `localStorage.setItem('token', ...)`. Sin el token, todos los endpoints protegidos fallan |
-| Token JWT no se guarda al hacer signup | `SignUp.tsx:45` | Mismo problema — el usuario hace signup pero queda sin sesión activa |
-| `POST /user/edit` no envía header JWT | `Profile.tsx:22` | El backend ahora requiere `Authorization: Bearer <token>`. Sin el header, devuelve `Token requerido` y no guarda ningún cambio |
-| Perfil no carga datos del usuario | `Profile.tsx` | Solo lee el email de `localStorage`. Nunca llama a `GET /user/profile`, por lo que nombre, apellido y demás campos siempre aparecen vacíos |
+_Sin bugs urgentes actualmente._
 
 ---
 
@@ -85,11 +90,9 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ## Prioridades recomendadas
 
-### 🔴 Urgente (bugs que bloquean flujos completos)
+### 🔴 Urgente
 
-1. **Guardar token JWT en login y signup** — en `LogIn.tsx` y `SignUp.tsx`, agregar `localStorage.setItem('token', response.data.token)` al recibir respuesta exitosa. Sin esto, todos los endpoints protegidos están rotos
-2. **Agregar header JWT a `POST /user/edit`** — en `Profile.tsx`, enviar `{ headers: { Authorization: \`Bearer ${localStorage.getItem('token')}\` } }` en la llamada Axios
-3. **Cargar datos del usuario en perfil con `GET /user/profile`** — en `Profile.tsx`, llamar al endpoint al montar el componente para poblar nombre, apellido y demás campos
+_Sin pendientes urgentes actualmente._
 
 ### 🟡 Importante (mejoras de calidad)
 
