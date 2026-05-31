@@ -24,6 +24,7 @@ const LogIn: React.FC = () => {
             if (response.data.success) {
                 localStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email);
+                localStorage.setItem('token', response.data.token);
                 history.push("/tab1");
             } else {
                 setMessage(response.data.error);
