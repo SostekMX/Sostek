@@ -42,7 +42,10 @@ const SignUp: React.FC = () => {
             birth_date: birthDate, occupation, gender
         }).then(function (response) {
             if (response.data.success) {
-                history.push("/");
+                localStorage.setItem('login', 'true');
+                localStorage.setItem('user_email', email as string);
+                localStorage.setItem('token', response.data.token);
+                history.push("/tab1");
             } else {
                 setMessage(response.data.error);
                 setShowAlert(true);
