@@ -12,7 +12,7 @@ interface DocumentProps{
     name: string,
     description: string,
     img_url :string,
-    id:number,
+    id: string,
     type: string,
     imgAuthor: string | undefined,
     imgPage: string | undefined

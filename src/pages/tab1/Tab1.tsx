@@ -1,57 +1,73 @@
-import TutorialCard from '../../components/TutorialCard';
-import {  IonContent, IonHeader, IonLoading, IonPage } from '@ionic/react';
-import './Tab1.css';
-import ArticleCarrousel from '../../components/ArticleCarrousel';
-import AppBarPopOver from '../../components/layout/AppBarPopOver';
-import useGetDocuments from '../../hooks/useGetDocuments';
+import { IonContent, IonHeader, IonPage } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
-import useGetPresentations from '../../hooks/useGetPresentations';
+import axios from 'axios';
+import './Tab1.css';
+import ArticleCarrousel, { Article, Presentation } from '../../components/ArticleCarrousel';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import InitialTutorial from '../../components/tutorial/InitialTutorial';
 import AppContext from '../../context/AppContext';
-import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
 import ArticleCardModal from '../../components/ArticleCardModal';
 
 const Tab1: React.FC = () => {
-  let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [displayTutorial, setDisplayTutorial] = useState(false);
+  const { tutorial } = useContext(AppContext);
 
-  //const {files, lastFile, loading } = useGetDocuments(driveID);
-  const { articlesDataReversed, lastArticleData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
-  const [displayTutorial, setDisplayTutorial] = useState<boolean>(false);
-  const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID);
-  const { tutorial } = useContext(AppContext); 
-  //addToFiles(files);
   useEffect(() => {
-    // NativeStorage.getItem("login").then(
-    //   data => setIsUserLogged(data)
-    // )
-    let isTrue  = localStorage.getItem("tutorial") === 'true';
-    if (localStorage.getItem("tutorial") === undefined) {
-      isTrue = true;
+    const cached = localStorage.getItem("articles");
+    if (cached) {
+      setArticles(JSON.parse(cached));
+      setLoadingData(false);
     }
-    setDisplayTutorial(isTrue == true && tutorial === true);
 
-}, [localStorage, tutorial])
+    Promise.all([
+      axios.get('http://localhost:8080/articles'),
+      axios.get('http://localhost:8080/presentations'),
+    ]).then(([artRes, presRes]) => {
+      if (artRes.data.success) {
+        const reversed = [...artRes.data.articles].reverse();
+        setArticles(reversed);
+        localStorage.setItem("articles", JSON.stringify(reversed));
+      }
+      if (presRes.data.success) setPresentations(presRes.data.presentations);
+    }).catch(err => console.log(err))
+      .finally(() => setLoadingData(false));
+  }, []);
+
+  useEffect(() => {
+    const isTrue = localStorage.getItem("tutorial") === 'true';
+    setDisplayTutorial(isTrue && tutorial === true);
+  }, [tutorial]);
+
+  const lastArticle = articles[0] ?? null;
+
   return (
     <IonPage>
-      <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class='bg-img'> 
-        <IonHeader collapse="condense">
-      
-        </IonHeader>
-        {
-          !loadingData && !loadingForAllPresentations && <>
-            {lastArticleData && <ArticleCardModal
-              title={lastArticleData[0]}
-              subtitle={lastArticleData[1]}
-              body={lastArticleData[3]}
-              imageUrl={lastArticleData[4]}
-              author={lastArticleData[5]}
-              id={articlesDataReversed!.length - 1}
-            />}
-             {displayTutorial &&<InitialTutorial />}
-            <ArticleCarrousel articlesData={articlesDataReversed} loadingData={loadingData} presentations={presentations}/>
+      <AppBarPopOver />
+      <IonContent fullscreen class='bg-img'>
+        <IonHeader collapse="condense" />
+        {!loadingData && (
+          <>
+            {lastArticle && (
+              <ArticleCardModal
+                title={lastArticle.title}
+                subtitle={lastArticle.subtitle}
+                body={lastArticle.body}
+                imageUrl={lastArticle.image}
+                author={lastArticle.author}
+                id={lastArticle._id}
+              />
+            )}
+            {displayTutorial && <InitialTutorial />}
+            <ArticleCarrousel
+              articlesData={articles}
+              loadingData={loadingData}
+              presentations={presentations}
+            />
           </>
-        }
+        )}
       </IonContent>
     </IonPage>
   );
