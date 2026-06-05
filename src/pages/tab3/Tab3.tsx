@@ -1,61 +1,45 @@
 import { IonContent, IonHeader, IonItem, IonList, IonPage, IonRow, IonSelect, IonSelectOption } from '@ionic/react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import AppContext from '../../context/AppContext';
-import useGetDocuments from '../../hooks/useGetDocuments';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
 
+interface EvaluationItem {
+  _id: string;
+  name: string;
+  career: string;
+}
+
 const Tab3: React.FC = () => {
   const [currentOption, setCurrentOption] = useState<"all" | "architect" | "design" | "others">('all');
-  let driveID = process.env.REACT_APP_EVALUATION_DRIVE_ID;
-  const {files, loading } = useGetDocuments(driveID);
-  const {search, changeSearch} = useContext(AppContext);
+  const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { search, changeSearch } = useContext(AppContext);
 
-  let evaluationCards = !loading && files?.sort((a, b) => { return a.name.localeCompare(b.name)}).map((file, index) => {
-    if (file.name.toLowerCase().includes(search.toLowerCase())){ 
-      switch (currentOption) {
-        case 'architect':
-          if (file.name.toLowerCase().includes('arquitectura')){
-            return (
-              <EvaluationCard key={file.id}
-                name={file.name} 
-                img={`/assets/test${index + 1}.jpg`} 
-                id={file.id} />
-            )
-          }
-        break;
-        case 'design':
-          if (file.name.toLowerCase().includes('industrial')){
-            return (
-              <EvaluationCard 
-                name={file.name} 
-                img={`/assets/test${files.length - index}.jpg`} 
-                id={file.id} />
-            )
-          }
-        break;
-        case 'others':
-          if (!file.name.toLowerCase().includes('arquitectura') && !file.name.toLowerCase().includes('industrial')){
-            return (
-              <EvaluationCard
-                key={file.id}
-                name={file.name}
-                img={`/assets/test${index + 1}.jpg`}
-                id={file.id} />
-            )
-          }
-          break;
-        default:
-        return (
-          <EvaluationCard 
-            name={file.name} 
-            img={`/assets/test${index + 1}.jpg`} 
-            id={file.id} />
-        )
-      }
-    }
-  })
+  useEffect(() => {
+    axios.get('http://localhost:8080/evaluations')
+      .then(res => {
+        if (res.data.success) setEvaluations(res.data.evaluations);
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const sorted = [...evaluations].sort((a, b) => a.name.localeCompare(b.name));
+
+  let evaluationCards = sorted
+    .filter(ev => ev.name.toLowerCase().includes(search.toLowerCase()))
+    .filter(ev => {
+      if (currentOption === 'architect') return ev.career === 'Arquitectura';
+      if (currentOption === 'design') return ev.career === 'Diseño Industrial';
+      if (currentOption === 'others') return ev.career !== 'Arquitectura' && ev.career !== 'Diseño Industrial';
+      return true;
+    })
+    .map((ev, index) => (
+      <EvaluationCard key={ev._id} name={ev.name} img={`/assets/test${index + 1}.jpg`} id={ev._id} />
+    ));
 
   return (
     <IonPage>

@@ -5,22 +5,49 @@ import {
   IonPage,
   IonRow,
 } from "@ionic/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import axios from "axios";
 import AppBarPopOver from "../../components/layout/AppBarPopOver";
 import QuestionTestCard from "../../components/QuestionTestCard";
 import AppContext from "../../context/AppContext";
-import useGetEvaluationData from "../../hooks/useGetEvaluationData";
 import "./evaluation.css";
+
+interface Option {
+  text: string;
+  value: number;
+}
+interface Question {
+  category: string;
+  text: string;
+  options: Option[];
+}
+interface EvaluationData {
+  _id: string;
+  name: string;
+  career: string;
+  questions: Question[];
+}
 
 interface RouteParams {
   name: string;
   id: string;
 }
+
 const Evaluation: React.FC = () => {
   const { name, id } = useParams<RouteParams>();
-  const { evaluation, loading } = useGetEvaluationData(id);
+  const [evaluation, setEvaluation] = useState<EvaluationData | null>(null);
+  const [loading, setLoading] = useState(true);
   const { score, currentAnswersAndScores } = useContext(AppContext);
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/evaluations/${id}`)
+      .then(res => {
+        if (res.data.success) setEvaluation(res.data.evaluation);
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+  }, [id]);
   // console.log(evaluation);
   function setFinalScore() {
     let arrayOfCategories: string[] = [];
@@ -69,17 +96,16 @@ const Evaluation: React.FC = () => {
           }
         >
           {!loading &&
-            evaluation?.at(0)?.values.map((question, index) => {
-              return (
-                <QuestionTestCard
-                  question={question[1]}
-                  category={question[0]}
-                  comments={undefined}
-                  options={evaluation![1].values[index]}
-                  points={evaluation![2].values[index]}
-                />
-              );
-            })}
+            evaluation?.questions.map((question, index) => (
+              <QuestionTestCard
+                key={index}
+                question={question.text}
+                category={question.category}
+                comments={undefined}
+                options={question.options.map(o => o.text)}
+                points={question.options.map(o => String(o.value))}
+              />
+            ))}
         </div>
         {!loading && (
           <IonRow className="align-center">
