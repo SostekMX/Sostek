@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-05-30  
+> Última actualización: 2026-05-28 (revisado contra código real)  
 > Rama activa: `development`  
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Google APIs
 
@@ -20,12 +20,73 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 
 ---
 
+## Estructura del proyecto
+
+```
+src/
+├── App.tsx                          # Router principal + MainTabs + lógica de ocultar tab bar
+├── context/
+│   └── AppContext.tsx               # Estado global: search, tutorial, dark, transparentToolbar
+├── components/
+│   ├── layout/
+│   │   ├── AppBarPopOver.tsx        # Toolbar: búsqueda, menú lateral, logout
+│   │   └── AppBarMenu.tsx           # Menú lateral (IonMenu)
+│   ├── ArticleCarrousel.tsx         # Carrusel horizontal de artículos
+│   ├── ArticleCardModal.tsx         # Modal del artículo más reciente
+│   ├── DocumentCard.tsx             # Tarjeta de artículo en la lista
+│   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
+│   ├── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
+│   ├── TutorialCard.tsx             # Slide individual del tutorial
+│   └── tutorial/
+│       ├── InitialTutorial.tsx      # Tutorial completo al primer acceso
+│       └── TutorialComponent.tsx   # Wrapper del tutorial
+├── pages/
+│   ├── logIn/         LogIn.tsx     # Pantalla de inicio de sesión
+│   ├── signUp/        SignUp.tsx    # Pantalla de registro
+│   ├── tab1/          Tab1.tsx      # APRENDE — artículos + presentaciones
+│   ├── tab2/          Tab2.tsx      # JUEGA — video + descarga
+│   ├── tab3/          Tab3.tsx      # EVALÚATE — lista de evaluaciones
+│   ├── document/      Documents.tsx # Detalle completo de un artículo
+│   ├── presentation/  Presentation.tsx # Viewer de slides de Drive
+│   ├── evaluation/    Evaluation.tsx   # Evaluación con preguntas y checkboxes
+│   ├── finalScoreEvaluation/ FinalScoreEvaluation.tsx # Resultados y feedback
+│   └── profile/       Profile.tsx  # Edición de perfil del usuario
+└── hooks/
+    ├── useGetArticlesData.ts        # Artículos desde Google Sheets (con caché localStorage)
+    ├── useGetDocuments.ts           # Documentos desde Drive
+    ├── useGetEvaluationData.ts      # Preguntas/respuestas/puntos desde Sheets
+    ├── useGetFirstImageOfPresentations.ts # Thumbnail de cada presentación
+    ├── useGetPresentationImages.ts  # Todas las imágenes de una presentación
+    ├── useGetPresentations.ts       # Lista de presentaciones desde Drive
+    ├── useGetSingleExcelAllData.ts  # Lector genérico de Google Sheets
+    └── useLocalStorage.ts           # Hook de sincronización con localStorage
+```
+
+---
+
+## Rutas registradas
+
+| Ruta | Componente | Descripción |
+|------|-----------|-------------|
+| `/` | `LogIn` | Pantalla de login (tab bar oculto) |
+| `/SignUp` | `SignUp` | Registro (tab bar oculto) |
+| `/MainMenu` | `Tab1` | Alias de entrada para invitados |
+| `/tab1` | `Tab1` | APRENDE |
+| `/tab2` | `Tab2` | JUEGA |
+| `/tab3` | `Tab3` | EVALÚATE |
+| `/Profile` | `Profile` | Perfil del usuario |
+| `/Documents/:id` | `Documents` | Detalle de artículo |
+| `/presentation/:driveId` | `Presentation` | Viewer de presentación |
+| `/Evaluation/:name/:id` | `Evaluation` | Cuestionario de evaluación |
+| `/score/:name` | `FinalScoreEvaluation` | Resultado de evaluación |
+
+---
+
 ## Estado actual por módulo
 
 ### ✅ IMPLEMENTADO Y FUNCIONAL
 
-- **Login / Registro** — formularios completos, integración con backend (`/user/login`, `/user/signup`). Token JWT guardado en `localStorage` al hacer login y signup. Redirige a Tab1 tras registro exitoso.
-- **Perfil** — carga datos del usuario desde `GET /user/profile` al montar. Envía header `Authorization: Bearer <token>` en `POST /user/edit`.
+- **Login / Registro** — formularios completos, integración con backend (`/user/login`, `/user/signup`). ⚠️ El token JWT de la respuesta no se guarda — ver bugs conocidos.
 - **Tab 1 — APRENDE**
   - Artículos cargados desde Google Sheets (hook `useGetSingleExcelAllData`)
   - Modal del artículo más reciente al entrar
@@ -43,23 +104,28 @@ El backend de usuarios (login/registro/perfil) es un servidor externo en `http:/
 - **Resultado de evaluación** (`/score/:name`) — muestra puntaje, categoría más débil, botón de artículos recomendados
 - **Tutorial inicial** — slides con personaje al primer acceso (contenido desde Drive)
 - **AppBar** — búsqueda, menú lateral con logout, acceso a perfil, reactivación de tutorial
-- **Perfil** — edición de nombre, apellido, fecha de nacimiento, ocupación y sexo (`POST /user/edit`) con header JWT. Carga datos reales desde `GET /user/profile` al abrir la pantalla.
+- **Perfil** — edición de nombre, apellido, fecha de nacimiento, ocupación y sexo (`POST /user/edit`)
 - **Resultado de evaluación** (`/score/:name`) — ruta registrada, mensajes de feedback diferenciados por rango (≥150, ≥120, ≥90, ≥50, <50)
 
 ---
 
-### ✅ BUGS RESUELTOS (2026-05-30)
-
-| Bug | Archivo | Solución |
-|-----|---------|---------|
-| Token JWT no se guarda al hacer login | `LogIn.tsx` | `localStorage.setItem('token', response.data.token)` al recibir respuesta exitosa |
-| Token JWT no se guarda al hacer signup | `SignUp.tsx` | Igual que login + redirige a Tab1 en lugar de volver al login |
-| `POST /user/edit` no envía header JWT | `Profile.tsx` | Agrega `{ headers: { Authorization: \`Bearer ${token}\` } }` en la llamada Axios |
-| Perfil no carga datos del usuario | `Profile.tsx` | `useEffect` llama a `GET /user/profile` con JWT y puebla todos los campos |
-
 ### 🐛 BUGS CONOCIDOS (rompen funcionalidad)
 
-_Sin bugs urgentes actualmente._
+| Bug | Archivo | Detalle |
+|-----|---------|---------|
+| Token JWT no se guarda al hacer login | `LogIn.tsx:25` | La respuesta del backend incluye `token` pero nunca se hace `localStorage.setItem('token', ...)`. Sin el token, todos los endpoints protegidos fallan |
+| Token JWT no se guarda al hacer signup | `SignUp.tsx:45` | Mismo problema — el usuario hace signup pero queda sin sesión activa |
+| `POST /user/edit` no envía header JWT | `Profile.tsx:22` | El backend ahora requiere `Authorization: Bearer <token>`. Sin el header, devuelve `Token requerido` y no guarda ningún cambio |
+| Perfil no carga datos del usuario | `Profile.tsx` | Solo lee el email de `localStorage`. Nunca llama a `GET /user/profile`, por lo que nombre, apellido y demás campos siempre aparecen vacíos |
+
+#### Fixes técnicos aplicados
+
+- Eliminación de `NativeStorage` → reemplazado con `localStorage` (NativeStorage solo funciona compilado como app nativa, rompe en web)
+- Pantalla gris al cargar sin API keys corregida
+- `tsconfig` limpiado de opciones obsoletas
+- Declaración de tipos para archivos `.css` añadida (`*.d.ts`)
+- Tab bar oculto en rutas `/` y `/SignUp` via `HIDE_TABBAR_PATHS` en `App.tsx`
+- Rediseño completo mobile-first: login, registro, tabs, tarjetas, perfil y resultados de evaluación
 
 ---
 
@@ -90,9 +156,11 @@ _Sin bugs urgentes actualmente._
 
 ## Prioridades recomendadas
 
-### 🔴 Urgente
+### 🔴 Urgente (bugs que bloquean flujos completos)
 
-_Sin pendientes urgentes actualmente._
+1. **Guardar token JWT en login y signup** — en `LogIn.tsx` y `SignUp.tsx`, agregar `localStorage.setItem('token', response.data.token)` al recibir respuesta exitosa. Sin esto, todos los endpoints protegidos están rotos
+2. **Agregar header JWT a `POST /user/edit`** — en `Profile.tsx`, enviar `{ headers: { Authorization: \`Bearer ${localStorage.getItem('token')}\` } }` en la llamada Axios
+3. **Cargar datos del usuario en perfil con `GET /user/profile`** — en `Profile.tsx`, llamar al endpoint al montar el componente para poblar nombre, apellido y demás campos
 
 ### 🟡 Importante (mejoras de calidad)
 
