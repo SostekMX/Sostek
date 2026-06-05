@@ -2,7 +2,7 @@
 
 > Documento de comunicación frontend → backend.
 > Se actualiza cada vez que hay un cambio en el frontend que afecta la integración.
-> Última actualización: 2026-06-05
+> Última actualización: 2026-06-05 (migración a MongoDB completada)
 > Backend corre en: `http://localhost:8080`
 
 ---
@@ -11,23 +11,28 @@
 
 | Fecha | Cambio | Qué necesita el backend |
 |-------|--------|------------------------|
-| 2026-05-29 | Perfil ahora carga datos al entrar via `GET /user/profile` con JWT | Endpoint debe devolver todos los campos del usuario excepto `password` |
-| 2026-05-29 | `POST /user/edit` ahora envía header `Authorization: Bearer <token>` | Endpoint debe validar el token y leer el usuario del token, no del body |
-| 2026-05-29 | Login y signup ahora guardan el token en `localStorage` | El token debe llegar en `response.data.token` en ambos endpoints |
+| 2026-06-05 | Migración completa — frontend ya no usa Google APIs para nada de contenido | `GET /articles`, `GET /articles/:id`, `GET /evaluations`, `GET /evaluations/:id`, `GET /presentations` en producción |
+| 2026-06-05 | Logout ahora elimina el token de `localStorage` | Sin cambios en backend |
+| 2026-06-05 | Signup valida contraseña ≥ 6 chars antes de llamar al backend | Sin cambios en backend |
+| 2026-05-29 | Perfil carga datos al entrar via `GET /user/profile` con JWT | ✅ Ya implementado |
+| 2026-05-29 | `POST /user/edit` envía header `Authorization: Bearer <token>` | ✅ Ya implementado |
+| 2026-05-29 | Login y signup guardan el token en `localStorage` | ✅ Ya implementado |
 
 ---
 
-## Lo que el frontend necesita que el backend implemente
+## Estado de endpoints de contenido
 
-| Endpoint | Estado | Cuándo lo usa el frontend |
-|----------|--------|--------------------------|
-| `POST /user/score` | ❌ Pendiente (frontend aún no lo llama) | Al terminar una evaluación en Tab 3 |
-| `DELETE /user` | ❌ Pendiente (pantalla no implementada aún) | Opción "Eliminar cuenta" en perfil |
-| `GET /evaluations` | ❌ Pendiente | Tab 3 — lista de evaluaciones (nombre + carrera) |
-| `GET /evaluations/:id` | ❌ Pendiente | Pantalla de evaluación — preguntas, opciones y puntos |
-| `GET /articles` | ❌ Pendiente | Tab 1 — lista de artículos |
-| `GET /articles/:id` | ❌ Pendiente | Detalle de artículo |
-| `GET /presentations` | ❌ Pendiente | Tab 1 — carrusel de presentaciones |
+| Endpoint | Estado |
+|----------|--------|
+| `GET /evaluations` | ✅ Integrado en frontend |
+| `GET /evaluations/:id` | ✅ Integrado en frontend |
+| `GET /articles` | ✅ Integrado en frontend |
+| `GET /articles/:id` | ✅ Integrado en frontend |
+| `GET /presentations` | ✅ Integrado en frontend |
+| `POST /user/score` | ⚠️ Backend listo — frontend pendiente (`FinalScoreEvaluation.tsx`) |
+| `DELETE /user` | ⚠️ Backend listo — frontend pendiente (UI en perfil) |
+| `POST /user/forgot-password` | ⚠️ Backend listo — frontend pendiente (nueva pantalla) |
+| `POST /user/reset-password` | ⚠️ Backend listo — frontend pendiente (nueva pantalla) |
 
 ---
 
