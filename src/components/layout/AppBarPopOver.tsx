@@ -25,7 +25,7 @@ export const AppBarPopOver: React.FC = () => {
 
     function logOutUser(){
         localStorage.setItem("login", 'false');
-        //NativeStorage.setItem("login", false);
+        localStorage.removeItem("token");
         history.goBack();
     }
     function activateTutorial() {
