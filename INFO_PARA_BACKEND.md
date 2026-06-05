@@ -2,7 +2,7 @@
 
 > Documento de comunicación frontend → backend.
 > Se actualiza cada vez que hay un cambio en el frontend que afecta la integración.
-> Última actualización: 2026-06-04
+> Última actualización: 2026-06-05
 > Backend corre en: `http://localhost:8080`
 
 ---
@@ -23,6 +23,75 @@
 |----------|--------|--------------------------|
 | `POST /user/score` | ❌ Pendiente (frontend aún no lo llama) | Al terminar una evaluación en Tab 3 |
 | `DELETE /user` | ❌ Pendiente (pantalla no implementada aún) | Opción "Eliminar cuenta" en perfil |
+| `GET /evaluations` | ❌ Pendiente | Tab 3 — lista de evaluaciones (nombre + carrera) |
+| `GET /evaluations/:id` | ❌ Pendiente | Pantalla de evaluación — preguntas, opciones y puntos |
+| `GET /articles` | ❌ Pendiente | Tab 1 — lista de artículos |
+| `GET /articles/:id` | ❌ Pendiente | Detalle de artículo |
+| `GET /presentations` | ❌ Pendiente | Tab 1 — carrusel de presentaciones |
+
+---
+
+## Migración de contenido: Google Drive/Sheets → MongoDB
+
+**Decisión tomada:** eliminar la dependencia de Google API key y Drive IDs. Todo el contenido pasa a MongoDB.
+
+### Contexto actual del frontend
+
+El frontend hoy carga contenido así (todo via `gapi.client` con API key de Google):
+
+| Contenido | Fuente actual | Hook actual |
+|-----------|--------------|-------------|
+| Artículos | Google Sheets (ID hardcodeado en `Tab1.tsx`) | `useGetSingleExcelAllData` |
+| Presentaciones | Carpeta de Google Drive | `useGetPresentations` + `useGetPresentationImages` |
+| Evaluaciones | Carpeta de Google Drive (cada evaluación = un Sheets con 3 pestañas) | `useGetDocuments` + `useGetEvaluationData` |
+| Tutorial | Carpeta de Google Drive | `useGetDocuments` |
+
+Una vez que el backend tenga los endpoints, el frontend reemplaza todos esos hooks por llamadas Axios. No hay más `gapi.client`, no hay más API key, no hay más IDs de Drive en el `.env`.
+
+### Modelos necesarios en MongoDB
+
+**Article:**
+```js
+{
+  titulo,       // String
+  subtitulo,    // String
+  tipo,         // String — 'articulo' o 'presentacion'
+  cuerpo,       // String
+  imagen,       // String (URL)
+  autor,        // String
+  categoria,    // String (se usa para filtrar artículos recomendados al terminar evaluación)
+  autorImagen,  // String (URL)
+  paginaImagen  // String (URL)
+}
+```
+
+**Evaluation:**
+```js
+{
+  nombre,    // String — nombre de la evaluación
+  carrera,   // String — 'arquitectura', 'disenio', 'otros'
+  preguntas: [{
+    categoria,  // String
+    texto,      // String
+    opciones: [{ texto: String, puntos: Number }]  // hasta 6 opciones
+  }]
+}
+```
+
+**Presentation:**
+```js
+{
+  nombre,   // String
+  imagenes  // Array de URLs (slides en orden)
+}
+```
+
+### Orden sugerido de implementación
+
+1. **Evaluaciones** — más urgente, no tenemos el Drive configurado, empezamos de cero
+2. **Artículos** — migrar desde el Sheets actual
+3. **Presentaciones** — migrar listado; las imágenes pueden seguir en Drive como URLs directas
+4. **Tutorial** — puede quedar para el final o hardcodearse en el frontend
 
 ---
 
@@ -105,6 +174,11 @@ app.use(cors({
 | `POST` | `/user/edit` | JWT | ✅ Implementado |
 | `POST` | `/user/score` | JWT | ❌ Pendiente |
 | `DELETE` | `/user` | JWT | ❌ Pendiente |
+| `GET` | `/evaluations` | No | ❌ Pendiente |
+| `GET` | `/evaluations/:id` | No | ❌ Pendiente |
+| `GET` | `/articles` | No | ❌ Pendiente |
+| `GET` | `/articles/:id` | No | ❌ Pendiente |
+| `GET` | `/presentations` | No | ❌ Pendiente |
 
 ---
 
