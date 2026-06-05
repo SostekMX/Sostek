@@ -37,6 +37,11 @@ const SignUp: React.FC = () => {
     }, []);
 
     function signUpUser() {
+        if (!password || password.length < 6) {
+            setMessage('La contraseña debe tener al menos 6 caracteres');
+            setShowAlert(true);
+            return;
+        }
         axios.post('http://localhost:8080/user/signup', {
             email, password, name, surname,
             birth_date: birthDate, occupation, gender
