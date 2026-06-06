@@ -41,16 +41,18 @@ src/
 │       ├── InitialTutorial.tsx      # Tutorial completo al primer acceso
 │       └── TutorialComponent.tsx   # Wrapper del tutorial
 ├── pages/
-│   ├── logIn/         LogIn.tsx     # Pantalla de inicio de sesión
-│   ├── signUp/        SignUp.tsx    # Pantalla de registro
-│   ├── tab1/          Tab1.tsx      # APRENDE — artículos + presentaciones
-│   ├── tab2/          Tab2.tsx      # JUEGA — video + descarga
-│   ├── tab3/          Tab3.tsx      # EVALÚATE — lista de evaluaciones
-│   ├── document/      Documents.tsx # Detalle completo de un artículo
-│   ├── presentation/  Presentation.tsx # Viewer de slides
-│   ├── evaluation/    Evaluation.tsx   # Evaluación con preguntas y checkboxes
+│   ├── logIn/         LogIn.tsx          # Pantalla de inicio de sesión
+│   ├── signUp/        SignUp.tsx          # Pantalla de registro
+│   ├── forgotPassword/ ForgotPassword.tsx # Solicitud de token de recuperación
+│   ├── resetPassword/  ResetPassword.tsx  # Cambio de contraseña con token
+│   ├── tab1/          Tab1.tsx            # APRENDE — artículos + presentaciones
+│   ├── tab2/          Tab2.tsx            # JUEGA — video + descarga
+│   ├── tab3/          Tab3.tsx            # EVALÚATE — lista de evaluaciones
+│   ├── document/      Documents.tsx       # Detalle completo de un artículo
+│   ├── presentation/  Presentation.tsx    # Viewer de slides
+│   ├── evaluation/    Evaluation.tsx      # Evaluación con preguntas y checkboxes
 │   ├── finalScoreEvaluation/ FinalScoreEvaluation.tsx # Resultados y feedback
-│   └── profile/       Profile.tsx  # Edición de perfil del usuario
+│   └── profile/       Profile.tsx         # Edición de perfil del usuario
 ├── hooks/
 │   ├── useGetDocuments.ts           # Documentos desde Drive (solo tutorial)
 │   └── useGetArticlesData.ts        # Hook legacy — solo usado por TutorialComponent
@@ -66,6 +68,8 @@ src/
 |------|-----------|-------------|
 | `/` | `LogIn` | Pantalla de login (tab bar oculto) |
 | `/SignUp` | `SignUp` | Registro (tab bar oculto) |
+| `/ForgotPassword` | `ForgotPassword` | Solicitud de token por email (tab bar oculto) |
+| `/ResetPassword` | `ResetPassword` | Cambio de contraseña con token (tab bar oculto) |
 | `/MainMenu` | `Tab1` | Alias de entrada para invitados |
 | `/tab1` | `Tab1` | APRENDE |
 | `/tab2` | `Tab2` | JUEGA |
@@ -111,7 +115,7 @@ src/
 - Migración completa de Google Sheets/Drive → backend MongoDB (artículos, evaluaciones, presentaciones)
 - Eliminación de 6 hooks muertos de gapi (`useGetEvaluationData`, `useGetPresentations`, `useGetPresentationImages`, `useGetFirstImageOfPresentations`, `useGetSingleExcelAllData`, `useLocalStorage`)
 - Eliminación de `NativeStorage` → `localStorage`
-- Tab bar oculto en rutas `/` y `/SignUp`
+- Tab bar oculto en rutas `/`, `/SignUp`, `/ForgotPassword` y `/ResetPassword`
 - Rediseño completo mobile-first
 
 ---
