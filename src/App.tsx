@@ -43,10 +43,12 @@ import AppContext, { AppProvider } from './context/AppContext';
 import { useContext } from 'react';
 import Evaluation from './pages/evaluation/Evaluation';
 import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
+import ForgotPassword from './pages/forgotPassword/ForgotPassword';
+import ResetPassword from './pages/resetPassword/ResetPassword';
 
 setupIonicReact();
 
-const HIDE_TABBAR_PATHS = ['/', '/SignUp'];
+const HIDE_TABBAR_PATHS = ['/', '/SignUp', '/ForgotPassword', '/ResetPassword'];
 
 /* Dentro del router para poder usar useLocation */
 const MainTabs: React.FC = () => {
@@ -67,6 +69,8 @@ const MainTabs: React.FC = () => {
         <Route exact path="/presentation/:driveId"><Presentation /></Route>
         <Route exact path="/Evaluation/:name/:id"><Evaluation /></Route>
         <Route path="/score/:name"><FinalScoreEvaluation /></Route>
+        <Route exact path="/ForgotPassword"><ForgotPassword /></Route>
+        <Route exact path="/ResetPassword"><ResetPassword /></Route>
       </IonRouterOutlet>
 
       <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">

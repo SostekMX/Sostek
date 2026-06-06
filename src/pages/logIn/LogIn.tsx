@@ -109,6 +109,10 @@ const LogIn: React.FC = () => {
                                 Iniciar sesi&oacute;n
                             </IonButton>
 
+                            <IonButton expand='block' fill='clear' href='/ForgotPassword' className='login-btn-secondary'>
+                                &iquest;Olvidaste tu contrase&ntilde;a?
+                            </IonButton>
+
                             <IonButton expand='block' fill='clear' href='SignUp' className='login-btn-secondary'>
                                 &iquest;No tienes cuenta? Reg&iacute;strate
                             </IonButton>
