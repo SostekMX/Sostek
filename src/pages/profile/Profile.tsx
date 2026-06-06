@@ -1,5 +1,6 @@
 import { IonContent, IonItem, IonPage, IonButton, IonLabel, IonInput, IonSelect, IonSelectOption, IonAlert } from '@ionic/react';
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import axios from 'axios';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Profile.css';
@@ -13,6 +14,8 @@ const Profile: React.FC = () => {
     const [gender, setGender] = useState<string>('');
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+    const history = useHistory();
 
     useEffect(() => {
         setEmail(localStorage.getItem('user_email') ?? '');
@@ -32,6 +35,18 @@ const Profile: React.FC = () => {
             console.log(error);
         });
     }, []);
+
+    function deleteUser() {
+        const token = localStorage.getItem('token');
+        axios.delete('http://localhost:8080/user', {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(() => {
+            localStorage.clear();
+            history.replace('/');
+        }).catch((error) => {
+            console.error('Error al eliminar cuenta:', error);
+        });
+    }
 
     function editUser() {
         const token = localStorage.getItem('token');
@@ -85,6 +100,9 @@ const Profile: React.FC = () => {
                             <IonButton expand='block' fill='outline' color='primary' href="/MainMenu">
                                 Regresar
                             </IonButton>
+                            <IonButton expand='block' fill='clear' color='danger' onClick={() => setShowDeleteConfirm(true)}>
+                                Eliminar cuenta
+                            </IonButton>
                         </div>
                         <IonAlert
                             isOpen={showAlert}
@@ -92,6 +110,16 @@ const Profile: React.FC = () => {
                             header="Mensaje"
                             message={message}
                             buttons={['OK']}
+                        />
+                        <IonAlert
+                            isOpen={showDeleteConfirm}
+                            onDidDismiss={() => setShowDeleteConfirm(false)}
+                            header="Eliminar cuenta"
+                            message="¿Estás seguro? Esta acción no se puede deshacer."
+                            buttons={[
+                                { text: 'Cancelar', role: 'cancel' },
+                                { text: 'Eliminar', role: 'destructive', handler: deleteUser }
+                            ]}
                         />
                     </div>
                 </div>
