@@ -1,6 +1,7 @@
 import { IonPage, IonContent, IonHeader, IonButton } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import axios from 'axios';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import AppContext from '../../context/AppContext';
 import './FinalScoreEvaluation.css';
@@ -52,7 +53,9 @@ const FinalScoreEvaluation: React.FC = () => {
     const { changeSearch } = useContext(AppContext);
 
     useEffect(() => {
-        setScore(Number(sessionStorage.getItem("finalScore")));
+        const finalScore = Number(sessionStorage.getItem("finalScore"));
+        setScore(finalScore);
+
         const totalCategories = Number(sessionStorage.getItem("totalCategories"));
         let lowPunctuation = Infinity;
         let lowCategory = "";
@@ -64,6 +67,15 @@ const FinalScoreEvaluation: React.FC = () => {
             }
         }
         setWeakestCategory(lowCategory);
+
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.post('http://localhost:8080/user/score', { score_test: finalScore }, {
+                headers: { Authorization: `Bearer ${token}` }
+            }).catch((error) => {
+                console.error('Error al guardar puntaje:', error);
+            });
+        }
     }, []);
 
     const { name } = useParams<Params>();
