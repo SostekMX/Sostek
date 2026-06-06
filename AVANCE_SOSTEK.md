@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-05
+> Última actualización: 2026-06-06
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -102,6 +102,9 @@ src/
 - **AppBar** — búsqueda, menú lateral con logout (limpia token), acceso a perfil, reactivación de tutorial
 - **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT
 - **Validación contraseña** — mínimo 6 caracteres en signup antes de llamar al backend
+- **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
+- **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
+- **Recuperación de contraseña** — pantalla `ForgotPassword.tsx` (email → token por response) + `ResetPassword.tsx` (token + nueva contraseña); rutas `/ForgotPassword` y `/ResetPassword`; link desde `LogIn.tsx`
 
 #### Fixes técnicos aplicados
 
@@ -127,32 +130,22 @@ src/
 
 ### ❌ NO IMPLEMENTADO
 
-- `POST /user/score` al terminar evaluación — backend listo, falta integrar en `FinalScoreEvaluation.tsx`
-- `DELETE /user` — backend listo, falta UI en perfil
-- Pantalla de recuperación de contraseña — backend listo (`/user/forgot-password`, `/user/reset-password`), falta pantalla en frontend
 - Sistema de favoritos (backend aún no tiene endpoint)
 - Pantalla de ajustes
 - Modo oscuro funcional
 - Juego online en Tab 2 (Unity WebGL — largo plazo)
-- Recuperación de contraseña
 
 ---
 
 ## Prioridades recomendadas
 
-### 🟡 Importante (backend ya listo, solo falta frontend)
-
-1. **`POST /user/score`** en `FinalScoreEvaluation.tsx` — enviar puntaje si usuario logueado
-2. **`DELETE /user`** — botón "Eliminar cuenta" en `Profile.tsx`
-3. **Pantalla de recuperación de contraseña** — link en `LogIn.tsx` + nueva pantalla con dos pasos (email → token → nueva contraseña)
-
 ### 🟢 Backlog
 
-4. Migrar tutorial de Google Drive al backend
-5. Pantalla de Favoritos (requiere endpoint backend)
-6. Pantalla de Ajustes
-7. Modo oscuro funcional
-8. Juego online en Tab 2
+1. Migrar tutorial de Google Drive al backend
+2. Pantalla de Favoritos (requiere endpoint backend)
+3. Pantalla de Ajustes
+4. Modo oscuro funcional
+5. Juego online en Tab 2
 
 ---
 
