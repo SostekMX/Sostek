@@ -34,6 +34,10 @@ ion-content.bg-img {
     background-size: cover;
 }
 
+ion-content.app-dark-bg {
+    --background: linear-gradient(160deg, #0e1a0e 0%, #163016 70%, #1e4018 100%);
+}
+
 .header-collapse-condense ion-toolbar,
 ion-toolbar.transparent {
     --background: transparent;
@@ -138,6 +142,43 @@ ion-popover ion-item {
 
 .article-modal__title {
     color: var(--sos-text-primary, #1a2e1a);
+}
+
+/* === FILTER PILLS === */
+
+.filter-pills {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.filter-pills::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-pill {
+    flex-shrink: 0;
+    padding: 7px 18px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.filter-pill--active {
+    background: #80b259;
+    border-color: #80b259;
+    color: #ffffff;
 }
 
 /* === SHARED: Section messages === */

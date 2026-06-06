@@ -1,41 +1,45 @@
-.evaluation__container {
-    padding: 0;
-}
-
 .evaluation__card {
+    background: rgba(255, 255, 255, 0.07) !important;
     border-radius: 16px !important;
-    box-shadow: 0 2px 12px rgba(26, 46, 26, 0.1) !important;
+    box-shadow: none !important;
     margin: 0 !important;
     overflow: hidden;
-    border: 1px solid rgba(221, 235, 213, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+    transition: background 0.18s !important;
 }
 
-.evaluationCard__image {
-    height: 120px;
-    object-fit: cover;
-    transition: opacity 0.8s ease-in;
-    width: 100%;
-    display: block;
+.evaluation__card:active {
+    background: rgba(255, 255, 255, 0.12) !important;
 }
 
-.image-card-loading {
-    position: absolute;
-    transition: opacity 0.8s ease-out;
-    height: 120px;
-    object-fit: cover;
-    width: 100%;
+.evaluation-card__accent {
+    height: 3px;
+    background: #80b259;
 }
 
-.evaluation-card__title-container {
-    padding: 10px 10px 12px;
+.evaluation-card__body {
+    padding: 14px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 72px;
+    justify-content: space-between;
 }
 
 .evaluation__title {
-    font-size: 0.78rem;
+    font-size: 0.88rem;
     font-weight: 700;
-    color: #1a2e1a;
-    text-align: center;
+    color: #ffffff;
     white-space: normal;
-    line-height: 1.3;
+    line-height: 1.35;
     margin: 0;
+}
+
+.evaluation-card__badge {
+    font-size: 0.64rem;
+    font-weight: 700;
+    color: #80b259;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    display: block;
 }

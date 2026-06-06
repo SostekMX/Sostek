@@ -6,7 +6,6 @@ import ArticleCarrousel, { Article, Presentation } from '../../components/Articl
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import InitialTutorial from '../../components/tutorial/InitialTutorial';
 import AppContext from '../../context/AppContext';
-import ArticleCardModal from '../../components/ArticleCardModal';
 
 const Tab1: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -41,33 +40,17 @@ const Tab1: React.FC = () => {
     setDisplayTutorial(isTrue && tutorial === true);
   }, [tutorial]);
 
-  const lastArticle = articles[0] ?? null;
-
   return (
     <IonPage>
       <AppBarPopOver />
-      <IonContent fullscreen class='bg-img'>
+      <IonContent fullscreen class='app-dark-bg'>
         <IonHeader collapse="condense" />
-        {!loadingData && (
-          <>
-            {lastArticle && (
-              <ArticleCardModal
-                title={lastArticle.title}
-                subtitle={lastArticle.subtitle}
-                body={lastArticle.body}
-                imageUrl={lastArticle.image}
-                author={lastArticle.author}
-                id={lastArticle._id}
-              />
-            )}
-            {displayTutorial && <InitialTutorial />}
-            <ArticleCarrousel
-              articlesData={articles}
-              loadingData={loadingData}
-              presentations={presentations}
-            />
-          </>
-        )}
+        {displayTutorial && <InitialTutorial />}
+        <ArticleCarrousel
+          articlesData={articles}
+          loadingData={loadingData}
+          presentations={presentations}
+        />
       </IonContent>
     </IonPage>
   );

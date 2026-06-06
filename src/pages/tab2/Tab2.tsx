@@ -1,23 +1,45 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage } from '@ionic/react';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab2.css';
 
 const Tab2: React.FC = () => {
   return (
     <IonPage>
-      <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class='bg-img' >
-        <IonHeader collapse="condense">
-        </IonHeader>
-        <div className='under_construction-container'>
-          <p className='under_construction_text'><b>El juego online sigue en construcci&oacute;n. Mientras tanto puedes disfrutar de la versi&oacute;n física que puedes descargar en el siguiente enlace:</b></p>
-          <p className='under_construction_link'><a href="https://drive.google.com/file/d/1ZBfQKAAVHg7BtDwt1iblhgKk3ykbTOO3/view">Descargar versi&oacute;n f&iacute;sica</a></p>
-        </div>
-        <div className='video-container'>
-          <h1 className='video-container__title'><b>Survivor</b></h1>
-          <video className='video-container__video' controls width="100%">
-            <source src="/assets/survivor.m4v"/>
-          </video>
+      <AppBarPopOver />
+      <IonContent fullscreen class='app-dark-bg'>
+        <IonHeader collapse="condense" />
+        <div className='juega-page'>
+
+          <div className='juega-hero'>
+            <p className='juega-hero__label'>VIDEOJUEGO EDUCATIVO</p>
+            <h1 className='juega-hero__title'>Survivor</h1>
+            <p className='juega-hero__subtitle'>Aprende sobre sostenibilidad mientras juegas</p>
+          </div>
+
+          <div className='juega-video-wrapper'>
+            <video className='juega-video' controls>
+              <source src="/assets/survivor.m4v" />
+            </video>
+          </div>
+
+          <a
+            href="https://drive.google.com/file/d/1ZBfQKAAVHg7BtDwt1iblhgKk3ykbTOO3/view"
+            target="_blank"
+            rel="noopener noreferrer"
+            className='juega-download-card'
+          >
+            <div className='juega-download-card__icon'>&#8595;</div>
+            <div>
+              <p className='juega-download-card__title'>Versi&oacute;n f&iacute;sica</p>
+              <p className='juega-download-card__desc'>Descarga y juega sin conexi&oacute;n a internet</p>
+            </div>
+          </a>
+
+          <div className='juega-wip'>
+            <div className='juega-wip__dot' />
+            <p className='juega-wip__text'>La versi&oacute;n online est&aacute; en construcci&oacute;n &mdash; pr&oacute;ximamente disponible</p>
+          </div>
+
         </div>
       </IonContent>
     </IonPage>

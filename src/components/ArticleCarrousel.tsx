@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { IonCol, IonHeader, IonItem, IonList, IonRow, IonSelect, IonSelectOption } from '@ionic/react';
 import DocumentCard from './DocumentCard';
 import './ArticleCarrousel.css';
 import AppContext from '../context/AppContext';
@@ -30,89 +29,87 @@ interface Props {
   presentations: Presentation[] | null | undefined;
 }
 
+type FilterType = 'all' | 'article' | 'presentation';
+
+const FILTERS: { value: FilterType; label: string }[] = [
+  { value: 'all', label: 'Ambos' },
+  { value: 'article', label: 'Artículos' },
+  { value: 'presentation', label: 'Presentaciones' },
+];
+
 const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations }) => {
-  const [currentOption, setCurrentOption] = useState('');
+  const [filterType, setFilterType] = useState<FilterType>('all');
   const { search } = useContext(AppContext);
 
   const normalize = (s: string) =>
-    s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+    s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 
   const searchNorm = normalize(search);
 
-  const articleCards = !loadingData && articlesData?.map((article) => {
-    const matchesSearch =
+  const articleCards = articlesData
+    ?.filter(article =>
       normalize(article.category ?? '').includes(searchNorm) ||
-      normalize(article.title ?? '').includes(searchNorm);
-    if (!matchesSearch) return null;
-    return (
-      <div key={article._id}>
-        <DocumentCard
-          name={article.title}
-          description={article.body}
-          img_url={article.image}
-          id={article._id}
-          type={article.type}
-          imgAuthor={article.author_image || undefined}
-          imgPage={article.page_image || undefined}
-        />
-      </div>
-    );
-  });
+      normalize(article.title ?? '').includes(searchNorm)
+    )
+    .map(article => (
+      <DocumentCard
+        key={article._id}
+        name={article.title}
+        description={article.body}
+        img_url={article.image}
+        id={article._id}
+        type={article.type}
+        imgAuthor={article.author_image || undefined}
+        imgPage={article.page_image || undefined}
+      />
+    ));
 
-  const presentationCards = presentations?.map((pres) => {
-    if (!normalize(pres.name ?? '').includes(searchNorm)) return null;
-    return (
-      <div key={pres._id}>
-        <DocumentCard
-          name={pres.name}
-          description=""
-          img_url={pres.slides?.[0] ?? ''}
-          id={pres._id}
-          type="presentation"
-          imgAuthor={undefined}
-          imgPage={undefined}
-        />
-      </div>
-    );
-  });
+  const presentationCards = presentations
+    ?.filter(pres => normalize(pres.name ?? '').includes(searchNorm))
+    .map(pres => (
+      <DocumentCard
+        key={pres._id}
+        name={pres.name}
+        description=""
+        img_url={pres.slides?.[0] ?? ''}
+        id={pres._id}
+        type="presentation"
+        imgAuthor={undefined}
+        imgPage={undefined}
+      />
+    ));
+
+  const showArticles = filterType === 'all' || filterType === 'article';
+  const showPresentations = filterType === 'all' || filterType === 'presentation';
 
   return (
-    <IonCol>
-      <IonHeader>
-        <IonRow className='filter-aligned'>
-          <IonList className='filter-size filter-rounded_border'>
-            <IonItem className='filter-item-size'>
-              <IonSelect placeholder="Filtrar   " interface='popover' onIonChange={(op) => setCurrentOption(op.detail.value)}>
-                <IonSelectOption value="article" className='option-filter'>Presentaciones</IonSelectOption>
-                <IonSelectOption value="presentation" className='option-filter'>Artículos</IonSelectOption>
-                <IonSelectOption value="" className='option-filter'>Ambos</IonSelectOption>
-              </IonSelect>
-            </IonItem>
-          </IonList>
-        </IonRow>
-      </IonHeader>
+    <div>
+      <div className='filter-pills'>
+        {FILTERS.map(f => (
+          <button
+            key={f.value}
+            className={`filter-pill ${filterType === f.value ? 'filter-pill--active' : ''}`}
+            onClick={() => setFilterType(f.value)}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
 
-      <div>
+      {loadingData && (
         <img
-          className={loadingData ? "imageArticleLoading visible" : "imageArticleLoading hidden"}
+          className="imageArticleLoading visible"
           src="/assets/Spinner-1s-200px_transparent.svg"
-          alt="loading image"
-          style={{ position: "fixed" }}
+          alt="cargando"
+          style={{ position: 'fixed' }}
         />
-      </div>
+      )}
 
-      <div className={loadingData ? "ion-content-scroll-host hidden" : "ion-content-scroll-host visible"}>
-        {!loadingData && (
-          currentOption === "" ? (
-            <div>{articleCards}{presentationCards}</div>
-          ) : currentOption === "article" ? (
-            <div>{presentationCards}</div>
-          ) : (
-            <div>{articleCards}</div>
-          )
-        )}
+      <div className='carrousel-list'>
+        {!loadingData && showArticles && articleCards}
+        {!loadingData && showPresentations && presentationCards}
       </div>
-    </IonCol>
+    </div>
   );
 };
 

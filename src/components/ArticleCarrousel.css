@@ -1,48 +1,10 @@
-.loading-absolute {
-    position: absolute;
-    width: 100%;
+.carrousel-list {
+    padding: 4px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .ion-content-scroll-host {
     transition: opacity 600ms ease-in;
-}
-
-.adjusted-content {
-    height: 3em;
-}
-
-.filter-aligned {
-    justify-content: flex-end;
-    padding: 8px 12px 4px;
-}
-
-.filter-size {
-    padding: 0;
-    min-height: auto;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(26, 46, 26, 0.1);
-}
-
-.filter-rounded_border {
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.filter-item-size {
-    --min-height: 36px;
-    --padding-start: 14px;
-    --padding-end: 8px;
-    --background: transparent;
-    --inner-border-width: 0;
-}
-
-.option-filter {
-    font-size: 0.9rem;
-}
-
-.ion-select-article {
-    font-size: 0.88rem;
-    color: #1a2e1a;
-    font-weight: 600;
 }

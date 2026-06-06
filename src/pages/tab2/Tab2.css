@@ -1,42 +1,131 @@
-.under_construction-container {
-    width: 100%;
-    padding: 24px 20px 16px;
-}
-
-.under_construction_text {
-    color: #ffffff;
-    text-align: center;
-    line-height: 1.6;
-    margin-bottom: 8px;
-}
-
-.under_construction_link {
-    text-align: center;
-    margin-bottom: 24px;
-}
-
-.video-container {
+.juega-page {
+    padding: 8px 16px 40px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 0 16px 32px;
-    gap: 12px;
+    gap: 20px;
 }
 
-.video-container__title {
-    color: #ffffff;
-    font-size: 1.4rem;
+/* Hero header */
+.juega-hero {
+    padding: 16px 0 4px;
+}
+
+.juega-hero__label {
+    font-size: 0.68rem;
     font-weight: 700;
-    margin: 0;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
-    letter-spacing: 1px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #80b259;
+    margin: 0 0 6px;
 }
 
-.video-container__video {
-    width: 100%;
-    max-width: 600px;
-    border-radius: 14px;
+.juega-hero__title {
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px;
+    line-height: 1.1;
+}
+
+.juega-hero__subtitle {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Video */
+.juega-video-wrapper {
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.juega-video {
+    width: 100%;
+    display: block;
+    max-height: 260px;
+    object-fit: cover;
+}
+
+/* Download card */
+.juega-download-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: rgba(128, 178, 89, 0.12);
+    border: 1px solid rgba(128, 178, 89, 0.3);
+    border-radius: 16px;
+    text-decoration: none;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.juega-download-card:active {
+    background: rgba(128, 178, 89, 0.2);
+}
+
+.juega-download-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #80b259;
+    color: #ffffff;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700;
+}
+
+.juega-download-card__title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 2px;
+}
+
+.juega-download-card__desc {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* En construcción */
+.juega-wip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 4px;
+}
+
+.juega-wip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ecaf80;
+    flex-shrink: 0;
+}
+
+.juega-wip__text {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.38);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Desktop */
+@media (min-width: 640px) {
+    .juega-page {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .juega-video {
+        max-height: 340px;
+    }
 }
