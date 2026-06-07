@@ -2,7 +2,7 @@
 
 > Documento de comunicación frontend → backend.
 > Se actualiza cada vez que hay un cambio en el frontend que afecta la integración.
-> Última actualización: 2026-06-06
+> Última actualización: 2026-06-06 (favoritos + tutorial agregados)
 > Backend corre en: `http://localhost:8080`
 
 ---
@@ -11,10 +11,12 @@
 
 | Fecha | Cambio | Qué necesita el backend |
 |-------|--------|------------------------|
-| 2026-06-06 | Pantallas de recuperación de contraseña implementadas (`/ForgotPassword`, `/ResetPassword`) | `POST /user/forgot-password` y `POST /user/reset-password` — ya implementados ✅ |
-| 2026-06-06 | Botón "Eliminar cuenta" implementado en `Profile.tsx` | `DELETE /user` — ya implementado ✅ |
-| 2026-06-06 | Puntaje enviado al backend al terminar evaluación | `POST /user/score` — ya implementado ✅ |
-| 2026-06-05 | Migración completa — frontend ya no usa Google APIs para nada de contenido | `GET /articles`, `GET /articles/:id`, `GET /evaluations`, `GET /evaluations/:id`, `GET /presentations` — ya implementados ✅ |
+| 2026-06-06 | Frontend pendiente de integrar `GET /tutorial` | Backend lo implementó — falta frontend |
+| 2026-06-06 | Frontend pendiente de integrar favoritos | Backend implementó `POST`, `GET` y `DELETE /user/favorites` — falta frontend |
+| 2026-06-06 | Pantallas de recuperación de contraseña integradas (`/ForgotPassword`, `/ResetPassword`) | `POST /user/forgot-password` y `POST /user/reset-password` — ✅ integrado en ambos lados |
+| 2026-06-06 | Botón "Eliminar cuenta" integrado en `Profile.tsx` | `DELETE /user` — ✅ integrado en ambos lados |
+| 2026-06-06 | Puntaje enviado al backend al terminar evaluación | `POST /user/score` — ✅ integrado en ambos lados |
+| 2026-06-05 | Migración completa — frontend ya no usa Google APIs para contenido (excepto tutorial, pendiente) | Artículos, evaluaciones y presentaciones — ✅ integrados |
 | 2026-06-05 | Logout elimina el token de `localStorage` | Sin cambios en backend |
 | 2026-06-05 | Signup valida contraseña ≥ 6 chars antes de llamar al backend | Sin cambios en backend |
 
@@ -37,16 +39,21 @@
 | `GET /articles` | ✅ Integrado | ✅ Implementado |
 | `GET /articles/:id` | ✅ Integrado | ✅ Implementado |
 | `GET /presentations` | ✅ Integrado | ✅ Implementado |
-| `POST /user/favorites` | ❌ Sin integrar | ❌ Sin endpoint — pendiente definir |
+| `GET /tutorial` | ⚠️ Pendiente frontend | ✅ Implementado |
+| `POST /user/favorites` | ⚠️ Pendiente frontend | ✅ Implementado |
+| `GET /user/favorites` | ⚠️ Pendiente frontend | ✅ Implementado |
+| `DELETE /user/favorites/:id` | ⚠️ Pendiente frontend | ✅ Implementado |
 
 ---
 
-## Lo que falta por definir
+## Pendiente solo en el frontend
 
-| Elemento | Situación |
-|----------|-----------|
-| **Favoritos** | El menú lateral muestra la opción pero no hay endpoint ni contrato definido. Necesitamos definir qué datos guardar (array de IDs de artículos en el usuario, o colección separada) |
-| **Tutorial desde backend** | Actualmente el tutorial aún carga desde Google Drive. Pendiente definir si se migra igual que artículos o se hardcodea en el frontend |
+El backend tiene todo implementado. Lo único que falta es trabajo del frontend:
+
+| Elemento | Qué falta en frontend |
+|----------|-----------------------|
+| **Tutorial** | Reemplazar `useGetDocuments` (Google Drive) con llamada axios a `GET /tutorial` en `InitialTutorial.tsx` |
+| **Favoritos** | Botón "guardar" en `DocumentCard.tsx` y viewer de presentación + pantalla de lista de favoritos usando los 3 endpoints de `/user/favorites` |
 
 ---
 
@@ -94,17 +101,18 @@ Cuando el usuario termina una evaluación:
 ```js
 {
   _id,
-  email,          // String, único, requerido
-  password,       // String hasheado con bcrypt — nunca devolver en respuestas
-  name,           // String, requerido
-  surname,        // String, requerido
-  birth_date,     // Date, opcional
-  occupation,     // String, opcional
-  gender,         // String, opcional
-  score_test,     // Number, default 0
-  score_game,     // Number, default 0
-  reset_token,    // String, interno — no devolver en respuestas
-  reset_token_expiry // Date, interno — no devolver en respuestas
+  email,              // String, único, requerido
+  password,           // String hasheado con bcrypt — nunca devolver en respuestas
+  name,               // String, requerido
+  surname,            // String, requerido
+  birth_date,         // Date, opcional
+  occupation,         // String, opcional
+  gender,             // String, opcional
+  score_test,         // Number, default 0
+  score_game,         // Number, default 0
+  favorites,          // Array de { content_id: String, type: "article" | "presentation" }
+  reset_token,        // String, interno — no devolver en respuestas
+  reset_token_expiry  // Date, interno — no devolver en respuestas
 }
 ```
 
@@ -158,11 +166,15 @@ app.use(cors({
 | `POST` | `/user/edit` | JWT | ✅ Implementado |
 | `POST` | `/user/score` | JWT | ✅ Implementado |
 | `DELETE` | `/user` | JWT | ✅ Implementado |
+| `POST` | `/user/favorites` | JWT | ✅ Implementado |
+| `GET` | `/user/favorites` | JWT | ✅ Implementado |
+| `DELETE` | `/user/favorites/:content_id` | JWT | ✅ Implementado |
 | `GET` | `/evaluations` | No | ✅ Implementado |
 | `GET` | `/evaluations/:id` | No | ✅ Implementado |
 | `GET` | `/articles` | No | ✅ Implementado |
 | `GET` | `/articles/:id` | No | ✅ Implementado |
 | `GET` | `/presentations` | No | ✅ Implementado |
+| `GET` | `/tutorial` | No | ✅ Implementado |
 
 ---
 
@@ -373,6 +385,114 @@ Sin body. Elimina permanentemente la cuenta del usuario identificado por el toke
 { "success": false, "error": "Token requerido" }
 { "success": false, "error": "Token inválido o expirado" }
 { "success": false, "error": "Usuario no encontrado" }
+```
+
+---
+
+### `POST /user/favorites` — requiere JWT
+
+**Header:** `Authorization: Bearer <token>`
+
+**Body:**
+```json
+{ "content_id": "<_id del artículo o presentación>", "type": "article" }
+```
+> `type` acepta solo `"article"` o `"presentation"`.
+
+**Respuesta exitosa:**
+```json
+{ "success": true, "message": "Favorito agregado" }
+```
+
+**Errores:**
+```json
+{ "success": false, "error": "Token requerido" }
+{ "success": false, "error": "El ID del contenido es requerido" }
+{ "success": false, "error": "El tipo debe ser article o presentation" }
+{ "success": false, "error": "Ya está en favoritos" }
+{ "success": false, "error": "Usuario no encontrado" }
+```
+
+---
+
+### `GET /user/favorites` — requiere JWT
+
+**Header:** `Authorization: Bearer <token>`
+
+**Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "favorites": [
+    { "content_id": "664abc...", "type": "article" },
+    { "content_id": "664def...", "type": "presentation" }
+  ]
+}
+```
+
+**Errores:**
+```json
+{ "success": false, "error": "Token requerido" }
+{ "success": false, "error": "Usuario no encontrado" }
+```
+
+---
+
+### `DELETE /user/favorites/:content_id` — requiere JWT
+
+**Header:** `Authorization: Bearer <token>`
+
+El `content_id` va en la URL: `/user/favorites/664abc123...`
+
+**Respuesta exitosa:**
+```json
+{ "success": true, "message": "Favorito eliminado" }
+```
+
+**Errores:**
+```json
+{ "success": false, "error": "Token requerido" }
+{ "success": false, "error": "Usuario no encontrado" }
+{ "success": false, "error": "No se pudo eliminar el favorito" }
+```
+
+---
+
+### `GET /tutorial` — público
+
+Sin parámetros. Retorna el instructivo completo del juego con reglas y tarjetas.
+
+**Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "tutorial": {
+    "_id": "...",
+    "title": "Instructivo SOSTEK",
+    "rules": "Recursos del pueblo: 20 fichas de c/u...",
+    "cards": [
+      {
+        "name": "ALIANZA ESTRATÉGICA",
+        "description": "Un reconocido grupo farmacéutico...",
+        "type": "scenario",
+        "resources": { "ambiental": 0, "economico": 0, "social": 0 }
+      },
+      {
+        "name": "APICULTORES",
+        "description": "Implementaste un programa de rescate...",
+        "type": "solution",
+        "resources": { "ambiental": 2, "economico": -2, "social": 0 }
+      }
+    ]
+  }
+}
+```
+> `type: "scenario"` = tarjeta de escenario (problema) · `type: "solution"` = tarjeta de solución
+> Hay 16 tarjetas de escenario y 32 de solución (48 en total)
+
+**Errores:**
+```json
+{ "success": false, "error": "Tutorial no encontrado" }
 ```
 
 ---

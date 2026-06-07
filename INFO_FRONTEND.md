@@ -27,12 +27,17 @@
 
 | Elemento | Dónde integrarlo | Estado |
 |----------|-----------------|--------|
-| Reemplazar `useGetDocuments` (tutorial) | Hook del tutorial — apuntar a `GET /tutorial` | ⚠️ Pendiente en frontend |
-| Reemplazar `gapi.client` con axios | Todas las pantallas que cargan evaluaciones, artículos y presentaciones | ⚠️ Pendiente en frontend |
-| Integrar favoritos | Menú lateral / pantalla de favoritos — usar los 3 endpoints de `/user/favorites` | ⚠️ Pendiente en frontend |
-| Integrar `POST /user/score` | `FinalScoreEvaluation.tsx` al terminar una evaluación | ⚠️ Pendiente en frontend |
-| Integrar `DELETE /user` | UI de perfil — opción "Eliminar cuenta" | ⚠️ Pendiente en frontend |
-| Integrar `POST /user/forgot-password` y `POST /user/reset-password` | Pantalla de login / recuperación de contraseña | ⚠️ Pendiente en frontend |
+| Tutorial desde backend | `InitialTutorial.tsx` — reemplazar `useGetDocuments` (Google Drive) con `GET /tutorial` | ⚠️ Pendiente en frontend |
+| Favoritos | `DocumentCard.tsx` / viewer de presentación (guardar), nueva pantalla de favoritos (listar/eliminar) — usar `POST`, `GET` y `DELETE /user/favorites` | ⚠️ Pendiente en frontend |
+
+### ✅ Ya integrado en el frontend
+
+| Elemento | Dónde quedó |
+|----------|------------|
+| `POST /user/score` | `FinalScoreEvaluation.tsx` — se envía al terminar evaluación si hay JWT |
+| `DELETE /user` | `Profile.tsx` — botón "Eliminar cuenta" con confirmación |
+| `POST /user/forgot-password` + `POST /user/reset-password` | `ForgotPassword.tsx` y `ResetPassword.tsx` (rutas `/ForgotPassword` y `/ResetPassword`) |
+| Migración de `gapi.client` → axios | Artículos, evaluaciones y presentaciones cargan desde backend; solo el tutorial queda pendiente |
 
 ---
 
