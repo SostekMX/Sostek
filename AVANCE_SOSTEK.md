@@ -144,13 +144,14 @@ src/
 
 | # | Descripción | Archivo(s) | Prioridad |
 |---|-------------|------------|-----------|
-| 1 | Logout redirige a Perfil en vez de login | `AppBarPopOver.tsx` → `history.goBack()` mal usado | Alta |
-| 2 | Menú hamburguesa del invitado no funciona en Juega y Evalúate; después de visitarlas, deja de funcionar en Aprende también | `AppBarPopOver.tsx` — `isUserLogged` no se recalcula al cambiar de tab | Alta |
-| ~~3~~ | ~~Llamadas a gapi/Google Drive con 403 en consola~~ | Resuelto — `InitialTutorial.tsx` migrado a `GET /tutorial` | ~~Alta~~ |
+| ~~1~~ | ~~Logout redirige a Perfil en vez de login~~ | ✅ Resuelto — `history.replace('/')` | ~~Alta~~ |
+| ~~2~~ | ~~Menú hamburguesa roto en Juega y Evalúate~~ | ✅ Resuelto — ID único por instancia + `IonButton` | ~~Alta~~ |
+| ~~3~~ | ~~Llamadas a gapi/Google Drive con 403 en consola~~ | ✅ Resuelto — tutorial migrado a `GET /tutorial` | ~~Alta~~ |
 | 4 | Presentaciones se ven de lado (orientación incorrecta en el Swiper) | `Presentation.tsx` | Alta |
 | 5 | Guardar cambios en Perfil no redirige a APRENDE | `Profile.tsx` — falta `history.push('/tab1')` tras éxito | Media |
 | 6 | aria-hidden sobre elemento con focus en página de presentación | `Presentation.tsx` — warning de accesibilidad de Ionic | Baja |
 | 7 | Meta tag deprecated: `apple-mobile-web-app-capable` | `public/index.html` — reemplazar por `mobile-web-app-capable` | Baja |
+| 8 | `Failed to mount content script UI: could not find anchor element` en consola | Error de extensión del navegador (all.js), **no es un bug de la app** — ignorar | Ninguna |
 
 ---
 
@@ -166,7 +167,7 @@ src/
 | 6 | Contenido de artículos difícil de leer, no sigue la aesthetic | `Documents.tsx`, `Documents.css` |
 | 7 | Sin botón de regreso dentro de un artículo | `Documents.tsx` |
 | 8 | Logo de Sostek como botón de inicio es pequeño y no intuitivo | `AppBarPopOver.tsx` |
-| 9 | Tab2: separar texto en dos líneas ("La versión online está en construcción / Próximamente disponible") | `Tab2.tsx` |
+| ~~9~~ | ~~Tab2: separar texto en dos líneas~~ | ✅ Resuelto |
 | 10 | Imágenes lentas al cargar (sin lazy loading ni placeholder optimizado) | `DocumentCard.tsx`, `ArticleCarrousel.tsx` |
 | 11 | Filtro de búsqueda lento (sin debounce) | `AppBarPopOver.tsx`, `ArticleCarrousel.tsx` |
 
@@ -176,27 +177,28 @@ src/
 
 ### 🔴 Alta prioridad (bugs que rompen UX)
 
-1. Fix logout — redirigir a login correctamente
-2. Fix menú hamburguesa del invitado en todas las tabs
-3. Migrar tutorial de Google Drive al backend (elimina errores 403)
+1. ~~Fix logout~~ ✅
+2. ~~Fix menú hamburguesa~~ ✅
+3. ~~Migrar tutorial al backend~~ ✅
 4. Fix presentaciones de lado
 
 ### 🟡 Media prioridad (diseño/UX)
 
-5. Rediseño página de Perfil (aesthetic consistente)
-6. Rediseño página de preguntas de Evaluación
-7. Agregar descripción y emoji a cada evaluación
-8. Rediseño del contenido de artículos + botón de regreso
-9. Mejorar tab bar / nav bar
+5. Guardar cambios en Perfil no redirige a APRENDE
+6. Rediseño página de Perfil (aesthetic consistente)
+7. Rediseño página de preguntas de Evaluación
+8. Agregar descripción y emoji a cada evaluación
+9. Rediseño del contenido de artículos + botón de regreso
+10. Mejorar tab bar / nav bar
 
 ### 🟢 Backlog
 
-10. Debounce en búsqueda
-11. Lazy loading de imágenes optimizado
-12. Reemplazar IonAlert por toasts/notificaciones custom
-13. Pantalla de Ajustes
-14. Modo oscuro funcional
-15. Juego online en Tab 2
+11. Debounce en búsqueda
+12. Lazy loading de imágenes optimizado
+13. Reemplazar IonAlert por toasts/notificaciones custom
+14. Pantalla de Ajustes
+15. Modo oscuro funcional
+16. Juego online en Tab 2
 
 ---
 
