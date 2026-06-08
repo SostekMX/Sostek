@@ -22,8 +22,17 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    min-height: 72px;
+}
+
+.evaluation-card__header {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+}
+
+.evaluation-card__icon {
+    font-size: 22px;
+    color: #80b259;
 }
 
 .evaluation__title {
@@ -41,5 +50,11 @@
     color: #80b259;
     text-transform: uppercase;
     letter-spacing: 0.7px;
-    display: block;
+}
+
+.evaluation-card__desc {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.45;
+    margin: 0;
 }
