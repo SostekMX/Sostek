@@ -164,8 +164,8 @@ src/
 | 3 | Tab bar footer poco estético — explorar nav bar moderna estilo apps actuales | `App.tsx` + CSS |
 | 4 | Página de preguntas de evaluación (`Evaluation.tsx`) aún tiene diseño viejo | `Evaluation.tsx` y sus CSS |
 | 5 | Las evaluaciones no tienen descripción ni emoji que explique el nivel/carrera | `Tab3.tsx`, datos de evaluación en backend |
-| 6 | Contenido de artículos difícil de leer, no sigue la aesthetic | `Documents.tsx`, `Documents.css` |
-| 7 | Sin botón de regreso dentro de un artículo | `Documents.tsx` |
+| ~~6~~ | ~~Contenido de artículos difícil de leer, no sigue la aesthetic~~ | ✅ Resuelto — rediseño con hero 240px + tipografía dark |
+| ~~7~~ | ~~Sin botón de regreso dentro de un artículo~~ | ✅ Resuelto — IonBackButton en IonHeader |
 | 8 | Logo de Sostek como botón de inicio es pequeño y no intuitivo | `AppBarPopOver.tsx` |
 | ~~9~~ | ~~Tab2: separar texto en dos líneas~~ | ✅ Resuelto |
 | 10 | Imágenes lentas al cargar (sin lazy loading ni placeholder optimizado) | `DocumentCard.tsx`, `ArticleCarrousel.tsx` |
