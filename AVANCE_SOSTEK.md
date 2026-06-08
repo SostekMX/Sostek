@@ -147,10 +147,10 @@ src/
 | ~~1~~ | ~~Logout redirige a Perfil en vez de login~~ | ✅ Resuelto — `history.replace('/')` | ~~Alta~~ |
 | ~~2~~ | ~~Menú hamburguesa roto en Juega y Evalúate~~ | ✅ Resuelto — ID único por instancia + `IonButton` | ~~Alta~~ |
 | ~~3~~ | ~~Llamadas a gapi/Google Drive con 403 en consola~~ | ✅ Resuelto — tutorial migrado a `GET /tutorial` | ~~Alta~~ |
-| 4 | Presentaciones se ven de lado (orientación incorrecta en el Swiper) | `Presentation.tsx` | Alta |
-| 5 | Guardar cambios en Perfil no redirige a APRENDE | `Profile.tsx` — falta `history.push('/tab1')` tras éxito | Media |
+| ~~4~~ | ~~Presentaciones se ven de lado~~ | ✅ Resuelto — quitado `rotate(90deg)` del CSS | ~~Alta~~ |
+| ~~5~~ | ~~Guardar cambios en Perfil no redirige a APRENDE~~ | ✅ Resuelto — `history.replace('/tab1')` tras éxito | ~~Media~~ |
 | 6 | aria-hidden sobre elemento con focus en página de presentación | `Presentation.tsx` — warning de accesibilidad de Ionic | Baja |
-| 7 | Meta tag deprecated: `apple-mobile-web-app-capable` | `public/index.html` — reemplazar por `mobile-web-app-capable` | Baja |
+| ~~7~~ | ~~Meta tag deprecated~~ | ✅ Resuelto — agregado `mobile-web-app-capable` + quitado script gapi | ~~Baja~~ |
 | 8 | `Failed to mount content script UI: could not find anchor element` en consola | Error de extensión del navegador (all.js), **no es un bug de la app** — ignorar | Ninguna |
 
 ---
