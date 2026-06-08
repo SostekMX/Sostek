@@ -126,6 +126,42 @@ ion-popover ion-item {
     z-index: 100;
 }
 
+/* === DARK ALERT (confirmaciones destructivas) === */
+
+.dark-alert .alert-wrapper {
+    background: #1a2e1a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+}
+
+.dark-alert .alert-head {
+    padding-bottom: 4px;
+}
+
+.dark-alert .alert-title {
+    color: #f0f0f0;
+    font-weight: 700;
+}
+
+.dark-alert .alert-message {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.9rem;
+}
+
+.dark-alert .alert-button-group {
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.dark-alert .alert-button {
+    color: #80b259;
+    font-weight: 600;
+}
+
+.dark-alert .alert-button.ion-color-danger,
+.dark-alert [role="destructive"] {
+    color: #e05555 !important;
+}
+
 /* === UTILITY === */
 
 .hidden {

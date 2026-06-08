@@ -1,4 +1,4 @@
-import { IonContent, IonItem, IonPage, IonButton, IonLabel, IonInput, IonSelect, IonSelectOption, IonAlert, IonIcon } from '@ionic/react';
+import { IonContent, IonItem, IonPage, IonButton, IonLabel, IonInput, IonSelect, IonSelectOption, IonAlert, IonToast, IonIcon } from '@ionic/react';
 import { personCircleOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
@@ -112,16 +112,18 @@ const Profile: React.FC = () => {
                                 Eliminar cuenta
                             </IonButton>
                         </div>
-                        <IonAlert
+                        <IonToast
                             isOpen={showAlert}
                             onDidDismiss={() => setShowAlert(false)}
-                            header="Mensaje"
                             message={message}
-                            buttons={['OK']}
+                            duration={3500}
+                            color="danger"
+                            position="bottom"
                         />
                         <IonAlert
                             isOpen={showDeleteConfirm}
                             onDidDismiss={() => setShowDeleteConfirm(false)}
+                            cssClass="dark-alert"
                             header="Eliminar cuenta"
                             message="¿Estás seguro? Esta acción no se puede deshacer."
                             buttons={[
