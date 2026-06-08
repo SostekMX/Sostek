@@ -17,7 +17,7 @@ interface IAppContext {
 const defaultState = {
     dark: false,
     search: "",
-    tutorial: true,
+    tutorial: false,
     score: 0,
     currentAnswersAndScores: new Map(),
     transparentToolbar: false,

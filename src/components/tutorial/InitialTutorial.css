@@ -1,0 +1,162 @@
+.itutorial-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.itutorial-modal {
+    background: #1a2e1a;
+    border: 1px solid rgba(128, 178, 89, 0.25);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 380px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.itutorial-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.itutorial-slide {
+    padding: 24px 20px 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.itutorial-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #80b259;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+}
+
+.itutorial-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 14px;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    padding-right: 32px;
+}
+
+.itutorial-rules {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.65;
+    margin: 0;
+    white-space: pre-line;
+}
+
+.itutorial-type-badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+}
+
+.itutorial-type-badge--scenario {
+    background: rgba(224, 82, 96, 0.18);
+    color: #e05260;
+}
+
+.itutorial-type-badge--solution {
+    background: rgba(128, 178, 89, 0.18);
+    color: #80b259;
+}
+
+.itutorial-card-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 10px;
+    padding-right: 32px;
+}
+
+.itutorial-card-desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+.itutorial-resources {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.itutorial-resource {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.itutorial-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.itutorial-nav-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.itutorial-nav-btn:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.itutorial-nav-btn:not(:disabled):active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.itutorial-progress {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 600;
+}

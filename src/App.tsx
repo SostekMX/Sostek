@@ -10,6 +10,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { useContext } from 'react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,7 +41,7 @@ import Profile from './pages/profile/Profile';
 import Presentation from './pages/presentation/Presentation';
 import Documents from './pages/document/Documents';
 import AppContext, { AppProvider } from './context/AppContext';
-import { useContext } from 'react';
+import InitialTutorial from './components/tutorial/InitialTutorial';
 import Evaluation from './pages/evaluation/Evaluation';
 import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
 import ForgotPassword from './pages/forgotPassword/ForgotPassword';
@@ -55,8 +56,12 @@ const HIDE_TABBAR_PATHS = ['/', '/SignUp', '/ForgotPassword', '/ResetPassword'];
 const MainTabs: React.FC = () => {
   const location = useLocation();
   const hidden = HIDE_TABBAR_PATHS.includes(location.pathname);
+  const { tutorial } = useContext(AppContext);
+  const showTutorial = tutorial && localStorage.getItem('tutorial') === 'true';
 
   return (
+    <>
+      {showTutorial && <InitialTutorial />}
     <IonTabs>
       <IonRouterOutlet>
         <Route exact path="/MainMenu"><Tab1 /></Route>
@@ -87,6 +92,7 @@ const MainTabs: React.FC = () => {
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
+    </>
   );
 };
 
