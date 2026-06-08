@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-06
+> Última actualización: 2026-06-08
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -30,16 +30,16 @@ src/
 ├── components/
 │   ├── layout/
 │   │   ├── AppBarPopOver.tsx        # Toolbar: búsqueda, menú lateral, logout
-│   │   └── AppBarMenu.tsx           # Menú lateral (IonMenu)
+│   │   └── AppBarMenu.tsx           # ⚠️ HUÉRFANO — ya no se importa en ningún lado (reemplazado por AppBarPopOver en Documents.tsx)
 │   ├── ArticleCarrousel.tsx         # Carrusel horizontal de artículos y presentaciones
 │   ├── ArticleCardModal.tsx         # Modal del artículo más reciente
-│   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación en la lista
+│   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación en la lista (con botón favorito)
 │   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
 │   ├── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
-│   ├── TutorialCard.tsx             # Slide individual del tutorial
+│   ├── TutorialCard.tsx             # Slide individual del tutorial (legacy, no usado activamente)
 │   └── tutorial/
-│       ├── InitialTutorial.tsx      # Tutorial completo al primer acceso
-│       └── TutorialComponent.tsx   # Wrapper del tutorial
+│       ├── InitialTutorial.tsx      # Tutorial — ya no se usa desde Tab1; Tab2 consume GET /tutorial directamente
+│       └── TutorialComponent.tsx   # Wrapper del tutorial (legacy)
 ├── pages/
 │   ├── logIn/         LogIn.tsx          # Pantalla de inicio de sesión
 │   ├── signUp/        SignUp.tsx          # Pantalla de registro
@@ -94,16 +94,15 @@ src/
   - Búsqueda con normalización de tildes
   - Filtro por tipo (Artículos / Presentaciones / Ambos)
   - Caché offline en `localStorage`
-- **Detalle de artículo** (`/Documents/:id`) — carga desde `GET /articles/:id`
-- **Viewer de presentaciones** (`/presentation/:driveId`) — slides verticales con Swiper desde `GET /presentations`
-- **Tab 2 — JUEGA** — video del juego, enlace de descarga, placeholder "en construcción" para versión online
+- **Detalle de artículo** (`/Documents/:id`) — carga desde `GET /articles/:id`; diseño dark con hero 240px, badge de categoría, tipografía legible, párrafos separados por `\n`, botón de regreso
+- **Viewer de presentaciones** (`/presentation/:driveId`) — slides horizontales con Swiper desde `GET /presentations`
+- **Tab 2 — JUEGA** — video del juego, enlace de descarga, instructivo completo (reglas, tipos de tarjeta, cartas filtradas por tipo) desde `GET /tutorial`; placeholder "en construcción" para versión online
 - **Tab 3 — EVALÚATE**
   - Lista de evaluaciones desde `GET /evaluations` (backend MongoDB)
   - Filtro por carrera: Arquitectura / Diseño Industrial / Otros
 - **Evaluación** (`/Evaluation/:name/:id`) — preguntas desde `GET /evaluations/:id`, checkboxes, puntaje acumulado por categoría
 - **Resultado de evaluación** (`/score/:name`) — puntaje, categoría más débil, feedback por rango (≥150, ≥120, ≥90, ≥50, <50), botón artículos recomendados
-- **Tutorial inicial** — slides con personaje al primer acceso (aún desde Google Drive)
-- **AppBar** — búsqueda, menú lateral con logout (limpia token), acceso a perfil, reactivación de tutorial
+- **AppBar** — búsqueda, menú lateral con logout (limpia token), acceso a perfil/favoritos; ID único por instancia (sin conflictos entre tabs)
 - **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT
 - **Validación contraseña** — mínimo 6 caracteres en signup antes de llamar al backend
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
@@ -113,11 +112,13 @@ src/
 
 #### Fixes técnicos aplicados
 
-- Migración completa de Google Sheets/Drive → backend MongoDB (artículos, evaluaciones, presentaciones)
+- Migración completa de Google Sheets/Drive → backend MongoDB (artículos, evaluaciones, presentaciones, tutorial)
+- Google APIs eliminadas por completo — script `gapi` removido de `index.html`, sin llamadas a `gapi.client` en ningún componente
 - Eliminación de 6 hooks muertos de gapi (`useGetEvaluationData`, `useGetPresentations`, `useGetPresentationImages`, `useGetFirstImageOfPresentations`, `useGetSingleExcelAllData`, `useLocalStorage`)
 - Eliminación de `NativeStorage` → `localStorage`
 - Tab bar oculto en rutas `/`, `/SignUp`, `/ForgotPassword` y `/ResetPassword`
-- Rediseño completo mobile-first
+- Rediseño completo mobile-first de todas las pantallas principales
+- `AppBarMenu.tsx` reemplazado en `Documents.tsx` por patrón correcto (`AppBarPopOver`-style con IonBackButton)
 
 ---
 
@@ -128,7 +129,7 @@ src/
 | Ajustes | `AppBarPopOver.tsx` | Visible en el menú, sin ruta ni lógica |
 | Modo oscuro | `AppContext.tsx` | Variable `dark` definida, nunca aplicada a la UI |
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
-| Tutorial | `InitialTutorial.tsx` | Migrado a `GET /tutorial` — muestra reglas + 48 tarjetas del juego |
+| Tutorial popup (InitialTutorial) | `InitialTutorial.tsx` | Ya no se usa desde Tab1; el contenido del tutorial está integrado en Tab2 |
 
 ---
 
@@ -180,15 +181,15 @@ src/
 1. ~~Fix logout~~ ✅
 2. ~~Fix menú hamburguesa~~ ✅
 3. ~~Migrar tutorial al backend~~ ✅
-4. Fix presentaciones de lado
+4. ~~Fix presentaciones de lado~~ ✅
 
 ### 🟡 Media prioridad (diseño/UX)
 
-5. Guardar cambios en Perfil no redirige a APRENDE
+5. ~~Guardar cambios en Perfil no redirige a APRENDE~~ ✅
 6. Rediseño página de Perfil (aesthetic consistente)
 7. Rediseño página de preguntas de Evaluación
 8. Agregar descripción y emoji a cada evaluación
-9. Rediseño del contenido de artículos + botón de regreso
+9. ~~Rediseño del contenido de artículos + botón de regreso~~ ✅
 10. Mejorar tab bar / nav bar
 
 ### 🟢 Backlog
@@ -205,10 +206,10 @@ src/
 ## Arquitectura de datos
 
 ```
-Backend local :8080 (MongoDB)  ←─ artículos, evaluaciones, presentaciones, usuarios
-localStorage                   ←─ caché de artículos, estado del tutorial, token JWT, sesión
+Backend local :8080 (MongoDB)  ←─ artículos, evaluaciones, presentaciones, tutorial, usuarios
+localStorage                   ←─ caché de artículos, token JWT, sesión
 sessionStorage                 ←─ búsqueda activa, scores de evaluación
-Google Drive                   ←─ tutorial (pendiente migrar) + archivo descarga del juego
+Google Drive                   ←─ solo el archivo de descarga del juego (zip) — ya no se usa para contenido
 ```
 
 ---
