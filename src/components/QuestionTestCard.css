@@ -1,27 +1,48 @@
-ion-card ion-card-header ion-card-title {
+.eval-card {
+    --background: rgba(255, 255, 255, 0.06);
+    --color: #f0f0f0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    margin: 10px 16px;
+    box-shadow: none;
+}
+
+.eval-card ion-card-header ion-card-title {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #1a2e1a;
+    color: #f0f0f0 !important;
     line-height: 1.4;
 }
 
-ion-card ion-card-content ion-item {
+.eval-card ion-card-content {
+    --color: #ccc;
+    color: #ccc;
+}
+
+.eval-card ion-card-content ion-list {
+    --background: transparent !important;
+    background: transparent !important;
+}
+
+.eval-card ion-card-content ion-item {
     --padding-start: 0;
     --inner-padding-end: 0;
-    --background: transparent;
-    --border-color: #ddebd5;
+    --background: transparent !important;
+    --color: #ccc !important;
+    --border-color: rgba(255, 255, 255, 0.1);
     font-size: 0.88rem;
 }
 
-ion-card ion-card-content ion-label {
+.eval-card ion-card-content ion-label {
     white-space: normal !important;
-    font-size: 0.88rem;
-    color: #1a2e1a;
+    font-size: 0.88rem !important;
+    color: #ccc !important;
     line-height: 1.4;
 }
 
 ion-checkbox {
     --background-checked: #80b259;
+    --border-color: rgba(255, 255, 255, 0.35);
     --border-color-checked: #80b259;
     --checkmark-color: #ffffff;
     --border-radius: 5px;

@@ -1,7 +1,6 @@
 import {
   IonButton,
   IonContent,
-  IonHeader,
   IonPage,
   IonRow,
 } from "@ionic/react";
@@ -72,59 +71,42 @@ const Evaluation: React.FC = () => {
   return (
     <IonPage>
       <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class="bg-img">
-        <IonHeader collapse="condense">
-          <h1 className="header__title">{name}</h1>
-        </IonHeader>
-        {
+      <IonContent fullscreen class="app-dark-bg">
+        {loading && (
           <img
-            className={
-              loading
-                ? "imageArticleLoading visible"
-                : "imageArticleLoading hidden"
-            }
+            className="imageArticleLoading visible"
             src="/assets/Spinner-1s-200px_transparent.svg"
             alt="loading"
             style={{ position: "fixed" }}
           />
-        }
-        <div
-          className={
-            loading
-              ? "hidden evaluation__questions"
-              : "visible evaluation__questions"
-          }
-        >
-          {!loading &&
-            evaluation?.questions.map((question, index) => (
-              <QuestionTestCard
-                key={index}
-                question={question.text}
-                category={question.category}
-                comments={undefined}
-                options={question.options.map(o => o.text)}
-                points={question.options.map(o => String(o.value))}
-              />
-            ))}
-        </div>
-        {!loading && (
-          <IonRow className="align-center">
-            <IonButton
-              onClick={setFinalScore}
-              color="secondary"
-              href={`/score/${name}`}
-            >
-              Obtener resultados
-            </IonButton>
-          </IonRow>
         )}
-        {/* {!loading && <h1 className='evaluation__footer__title' 
-        style={{color:"white", textAlign:"center"}}>
-        {
-          `Resultado final: ${score}`
-        }
-        </h1>} */}
-        <IonRow class="space"></IonRow>
+        {!loading && (
+          <>
+            <h1 className="header__title">{name}</h1>
+            <div className="evaluation__questions">
+              {evaluation?.questions.map((question, index) => (
+                <QuestionTestCard
+                  key={index}
+                  question={question.text}
+                  category={question.category}
+                  comments={undefined}
+                  options={question.options.map(o => o.text)}
+                  points={question.options.map(o => String(o.value))}
+                />
+              ))}
+            </div>
+            <IonRow className="align-center evaluation__submit">
+              <IonButton
+                onClick={setFinalScore}
+                color="primary"
+                href={`/score/${name}`}
+                expand="block"
+              >
+                Obtener resultados
+              </IonButton>
+            </IonRow>
+          </>
+        )}
       </IonContent>
     </IonPage>
   );
