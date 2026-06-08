@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import './AppBarPopOver.css';
 import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
 import { personCircle, settings, logOut, heart, menuOutline } from 'ionicons/icons';
 import { search as iconSearch } from 'ionicons/icons';
@@ -31,7 +32,7 @@ export const AppBarPopOver: React.FC = () => {
 
 
     return <>
-        <IonToolbar color={transparentToolbar ? 'transparent' : 'primary'}>
+        <IonToolbar className={transparentToolbar ? 'appbar appbar--transparent' : 'appbar'}>
             <IonButtons slot='start'>
                 <a onClick={() => changeSearch!("")} href="/MainMenu">
                     <img src="/assets/sostek-logo.png" height="40px" />
@@ -41,7 +42,6 @@ export const AppBarPopOver: React.FC = () => {
                 {isSearching &&
                     <IonSearchbar
                         className="appbar__searchbar"
-                        color="primary"
                         animated={true}
                         onIonBlur={() => setIsSearching(false)}
                         onIonFocus={() => setIsSearching(true)}
