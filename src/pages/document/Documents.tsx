@@ -103,7 +103,11 @@ const Documents: React.FC = () => {
 
               <div className="doc-divider" />
 
-              <p className="doc-body">{article.body}</p>
+              <div className="doc-body">
+                {article.body.split('\n').filter(p => p.trim()).map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
             </div>
           </>
         )}
