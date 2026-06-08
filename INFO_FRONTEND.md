@@ -10,6 +10,7 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
+| 2026-06-08 | **[PENDIENTE BACKEND]** 3 artículos con imagen rota en MongoDB | Las URLs de imagen de 3 artículos están caídas. El frontend ya maneja el error mostrando un placeholder, pero hay que actualizar los documentos en MongoDB con las URLs correctas. Ver tabla en sección 3. |
 | 2026-06-09 | Rediseño completo de UI — dark theme consistente en toda la app | Header, footer, perfil, evaluaciones, artículos, alertas y popovers ahora siguen la misma estética oscura. No requiere cambios en backend. |
 | 2026-06-08 | **[PENDIENTE BACKEND]** Campo `description` en evaluaciones | El frontend ya está preparado: `EvaluationCard` acepta `description` como prop opcional y lo usa si llega del backend. Mientras no exista el campo, muestra un texto hardcodeado por nombre de evaluación como fallback. Una vez que `GET /evaluations` incluya `description`, se reflejará automáticamente sin cambios en el frontend. Ver contrato en sección 3. |
 | 2026-06-08 | **[PENDIENTE BACKEND]** Foto de perfil — nuevo feature solicitado | El frontend necesita un endpoint `POST /user/avatar` que reciba `multipart/form-data` con un campo `avatar` (archivo de imagen), lo suba a Cloudinary y devuelva la URL. También se necesita el campo `avatar` en el modelo de usuario y que `GET /user/profile` lo incluya en la respuesta. Ver contrato propuesto en sección 3. |
@@ -559,6 +560,38 @@ El frontend ya consume este endpoint y ya está preparado para recibir `descript
 | Diseño Industrial Nivel 1 | Mide tu conocimiento básico sobre impacto ambiental y sostenibilidad en el diseño de productos. |
 | Diseño Industrial Nivel 2 | Mide cómo consideras la sostenibilidad en tu proceso de diseño y selección de materiales. |
 | Diseño Industrial Nivel 3 | Mide qué tan profundo integra tu proyecto criterios de sostenibilidad en todo su ciclo de vida. |
+
+---
+
+### Imágenes rotas en artículos ⚠️ PENDIENTE — actualizar URLs en MongoDB
+
+3 artículos tienen el campo `image` con URLs caídas. El frontend muestra un placeholder cuando la imagen falla, pero lo correcto es actualizar el documento en MongoDB con la URL nueva.
+
+**Buscar en la colección `articles` por título y actualizar el campo `image`:**
+
+| Título del artículo | URL de imagen nueva |
+|---------------------|---------------------|
+| `Dia Mundial de los Humedades: Celebrando y Preservando Ecosistemas Vitales` | `https://provea.org/wp-content/uploads/2020/12/Efemerides_Humedales.jpg` |
+| `El impacto del cine en el medio ambiente` | `https://media.sitioandino.com.ar/p/bedcd30db0702619a8e5aac262fc8d38/adjuntos/335/imagenes/000/810/0000810381/790x0/smart/cine-medio-ambiente.png` |
+| `Muebles en Abuela` | `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQszpgQOrAHvdAqeYQKGcQ0qo8FXS84XH6WIg&s` |
+
+**Comando MongoDB (Atlas o mongo shell):**
+```js
+db.articles.updateOne(
+  { title: "Dia Mundial de los Humedades: Celebrando y Preservando Ecosistemas Vitales" },
+  { $set: { image: "https://provea.org/wp-content/uploads/2020/12/Efemerides_Humedales.jpg" } }
+)
+db.articles.updateOne(
+  { title: "El impacto del cine en el medio ambiente" },
+  { $set: { image: "https://media.sitioandino.com.ar/p/bedcd30db0702619a8e5aac262fc8d38/adjuntos/335/imagenes/000/810/0000810381/790x0/smart/cine-medio-ambiente.png" } }
+)
+db.articles.updateOne(
+  { title: "Muebles en Abuela" },
+  { $set: { image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQszpgQOrAHvdAqeYQKGcQ0qo8FXS84XH6WIg&s" } }
+)
+```
+
+> El frontend no necesita ningún cambio — ya consume `image` del endpoint `GET /articles` y lo muestra directo.
 
 ---
 

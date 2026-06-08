@@ -1,21 +1,18 @@
 import React, { useState, useEffect, createContext, FC } from 'react';
 
 interface IAppContext {
-    dark: boolean;
     search: string;
     tutorial: boolean;
     score: number;
     currentAnswersAndScores: Map<string, {category: string, value: number}>,
     transparentToolbar: boolean,
     changeSearch?: (currentSearch : string) => void;
-    toggleDark?: () => void;
     toggleTutorial?: (value : boolean) => void;
     addScore?: (category: string, answer : string, value : number) => void;
     toggleTransparent?: (value : boolean) => void;
 }
 
 const defaultState = {
-    dark: false,
     search: "",
     tutorial: false,
     score: 0,
@@ -31,7 +28,6 @@ interface Children {
 }
 
 export const AppProvider: FC<Children> = ({children}) => {
-    const [dark, setDark] = useState(defaultState.dark);
     const [search, setSearch] = useState(defaultState.search);
     const [tutorial, setTutorial] = useState(defaultState.tutorial);
     const [score, setScore] = useState(defaultState.score);
@@ -42,10 +38,6 @@ export const AppProvider: FC<Children> = ({children}) => {
       setTransparentToolbar(value);
     };
 
-    const toggleDark = () => {
-      setDark(!dark);
-    };
-    
     const changeSearch = (currentSearch : string) => {
       sessionStorage.setItem("search", currentSearch);
       setSearch(currentSearch);
@@ -74,10 +66,8 @@ export const AppProvider: FC<Children> = ({children}) => {
     return (
       <AppContext.Provider
         value={{
-          dark,
           search,
           tutorial,
-          toggleDark,
           changeSearch,
           toggleTutorial,
           score,

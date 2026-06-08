@@ -127,7 +127,6 @@ src/
 | Elemento | Ubicación | Estado |
 |----------|-----------|--------|
 | Ajustes | `AppBarPopOver.tsx` | Visible en el menú, sin ruta ni lógica |
-| Modo oscuro | `AppContext.tsx` | Variable `dark` definida, nunca aplicada a la UI |
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
 | Tutorial popup (InitialTutorial) | `InitialTutorial.tsx` | Ya no se usa desde Tab1; el contenido del tutorial está integrado en Tab2 |
 
@@ -136,7 +135,6 @@ src/
 ### ❌ NO IMPLEMENTADO
 
 - Pantalla de ajustes
-- Modo oscuro funcional
 - Juego online en Tab 2 (Unity WebGL — largo plazo)
 
 ---
@@ -202,11 +200,10 @@ src/
 13. Lazy loading de imágenes optimizado
 14. Reemplazar IonAlert por toasts/notificaciones custom ✅ (hecho)
 14. Pantalla de Ajustes
-15. Modo oscuro funcional
-16. Juego online en Tab 2
+15. Juego online en Tab 2
 17. ⚠️ Foto de perfil — subir imagen desde el dispositivo, guardar en Cloudinary, mostrar en avatar de perfil (requiere cambios en backend: nuevo endpoint + campo `avatar` en modelo de usuario)
 18. ⚠️ Campo `description` en evaluaciones — frontend listo, backend debe agregar el campo al modelo y seed (descripciones sugeridas en `INFO_FRONTEND.md`)
-
+19. ⚠️ Imágenes rotas en 3 artículos — backend debe actualizar campo `image` en MongoDB (URLs nuevas en `INFO_FRONTEND.md`): "Dia Mundial de los Humedades", "El impacto del cine en el medio ambiente", "Muebles en Abuela"
 ---
 
 ## Arquitectura de datos
