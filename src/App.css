@@ -48,8 +48,7 @@ ion-toolbar.transparent {
 
 ion-tab-bar {
     --background: #0d1a0d;
-    --border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    --border: 1px solid rgba(255, 255, 255, 0.08);
     height: 62px;
     padding-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -96,37 +95,57 @@ ion-tab-button.tab-selected::before {
 
 /* === SEARCH BAR === */
 
-.appbar__searchbar-active {
-    width: 72%;
-    margin-inline: 6%;
+.appbar__searchbar-container {
+    flex: 1;
+    max-width: 220px;
+}
+
+.appbar__searchbar-container.appbar__searchbar-active {
+    max-width: 100%;
 }
 
 .appbar__searchbar {
-    padding: unset;
+    --background: rgba(255, 255, 255, 0.1);
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.45);
+    --icon-color: rgba(255, 255, 255, 0.6);
+    --clear-button-color: rgba(255, 255, 255, 0.6);
     --box-shadow: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-}
-
-.appbar__searchbar-container ion-searchbar {
-    height: 36px;
-    margin-block: 4px;
-    padding-top: 10px;
-}
-
-.appbar__searchbar-container ion-searchbar div input {
-    background: inherit !important;
+    --border-radius: 20px;
+    padding: 0 4px;
+    height: 38px;
 }
 
 /* === POPOVER MENU === */
 
+ion-popover {
+    --background: #1a2e1a;
+    --backdrop-opacity: 0.45;
+}
+
+ion-popover::part(content) {
+    background: #1a2e1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+ion-popover ion-content {
+    --background: #1a2e1a;
+    --ion-background-color: #1a2e1a;
+}
+
 ion-popover ion-list {
     padding: 8px 0;
+    background: #1a2e1a !important;
+    --background: #1a2e1a;
 }
 
 ion-popover ion-item {
     --min-height: 48px;
     --padding-start: 16px;
+    --background: #1a2e1a;
+    --color: #f0f0f0;
+    --border-color: rgba(255, 255, 255, 0.07);
     font-size: 0.95rem;
     cursor: pointer;
 }
