@@ -1,4 +1,4 @@
-import { IonButton, IonAlert, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
+import { IonButton, IonToast, IonAlert, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -92,15 +92,21 @@ const ResetPassword: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <IonAlert
-                    isOpen={showAlert}
-                    onDidDismiss={() => {
-                        setShowAlert(false);
-                        if (success) history.replace('/');
-                    }}
-                    header={success ? 'Éxito' : 'Error'}
+                <IonToast
+                    isOpen={showAlert && !success}
+                    onDidDismiss={() => setShowAlert(false)}
                     message={message}
-                    buttons={['OK']}
+                    duration={3500}
+                    color="danger"
+                    position="bottom"
+                />
+                <IonAlert
+                    isOpen={showAlert && success}
+                    onDidDismiss={() => { setShowAlert(false); history.replace('/'); }}
+                    cssClass="dark-alert"
+                    header="Contrasena actualizada"
+                    message="Ya puedes iniciar sesion con tu nueva contrasena."
+                    buttons={[{ text: 'Iniciar sesion', handler: () => history.replace('/') }]}
                 />
             </IonContent>
         </IonPage>
