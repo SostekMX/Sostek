@@ -1,105 +1,113 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
-import { personCircle, settings, logOut, heart, informationCircleOutline } from 'ionicons/icons';
-import { search as iconSearch } from 'ionicons/icons' ;
-import { useHistory } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
+import { personCircle, settings, logOut, heart, informationCircleOutline, menuOutline } from 'ionicons/icons';
+import { search as iconSearch } from 'ionicons/icons';
+import { useHistory, useLocation } from "react-router-dom";
 import AppContext from '../../context/AppContext';
+
 export const AppBarPopOver: React.FC = () => {
-    const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
+    // ID único por instancia: evita conflictos entre los AppBarPopOver de cada tab montados en el DOM
+    const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
+    const popoverRef = useRef<HTMLIonPopoverElement>(null);
     const [isSearching, setIsSearching] = useState<boolean>(false);
-    //const [searchContent, setSearchContent] = useLocalStorage("search", "");
-    const {search, tutorial, changeSearch, toggleTutorial, transparentToolbar } = useContext(AppContext);
+    const { search, changeSearch, tutorial, toggleTutorial, transparentToolbar } = useContext(AppContext);
     const history = useHistory();
+    useLocation(); // provoca re-render al navegar, manteniendo isUserLogged actualizado
+
+    // Leer directo en cada render para que siempre refleje el estado actual
+    const isUserLogged = localStorage.getItem('login') === 'true';
 
     useEffect(() => {
-        // NativeStorage.getItem("login").then(
-        //   data => setIsUserLogged(data)
-        // )
-        let isTrue  = localStorage.getItem("login") === 'true';
-        setIsUserLogged(isTrue);
-        if(sessionStorage.getItem("search")) {
+        if (sessionStorage.getItem("search")) {
             changeSearch!(sessionStorage.getItem("search")!);
         }
-        
-    }, [])
+    }, []);
 
-    function logOutUser(){
+    function logOutUser() {
         localStorage.setItem("login", 'false');
         localStorage.removeItem("token");
-        history.goBack();
+        history.replace('/');
     }
+
     function activateTutorial() {
         localStorage.setItem("tutorial", "true");
-        toggleTutorial!(true);
+        // Si ya estaba en true, forzar toggle para que React detecte el cambio
+        if (tutorial) {
+            toggleTutorial!(false);
+            setTimeout(() => toggleTutorial!(true), 0);
+        } else {
+            toggleTutorial!(true);
+        }
     }
-    
+
     return <>
-        <IonToolbar color={transparentToolbar ? 'transparent ': 'primary'}>
+        <IonToolbar color={transparentToolbar ? 'transparent' : 'primary'}>
             <IonButtons slot='start'>
-                 <a onClick={(_e) => {
-                    changeSearch!("");
-                 }} href="/MainMenu"><img src="/assets/sostek-logo.png" height="40px"/></a>
+                <a onClick={() => changeSearch!("")} href="/MainMenu">
+                    <img src="/assets/sostek-logo.png" height="40px" />
+                </a>
             </IonButtons>
-            <IonButtons className={isSearching ? "appbar__searchbar-container appbar__searchbar-active" : "appbar__searchbar-container"}  slot="end">
-                {isSearching && 
-                    <IonSearchbar className={`appbar__searchbar`}
+            <IonButtons className={isSearching ? "appbar__searchbar-container appbar__searchbar-active" : "appbar__searchbar-container"} slot="end">
+                {isSearching &&
+                    <IonSearchbar
+                        className="appbar__searchbar"
                         color="primary"
-                        animated={true} 
-                        onIonBlur= {() => {setIsSearching(false)}}
-                        onIonFocus={ () => {setIsSearching(true)}}
-                        onIonInput= { (e) => {changeSearch!(e.target.value!)}}
-                        onIonClear={() => {changeSearch!("")}}
+                        animated={true}
+                        onIonBlur={() => setIsSearching(false)}
+                        onIonFocus={() => setIsSearching(true)}
+                        onIonInput={(e) => changeSearch!(e.target.value!)}
+                        onIonClear={() => changeSearch!("")}
                         showClearButton="always"
                         value={search}
-                        placeholder="Búsqueda..."></IonSearchbar>
+                        placeholder="Búsqueda..."
+                    />
                 }
-                {!isSearching && <IonButton
-                onClick={() => {setIsSearching(true)}}>
-                    <IonIcon slot="icon-only" icon={iconSearch} />
-                </IonButton>}
+                {!isSearching &&
+                    <IonButton onClick={() => setIsSearching(true)}>
+                        <IonIcon slot="icon-only" icon={iconSearch} />
+                    </IonButton>
+                }
             </IonButtons>
             <IonButtons slot="end">
-                <IonButtons slot="end">
-                    <IonMenuButton id="open-menu" autoHide={false}></IonMenuButton>
-                </IonButtons>
-                <IonPopover trigger="open-menu" triggerAction="click">
+                <IonButton id={popoverId}>
+                    <IonIcon slot="icon-only" icon={menuOutline} />
+                </IonButton>
+                <IonPopover ref={popoverRef} trigger={popoverId} triggerAction="click">
                     <IonContent>
                         <IonList>
-                        {isUserLogged &&
-                            <IonItem href='/Favorites'>
-                                    <IonIcon icon={heart} color='secondary'></IonIcon> &nbsp;
+                            {isUserLogged &&
+                                <IonItem href='/Favorites'>
+                                    <IonIcon icon={heart} color='secondary' /> &nbsp;
                                     <IonLabel>Favoritos</IonLabel>
-                            </IonItem>
-                        }
-                        {isUserLogged &&
-                            <IonItem  href='/Profile'>
-                                    <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;
-                                    <IonLabel>  Perfil</IonLabel>
-                            </IonItem>
-                        } 
-                        {!isUserLogged &&
-                            <IonItem  href='/'>
-                                    <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;
-                                    <IonLabel>Iniciar Sesi&oacute;n
-                                    </IonLabel>
-                            </IonItem>
-                        } 
-                            {isUserLogged && <IonItem>
-                                <IonIcon icon={settings} color='secondary'></IonIcon> &nbsp;
-                                 <IonLabel>Ajustes</IonLabel>
-                            </IonItem>
+                                </IonItem>
                             }
-                            <IonItem
-                                onClick={activateTutorial}
-                            >
-                            <IonIcon icon={informationCircleOutline} color='secondary' /> &nbsp;
+                            {isUserLogged &&
+                                <IonItem href='/Profile'>
+                                    <IonIcon icon={personCircle} color='secondary' /> &nbsp;
+                                    <IonLabel>Perfil</IonLabel>
+                                </IonItem>
+                            }
+                            {!isUserLogged &&
+                                <IonItem href='/'>
+                                    <IonIcon icon={personCircle} color='secondary' /> &nbsp;
+                                    <IonLabel>Iniciar Sesión</IonLabel>
+                                </IonItem>
+                            }
+                            {isUserLogged &&
+                                <IonItem>
+                                    <IonIcon icon={settings} color='secondary' /> &nbsp;
+                                    <IonLabel>Ajustes</IonLabel>
+                                </IonItem>
+                            }
+                            <IonItem button onClick={() => { activateTutorial(); popoverRef.current?.dismiss(); }}>
+                                <IonIcon icon={informationCircleOutline} color='secondary' /> &nbsp;
                                 <IonLabel>Tutorial</IonLabel>
                             </IonItem>
-                            {isUserLogged && <IonItem>
-                                <IonIcon icon={logOut} color='secondary'></IonIcon> &nbsp;
-                                <IonLabel
-                                    onClick={logOutUser}>Log Out</IonLabel>
-                            </IonItem>
+                            {isUserLogged &&
+                                <IonItem onClick={logOutUser}>
+                                    <IonIcon icon={logOut} color='secondary' /> &nbsp;
+                                    <IonLabel>Log Out</IonLabel>
+                                </IonItem>
                             }
                         </IonList>
                     </IonContent>
@@ -107,7 +115,6 @@ export const AppBarPopOver: React.FC = () => {
             </IonButtons>
         </IonToolbar>
     </>;
-    
 };
 
 export default AppBarPopOver;
