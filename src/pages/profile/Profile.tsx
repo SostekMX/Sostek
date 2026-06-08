@@ -1,4 +1,5 @@
-import { IonContent, IonItem, IonPage, IonButton, IonLabel, IonInput, IonSelect, IonSelectOption, IonAlert } from '@ionic/react';
+import { IonContent, IonItem, IonPage, IonButton, IonLabel, IonInput, IonSelect, IonSelectOption, IonAlert, IonIcon } from '@ionic/react';
+import { personCircleOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import axios from 'axios';
@@ -70,8 +71,11 @@ const Profile: React.FC = () => {
     return (
         <IonPage>
             <AppBarPopOver />
-            <IonContent fullscreen class='bg-img'>
+            <IonContent fullscreen class='app-dark-bg'>
                 <div className='profile-container'>
+                    <div className='profile-avatar'>
+                        <IonIcon icon={personCircleOutline} className='profile-avatar__icon' />
+                    </div>
                     <div className='profile-card'>
                         <h2 className='profile-title'>Modificar Perfil</h2>
                         <IonItem className='profile-input-item' lines='none'>
