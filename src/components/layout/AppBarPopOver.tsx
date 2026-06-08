@@ -10,6 +10,7 @@ export const AppBarPopOver: React.FC = () => {
     // ID único por instancia: evita conflictos entre los AppBarPopOver de cada tab montados en el DOM
     const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
     const popoverRef = useRef<HTMLIonPopoverElement>(null);
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const { search, changeSearch, transparentToolbar } = useContext(AppContext);
     const history = useHistory();
@@ -23,6 +24,13 @@ export const AppBarPopOver: React.FC = () => {
             changeSearch!(sessionStorage.getItem("search")!);
         }
     }, []);
+
+    function handleSearch(value: string) {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+            changeSearch!(value);
+        }, 300);
+    }
 
     function logOutUser() {
         localStorage.setItem("login", 'false');
@@ -45,7 +53,7 @@ export const AppBarPopOver: React.FC = () => {
                         animated={true}
                         onIonBlur={() => setIsSearching(false)}
                         onIonFocus={() => setIsSearching(true)}
-                        onIonInput={(e) => changeSearch!(e.target.value!)}
+                        onIonInput={(e) => handleSearch(e.target.value ?? '')}
                         onIonClear={() => changeSearch!("")}
                         showClearButton="always"
                         value={search}
