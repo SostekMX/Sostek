@@ -10,6 +10,7 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
+| 2026-06-08 | Tutorial migrado al frontend | `InitialTutorial.tsx` ya usa `GET /tutorial`. **El backend debe tener la colección sembrada** — correr `npm run seed:tutorial` en el repo del backend antes de probar. Si la colección está vacía, `GET /tutorial` devuelve `{ error: "Tutorial no encontrado" }` y no se muestra nada en el frontend. |
 | 2026-06-06 | `GET /tutorial` implementado | El frontend ya NO necesita Google Drive para el tutorial. Reemplazar `useGetDocuments` con axios al backend. El instructivo tiene reglas del juego + 48 tarjetas (escenario y solución) con sus valores de recursos. |
 | 2026-06-06 | Endpoints de favoritos: `POST /user/favorites`, `GET /user/favorites`, `DELETE /user/favorites/:content_id` | Ya se puede implementar el guardado de artículos y presentaciones favoritas. Requieren JWT. Ver contratos en sección 3. |
 | 2026-06-06 | Campo `favorites` agregado al modelo de usuario | Array de `{ content_id, type }` — el frontend no lo recibe en `GET /user/profile`, se obtiene aparte con `GET /user/favorites`. |

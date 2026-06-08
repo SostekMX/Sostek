@@ -128,7 +128,7 @@ src/
 | Ajustes | `AppBarPopOver.tsx` | Visible en el menú, sin ruta ni lógica |
 | Modo oscuro | `AppContext.tsx` | Variable `dark` definida, nunca aplicada a la UI |
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
-| Tutorial | `InitialTutorial.tsx` | Aún carga desde Google Drive — pendiente migrar al backend |
+| Tutorial | `InitialTutorial.tsx` | Migrado a `GET /tutorial` — muestra reglas + 48 tarjetas del juego |
 
 ---
 
@@ -146,7 +146,7 @@ src/
 |---|-------------|------------|-----------|
 | 1 | Logout redirige a Perfil en vez de login | `AppBarPopOver.tsx` → `history.goBack()` mal usado | Alta |
 | 2 | Menú hamburguesa del invitado no funciona en Juega y Evalúate; después de visitarlas, deja de funcionar en Aprende también | `AppBarPopOver.tsx` — `isUserLogged` no se recalcula al cambiar de tab | Alta |
-| 3 | Llamadas a gapi/Google Drive con 403 en consola — tutorial aún usa gapi | `InitialTutorial.tsx`, `useGetDocuments.ts` | Alta |
+| ~~3~~ | ~~Llamadas a gapi/Google Drive con 403 en consola~~ | Resuelto — `InitialTutorial.tsx` migrado a `GET /tutorial` | ~~Alta~~ |
 | 4 | Presentaciones se ven de lado (orientación incorrecta en el Swiper) | `Presentation.tsx` | Alta |
 | 5 | Guardar cambios en Perfil no redirige a APRENDE | `Profile.tsx` — falta `history.push('/tab1')` tras éxito | Media |
 | 6 | aria-hidden sobre elemento con focus en página de presentación | `Presentation.tsx` — warning de accesibilidad de Ionic | Baja |
