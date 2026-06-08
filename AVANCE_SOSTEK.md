@@ -200,6 +200,7 @@ src/
 14. Pantalla de Ajustes
 15. Modo oscuro funcional
 16. Juego online en Tab 2
+17. ⚠️ Foto de perfil — subir imagen desde el dispositivo, guardar en Cloudinary, mostrar en avatar de perfil (requiere cambios en backend: nuevo endpoint + campo `avatar` en modelo de usuario)
 
 ---
 
