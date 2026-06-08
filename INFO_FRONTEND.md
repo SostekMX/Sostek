@@ -2,7 +2,7 @@
 
 > Para el equipo de frontend. Describe qué cambió, qué falta y cómo llamar cada endpoint.
 > Backend corre en: `http://localhost:8080`
-> Última actualización: 2026-06-06
+> Última actualización: 2026-06-08
 
 ---
 
@@ -10,7 +10,9 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
-| 2026-06-08 | Tutorial migrado al frontend | `InitialTutorial.tsx` ya usa `GET /tutorial`. **El backend debe tener la colección sembrada** — correr `npm run seed:tutorial` en el repo del backend antes de probar. Si la colección está vacía, `GET /tutorial` devuelve `{ error: "Tutorial no encontrado" }` y no se muestra nada en el frontend. |
+| 2026-06-08 | Párrafos en artículos | El frontend ahora divide el campo `body` por `\n` para renderizar párrafos. **Los artículos que aparecen como un solo bloque de texto necesitan saltos de línea (`\n`) en su campo `body` en MongoDB.** Actualizar el seed o editar directamente en Atlas. |
+| 2026-06-08 | Diseño de detalle de artículo completamente reescrito | `Documents.tsx` ya tiene `IonBackButton`, hero image 240px, badge de categoría, tipografía dark legible. `AppBarMenu.tsx` ya no se usa — puede eliminarse del repo. |
+| 2026-06-08 | Tutorial integrado en Tab2 — ya no es un popup separado | `Tab2.tsx` consume `GET /tutorial` directamente y muestra el instructivo del juego (stats, tipos de tarjeta, reglas, lista filtrable). **El backend debe tener la colección sembrada** — correr `npm run seed:tutorial` en el repo del backend antes de probar. |
 | 2026-06-06 | `GET /tutorial` implementado | El frontend ya NO necesita Google Drive para el tutorial. Reemplazar `useGetDocuments` con axios al backend. El instructivo tiene reglas del juego + 48 tarjetas (escenario y solución) con sus valores de recursos. |
 | 2026-06-06 | Endpoints de favoritos: `POST /user/favorites`, `GET /user/favorites`, `DELETE /user/favorites/:content_id` | Ya se puede implementar el guardado de artículos y presentaciones favoritas. Requieren JWT. Ver contratos en sección 3. |
 | 2026-06-06 | Campo `favorites` agregado al modelo de usuario | Array de `{ content_id, type }` — el frontend no lo recibe en `GET /user/profile`, se obtiene aparte con `GET /user/favorites`. |
@@ -28,8 +30,9 @@
 
 | Elemento | Dónde integrarlo | Estado |
 |----------|-----------------|--------|
-| Tutorial desde backend | `InitialTutorial.tsx` — reemplazar `useGetDocuments` (Google Drive) con `GET /tutorial` | ⚠️ Pendiente en frontend |
+| Párrafos en artículos | Añadir `\n` entre párrafos en el campo `body` de cada artículo en MongoDB — frontend ya lo maneja correctamente | ⚠️ Pendiente en backend (datos) |
 | Favoritos | ~~Pendiente~~ — implementado | ✅ Integrado |
+| Tutorial desde backend | ~~Pendiente~~ — integrado en Tab2 | ✅ Integrado |
 
 ### ✅ Ya integrado en el frontend
 
@@ -38,8 +41,9 @@
 | `POST /user/score` | `FinalScoreEvaluation.tsx` — se envía al terminar evaluación si hay JWT |
 | `DELETE /user` | `Profile.tsx` — botón "Eliminar cuenta" con confirmación |
 | `POST /user/forgot-password` + `POST /user/reset-password` | `ForgotPassword.tsx` y `ResetPassword.tsx` (rutas `/ForgotPassword` y `/ResetPassword`) |
-| Migración de `gapi.client` → axios | Artículos, evaluaciones y presentaciones cargan desde backend; solo el tutorial queda pendiente |
+| Migración de `gapi.client` → axios | 100% completada — artículos, evaluaciones, presentaciones y tutorial desde backend; script `gapi` eliminado de `index.html` |
 | `POST /user/favorites` + `GET /user/favorites` + `DELETE /user/favorites/:id` | `useFavorites.ts` (hook), `DocumentCard.tsx` (botón corazón), `Favorites.tsx` (página `/Favorites`), `ArticleCarrousel.tsx` |
+| `GET /tutorial` | `Tab2.tsx` — muestra instructivo del juego con stats, tipos de tarjeta, reglas y lista filtrable de cartas |
 
 ---
 
