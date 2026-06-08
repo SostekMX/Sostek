@@ -18,6 +18,7 @@ interface DocumentProps {
 
 const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type, isFavorite, isLoggedIn, onToggleFavorite }) => {
     const [imgLoading, setImgLoading] = useState(true);
+    const [imgError, setImgError] = useState(false);
     return (
         <IonCard
             className='document-card'
@@ -26,15 +27,13 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
             routerLink={type === 'article' ? `/Documents/${id}` : `/presentation/${id}`}
         >
             <div className='document-card__image-wrapper'>
-                <img
-                    className={`image-card-loading ${imgLoading ? 'visible' : 'hidden'}`}
-                    src="/assets/Spinner-1s-200px_transparent.svg"
-                    alt=""
-                />
+                {imgLoading && !imgError && <div className='document-card__skeleton' />}
+                {imgError && <div className='document-card__img-fallback' />}
                 <IonImg
                     className={`document-card-image ${imgLoading ? 'hidden' : 'visible'}`}
                     src={img_url}
                     onIonImgDidLoad={() => setImgLoading(false)}
+                    onIonError={() => { setImgLoading(false); setImgError(true); }}
                 />
                 {isLoggedIn && (
                     <button
