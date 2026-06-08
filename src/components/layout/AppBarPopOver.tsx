@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
-import { personCircle, settings, logOut, heart, informationCircleOutline, menuOutline } from 'ionicons/icons';
+import { personCircle, settings, logOut, heart, menuOutline } from 'ionicons/icons';
 import { search as iconSearch } from 'ionicons/icons';
 import { useHistory, useLocation } from "react-router-dom";
 import AppContext from '../../context/AppContext';
@@ -10,7 +10,7 @@ export const AppBarPopOver: React.FC = () => {
     const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
     const popoverRef = useRef<HTMLIonPopoverElement>(null);
     const [isSearching, setIsSearching] = useState<boolean>(false);
-    const { search, changeSearch, tutorial, toggleTutorial, transparentToolbar } = useContext(AppContext);
+    const { search, changeSearch, transparentToolbar } = useContext(AppContext);
     const history = useHistory();
     useLocation(); // provoca re-render al navegar, manteniendo isUserLogged actualizado
 
@@ -29,16 +29,6 @@ export const AppBarPopOver: React.FC = () => {
         history.replace('/');
     }
 
-    function activateTutorial() {
-        localStorage.setItem("tutorial", "true");
-        // Si ya estaba en true, forzar toggle para que React detecte el cambio
-        if (tutorial) {
-            toggleTutorial!(false);
-            setTimeout(() => toggleTutorial!(true), 0);
-        } else {
-            toggleTutorial!(true);
-        }
-    }
 
     return <>
         <IonToolbar color={transparentToolbar ? 'transparent' : 'primary'}>
@@ -99,10 +89,6 @@ export const AppBarPopOver: React.FC = () => {
                                     <IonLabel>Ajustes</IonLabel>
                                 </IonItem>
                             }
-                            <IonItem button onClick={() => { activateTutorial(); popoverRef.current?.dismiss(); }}>
-                                <IonIcon icon={informationCircleOutline} color='secondary' /> &nbsp;
-                                <IonLabel>Tutorial</IonLabel>
-                            </IonItem>
                             {isUserLogged &&
                                 <IonItem onClick={logOutUser}>
                                     <IonIcon icon={logOut} color='secondary' /> &nbsp;
