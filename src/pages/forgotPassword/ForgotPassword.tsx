@@ -1,4 +1,4 @@
-import { IonButton, IonAlert, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
+import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -66,12 +66,13 @@ const ForgotPassword: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <IonAlert
+                <IonToast
                     isOpen={showAlert}
                     onDidDismiss={() => setShowAlert(false)}
-                    header="Error"
                     message={message}
-                    buttons={['OK']}
+                    duration={3500}
+                    color="danger"
+                    position="bottom"
                 />
             </IonContent>
         </IonPage>

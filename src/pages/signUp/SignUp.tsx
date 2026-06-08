@@ -2,7 +2,7 @@ import {
     IonContent,
     IonItem,
     IonInput,
-    IonAlert,
+    IonToast,
     IonPage,
     IonButton,
 } from '@ionic/react';
@@ -186,12 +186,13 @@ const SignUp: React.FC = () => {
                     </div>
 
                 </div>
-                <IonAlert
+                <IonToast
                     isOpen={showAlert}
                     onDidDismiss={() => setShowAlert(false)}
-                    header="Error al crear usuario"
                     message={message}
-                    buttons={['OK']}
+                    duration={3500}
+                    color="danger"
+                    position="bottom"
                 />
             </IonContent>
         </IonPage>
