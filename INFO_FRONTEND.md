@@ -2,7 +2,7 @@
 
 > Para el equipo de frontend. Describe qué cambió, qué falta y cómo llamar cada endpoint.
 > Backend corre en: `http://localhost:8080`
-> Última actualización: 2026-06-08
+> Última actualización: 2026-06-09
 
 ---
 
@@ -10,6 +10,7 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
+| 2026-06-09 | Rediseño completo de UI — dark theme consistente en toda la app | Header, footer, perfil, evaluaciones, artículos, alertas y popovers ahora siguen la misma estética oscura. No requiere cambios en backend. |
 | 2026-06-08 | **[PENDIENTE BACKEND]** Campo `description` en evaluaciones | El frontend ya está preparado: `EvaluationCard` acepta `description` como prop opcional y lo usa si llega del backend. Mientras no exista el campo, muestra un texto hardcodeado por nombre de evaluación como fallback. Una vez que `GET /evaluations` incluya `description`, se reflejará automáticamente sin cambios en el frontend. Ver contrato en sección 3. |
 | 2026-06-08 | **[PENDIENTE BACKEND]** Foto de perfil — nuevo feature solicitado | El frontend necesita un endpoint `POST /user/avatar` que reciba `multipart/form-data` con un campo `avatar` (archivo de imagen), lo suba a Cloudinary y devuelva la URL. También se necesita el campo `avatar` en el modelo de usuario y que `GET /user/profile` lo incluya en la respuesta. Ver contrato propuesto en sección 3. |
 | 2026-06-08 | Párrafos en artículos | El frontend ahora divide el campo `body` por `\n` para renderizar párrafos. **Los artículos que aparecen como un solo bloque de texto necesitan saltos de línea (`\n`) en su campo `body` en MongoDB.** Actualizar el seed o editar directamente en Atlas. |

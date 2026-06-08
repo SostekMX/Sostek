@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-08
+> Última actualización: 2026-06-09
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -160,10 +160,10 @@ src/
 
 | # | Descripción | Archivo(s) |
 |---|-------------|------------|
-| 1 | Página de Perfil no sigue la aesthetic (tiene fondo de imagen, no el dark bg) | `Profile.tsx`, `Profile.css` |
-| 2 | Alertas/popups (`IonAlert`) se ven feos, no siguen la temática oscura | `Profile.tsx`, `LogIn.tsx`, `SignUp.tsx` |
-| 3 | Tab bar footer poco estético — explorar nav bar moderna estilo apps actuales | `App.tsx` + CSS |
-| 4 | Página de preguntas de evaluación (`Evaluation.tsx`) aún tiene diseño viejo | `Evaluation.tsx` y sus CSS |
+| ~~1~~ | ~~Página de Perfil no sigue la aesthetic~~ | ✅ Resuelto — dark bg + card oscuro + avatar |
+| ~~2~~ | ~~Alertas feos, no siguen la temática oscura~~ | ✅ Resuelto — IonToast para errores, IonAlert dark para confirmaciones destructivas |
+| ~~3~~ | ~~Tab bar footer poco estético~~ | ✅ Resuelto — dark theme + íconos + píldora activa + borde |
+| ~~4~~ | ~~Evaluación con diseño viejo~~ | ✅ Resuelto — dark theme + cards oscuras |
 | 5 | Las evaluaciones no tienen descripción — frontend listo, falta campo `description` en backend | `EvaluationCard.tsx` usa `description` del backend si existe, fallback hardcodeado mientras tanto |
 | ~~6~~ | ~~Contenido de artículos difícil de leer, no sigue la aesthetic~~ | ✅ Resuelto — rediseño con hero 240px + tipografía dark |
 | ~~7~~ | ~~Sin botón de regreso dentro de un artículo~~ | ✅ Resuelto — IonBackButton en IonHeader |
@@ -171,6 +171,7 @@ src/
 | ~~D4~~ | ~~Evaluación con diseño viejo~~ | ✅ Resuelto — dark theme + cards oscuras + botón pill |
 | 8 | Logo de Sostek como botón de inicio es pequeño y no intuitivo | `AppBarPopOver.tsx` |
 | ~~9~~ | ~~Tab2: separar texto en dos líneas~~ | ✅ Resuelto |
+| ~~Header~~ | ~~Header verde brillante no sigue aesthetic dark~~ | ✅ Resuelto — dark `#0d1a0d` + borde inferior + searchbar integrado + popover oscuro |
 | 10 | Imágenes lentas al cargar (sin lazy loading ni placeholder optimizado) | `DocumentCard.tsx`, `ArticleCarrousel.tsx` |
 | 11 | Filtro de búsqueda lento (sin debounce) | `AppBarPopOver.tsx`, `ArticleCarrousel.tsx` |
 
@@ -188,17 +189,18 @@ src/
 ### 🟡 Media prioridad (diseño/UX)
 
 5. ~~Guardar cambios en Perfil no redirige a APRENDE~~ ✅
-6. Rediseño página de Perfil (aesthetic consistente)
-7. Rediseño página de preguntas de Evaluación
-8. Agregar descripción y emoji a cada evaluación
+6. ~~Rediseño página de Perfil~~ ✅
+7. ~~Rediseño página de preguntas de Evaluación~~ ✅
+8. ~~Agregar descripción e iconos a cada evaluación~~ ✅ (frontend listo, descripción dinámica pendiente de backend)
 9. ~~Rediseño del contenido de artículos + botón de regreso~~ ✅
-10. Mejorar tab bar / nav bar
+10. ~~Mejorar tab bar / nav bar~~ ✅
+11. Logo de Sostek no intuitivo como botón de inicio (`AppBarPopOver.tsx`)
 
 ### 🟢 Backlog
 
-11. Debounce en búsqueda
-12. Lazy loading de imágenes optimizado
-13. Reemplazar IonAlert por toasts/notificaciones custom
+12. Debounce en búsqueda
+13. Lazy loading de imágenes optimizado
+14. Reemplazar IonAlert por toasts/notificaciones custom ✅ (hecho)
 14. Pantalla de Ajustes
 15. Modo oscuro funcional
 16. Juego online en Tab 2
