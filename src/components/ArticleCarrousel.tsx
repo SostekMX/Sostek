@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import DocumentCard from './DocumentCard';
 import './ArticleCarrousel.css';
 import AppContext from '../context/AppContext';
+import useFavorites from '../hooks/useFavorites';
 
 export interface Article {
   _id: string;
@@ -40,6 +41,7 @@ const FILTERS: { value: FilterType; label: string }[] = [
 const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations }) => {
   const [filterType, setFilterType] = useState<FilterType>('all');
   const { search } = useContext(AppContext);
+  const { isLoggedIn, isFavorite, addFavorite, removeFavorite } = useFavorites();
 
   const normalize = (s: string) =>
     s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
@@ -61,6 +63,11 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
         type={article.type}
         imgAuthor={article.author_image || undefined}
         imgPage={article.page_image || undefined}
+        isLoggedIn={isLoggedIn}
+        isFavorite={isFavorite(article._id)}
+        onToggleFavorite={() =>
+          isFavorite(article._id) ? removeFavorite(article._id) : addFavorite(article._id, 'article')
+        }
       />
     ));
 
@@ -76,6 +83,11 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
         type="presentation"
         imgAuthor={undefined}
         imgPage={undefined}
+        isLoggedIn={isLoggedIn}
+        isFavorite={isFavorite(pres._id)}
+        onToggleFavorite={() =>
+          isFavorite(pres._id) ? removeFavorite(pres._id) : addFavorite(pres._id, 'presentation')
+        }
       />
     ));
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './DocumentCard.css';
-import { IonCard, IonImg } from '@ionic/react';
+import { IonCard, IonIcon, IonImg } from '@ionic/react';
+import { heart, heartOutline } from 'ionicons/icons';
 
 interface DocumentProps {
     name: string;
@@ -10,9 +11,12 @@ interface DocumentProps {
     type: string;
     imgAuthor: string | undefined;
     imgPage: string | undefined;
+    isFavorite?: boolean;
+    isLoggedIn?: boolean;
+    onToggleFavorite?: () => void;
 }
 
-const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type }) => {
+const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type, isFavorite, isLoggedIn, onToggleFavorite }) => {
     const [imgLoading, setImgLoading] = useState(true);
     return (
         <IonCard
@@ -32,6 +36,18 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
                     src={img_url}
                     onIonImgDidLoad={() => setImgLoading(false)}
                 />
+                {isLoggedIn && (
+                    <button
+                        className={`document-card__fav-btn ${isFavorite ? 'document-card__fav-btn--active' : ''}`}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onToggleFavorite?.();
+                        }}
+                    >
+                        <IonIcon icon={isFavorite ? heart : heartOutline} />
+                    </button>
+                )}
             </div>
             <div className='document-card__content'>
                 <span className='document-card__type-badge'>
