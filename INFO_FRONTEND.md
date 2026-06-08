@@ -10,6 +10,7 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
+| 2026-06-08 | **[PENDIENTE BACKEND]** Foto de perfil — nuevo feature solicitado | El frontend necesita un endpoint `POST /user/avatar` que reciba `multipart/form-data` con un campo `avatar` (archivo de imagen), lo suba a Cloudinary y devuelva la URL. También se necesita el campo `avatar` en el modelo de usuario y que `GET /user/profile` lo incluya en la respuesta. Ver contrato propuesto en sección 3. |
 | 2026-06-08 | Párrafos en artículos | El frontend ahora divide el campo `body` por `\n` para renderizar párrafos. **Los artículos que aparecen como un solo bloque de texto necesitan saltos de línea (`\n`) en su campo `body` en MongoDB.** Actualizar el seed o editar directamente en Atlas. |
 | 2026-06-08 | Diseño de detalle de artículo completamente reescrito | `Documents.tsx` ya tiene `IonBackButton`, hero image 240px, badge de categoría, tipografía dark legible. `AppBarMenu.tsx` ya no se usa — puede eliminarse del repo. |
 | 2026-06-08 | Tutorial integrado en Tab2 — ya no es un popup separado | `Tab2.tsx` consume `GET /tutorial` directamente y muestra el instructivo del juego (stats, tipos de tarjeta, reglas, lista filtrable). **El backend debe tener la colección sembrada** — correr `npm run seed:tutorial` en el repo del backend antes de probar. |
@@ -30,6 +31,7 @@
 
 | Elemento | Dónde integrarlo | Estado |
 |----------|-----------------|--------|
+| Foto de perfil | Implementar `POST /user/avatar` + campo `avatar` en modelo de usuario + incluir en `GET /user/profile` | ⚠️ Pendiente en backend |
 | Párrafos en artículos | Añadir `\n` entre párrafos en el campo `body` de cada artículo en MongoDB — frontend ya lo maneja correctamente | ⚠️ Pendiente en backend (datos) |
 | Favoritos | ~~Pendiente~~ — implementado | ✅ Integrado |
 | Tutorial desde backend | ~~Pendiente~~ — integrado en Tab2 | ✅ Integrado |
@@ -532,6 +534,41 @@ Retorna el instructivo completo del juego SOSTEK: reglas + 48 tarjetas.
 | `error` | Causa |
 |---------|-------|
 | `"Tutorial no encontrado"` | La colección `tutorial` está vacía — correr `npm run seed:tutorial` |
+
+---
+
+### POST `/user/avatar` ⚠️ PENDIENTE — aún no implementado en backend
+
+Sube una imagen de perfil a Cloudinary y guarda la URL en el usuario. Requiere JWT.
+
+**Headers requeridos**
+```
+Authorization: Bearer <token>
+Content-Type: multipart/form-data
+```
+
+**Body (form-data)**
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `avatar` | File | Imagen (jpg/png/webp), máx recomendado 5MB |
+
+**Respuesta exitosa — 200**
+```json
+{
+  "success": true,
+  "avatar_url": "https://res.cloudinary.com/.../avatar_userid.jpg"
+}
+```
+
+**Errores posibles**
+| `error` | Causa |
+|---------|-------|
+| `"No se subió ninguna imagen"` | El campo `avatar` no llegó en el form-data |
+| `"Error al subir imagen"` | Fallo de Cloudinary |
+
+**Cambios requeridos en el modelo de usuario**
+- Agregar campo `avatar: { type: String, default: '' }` al schema de Mongoose
+- Incluir `avatar` en la respuesta de `GET /user/profile`
 
 ---
 
