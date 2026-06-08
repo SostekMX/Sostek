@@ -66,11 +66,11 @@ export const AppBarPopOver: React.FC = () => {
                     <IonContent>
                         <IonList>
                         {isUserLogged &&
-                            <IonItem>
+                            <IonItem href='/Favorites'>
                                     <IonIcon icon={heart} color='secondary'></IonIcon> &nbsp;
-                                    <IonLabel>  Favoritos</IonLabel>
-                                </IonItem>
-                        } 
+                                    <IonLabel>Favoritos</IonLabel>
+                            </IonItem>
+                        }
                         {isUserLogged &&
                             <IonItem  href='/Profile'>
                                     <IonIcon icon={personCircle} color='secondary'></IonIcon> &nbsp;

@@ -1,0 +1,24 @@
+.favorites-container {
+    padding: 16px 14px 40px;
+}
+
+.favorites-title {
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 8px 0 16px;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.favorites-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}

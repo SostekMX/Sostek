@@ -45,6 +45,7 @@ import Evaluation from './pages/evaluation/Evaluation';
 import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
 import ForgotPassword from './pages/forgotPassword/ForgotPassword';
 import ResetPassword from './pages/resetPassword/ResetPassword';
+import Favorites from './pages/favorites/Favorites';
 
 setupIonicReact();
 
@@ -71,6 +72,7 @@ const MainTabs: React.FC = () => {
         <Route path="/score/:name"><FinalScoreEvaluation /></Route>
         <Route exact path="/ForgotPassword"><ForgotPassword /></Route>
         <Route exact path="/ResetPassword"><ResetPassword /></Route>
+        <Route exact path="/Favorites"><Favorites /></Route>
       </IonRouterOutlet>
 
       <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
