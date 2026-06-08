@@ -10,6 +10,7 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
+| 2026-06-08 | **[PENDIENTE BACKEND]** Campo `description` en evaluaciones | El frontend ya está preparado: `EvaluationCard` acepta `description` como prop opcional y lo usa si llega del backend. Mientras no exista el campo, muestra un texto hardcodeado por nombre de evaluación como fallback. Una vez que `GET /evaluations` incluya `description`, se reflejará automáticamente sin cambios en el frontend. Ver contrato en sección 3. |
 | 2026-06-08 | **[PENDIENTE BACKEND]** Foto de perfil — nuevo feature solicitado | El frontend necesita un endpoint `POST /user/avatar` que reciba `multipart/form-data` con un campo `avatar` (archivo de imagen), lo suba a Cloudinary y devuelva la URL. También se necesita el campo `avatar` en el modelo de usuario y que `GET /user/profile` lo incluya en la respuesta. Ver contrato propuesto en sección 3. |
 | 2026-06-08 | Párrafos en artículos | El frontend ahora divide el campo `body` por `\n` para renderizar párrafos. **Los artículos que aparecen como un solo bloque de texto necesitan saltos de línea (`\n`) en su campo `body` en MongoDB.** Actualizar el seed o editar directamente en Atlas. |
 | 2026-06-08 | Diseño de detalle de artículo completamente reescrito | `Documents.tsx` ya tiene `IonBackButton`, hero image 240px, badge de categoría, tipografía dark legible. `AppBarMenu.tsx` ya no se usa — puede eliminarse del repo. |
@@ -31,6 +32,7 @@
 
 | Elemento | Dónde integrarlo | Estado |
 |----------|-----------------|--------|
+| Campo `description` en evaluaciones | Agregar campo `description` al modelo de evaluación en MongoDB y devolverlo en `GET /evaluations` — el frontend ya lo recibe y muestra automáticamente | ⚠️ Pendiente en backend |
 | Foto de perfil | Implementar `POST /user/avatar` + campo `avatar` en modelo de usuario + incluir en `GET /user/profile` | ⚠️ Pendiente en backend |
 | Párrafos en artículos | Añadir `\n` entre párrafos en el campo `body` de cada artículo en MongoDB — frontend ya lo maneja correctamente | ⚠️ Pendiente en backend (datos) |
 | Favoritos | ~~Pendiente~~ — implementado | ✅ Integrado |
@@ -534,6 +536,28 @@ Retorna el instructivo completo del juego SOSTEK: reglas + 48 tarjetas.
 | `error` | Causa |
 |---------|-------|
 | `"Tutorial no encontrado"` | La colección `tutorial` está vacía — correr `npm run seed:tutorial` |
+
+---
+
+### GET `/evaluations` — campo `description` pendiente ⚠️
+
+El frontend ya consume este endpoint y ya está preparado para recibir `description`. Solo falta agregarlo al modelo y al seed.
+
+**Cambios requeridos en el backend**
+- Agregar campo `description: { type: String, default: '' }` al schema de Mongoose de evaluaciones
+- Actualizar el seed de las 6 evaluaciones con sus descripciones (ver sugerencias abajo)
+- Incluir `description` en la respuesta de `GET /evaluations`
+
+**Descripciones sugeridas por evaluación** (basadas en análisis de las preguntas reales):
+
+| Evaluación | Descripción sugerida |
+|------------|---------------------|
+| Arquitectura Nivel 1 | Mide si conoces y tomaste en cuenta los factores ambientales y sociales básicos en el análisis de tu proyecto. |
+| Arquitectura Nivel 2 | Mide cómo integras estrategias de sostenibilidad en el diseño y desarrollo de tu proyecto. |
+| Arquitectura Nivel 3 | Mide si tu proyecto plantea sistemas y programas de sostenibilidad a largo plazo. |
+| Diseño Industrial Nivel 1 | Mide tu conocimiento básico sobre impacto ambiental y sostenibilidad en el diseño de productos. |
+| Diseño Industrial Nivel 2 | Mide cómo consideras la sostenibilidad en tu proceso de diseño y selección de materiales. |
+| Diseño Industrial Nivel 3 | Mide qué tan profundo integra tu proyecto criterios de sostenibilidad en todo su ciclo de vida. |
 
 ---
 

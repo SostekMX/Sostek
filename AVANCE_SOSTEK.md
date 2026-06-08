@@ -164,9 +164,11 @@ src/
 | 2 | Alertas/popups (`IonAlert`) se ven feos, no siguen la temática oscura | `Profile.tsx`, `LogIn.tsx`, `SignUp.tsx` |
 | 3 | Tab bar footer poco estético — explorar nav bar moderna estilo apps actuales | `App.tsx` + CSS |
 | 4 | Página de preguntas de evaluación (`Evaluation.tsx`) aún tiene diseño viejo | `Evaluation.tsx` y sus CSS |
-| 5 | Las evaluaciones no tienen descripción ni emoji que explique el nivel/carrera | `Tab3.tsx`, datos de evaluación en backend |
+| 5 | Las evaluaciones no tienen descripción — frontend listo, falta campo `description` en backend | `EvaluationCard.tsx` usa `description` del backend si existe, fallback hardcodeado mientras tanto |
 | ~~6~~ | ~~Contenido de artículos difícil de leer, no sigue la aesthetic~~ | ✅ Resuelto — rediseño con hero 240px + tipografía dark |
 | ~~7~~ | ~~Sin botón de regreso dentro de un artículo~~ | ✅ Resuelto — IonBackButton en IonHeader |
+| ~~D1~~ | ~~Perfil sin dark theme~~ | ✅ Resuelto — app-dark-bg + card oscuro + avatar icon |
+| ~~D4~~ | ~~Evaluación con diseño viejo~~ | ✅ Resuelto — dark theme + cards oscuras + botón pill |
 | 8 | Logo de Sostek como botón de inicio es pequeño y no intuitivo | `AppBarPopOver.tsx` |
 | ~~9~~ | ~~Tab2: separar texto en dos líneas~~ | ✅ Resuelto |
 | 10 | Imágenes lentas al cargar (sin lazy loading ni placeholder optimizado) | `DocumentCard.tsx`, `ArticleCarrousel.tsx` |
@@ -201,6 +203,7 @@ src/
 15. Modo oscuro funcional
 16. Juego online en Tab 2
 17. ⚠️ Foto de perfil — subir imagen desde el dispositivo, guardar en Cloudinary, mostrar en avatar de perfil (requiere cambios en backend: nuevo endpoint + campo `avatar` en modelo de usuario)
+18. ⚠️ Campo `description` en evaluaciones — frontend listo, backend debe agregar el campo al modelo y seed (descripciones sugeridas en `INFO_FRONTEND.md`)
 
 ---
 
