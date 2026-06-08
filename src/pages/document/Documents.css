@@ -1,71 +1,80 @@
-.bg {
-    background-color: var(--novus-article-background);
-}
-.colorful_appbar_document, 
-.transparent_appbar_document{
-    top: 0;
-    position: absolute;
-    width: 100%;
-}
-.colorful_appbar_document {
-    transition: all 1s ease-out;
+.doc-spinner {
+  display: block;
+  width: 80px;
+  margin: 60px auto;
 }
 
-.transparent_appbar_document{
-    transition: all 1s ease-in;
+/* Hero image */
+.doc-hero {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background: #111;
 }
 
-.title__document{
-    color: var(--ion-color-primary-contrast);
-    font-size: medium;
-    font-weight: bold;
-    font-family:system-ui;
-    text-transform: uppercase;
-    text-align: center;
-    background: rgba(0, 0, 0, .50);
-    border-radius: 16px;
-    padding-block: 5px;
-    width: 100%;
+.doc-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.imageArticle{
-    border-bottom-left-radius: 60px;
-    border-bottom-right-radius: 60px;
-    height: 80vh;
-    width: 100vw;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    transition: all 1s ease-in;
+/* Content area */
+.doc-content {
+  padding: 20px 20px 40px;
 }
 
-.imageArticleLoading{
-    transition: all 1s ease-out;
-    height: 80vh;
-    width: 100vw;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
+.doc-image-credit {
+  font-size: 11px;
+  color: #888;
+  margin: 0 0 12px;
 }
 
-.hidden {
-    opacity: 0;
+.doc-category-badge {
+  display: inline-block;
+  background: var(--ion-color-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 14px;
 }
 
-.visible {
-    opacity: 1;
+.doc-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0f0f0;
+  line-height: 1.3;
+  margin: 0 0 10px;
 }
 
-.content__container {
-    position: absolute;
-    top: 70vh;
+.doc-subtitle {
+  font-size: 15px;
+  color: #bbb;
+  line-height: 1.5;
+  margin: 0 0 12px;
 }
 
-.content__document {
-    color: var(--ion-color-primary-contrast);
-    font-family:sans-serif;
+.doc-author {
+  font-size: 13px;
+  color: var(--ion-color-primary-tint);
+  font-weight: 500;
+  margin: 0 0 12px;
 }
 
-.content-row {
-    margin-inline: 1rem;
+.doc-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 16px 0;
+}
+
+.doc-body {
+  font-size: 15px;
+  color: #ccc;
+  line-height: 1.75;
+  margin: 0;
+  white-space: pre-line;
 }

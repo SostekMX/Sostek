@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { IonCardSubtitle, IonCol, IonContent, IonPage, IonRow, IonText} from '@ionic/react';
-import './Documents.css'
+import React, { useEffect, useRef, useState } from 'react';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonItem, IonLabel, IonPopover } from '@ionic/react';
+import { menuOutline, heart, personCircle, settings, logOut } from 'ionicons/icons';
 import { useParams } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import AppBarPopOver from '../../components/layout/AppBarPopOver';
-import { AppBarMenu } from '../../components/layout/AppBarMenu';
+import './Documents.css';
 
 interface Article {
   _id: string;
@@ -27,6 +27,11 @@ const Documents: React.FC = () => {
   const { id } = useParams<RouteParams>();
   const [article, setArticle] = useState<Article | null>(null);
   const [loadingData, setLoadingData] = useState(true);
+  const { current: popoverId } = useRef(`doc-menu-${Math.random().toString(36).substr(2, 6)}`);
+  const history = useHistory();
+  useLocation();
+
+  const isUserLogged = localStorage.getItem('login') === 'true';
 
   useEffect(() => {
     axios.get(`http://localhost:8080/articles/${id}`)
@@ -37,41 +42,71 @@ const Documents: React.FC = () => {
       .finally(() => setLoadingData(false));
   }, [id]);
 
+  function logOutUser() {
+    localStorage.setItem('login', 'false');
+    localStorage.removeItem('token');
+    history.replace('/');
+  }
+
   return (
     <IonPage>
-      <div className={loadingData ? 'colorful_appbar_document' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
-      <div className={loadingData ? 'transparent_appbar_document' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
+      <IonHeader>
+        <IonToolbar color="primary">
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/tab1" text="" />
+          </IonButtons>
+          <IonButtons slot="end">
+            <IonButton id={popoverId}>
+              <IonIcon slot="icon-only" icon={menuOutline} />
+            </IonButton>
+            <IonPopover trigger={popoverId} triggerAction="click">
+              <IonList>
+                {isUserLogged && <IonItem href="/Favorites"><IonIcon icon={heart} color="secondary" />&nbsp;<IonLabel>Favoritos</IonLabel></IonItem>}
+                {isUserLogged && <IonItem href="/Profile"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Perfil</IonLabel></IonItem>}
+                {!isUserLogged && <IonItem href="/"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Iniciar Sesión</IonLabel></IonItem>}
+                {isUserLogged && <IonItem><IonIcon icon={settings} color="secondary" />&nbsp;<IonLabel>Ajustes</IonLabel></IonItem>}
+                {isUserLogged && <IonItem onClick={logOutUser}><IonIcon icon={logOut} color="secondary" />&nbsp;<IonLabel>Log Out</IonLabel></IonItem>}
+              </IonList>
+            </IonPopover>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
 
-      <IonContent fullscreen class='bg-img'>
-        <img className={loadingData ? "imageArticleLoading visible" : "imageArticleLoading hidden"}
-          src="/assets/Spinner-1s-200px_transparent.svg"
-          alt="loading" />
-        <img className={loadingData ? "imageArticle hidden" : "imageArticle visible"}
-          src={article?.image ?? ''}
-          alt={article?.title ?? ''}
-        />
+      <IonContent fullscreen class="app-dark-bg">
+        {loadingData && (
+          <img
+            className="doc-spinner"
+            src="/assets/Spinner-1s-200px_transparent.svg"
+            alt="cargando"
+          />
+        )}
 
-        {(article?.page_image || article?.author_image) &&
-          <IonCardSubtitle>
-            Imagen
-            {article?.page_image && <>{` de ${article.page_image}`}</>}
-            {article?.author_image && <>{` por ${article.author_image}`}</>}
-          </IonCardSubtitle>
-        }
-        <br />
-        <IonCol className='content__container'>
-          <IonRow>
-            <IonText className='content-row title__document ion-text-wrap'>
-              {!loadingData && article?.title}
-            </IonText>
-          </IonRow>
-          <br />
-          <IonRow className='content-row content__document'>
-            <IonText>
-              {!loadingData && article?.body}
-            </IonText>
-          </IonRow>
-        </IonCol>
+        {!loadingData && article && (
+          <>
+            <div className="doc-hero">
+              <img src={article.image} alt={article.title} className="doc-hero__img" />
+            </div>
+
+            <div className="doc-content">
+              {(article.page_image || article.author_image) && (
+                <p className="doc-image-credit">
+                  Imagen
+                  {article.page_image && ` de ${article.page_image}`}
+                  {article.author_image && ` por ${article.author_image}`}
+                </p>
+              )}
+
+              <span className="doc-category-badge">{article.category}</span>
+              <h1 className="doc-title">{article.title}</h1>
+              {article.subtitle && <p className="doc-subtitle">{article.subtitle}</p>}
+              {article.author && <p className="doc-author">{article.author}</p>}
+
+              <div className="doc-divider" />
+
+              <p className="doc-body">{article.body}</p>
+            </div>
+          </>
+        )}
       </IonContent>
     </IonPage>
   );
