@@ -39,7 +39,7 @@ const Presentation: React.FC = () => {
         {!loading && (
           <Swiper
             className='mySwiper'
-            direction={"vertical"}
+            direction={"horizontal"}
             modules={[Pagination, Lazy]}
             pagination={true}
             lazy={true}
