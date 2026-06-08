@@ -56,8 +56,12 @@ const Profile: React.FC = () => {
         }, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(function (response) {
-            setMessage(response.data.message);
-            setShowAlert(true);
+            if (response.data.success) {
+                history.replace('/tab1');
+            } else {
+                setMessage(response.data.message);
+                setShowAlert(true);
+            }
         }).catch(function (error) {
             console.log(error);
         });
