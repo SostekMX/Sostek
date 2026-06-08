@@ -84,7 +84,7 @@ const Documents: React.FC = () => {
         {!loadingData && article && (
           <>
             <div className="doc-hero">
-              <img src={article.image} alt={article.title} className="doc-hero__img" />
+              <img src={article.image} alt={article.title} className="doc-hero__img" loading="lazy" decoding="async" />
             </div>
 
             <div className="doc-content">
