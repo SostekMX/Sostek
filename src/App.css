@@ -47,25 +47,42 @@ ion-toolbar.transparent {
 /* === TAB BAR === */
 
 ion-tab-bar {
-    --background: #ffffff;
+    --background: #0d1a0d;
     --border: none;
-    box-shadow: 0 -1px 0 rgba(26, 46, 26, 0.08), 0 -6px 18px rgba(26, 46, 26, 0.06);
-    height: 58px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    height: 62px;
     padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 ion-tab-button {
-    --color: #5a7260;
+    --color: rgba(255, 255, 255, 0.4);
     --color-selected: #80b259;
-    font-size: 0.67rem;
-    font-weight: 700;
-    letter-spacing: 0.9px;
+    --background: transparent;
+    --background-focused: transparent;
+    position: relative;
+}
+
+ion-tab-button ion-icon {
+    font-size: 22px;
+    margin-bottom: 2px;
 }
 
 .tab-bar__label {
-    font-size: 0.67rem;
-    letter-spacing: 0.9px;
+    font-size: 0.62rem;
+    letter-spacing: 0.8px;
     font-weight: 700;
+}
+
+ion-tab-button.tab-selected::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 32px;
+    background: rgba(128, 178, 89, 0.15);
+    border-radius: 20px;
 }
 
 .tab-bar--hidden {

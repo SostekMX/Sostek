@@ -2,6 +2,7 @@ import { Route, useLocation } from 'react-router-dom';
 import {
   IonContent,
   IonApp,
+  IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
@@ -9,6 +10,7 @@ import {
   IonTabs,
   setupIonicReact
 } from '@ionic/react';
+import { bookOutline, gameControllerOutline, clipboardOutline } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 import { useContext } from 'react';
 
@@ -76,13 +78,16 @@ const MainTabs: React.FC = () => {
 
       <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
         <IonTabButton tab="tab1" href="/tab1">
-          <IonLabel className='tab-bar__label'><strong>APRENDE</strong></IonLabel>
+          <IonIcon icon={bookOutline} />
+          <IonLabel className='tab-bar__label'>APRENDE</IonLabel>
         </IonTabButton>
         <IonTabButton tab="tab2" href="/tab2">
-          <IonLabel className='tab-bar__label'><b>JUEGA</b></IonLabel>
+          <IonIcon icon={gameControllerOutline} />
+          <IonLabel className='tab-bar__label'>JUEGA</IonLabel>
         </IonTabButton>
         <IonTabButton tab="tab3" href="/tab3">
-          <IonLabel className='tab-bar__label'><strong>EVALU&Aacute;TE</strong></IonLabel>
+          <IonIcon icon={clipboardOutline} />
+          <IonLabel className='tab-bar__label'>EVALÚATE</IonLabel>
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
