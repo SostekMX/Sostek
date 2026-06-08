@@ -34,8 +34,8 @@ export const AppBarPopOver: React.FC = () => {
     return <>
         <IonToolbar className={transparentToolbar ? 'appbar appbar--transparent' : 'appbar'}>
             <IonButtons slot='start'>
-                <a onClick={() => changeSearch!("")} href="/MainMenu">
-                    <img src="/assets/sostek-logo.png" height="40px" />
+                <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn">
+                    <img src="/assets/sostek-logo.png" className="appbar__logo" alt="SOSTEK" />
                 </a>
             </IonButtons>
             <IonButtons className={isSearching ? "appbar__searchbar-container appbar__searchbar-active" : "appbar__searchbar-container"} slot="end">

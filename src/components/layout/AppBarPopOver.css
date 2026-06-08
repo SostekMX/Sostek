@@ -10,3 +10,22 @@
     --background: transparent;
     --border-color: transparent;
 }
+
+.appbar__logo-btn {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: opacity 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.appbar__logo-btn:active {
+    opacity: 0.7;
+}
+
+.appbar__logo {
+    height: 32px;
+    width: auto;
+}
+
