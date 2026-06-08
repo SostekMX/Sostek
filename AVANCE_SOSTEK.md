@@ -109,6 +109,7 @@ src/
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
 - **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
 - **Recuperación de contraseña** — pantalla `ForgotPassword.tsx` (email → token por response) + `ResetPassword.tsx` (token + nueva contraseña); rutas `/ForgotPassword` y `/ResetPassword`; link desde `LogIn.tsx`
+- **Favoritos** — botón corazón en `DocumentCard` (lista y carrusel), hook `useFavorites.ts` con `POST/GET/DELETE /user/favorites`, página `/Favorites` que lista contenido guardado con opción de quitar
 
 #### Fixes técnicos aplicados
 
@@ -124,7 +125,6 @@ src/
 
 | Elemento | Ubicación | Estado |
 |----------|-----------|--------|
-| Favoritos | `AppBarPopOver.tsx` | Visible en el menú, sin ruta ni lógica (backend aún no tiene endpoint) |
 | Ajustes | `AppBarPopOver.tsx` | Visible en el menú, sin ruta ni lógica |
 | Modo oscuro | `AppContext.tsx` | Variable `dark` definida, nunca aplicada a la UI |
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
@@ -134,22 +134,69 @@ src/
 
 ### ❌ NO IMPLEMENTADO
 
-- Sistema de favoritos (backend aún no tiene endpoint)
 - Pantalla de ajustes
 - Modo oscuro funcional
 - Juego online en Tab 2 (Unity WebGL — largo plazo)
 
 ---
 
+### 🐛 BUGS CONOCIDOS
+
+| # | Descripción | Archivo(s) | Prioridad |
+|---|-------------|------------|-----------|
+| 1 | Logout redirige a Perfil en vez de login | `AppBarPopOver.tsx` → `history.goBack()` mal usado | Alta |
+| 2 | Menú hamburguesa del invitado no funciona en Juega y Evalúate; después de visitarlas, deja de funcionar en Aprende también | `AppBarPopOver.tsx` — `isUserLogged` no se recalcula al cambiar de tab | Alta |
+| 3 | Llamadas a gapi/Google Drive con 403 en consola — tutorial aún usa gapi | `InitialTutorial.tsx`, `useGetDocuments.ts` | Alta |
+| 4 | Presentaciones se ven de lado (orientación incorrecta en el Swiper) | `Presentation.tsx` | Alta |
+| 5 | Guardar cambios en Perfil no redirige a APRENDE | `Profile.tsx` — falta `history.push('/tab1')` tras éxito | Media |
+| 6 | aria-hidden sobre elemento con focus en página de presentación | `Presentation.tsx` — warning de accesibilidad de Ionic | Baja |
+| 7 | Meta tag deprecated: `apple-mobile-web-app-capable` | `public/index.html` — reemplazar por `mobile-web-app-capable` | Baja |
+
+---
+
+### 🎨 MEJORAS DE DISEÑO PENDIENTES
+
+| # | Descripción | Archivo(s) |
+|---|-------------|------------|
+| 1 | Página de Perfil no sigue la aesthetic (tiene fondo de imagen, no el dark bg) | `Profile.tsx`, `Profile.css` |
+| 2 | Alertas/popups (`IonAlert`) se ven feos, no siguen la temática oscura | `Profile.tsx`, `LogIn.tsx`, `SignUp.tsx` |
+| 3 | Tab bar footer poco estético — explorar nav bar moderna estilo apps actuales | `App.tsx` + CSS |
+| 4 | Página de preguntas de evaluación (`Evaluation.tsx`) aún tiene diseño viejo | `Evaluation.tsx` y sus CSS |
+| 5 | Las evaluaciones no tienen descripción ni emoji que explique el nivel/carrera | `Tab3.tsx`, datos de evaluación en backend |
+| 6 | Contenido de artículos difícil de leer, no sigue la aesthetic | `Documents.tsx`, `Documents.css` |
+| 7 | Sin botón de regreso dentro de un artículo | `Documents.tsx` |
+| 8 | Logo de Sostek como botón de inicio es pequeño y no intuitivo | `AppBarPopOver.tsx` |
+| 9 | Tab2: separar texto en dos líneas ("La versión online está en construcción / Próximamente disponible") | `Tab2.tsx` |
+| 10 | Imágenes lentas al cargar (sin lazy loading ni placeholder optimizado) | `DocumentCard.tsx`, `ArticleCarrousel.tsx` |
+| 11 | Filtro de búsqueda lento (sin debounce) | `AppBarPopOver.tsx`, `ArticleCarrousel.tsx` |
+
+---
+
 ## Prioridades recomendadas
+
+### 🔴 Alta prioridad (bugs que rompen UX)
+
+1. Fix logout — redirigir a login correctamente
+2. Fix menú hamburguesa del invitado en todas las tabs
+3. Migrar tutorial de Google Drive al backend (elimina errores 403)
+4. Fix presentaciones de lado
+
+### 🟡 Media prioridad (diseño/UX)
+
+5. Rediseño página de Perfil (aesthetic consistente)
+6. Rediseño página de preguntas de Evaluación
+7. Agregar descripción y emoji a cada evaluación
+8. Rediseño del contenido de artículos + botón de regreso
+9. Mejorar tab bar / nav bar
 
 ### 🟢 Backlog
 
-1. Migrar tutorial de Google Drive al backend
-2. Pantalla de Favoritos (requiere endpoint backend)
-3. Pantalla de Ajustes
-4. Modo oscuro funcional
-5. Juego online en Tab 2
+10. Debounce en búsqueda
+11. Lazy loading de imágenes optimizado
+12. Reemplazar IonAlert por toasts/notificaciones custom
+13. Pantalla de Ajustes
+14. Modo oscuro funcional
+15. Juego online en Tab 2
 
 ---
 

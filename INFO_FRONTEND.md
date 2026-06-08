@@ -28,7 +28,7 @@
 | Elemento | Dónde integrarlo | Estado |
 |----------|-----------------|--------|
 | Tutorial desde backend | `InitialTutorial.tsx` — reemplazar `useGetDocuments` (Google Drive) con `GET /tutorial` | ⚠️ Pendiente en frontend |
-| Favoritos | `DocumentCard.tsx` / viewer de presentación (guardar), nueva pantalla de favoritos (listar/eliminar) — usar `POST`, `GET` y `DELETE /user/favorites` | ⚠️ Pendiente en frontend |
+| Favoritos | ~~Pendiente~~ — implementado | ✅ Integrado |
 
 ### ✅ Ya integrado en el frontend
 
@@ -38,6 +38,7 @@
 | `DELETE /user` | `Profile.tsx` — botón "Eliminar cuenta" con confirmación |
 | `POST /user/forgot-password` + `POST /user/reset-password` | `ForgotPassword.tsx` y `ResetPassword.tsx` (rutas `/ForgotPassword` y `/ResetPassword`) |
 | Migración de `gapi.client` → axios | Artículos, evaluaciones y presentaciones cargan desde backend; solo el tutorial queda pendiente |
+| `POST /user/favorites` + `GET /user/favorites` + `DELETE /user/favorites/:id` | `useFavorites.ts` (hook), `DocumentCard.tsx` (botón corazón), `Favorites.tsx` (página `/Favorites`), `ArticleCarrousel.tsx` |
 
 ---
 
