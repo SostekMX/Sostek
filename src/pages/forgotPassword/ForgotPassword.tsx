@@ -1,6 +1,5 @@
 import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { BACKEND_URL } from '../../config';
 import '../logIn/LogIn.css';
@@ -8,24 +7,29 @@ import '../logIn/LogIn.css';
 const ForgotPassword: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [message, setMessage] = useState<string>('');
-    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const history = useHistory();
+    const [sent, setSent] = useState<boolean>(false);
 
     async function sendResetToken() {
         setLoading(true);
         try {
             const response = await axios.post(`${BACKEND_URL}/user/forgot-password`, { email });
             if (response.data.success) {
-                sessionStorage.setItem('reset_token', response.data.reset_token);
-                history.push('/ResetPassword');
+                setMessage(response.data.message);
+                setIsError(false);
+                setShowToast(true);
+                setSent(true);
             } else {
                 setMessage(response.data.error);
-                setShowAlert(true);
+                setIsError(true);
+                setShowToast(true);
             }
         } catch (error: any) {
             setMessage(error.response?.data?.error ?? 'Error al enviar la solicitud');
-            setShowAlert(true);
+            setIsError(true);
+            setShowToast(true);
         } finally {
             setLoading(false);
         }
@@ -44,23 +48,31 @@ const ForgotPassword: React.FC = () => {
                                 <span className='login-welcome__line' />
                             </div>
                             <h2 className='login-title'>&#191;Olvidaste tu contrase&#241;a?</h2>
-                            <p className='login-subtitle'>Ingresa tu correo y obtendr&#225;s un c&#243;digo para restablecer tu contrase&#241;a.</p>
-                            <div className='login-fields'>
-                                <div className='login-field'>
-                                    <label className='login-field__label'>Correo electr&#243;nico</label>
-                                    <IonItem className='login-field__item' lines='none'>
-                                        <IonInput
-                                            type='email'
-                                            placeholder='usuario@ejemplo.com'
-                                            value={email}
-                                            onIonChange={(e) => setEmail(e.target.value as string)}
-                                        />
-                                    </IonItem>
-                                </div>
-                            </div>
-                            <IonButton expand='block' color='primary' onClick={sendResetToken} disabled={loading} className='login-btn-main'>
-                                {loading ? 'Enviando...' : 'Obtener c&#243;digo'}
-                            </IonButton>
+                            <p className='login-subtitle'>
+                                {sent
+                                    ? 'Revisa tu bandeja de entrada y sigue el link que te enviamos.'
+                                    : 'Ingresa tu correo y te enviaremos un link para restablecer tu contrase&#241;a.'}
+                            </p>
+                            {!sent && (
+                                <>
+                                    <div className='login-fields'>
+                                        <div className='login-field'>
+                                            <label className='login-field__label'>Correo electr&#243;nico</label>
+                                            <IonItem className='login-field__item' lines='none'>
+                                                <IonInput
+                                                    type='email'
+                                                    placeholder='usuario@ejemplo.com'
+                                                    value={email}
+                                                    onIonChange={(e) => setEmail(e.target.value as string)}
+                                                />
+                                            </IonItem>
+                                        </div>
+                                    </div>
+                                    <IonButton expand='block' color='primary' onClick={sendResetToken} disabled={loading} className='login-btn-main'>
+                                        {loading ? 'Enviando...' : 'Enviar link de recuperaci&#243;n'}
+                                    </IonButton>
+                                </>
+                            )}
                             <IonButton expand='block' fill='clear' href='/' className='login-btn-secondary'>
                                 Volver al inicio de sesi&#243;n
                             </IonButton>
@@ -68,11 +80,11 @@ const ForgotPassword: React.FC = () => {
                     </div>
                 </div>
                 <IonToast
-                    isOpen={showAlert}
-                    onDidDismiss={() => setShowAlert(false)}
+                    isOpen={showToast}
+                    onDidDismiss={() => setShowToast(false)}
                     message={message}
-                    duration={3500}
-                    color="danger"
+                    duration={4000}
+                    color={isError ? 'danger' : 'success'}
                     position="bottom"
                 />
             </IonContent>

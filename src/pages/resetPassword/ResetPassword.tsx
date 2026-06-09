@@ -1,12 +1,14 @@
 import { IonButton, IonToast, IonAlert, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { BACKEND_URL } from '../../config';
 import '../logIn/LogIn.css';
 
 const ResetPassword: React.FC = () => {
-    const [token, setToken] = useState<string>(sessionStorage.getItem('reset_token') ?? '');
+    const location = useLocation();
+    const tokenFromUrl = new URLSearchParams(location.search).get('token') ?? '';
+    const [token, setToken] = useState<string>(tokenFromUrl);
     const [newPassword, setNewPassword] = useState<string>('');
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -28,7 +30,6 @@ const ResetPassword: React.FC = () => {
                 new_password: newPassword,
             });
             if (response.data.success) {
-                sessionStorage.removeItem('reset_token');
                 setMessage('Contraseña actualizada. Ya puedes iniciar sesión.');
                 setSuccess(true);
                 setShowAlert(true);
@@ -77,7 +78,7 @@ const ResetPassword: React.FC = () => {
                                     <IonItem className='login-field__item' lines='none'>
                                         <IonInput
                                             type='password'
-                                            placeholder='Mínimo 6 caracteres'
+                                            placeholder='Mínimo 8 caracteres'
                                             value={newPassword}
                                             onIonChange={(e) => setNewPassword(e.target.value as string)}
                                         />
