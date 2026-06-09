@@ -11,7 +11,7 @@
 
 | Fecha | Cambio | Qué necesita el backend |
 |-------|--------|------------------------|
-| 2026-06-09 | **`ForgotPassword` y `ResetPassword` — flujo nuevo integrado ✅** | Frontend actualizado: `ForgotPassword` ya no lee `reset_token` de la respuesta, muestra el mensaje del backend y oculta el form. `ResetPassword` lee el token desde `?token=` en la URL con `useLocation`. Sin cambios en backend. |
+| 2026-06-09 | **`ForgotPassword` y `ResetPassword` — flujo por email integrado ✅** | Frontend actualizado: `ForgotPassword` muestra el mensaje del backend y oculta el form (no lee `reset_token`). `ResetPassword` lee el token desde `?token=` en la URL. El backend ya envía el token por email con el link. **Actualizar `INFO_FRONTEND.md`**: el contrato de `POST /user/forgot-password` todavía documenta `{ reset_token: "..." }` — corregir a `{ success: true, message: "..." }`. |
 | 2026-06-09 | **Token JWT movido a `sessionStorage`** | Sin cambios en backend — el frontend ya no usa `localStorage` para el token ni el flag de sesión. Si el backend alguna vez implementa HttpOnly cookies, avisar para eliminar el manejo manual del token en el frontend. |
 | 2026-06-09 | **Contraseña mínima subida a 8 caracteres** | El frontend ahora valida mínimo 8 caracteres en signup y reset-password. **El backend debe actualizar su validación de 6 → 8 caracteres** en `/user/signup` y `/user/reset-password`, y actualizar el mensaje de error a `"La contraseña debe tener al menos 8 caracteres"`. |
 | 2026-06-09 | **Guardias de ruta implementadas** | Sin cambios en backend — `/Profile` y `/Favorites` redirigen automáticamente a `/` si no hay sesión. |
@@ -76,17 +76,18 @@
 
 ## Comportamiento del frontend en recuperación de contraseña
 
-El flujo de recuperación funciona así:
+El flujo de recuperación funciona así (flujo actual — token por email):
 
 1. El usuario ingresa su email en `/ForgotPassword`
 2. El frontend llama a `POST /user/forgot-password` con `{ email }`
-3. El backend responde con `{ success: true, reset_token: "<token>" }`
-4. El frontend guarda el token en `sessionStorage` con la clave `reset_token` y navega a `/ResetPassword`
-5. En `/ResetPassword`, el usuario ve el token precargado (editable) y escribe su nueva contraseña
-6. El frontend llama a `POST /user/reset-password` con `{ token, new_password }`
-7. Al éxito, el frontend borra el token de `sessionStorage` y redirige a login
+3. El backend responde con `{ success: true, message: "<mensaje>" }` y envía el email con el link `https://<dominio>/ResetPassword?token=<token>`
+4. El frontend muestra el mensaje del backend como toast verde y oculta el formulario
+5. El usuario hace clic en el link del email y llega a `/ResetPassword?token=<token>`
+6. `ResetPassword` lee el token desde `location.search` con `useLocation` (ya no usa sessionStorage)
+7. El usuario ingresa su nueva contraseña y el frontend llama a `POST /user/reset-password` con `{ token, new_password }`
+8. Al éxito, muestra `IonAlert` y redirige a login
 
-> Nota: El frontend muestra el token directamente al usuario para que lo copie/use. No hay envío de email desde el frontend.
+> **⚠️ INFO_FRONTEND.md desactualizado:** La sección 3 de `INFO_FRONTEND.md` documenta que `POST /user/forgot-password` devuelve `{ reset_token: "..." }` en la respuesta. Ese contrato ya no es correcto — el backend ya envía el token por email. Actualizar `INFO_FRONTEND.md` para reflejar la respuesta real: `{ success: true, message: "..." }` y que el token llega via link en el email.
 
 ---
 

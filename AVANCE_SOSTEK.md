@@ -173,6 +173,7 @@ src/
 |---|-------|---------|
 | BS1 | Variables de entorno | Documentar y verificar que ningún secreto esté hardcodeado en el repo del backend |
 | BS2 | Sanitizar inputs + NoSQL injection | `express-mongo-sanitize` (global) + `express-validator` por endpoint + `helmet`. Código listo en `INFO_PARA_BACKEND.md` → sección BS2 |
+| BS5 | HTTPS / SSL (producción) | El backend corre en HTTP — para deploy: configurar TLS en el servidor (nginx/caddy o plataforma como Railway/Render). Sin HTTPS, tokens y contraseñas viajan en texto plano y los navegadores bloquean llamadas HTTP desde un frontend HTTPS (mixed content). No aplica en desarrollo local. |
 | BT1 | Unit tests backend (Jest + Supertest) | Testear validaciones, lógica de autenticación, queries a MongoDB |
 
 ---
