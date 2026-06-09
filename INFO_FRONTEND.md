@@ -2,7 +2,7 @@
 
 > Para el equipo de frontend. Describe qué cambió, qué falta y cómo llamar cada endpoint.
 > Backend corre en: `http://localhost:8080`
-> Última actualización: 2026-06-06
+> Última actualización: 2026-06-08
 
 ---
 
@@ -10,6 +10,10 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
+| 2026-06-08 | `POST /user/avatar` implementado | Nueva pantalla o botón para subir foto de perfil. Enviar `multipart/form-data` con el campo `avatar`. Formatos aceptados: jpg, png, webp (máx 5MB). La URL del avatar queda disponible en `GET /user/profile` como `avatar`. Ver contrato en sección 3. |
+| 2026-06-08 | Campo `avatar` agregado al modelo de usuario y al perfil | `GET /user/profile` ahora incluye `avatar` (string URL de Cloudinary, o `""` si no tiene foto). |
+| 2026-06-08 | Campo `description` en evaluaciones | `GET /evaluations` ahora incluye `description` en cada ítem de la lista. Puede mostrarse como subtítulo o descripción en la UI de selección de evaluación. |
+| 2026-06-08 | Campo `cover` en presentaciones | `GET /presentations` ahora incluye `cover` (URL de imagen de portada de Cloudinary) en cada presentación. Puede usarse como thumbnail en la lista. |
 | 2026-06-06 | `GET /tutorial` implementado | El frontend ya NO necesita Google Drive para el tutorial. Reemplazar `useGetDocuments` con axios al backend. El instructivo tiene reglas del juego + 48 tarjetas (escenario y solución) con sus valores de recursos. |
 | 2026-06-06 | Endpoints de favoritos: `POST /user/favorites`, `GET /user/favorites`, `DELETE /user/favorites/:content_id` | Ya se puede implementar el guardado de artículos y presentaciones favoritas. Requieren JWT. Ver contratos en sección 3. |
 | 2026-06-06 | Campo `favorites` agregado al modelo de usuario | Array de `{ content_id, type }` — el frontend no lo recibe en `GET /user/profile`, se obtiene aparte con `GET /user/favorites`. |
@@ -21,18 +25,22 @@
 
 ---
 
-## 2. Lo que falta integrar en el frontend
+## 2. Estado de integración frontend
 
-> El backend tiene todo implementado. Lo pendiente es solo trabajo del frontend.
+> Todo integrado. No hay pendientes en el frontend.
 
-| Elemento | Dónde integrarlo | Estado |
-|----------|-----------------|--------|
-| Reemplazar `useGetDocuments` (tutorial) | Hook del tutorial — apuntar a `GET /tutorial` | ⚠️ Pendiente en frontend |
-| Reemplazar `gapi.client` con axios | Todas las pantallas que cargan evaluaciones, artículos y presentaciones | ⚠️ Pendiente en frontend |
-| Integrar favoritos | Menú lateral / pantalla de favoritos — usar los 3 endpoints de `/user/favorites` | ⚠️ Pendiente en frontend |
-| Integrar `POST /user/score` | `FinalScoreEvaluation.tsx` al terminar una evaluación | ⚠️ Pendiente en frontend |
-| Integrar `DELETE /user` | UI de perfil — opción "Eliminar cuenta" | ⚠️ Pendiente en frontend |
-| Integrar `POST /user/forgot-password` y `POST /user/reset-password` | Pantalla de login / recuperación de contraseña | ⚠️ Pendiente en frontend |
+| Elemento | Dónde está integrado | Estado |
+|----------|---------------------|--------|
+| Reemplazar `useGetDocuments` (tutorial) | `Tab2.tsx` — consume `GET /tutorial` con axios | ✅ Integrado |
+| Reemplazar `gapi.client` con axios | Todas las pantallas — Google APIs eliminadas por completo | ✅ Integrado |
+| Integrar favoritos | `useFavorites.ts` + `DocumentCard` + página `/Favorites` | ✅ Integrado |
+| Integrar `POST /user/score` | `FinalScoreEvaluation.tsx` al terminar una evaluación | ✅ Integrado |
+| Integrar `DELETE /user` | `Profile.tsx` — botón "Eliminar cuenta" con confirmación | ✅ Integrado |
+| Integrar `POST /user/forgot-password` y `POST /user/reset-password` | `ForgotPassword.tsx` y `ResetPassword.tsx` | ✅ Integrado |
+| Integrar `POST /user/avatar` | `Profile.tsx` — overlay de recorte circular + upload multipart | ✅ Integrado |
+| Mostrar `avatar` del usuario | `Profile.tsx` y header (`AppBarPopOver`) — con posición de recorte persistida | ✅ Integrado |
+| Mostrar `description` de evaluaciones | `EvaluationCard.tsx` — se muestra si el campo llega del backend | ✅ Integrado |
+| Mostrar `cover` de presentaciones | `ArticleCarrousel.tsx` — usa `cover` si existe, si no usa `slides[0]` | ✅ Integrado |
 
 ---
 
@@ -177,11 +185,13 @@ Authorization: Bearer <token>
     "occupation": "Estudiante",
     "gender": "Masculino",
     "score_test": 0,
-    "score_game": 0
+    "score_game": 0,
+    "avatar": "https://res.cloudinary.com/.../sostek/avatars/foto.jpg"
   }
 }
 ```
 > El campo `favorites` **no** viene en esta respuesta — usar `GET /user/favorites` para obtenerlos.
+> El campo `avatar` es `""` si el usuario no ha subido foto de perfil.
 
 **Errores posibles**
 | `error` | Causa |
@@ -370,19 +380,61 @@ Authorization: Bearer <token>
 
 ---
 
+### POST `/user/avatar`
+Sube una imagen de perfil a Cloudinary y guarda la URL en el usuario. La URL queda disponible en `GET /user/profile` como `avatar`.
+
+**Headers requeridos**
+```
+Authorization: Bearer <token>
+Content-Type: multipart/form-data
+```
+
+**Form data**
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `avatar` | Archivo | Imagen JPG, PNG o WebP, máximo 5 MB |
+
+**Respuesta exitosa — 200**
+```json
+{ "success": true, "avatar_url": "https://res.cloudinary.com/.../sostek/avatars/foto.jpg" }
+```
+
+**Errores posibles**
+| `error` | Causa |
+|---------|-------|
+| `"Token requerido"` | Header `Authorization` ausente |
+| `"Token inválido o expirado"` | JWT vencido |
+| `"La imagen es requerida"` | No se envió ningún archivo en el campo `avatar` |
+| `"Formato no válido. Solo jpg, png o webp"` | El archivo no es uno de los formatos permitidos |
+| `"La imagen no debe superar 5MB"` | El archivo supera el límite de tamaño |
+| `"Error al subir imagen"` | Error al conectar con Cloudinary |
+
+---
+
 ### GET `/evaluations`
-Lista todas las evaluaciones **sin** las preguntas (solo `name`, `career` y `_id`).
+Lista todas las evaluaciones **sin** las preguntas (solo `name`, `career`, `description` y `_id`).
 
 **Respuesta exitosa — 200**
 ```json
 {
   "success": true,
   "evaluations": [
-    { "_id": "...", "name": "Arquitectura Nivel 1", "career": "Arquitectura" },
-    { "_id": "...", "name": "Diseño Industrial Nivel 1", "career": "Diseño Industrial" }
+    {
+      "_id": "...",
+      "name": "Arquitectura Nivel 1",
+      "career": "Arquitectura",
+      "description": "Texto descriptivo de la evaluación"
+    },
+    {
+      "_id": "...",
+      "name": "Diseño Industrial Nivel 1",
+      "career": "Diseño Industrial",
+      "description": ""
+    }
   ]
 }
 ```
+> `description` puede ser `""` si no tiene descripción cargada.
 
 ---
 
@@ -462,7 +514,7 @@ Retorna un artículo por su `_id`.
 ---
 
 ### GET `/presentations`
-Lista todas las presentaciones con las URLs de cada slide.
+Lista todas las presentaciones con las URLs de cada slide y la imagen de portada.
 
 **Respuesta exitosa — 200**
 ```json
@@ -472,6 +524,7 @@ Lista todas las presentaciones con las URLs de cada slide.
     {
       "_id": "...",
       "name": "Is Sustainable Innovation an Oxymoron",
+      "cover": "https://res.cloudinary.com/.../portada.jpg",
       "slides": [
         "https://res.cloudinary.com/.../slide1.jpg",
         "https://res.cloudinary.com/.../slide2.jpg"
@@ -480,6 +533,7 @@ Lista todas las presentaciones con las URLs de cada slide.
   ]
 }
 ```
+> `cover` puede ser `""` si la presentación no tiene portada configurada.
 
 ---
 
@@ -533,4 +587,4 @@ El frontend no depende de variables de entorno del backend. Solo necesita apunta
 | Desarrollo local | `http://localhost:8080` |
 | Producción | *(a definir cuando se haga deploy)* |
 
-> Actualmente la URL del backend está hardcodeada en el frontend. Para producción se recomienda moverla a una variable de entorno como `REACT_APP_BACKEND_URL`.
+> La URL del backend ya está en variable de entorno `REACT_APP_BACKEND_URL` (con fallback a `http://localhost:8080`). Definida en `src/config.ts`.
