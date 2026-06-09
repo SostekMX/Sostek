@@ -139,6 +139,27 @@ src/
 
 ---
 
+### 🔒 SEGURIDAD / CALIDAD — PENDIENTE FRONTEND
+
+| # | Tarea | Detalle |
+|---|-------|---------|
+| S1 | Scan de URLs hardcodeadas | `http://localhost:8080` está hardcodeado en ~10 archivos — mover a `REACT_APP_BACKEND_URL` en `.env` |
+| S2 | Variables de entorno | Crear `.env.example` documentado para que cualquier dev sepa qué variables necesita |
+| U1 | Skeleton loaders en Tab1 y Tab3 | La lista de artículos y evaluaciones muestra spinner multicolor al cargar — reemplazar con skeleton oscuro |
+| U2 | Cachear evaluaciones y presentaciones | Solo artículos están cacheados en `localStorage` — agregar caché para evaluaciones y presentaciones |
+| U3 | Error boundary | Si un componente crashea hoy sale pantalla blanca — agregar error boundary global con mensaje amigable |
+| T1 | Unit tests frontend (Jest) | Testear lógica de negocio: cálculo de puntaje (`addScore`), normalización de búsqueda, lógica de favoritos. Jest ya incluido con `react-scripts` |
+
+### 🔒 SEGURIDAD / CALIDAD — PENDIENTE BACKEND
+
+| # | Tarea | Detalle |
+|---|-------|---------|
+| BS1 | Variables de entorno | Documentar y verificar que ningún secreto esté hardcodeado en el repo del backend |
+| BS2 | Sanitizar inputs | Validar y rechazar inputs malformados u oversized en todos los endpoints |
+| BT1 | Unit tests backend (Jest + Supertest) | Testear validaciones, lógica de autenticación, queries a MongoDB |
+
+---
+
 ### 🐛 BUGS CONOCIDOS
 
 | # | Descripción | Archivo(s) | Prioridad |
@@ -167,11 +188,11 @@ src/
 | ~~7~~ | ~~Sin botón de regreso dentro de un artículo~~ | ✅ Resuelto — IonBackButton en IonHeader |
 | ~~D1~~ | ~~Perfil sin dark theme~~ | ✅ Resuelto — app-dark-bg + card oscuro + avatar icon |
 | ~~D4~~ | ~~Evaluación con diseño viejo~~ | ✅ Resuelto — dark theme + cards oscuras + botón pill |
-| 8 | Logo de Sostek como botón de inicio es pequeño y no intuitivo | `AppBarPopOver.tsx` |
+| ~~8~~ | ~~Logo de Sostek como botón de inicio es pequeño y no intuitivo~~ | ✅ Resuelto — clase `appbar__logo-btn` con padding, border-radius y feedback táctil |
 | ~~9~~ | ~~Tab2: separar texto en dos líneas~~ | ✅ Resuelto |
 | ~~Header~~ | ~~Header verde brillante no sigue aesthetic dark~~ | ✅ Resuelto — dark `#0d1a0d` + borde inferior + searchbar integrado + popover oscuro |
-| 10 | Imágenes lentas al cargar (sin lazy loading ni placeholder optimizado) | `DocumentCard.tsx`, `ArticleCarrousel.tsx` |
-| 11 | Filtro de búsqueda lento (sin debounce) | `AppBarPopOver.tsx`, `ArticleCarrousel.tsx` |
+| ~~10~~ | ~~Imágenes lentas al cargar (sin lazy loading ni placeholder optimizado)~~ | ✅ Resuelto — skeleton shimmer en `DocumentCard.tsx` + `loading="lazy"` en hero |
+| ~~11~~ | ~~Filtro de búsqueda lento (sin debounce)~~ | ✅ Resuelto — debounce 300ms en `AppBarPopOver.tsx` |
 
 ---
 
@@ -192,18 +213,26 @@ src/
 8. ~~Agregar descripción e iconos a cada evaluación~~ ✅ (frontend listo, descripción dinámica pendiente de backend)
 9. ~~Rediseño del contenido de artículos + botón de regreso~~ ✅
 10. ~~Mejorar tab bar / nav bar~~ ✅
-11. Logo de Sostek no intuitivo como botón de inicio (`AppBarPopOver.tsx`)
+11. ~~Logo de Sostek no intuitivo como botón de inicio~~ ✅
 
 ### 🟢 Backlog
 
-12. Debounce en búsqueda
-13. Lazy loading de imágenes optimizado
-14. Reemplazar IonAlert por toasts/notificaciones custom ✅ (hecho)
-14. Pantalla de Ajustes
+12. ~~Debounce en búsqueda~~ ✅
+13. ~~Lazy loading de imágenes optimizado~~ ✅
+14. ~~Reemplazar IonAlert por toasts/notificaciones custom~~ ✅
+15. Pantalla de Ajustes
 15. Juego online en Tab 2
-17. ⚠️ Foto de perfil — subir imagen desde el dispositivo, guardar en Cloudinary, mostrar en avatar de perfil (requiere cambios en backend: nuevo endpoint + campo `avatar` en modelo de usuario)
+16. [S1] Mover `http://localhost:8080` a variable de entorno `REACT_APP_BACKEND_URL`
+17. [S2] Crear `.env.example` documentado
+18. [U1] Skeleton loaders en Tab1 (lista de artículos) y Tab3 (lista de evaluaciones)
+19. [U2] Cachear evaluaciones y presentaciones en `localStorage`
+20. [U3] Error boundary global
+21. [T1] Unit tests frontend con Jest (puntaje, búsqueda, favoritos)
+22. ⚠️ Foto de perfil — subir imagen desde el dispositivo, guardar en Cloudinary, mostrar en avatar de perfil (requiere cambios en backend: nuevo endpoint + campo `avatar` en modelo de usuario)
 18. ⚠️ Campo `description` en evaluaciones — frontend listo, backend debe agregar el campo al modelo y seed (descripciones sugeridas en `INFO_FRONTEND.md`)
 19. ⚠️ Imágenes rotas en 3 artículos — backend debe actualizar campo `image` en MongoDB (URLs nuevas en `INFO_FRONTEND.md`): "Dia Mundial de los Humedades", "El impacto del cine en el medio ambiente", "Muebles en Abuela"
+20. ⚠️ [LARGO PLAZO] Imágenes de artículos generadas con IA — generar 26 imágenes en Leonardo.ai (FLUX Schnell, 16:9, Stock Photo, Prompt Enhance Off), descargar nombradas como `01-cambio-climatico.jpg` etc., el backend las sube a Cloudinary y actualiza el campo `image` en MongoDB. Prompts por artículo ya definidos.
+
 ---
 
 ## Arquitectura de datos
