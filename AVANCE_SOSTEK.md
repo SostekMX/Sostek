@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-09
+> Última actualización: 2026-06-08
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -104,16 +104,16 @@ src/
   - Búsqueda con normalización de tildes
   - Filtro por tipo (Artículos / Presentaciones / Ambos)
   - Caché offline en `localStorage`
-- **Detalle de artículo** (`/Documents/:id`) — carga desde `GET /articles/:id`; diseño dark con hero 240px, badge de categoría, tipografía legible, párrafos separados por `\n`, botón de regreso
-- **Viewer de presentaciones** (`/presentation/:driveId`) — slides horizontales con Swiper desde `GET /presentations`
+- **Detalle de artículo** (`/Documents/:id`) — carga desde `GET /articles/:id`; diseño dark con hero 240px, badge de categoría, tipografía legible, párrafos separados por `\n`, botón de regreso; muestra sección `bibliography` si el campo llega del backend
+- **Viewer de presentaciones** (`/presentation/:driveId`) — slides horizontales con Swiper desde `GET /presentations`; usa `cover` como portada si existe, si no usa `slides[0]`
 - **Tab 2 — JUEGA** — video del juego, enlace de descarga, instructivo completo (reglas, tipos de tarjeta, cartas filtradas por tipo) desde `GET /tutorial`; placeholder "en construcción" para versión online
 - **Tab 3 — EVALÚATE**
   - Lista de evaluaciones desde `GET /evaluations` (backend MongoDB)
   - Filtro por carrera: Arquitectura / Diseño Industrial / Otros
 - **Evaluación** (`/Evaluation/:name/:id`) — preguntas desde `GET /evaluations/:id`, checkboxes, puntaje acumulado por categoría
 - **Resultado de evaluación** (`/score/:name`) — puntaje, categoría más débil, feedback por rango (≥150, ≥120, ≥90, ≥50, <50), botón artículos recomendados
-- **AppBar** — búsqueda, menú lateral con logout (limpia token), acceso a perfil/favoritos; ID único por instancia (sin conflictos entre tabs)
-- **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT
+- **AppBar** — búsqueda con animación de apertura/cierre, menú lateral con logout (limpia token), acceso a perfil/favoritos; muestra avatar circular del usuario en el header (cargado desde `localStorage`) si tiene foto, o ícono de persona/menú si no
+- **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT; UI de cambio de avatar con selector de imagen, overlay de recorte circular (drag para reposicionar), sube a `POST /user/avatar` como `multipart/form-data`; persiste posición del recorte en `localStorage`
 - **Validación contraseña** — mínimo 6 caracteres en signup antes de llamar al backend
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
 - **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
@@ -238,7 +238,7 @@ src/
 20. ~~[T1] Unit tests frontend con Jest (puntaje, búsqueda, favoritos)~~ ✅
 21. Pantalla de Ajustes (visible en menú, sin ruta ni lógica)
 22. Juego online en Tab 2 (Unity WebGL — largo plazo)
-23. ⚠️ Foto de perfil — UI pendiente; requiere `POST /user/avatar` en backend (ver `INFO_PARA_BACKEND.md`)
+23. ⚠️ Foto de perfil — frontend ✅ completo (upload + crop + reposición + header); requiere `POST /user/avatar` en backend (ver `INFO_PARA_BACKEND.md`)
 24. ⚠️ Campo `description` en evaluaciones — frontend listo; backend debe agregar campo al modelo y seed (ver `INFO_PARA_BACKEND.md`)
 25. ⚠️ Imágenes rotas en 3 artículos — backend debe actualizar URLs en MongoDB (ver `INFO_PARA_BACKEND.md`)
 26. ⚠️ [LARGO PLAZO] Imágenes de artículos generadas con IA — generar 26 imágenes en Leonardo.ai (FLUX Schnell, 16:9, Stock Photo, Prompt Enhance Off), descargar nombradas como `01-cambio-climatico.jpg` etc., el backend las sube a Cloudinary y actualiza el campo `image` en MongoDB.

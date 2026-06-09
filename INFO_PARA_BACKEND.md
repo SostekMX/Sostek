@@ -2,7 +2,7 @@
 
 > Documento de comunicación frontend → backend.
 > Se actualiza cada vez que hay un cambio en el frontend que afecta la integración.
-> Última actualización: 2026-06-09
+> Última actualización: 2026-06-08
 > Backend corre en: `http://localhost:8080`
 
 ---
@@ -11,15 +11,17 @@
 
 | Fecha | Cambio | Qué necesita el backend |
 |-------|--------|------------------------|
+| 2026-06-08 | **Avatar upload — frontend ✅ completo** | Implementar `POST /user/avatar` (multipart/form-data) y agregar campo `avatar` al modelo — ver sección "Pendientes del backend — datos" para el contrato |
+| 2026-06-08 | Avatar mostrado en header (`AppBarPopOver`) | Sin cambios en backend — el frontend lee `avatar` de `GET /user/profile` y lo guarda en `localStorage` |
+| 2026-06-08 | Carrusel usa campo `cover` de presentaciones | Si el backend envía `cover` en `GET /presentations`, el frontend lo usa como portada; si no, cae en `slides[0]` — el campo es opcional |
+| 2026-06-08 | `bibliography` ya se muestra en `Documents.tsx` | El campo ya llega en `GET /articles/:id` — el frontend lo renderiza automáticamente si existe |
 | 2026-06-09 | Unit tests frontend completados (23 tests) | Sin cambios en backend — solo información |
 | 2026-06-09 | Error boundary global agregado | Sin cambios en backend |
-| 2026-06-09 | `bibliography` ya se muestra en `Documents.tsx` | El campo ya llega en `GET /articles/:id` — el frontend lo renderiza automáticamente si existe |
 | 2026-06-09 | `description` en evaluaciones — **aún no llega del backend** | `GET /evaluations` devuelve solo `_id`, `name`, `career` — falta agregar `description` al schema y al seed |
 | 2026-06-09 | `REACT_APP_BACKEND_URL` ya está implementado | La nota en INFO_FRONTEND.md está obsoleta — el frontend ya usa variable de entorno desde `src/config.ts` |
 | 2026-06-08 | Artículos con imágenes rotas detectados | Actualizar `image` en MongoDB para 3 artículos — ver sección "Pendientes de datos" |
 | 2026-06-08 | Párrafos en artículos — frontend ya divide `body` por `\n` | Agregar `\n` entre párrafos en los artículos que se ven como bloque continuo en MongoDB |
 | 2026-06-08 | Evaluaciones — frontend listo para recibir `description` | Agregar campo `description` al schema y seed — ver sección "Pendientes de datos" |
-| 2026-06-08 | Foto de perfil — UI pendiente de implementar | Necesita nuevo endpoint `POST /user/avatar` + campo `avatar` en modelo de usuario |
 | 2026-06-08 | Rediseño completo dark theme en toda la app | Sin cambios en backend |
 | 2026-06-08 | IonToast para errores, IonAlert para confirmaciones destructivas | Sin cambios en backend |
 | 2026-06-06 | Tutorial integrado en `Tab2.tsx` — ✅ | `GET /tutorial` — integrado en ambos lados |
@@ -52,7 +54,7 @@
 | `POST /user/favorites` | ✅ Integrado | ✅ Implementado |
 | `GET /user/favorites` | ✅ Integrado | ✅ Implementado |
 | `DELETE /user/favorites/:id` | ✅ Integrado | ✅ Implementado |
-| `POST /user/avatar` | ⚠️ Pendiente frontend | ❌ Pendiente backend |
+| `POST /user/avatar` | ✅ Integrado (espera backend) | ❌ Pendiente backend |
 
 ---
 
@@ -60,7 +62,7 @@
 
 | Elemento | Frontend | Backend |
 |----------|----------|---------|
-| Foto de perfil | UI pendiente (espera endpoint) | Implementar `POST /user/avatar` + campo `avatar` en modelo |
+| Foto de perfil | ✅ Frontend completo (upload + crop + reposición + header) | Implementar `POST /user/avatar` + campo `avatar` en modelo |
 | Imágenes rotas en 3 artículos | ✅ Muestra placeholder cuando imagen falla | Actualizar URLs en MongoDB |
 | Párrafos en artículos | ✅ Divide `body` por `\n` | Agregar saltos de línea en datos de MongoDB |
 | `description` en evaluaciones | ✅ Listo para recibirlo | Agregar campo al schema + seed |
@@ -532,6 +534,7 @@ El `content_id` va en la URL: `/user/favorites/664abc123...`
     {
       "_id": "664xyz...",
       "name": "Sostenibilidad Urbana",
+      "cover": "https://res.cloudinary.com/.../portada.jpg",
       "slides": [
         "https://res.cloudinary.com/.../slide1.jpg",
         "https://res.cloudinary.com/.../slide2.jpg"
@@ -540,7 +543,7 @@ El `content_id` va en la URL: `/user/favorites/664abc123...`
   ]
 }
 ```
-> El frontend muestra `slides[0]` como imagen de portada en la tarjeta.
+> `cover` es opcional — si llega, el frontend lo usa como imagen de portada en la tarjeta; si no, usa `slides[0]`.
 
 ---
 
