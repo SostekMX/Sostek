@@ -5,6 +5,42 @@
     gap: 12px;
 }
 
+/* Skeleton DocumentCard */
+.doc-card-skeleton {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.doc-card-skeleton__image {
+    height: 180px;
+    border-radius: 0;
+}
+
+.doc-card-skeleton__body {
+    padding: 12px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.doc-card-skeleton__badge {
+    height: 16px;
+    width: 64px;
+    border-radius: 100px;
+}
+
+.doc-card-skeleton__title {
+    height: 18px;
+    width: 80%;
+}
+
+.doc-card-skeleton__desc {
+    height: 14px;
+    width: 60%;
+}
+
 .ion-content-scroll-host {
     transition: opacity 600ms ease-in;
 }

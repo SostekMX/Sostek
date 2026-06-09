@@ -5,6 +5,49 @@
     padding: 8px 16px 32px;
 }
 
+/* Skeleton EvaluationCard */
+.eval-card-skeleton {
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eval-card-skeleton__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.eval-card-skeleton__icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+}
+
+.eval-card-skeleton__badge {
+    height: 20px;
+    width: 72px;
+    border-radius: 100px;
+}
+
+.eval-card-skeleton__title {
+    height: 18px;
+    width: 75%;
+}
+
+.eval-card-skeleton__desc {
+    height: 13px;
+    width: 100%;
+}
+
+.eval-card-skeleton__desc--short {
+    width: 55%;
+}
+
 .tab3-empty {
     text-align: center;
     color: rgba(255, 255, 255, 0.35);

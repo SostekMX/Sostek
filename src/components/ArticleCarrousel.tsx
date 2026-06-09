@@ -108,16 +108,17 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
         ))}
       </div>
 
-      {loadingData && (
-        <img
-          className="imageArticleLoading visible"
-          src="/assets/Spinner-1s-200px_transparent.svg"
-          alt="cargando"
-          style={{ position: 'fixed' }}
-        />
-      )}
-
       <div className='carrousel-list'>
+        {loadingData && Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className='doc-card-skeleton'>
+            <div className='doc-card-skeleton__image shimmer' />
+            <div className='doc-card-skeleton__body'>
+              <div className='doc-card-skeleton__badge shimmer' />
+              <div className='doc-card-skeleton__title shimmer' />
+              <div className='doc-card-skeleton__desc shimmer' />
+            </div>
+          </div>
+        ))}
         {!loadingData && showArticles && articleCards}
         {!loadingData && showPresentations && presentationCards}
       </div>

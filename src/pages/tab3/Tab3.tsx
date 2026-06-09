@@ -65,12 +65,19 @@ const Tab3: React.FC = () => {
         </div>
 
         {loading && (
-          <img
-            className="imageArticleLoading visible"
-            src="/assets/Spinner-1s-200px_transparent.svg"
-            alt="cargando"
-            style={{ position: 'fixed' }}
-          />
+          <div className='evaluation-grid'>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className='eval-card-skeleton'>
+                <div className='eval-card-skeleton__header'>
+                  <div className='eval-card-skeleton__icon shimmer' />
+                  <div className='eval-card-skeleton__badge shimmer' />
+                </div>
+                <div className='eval-card-skeleton__title shimmer' />
+                <div className='eval-card-skeleton__desc shimmer' />
+                <div className='eval-card-skeleton__desc eval-card-skeleton__desc--short shimmer' />
+              </div>
+            ))}
+          </div>
         )}
 
         {!loading && (
