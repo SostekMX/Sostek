@@ -22,6 +22,7 @@ export interface Article {
 export interface Presentation {
   _id: string;
   name: string;
+  cover?: string;
   slides: string[];
 }
 
@@ -76,7 +77,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
         key={pres._id}
         name={pres.name}
         description=""
-        img_url={pres.slides?.[0] ?? ''}
+        img_url={pres.cover || pres.slides?.[0] || ''}
         id={pres._id}
         type="presentation"
         imgAuthor={undefined}
