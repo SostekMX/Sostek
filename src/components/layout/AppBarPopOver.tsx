@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import './AppBarPopOver.css';
 import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
-import { personCircle, settings, logOut, heart, menuOutline } from 'ionicons/icons';
-import { search as iconSearch } from 'ionicons/icons';
+import { personCircle, settings, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
 import { useHistory, useLocation } from "react-router-dom";
 import AppContext from '../../context/AppContext';
 
 export const AppBarPopOver: React.FC = () => {
-    // ID único por instancia: evita conflictos entre los AppBarPopOver de cada tab montados en el DOM
     const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
     const popoverRef = useRef<HTMLIonPopoverElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const { search, changeSearch, transparentToolbar } = useContext(AppContext);
     const history = useHistory();
-    useLocation(); // provoca re-render al navegar, manteniendo isUserLogged actualizado
+    useLocation();
 
-    // Leer directo en cada render para que siempre refleje el estado actual
     const isUserLogged = localStorage.getItem('login') === 'true';
     const avatarUrl = localStorage.getItem('avatar') || '';
     const rawPos = localStorage.getItem('avatar_position');
@@ -28,11 +26,22 @@ export const AppBarPopOver: React.FC = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (isSearching) {
+            setTimeout(() => searchbarRef.current?.setFocus(), 80);
+        }
+    }, [isSearching]);
+
     function handleSearch(value: string) {
         if (debounceRef.current) clearTimeout(debounceRef.current);
         debounceRef.current = setTimeout(() => {
             changeSearch!(value);
         }, 300);
+    }
+
+    function closeSearch() {
+        setIsSearching(false);
+        changeSearch!('');
     }
 
     function logOutUser() {
@@ -41,36 +50,36 @@ export const AppBarPopOver: React.FC = () => {
         history.replace('/');
     }
 
-
     return <>
         <IonToolbar className={transparentToolbar ? 'appbar appbar--transparent' : 'appbar'}>
+
             <IonButtons slot='start'>
-                <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn">
-                    <img src="/assets/sostek-logo.png" className="appbar__logo" alt="SOSTEK" />
-                </a>
+                {!isSearching && (
+                    <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn">
+                        <img src="/assets/sostek-logo.png" className="appbar__logo" alt="SOSTEK" />
+                    </a>
+                )}
             </IonButtons>
-            <IonButtons className={isSearching ? "appbar__searchbar-container appbar__searchbar-active" : "appbar__searchbar-container"} slot="end">
-                {isSearching &&
+
+            <div slot="end" className="appbar__end">
+                {isSearching ? (
                     <IonSearchbar
+                        ref={searchbarRef}
                         className="appbar__searchbar"
                         animated={true}
-                        onIonBlur={() => setIsSearching(false)}
-                        onIonFocus={() => setIsSearching(true)}
                         onIonInput={(e) => handleSearch(e.target.value ?? '')}
-                        onIonClear={() => changeSearch!("")}
+                        onIonClear={closeSearch}
                         showClearButton="always"
                         value={search}
                         placeholder="Búsqueda..."
                     />
-                }
-                {!isSearching &&
-                    <IonButton onClick={() => setIsSearching(true)}>
+                ) : (
+                    <IonButton fill="clear" onClick={() => setIsSearching(true)}>
                         <IonIcon slot="icon-only" icon={iconSearch} />
                     </IonButton>
-                }
-            </IonButtons>
-            <IonButtons slot="end">
-                <IonButton id={popoverId} className='appbar__menu-btn'>
+                )}
+
+                <IonButton fill="clear" id={popoverId} className='appbar__menu-btn'>
                     {isUserLogged && avatarUrl
                         ? <img
                             src={avatarUrl}
@@ -117,7 +126,8 @@ export const AppBarPopOver: React.FC = () => {
                         </IonList>
                     </IonContent>
                 </IonPopover>
-            </IonButtons>
+            </div>
+
         </IonToolbar>
     </>;
 };

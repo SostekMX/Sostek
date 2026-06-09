@@ -93,28 +93,6 @@ ion-tab-button.tab-selected::before {
     opacity: 1;
 }
 
-/* === SEARCH BAR === */
-
-.appbar__searchbar-container {
-    flex: 1;
-    max-width: 220px;
-}
-
-.appbar__searchbar-container.appbar__searchbar-active {
-    max-width: 100%;
-}
-
-.appbar__searchbar {
-    --background: rgba(255, 255, 255, 0.1);
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.45);
-    --icon-color: rgba(255, 255, 255, 0.6);
-    --clear-button-color: rgba(255, 255, 255, 0.6);
-    --box-shadow: none;
-    --border-radius: 20px;
-    padding: 0 4px;
-    height: 38px;
-}
 
 /* === POPOVER MENU === */
 

@@ -29,12 +29,36 @@
     width: auto;
 }
 
+/* End container — search + menu siempre juntos a la derecha */
+.appbar__end {
+    display: flex;
+    align-items: center;
+    padding-right: 4px;
+    gap: 0;
+}
+
+/* Searchbar expandida */
+.appbar__searchbar {
+    --background: rgba(255, 255, 255, 0.1);
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.45);
+    --icon-color: rgba(255, 255, 255, 0.6);
+    --clear-button-color: rgba(255, 255, 255, 0.6);
+    --box-shadow: none;
+    --border-radius: 20px;
+    height: 38px;
+    padding: 0 4px 0 8px;
+    /* Ocupa el espacio disponible menos el botón de menú (~48px) */
+    width: calc(100vw - 68px);
+    max-width: 360px;
+}
+
+/* Avatar circular */
 .appbar__avatar {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
     border: 1.5px solid #80b259;
     display: block;
 }
-
