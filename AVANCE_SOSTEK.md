@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-08
+> Última actualización: 2026-06-09
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -30,6 +30,7 @@ src/
 │   └── AppContext.tsx               # Estado global: search, tutorial, score, transparentToolbar
 ├── components/
 │   ├── ErrorBoundary.tsx            # Error boundary global — pantalla de error con botón "Reintentar"
+│   ├── PrivateRoute.tsx             # HOC de ruta privada — redirige a / si no hay sesión activa
 │   ├── layout/
 │   │   ├── AppBarPopOver.tsx        # Toolbar: búsqueda, menú lateral, logout
 │   │   └── AppBarMenu.tsx           # ⚠️ HUÉRFANO — ya no se importa en ningún lado
@@ -84,7 +85,8 @@ src/
 | `/tab1` | `Tab1` | APRENDE |
 | `/tab2` | `Tab2` | JUEGA |
 | `/tab3` | `Tab3` | EVALÚATE |
-| `/Profile` | `Profile` | Perfil del usuario |
+| `/Profile` | `Profile` | Perfil del usuario — ruta privada (redirige a `/` si no está logueado) |
+| `/Favorites` | `Favorites` | Artículos y presentaciones guardados — ruta privada |
 | `/Documents/:id` | `Documents` | Detalle de artículo |
 | `/presentation/:driveId` | `Presentation` | Viewer de presentación |
 | `/Evaluation/:name/:id` | `Evaluation` | Cuestionario de evaluación |
@@ -96,7 +98,7 @@ src/
 
 ### ✅ IMPLEMENTADO Y FUNCIONAL
 
-- **Login / Registro** — formularios completos, JWT guardado en `localStorage`, redirige a `/tab1`
+- **Login / Registro** — formularios completos, JWT guardado en `sessionStorage`, redirige a `/tab1`
 - **Tab 1 — APRENDE**
   - Artículos cargados desde `GET /articles` (backend MongoDB)
   - Modal del artículo más reciente al entrar
@@ -114,7 +116,7 @@ src/
 - **Resultado de evaluación** (`/score/:name`) — puntaje, categoría más débil, feedback por rango (≥150, ≥120, ≥90, ≥50, <50), botón artículos recomendados
 - **AppBar** — búsqueda con animación de apertura/cierre, menú lateral con logout (limpia token), acceso a perfil/favoritos; muestra avatar circular del usuario en el header (cargado desde `localStorage`) si tiene foto, o ícono de persona/menú si no
 - **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT; UI de cambio de avatar con selector de imagen, overlay de recorte circular (drag para reposicionar), sube a `POST /user/avatar` como `multipart/form-data`; persiste posición del recorte en `localStorage`
-- **Validación contraseña** — mínimo 6 caracteres en signup antes de llamar al backend
+- **Validación contraseña** — mínimo 8 caracteres en signup y reset-password antes de llamar al backend
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
 - **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
 - **Recuperación de contraseña** — pantalla `ForgotPassword.tsx` (email → token por response) + `ResetPassword.tsx` (token + nueva contraseña); rutas `/ForgotPassword` y `/ResetPassword`; link desde `LogIn.tsx`
@@ -155,6 +157,11 @@ src/
 |---|-------|---------|
 | ~~S1~~ | ~~Scan de URLs hardcodeadas~~ | ✅ Resuelto — `BACKEND_URL` en `src/config.ts`, 15 archivos actualizados |
 | ~~S2~~ | ~~Variables de entorno~~ | ✅ Resuelto — `.env.example` creado con `REACT_APP_BACKEND_URL` |
+| ~~S3~~ | ~~JWT en localStorage~~ | ✅ Resuelto — `token` y `login` movidos a `sessionStorage` en 8 archivos |
+| ~~S4~~ | ~~Guardias de ruta~~ | ✅ Resuelto — `PrivateRoute` en `src/components/PrivateRoute.tsx`; protege `/Profile` y `/Favorites` |
+| ~~S5~~ | ~~Contraseña mínima 8 chars (frontend)~~ | ✅ Resuelto — `SignUp.tsx` y `ResetPassword.tsx` actualizados |
+| ~~S6~~ | ~~Email en body de /user/edit~~ | ✅ Resuelto — removido de `Profile.tsx` |
+| ~~S7~~ | ~~JSON.parse sin try/catch~~ | ✅ Resuelto — `AppBarPopOver.tsx` y `Profile.tsx` protegidos |
 | ~~U1~~ | ~~Skeleton loaders en Tab1 y Tab3~~ | ✅ Resuelto — skeleton shimmer en Tab1, Tab3, Documents, Evaluation y Favorites. Spinner eliminado de toda la app |
 | ~~U2~~ | ~~Cachear evaluaciones y presentaciones~~ | ✅ Resuelto — evaluaciones y presentaciones cacheadas en `localStorage`, mismo patrón que artículos |
 | ~~U3~~ | ~~Error boundary global~~ | ✅ Resuelto — `ErrorBoundary.tsx` envuelve toda la app; pantalla dark con logo + botón "Reintentar" |
@@ -165,7 +172,7 @@ src/
 | # | Tarea | Detalle |
 |---|-------|---------|
 | BS1 | Variables de entorno | Documentar y verificar que ningún secreto esté hardcodeado en el repo del backend |
-| BS2 | Sanitizar inputs | Validar y rechazar inputs malformados u oversized en todos los endpoints |
+| BS2 | Sanitizar inputs + NoSQL injection | `express-mongo-sanitize` (global) + `express-validator` por endpoint + `helmet`. Código listo en `INFO_PARA_BACKEND.md` → sección BS2 |
 | BT1 | Unit tests backend (Jest + Supertest) | Testear validaciones, lógica de autenticación, queries a MongoDB |
 
 ---
@@ -238,7 +245,7 @@ src/
 20. ~~[T1] Unit tests frontend con Jest (puntaje, búsqueda, favoritos)~~ ✅
 21. Pantalla de Ajustes (visible en menú, sin ruta ni lógica)
 22. Juego online en Tab 2 (Unity WebGL — largo plazo)
-23. ⚠️ Foto de perfil — frontend ✅ completo (upload + crop + reposición + header); requiere `POST /user/avatar` en backend (ver `INFO_PARA_BACKEND.md`)
+23. ✅ Foto de perfil — frontend completo (upload + crop + reposición + header) + backend implementado (`POST /user/avatar` en Cloudinary)
 24. ⚠️ Campo `description` en evaluaciones — frontend listo; backend debe agregar campo al modelo y seed (ver `INFO_PARA_BACKEND.md`)
 25. ⚠️ Imágenes rotas en 3 artículos — backend debe actualizar URLs en MongoDB (ver `INFO_PARA_BACKEND.md`)
 26. ⚠️ [LARGO PLAZO] Imágenes de artículos generadas con IA — generar 26 imágenes en Leonardo.ai (FLUX Schnell, 16:9, Stock Photo, Prompt Enhance Off), descargar nombradas como `01-cambio-climatico.jpg` etc., el backend las sube a Cloudinary y actualiza el campo `image` en MongoDB.
@@ -249,8 +256,8 @@ src/
 
 ```
 Backend local :8080 (MongoDB)  ←─ artículos, evaluaciones, presentaciones, tutorial, usuarios
-localStorage                   ←─ caché de artículos, token JWT, sesión
-sessionStorage                 ←─ búsqueda activa, scores de evaluación
+localStorage                   ←─ caché de artículos/evaluaciones/presentaciones, avatar URL, user_email (display)
+sessionStorage                 ←─ token JWT, flag de sesión (login), búsqueda activa, scores de evaluación
 Google Drive                   ←─ solo el archivo de descarga del juego (zip) — ya no se usa para contenido
 ```
 
