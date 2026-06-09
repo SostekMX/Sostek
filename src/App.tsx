@@ -1,4 +1,5 @@
 import { Route, useLocation } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
 import {
   IonContent,
   IonApp,
@@ -66,14 +67,14 @@ const MainTabs: React.FC = () => {
         <Route exact path="/tab1"><Tab1 /></Route>
         <Route exact path="/tab2"><Tab2 /></Route>
         <Route path="/tab3"><Tab3 /></Route>
-        <Route path="/Profile"><Profile /></Route>
+        <PrivateRoute path="/Profile"><Profile /></PrivateRoute>
         <Route exact path='/Documents/:id'><Documents /></Route>
         <Route exact path="/presentation/:driveId"><Presentation /></Route>
         <Route exact path="/Evaluation/:name/:id"><Evaluation /></Route>
         <Route path="/score/:name"><FinalScoreEvaluation /></Route>
         <Route exact path="/ForgotPassword"><ForgotPassword /></Route>
         <Route exact path="/ResetPassword"><ResetPassword /></Route>
-        <Route exact path="/Favorites"><Favorites /></Route>
+        <PrivateRoute exact path="/Favorites"><Favorites /></PrivateRoute>
       </IonRouterOutlet>
 
       <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
