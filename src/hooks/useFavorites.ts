@@ -10,11 +10,11 @@ export interface Favorite {
 const useFavorites = () => {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(false);
-  const isLoggedIn = localStorage.getItem('login') === 'true';
+  const isLoggedIn = sessionStorage.getItem('login') === 'true';
 
   useEffect(() => {
     if (!isLoggedIn) return;
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     setLoading(true);
     axios.get(`${BACKEND_URL}/user/favorites`, {
       headers: { Authorization: `Bearer ${token}` }
@@ -27,7 +27,7 @@ const useFavorites = () => {
   const isFavorite = (id: string) => favorites.some(f => f.content_id === id);
 
   const addFavorite = async (content_id: string, type: 'article' | 'presentation') => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     try {
       await axios.post(`${BACKEND_URL}/user/favorites`, { content_id, type }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -39,7 +39,7 @@ const useFavorites = () => {
   };
 
   const removeFavorite = async (content_id: string) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     try {
       await axios.delete(`${BACKEND_URL}/user/favorites/${content_id}`, {
         headers: { Authorization: `Bearer ${token}` }

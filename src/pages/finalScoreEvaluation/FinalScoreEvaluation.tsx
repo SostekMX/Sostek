@@ -33,7 +33,7 @@ const FinalScoreEvaluation: React.FC = () => {
         }
         setWeakestCategory(lowCategory);
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (token) {
             axios.post(`${BACKEND_URL}/user/score`, { score_test: finalScore }, {
                 headers: { Authorization: `Bearer ${token}` }

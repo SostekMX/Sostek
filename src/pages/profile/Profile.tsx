@@ -30,9 +30,9 @@ const Profile: React.FC = () => {
     useEffect(() => {
         setEmail(localStorage.getItem('user_email') ?? '');
         const savedPos = localStorage.getItem('avatar_position');
-        if (savedPos) setCropPos(JSON.parse(savedPos));
+        try { if (savedPos) setCropPos(JSON.parse(savedPos)); } catch { /* valor corrupto, usar default */ }
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         axios.get(`${BACKEND_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(res => {
@@ -86,7 +86,7 @@ const Profile: React.FC = () => {
 
     async function handleUploadConfirm() {
         if (!selectedFile) return;
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         const formData = new FormData();
         formData.append('avatar', selectedFile);
         setAvatarUploading(true);
@@ -116,7 +116,7 @@ const Profile: React.FC = () => {
     }
 
     function deleteUser() {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         axios.delete(`${BACKEND_URL}/user`, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(() => {
@@ -126,9 +126,9 @@ const Profile: React.FC = () => {
     }
 
     function editUser() {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         axios.post(`${BACKEND_URL}/user/edit`, {
-            email, name, surname,
+            name, surname,
             birth_date: birthDate, occupation, gender,
         }, {
             headers: { Authorization: `Bearer ${token}` }

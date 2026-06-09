@@ -38,8 +38,8 @@ const SignUp: React.FC = () => {
     }, []);
 
     function signUpUser() {
-        if (!password || password.length < 6) {
-            setMessage('La contraseña debe tener al menos 6 caracteres');
+        if (!password || password.length < 8) {
+            setMessage('La contraseña debe tener al menos 8 caracteres');
             setShowAlert(true);
             return;
         }
@@ -48,9 +48,9 @@ const SignUp: React.FC = () => {
             birth_date: birthDate, occupation, gender
         }).then(function (response) {
             if (response.data.success) {
-                localStorage.setItem('login', 'true');
+                sessionStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email as string);
-                localStorage.setItem('token', response.data.token);
+                sessionStorage.setItem('token', response.data.token);
                 history.push("/tab1");
             } else {
                 setMessage(response.data.error);
@@ -124,7 +124,7 @@ const SignUp: React.FC = () => {
                                 <IonItem className='signup-field__item' lines='none'>
                                     <IonInput
                                         type='password'
-                                        placeholder='••••••••'
+                                        placeholder='Mínimo 8 caracteres'
                                         value={password}
                                         onIonChange={(e) => setPassword(e.target.value as string)}
                                     />

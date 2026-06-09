@@ -14,7 +14,7 @@ const LogIn: React.FC = () => {
     const history = useHistory();
 
     useEffect(() => {
-        localStorage.setItem('login', 'false');
+        sessionStorage.setItem('login', 'false');
     }, [])
 
     function loginUser() {
@@ -23,9 +23,9 @@ const LogIn: React.FC = () => {
             password: password,
         }).then(function (response) {
             if (response.data.success) {
-                localStorage.setItem('login', 'true');
+                sessionStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email);
-                localStorage.setItem('token', response.data.token);
+                sessionStorage.setItem('token', response.data.token);
                 history.push("/tab1");
             } else {
                 setMessage(response.data.error);

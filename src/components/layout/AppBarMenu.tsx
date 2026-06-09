@@ -15,12 +15,12 @@ export const AppBarMenu: React.FC = () => {
         // NativeStorage.getItem("login").then(
         //   data => setIsUserLogged(data)
         // )
-        let isTrue  = localStorage.getItem("login") === 'true';
+        let isTrue  = sessionStorage.getItem("login") === 'true';
         setIsUserLogged(isTrue)
     }, [])
 
     function logOutUser(){
-        localStorage.setItem("login", 'false');
+        sessionStorage.setItem("login", 'false');
         //NativeStorage.setItem("login", false);
         history.goBack();
     }

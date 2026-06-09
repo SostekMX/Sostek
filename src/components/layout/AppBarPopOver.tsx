@@ -16,10 +16,10 @@ export const AppBarPopOver: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const isUserLogged = localStorage.getItem('login') === 'true';
+    const isUserLogged = sessionStorage.getItem('login') === 'true';
     const avatarUrl = localStorage.getItem('avatar') || '';
     const rawPos = localStorage.getItem('avatar_position');
-    const avatarPos = rawPos ? JSON.parse(rawPos) : { x: 50, y: 50 };
+    const avatarPos = (() => { try { return rawPos ? JSON.parse(rawPos) : null; } catch { return null; } })() ?? { x: 50, y: 50 };
 
     useEffect(() => {
         if (sessionStorage.getItem("search")) {
@@ -59,8 +59,8 @@ export const AppBarPopOver: React.FC = () => {
     }
 
     function logOutUser() {
-        localStorage.setItem("login", 'false');
-        localStorage.removeItem("token");
+        sessionStorage.setItem("login", 'false');
+        sessionStorage.removeItem("token");
         history.replace('/');
     }
 

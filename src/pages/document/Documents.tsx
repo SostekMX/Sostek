@@ -33,7 +33,7 @@ const Documents: React.FC = () => {
   const history = useHistory();
   useLocation();
 
-  const isUserLogged = localStorage.getItem('login') === 'true';
+  const isUserLogged = sessionStorage.getItem('login') === 'true';
 
   useEffect(() => {
     axios.get(`${BACKEND_URL}/articles/${id}`)
@@ -45,8 +45,8 @@ const Documents: React.FC = () => {
   }, [id]);
 
   function logOutUser() {
-    localStorage.setItem('login', 'false');
-    localStorage.removeItem('token');
+    sessionStorage.setItem('login', 'false');
+    sessionStorage.removeItem('token');
     history.replace('/');
   }
 
