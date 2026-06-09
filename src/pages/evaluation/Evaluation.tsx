@@ -74,12 +74,16 @@ const Evaluation: React.FC = () => {
       <AppBarPopOver></AppBarPopOver>
       <IonContent fullscreen class="app-dark-bg">
         {loading && (
-          <img
-            className="imageArticleLoading visible"
-            src="/assets/Spinner-1s-200px_transparent.svg"
-            alt="loading"
-            style={{ position: "fixed" }}
-          />
+          <div className="evaluation__skeleton">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="eval-question-skeleton">
+                <div className="eval-question-skeleton__title shimmer" />
+                <div className="eval-question-skeleton__option shimmer" />
+                <div className="eval-question-skeleton__option shimmer" />
+                <div className="eval-question-skeleton__option eval-question-skeleton__option--short shimmer" />
+              </div>
+            ))}
+          </div>
         )}
         {!loading && (
           <>

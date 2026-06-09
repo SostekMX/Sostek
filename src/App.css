@@ -150,17 +150,6 @@ ion-popover ion-item {
     cursor: pointer;
 }
 
-/* === LOADING SPINNER === */
-
-.imageArticleLoading {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 72px;
-    height: 72px;
-    z-index: 100;
-}
 
 /* === DARK ALERT (confirmaciones destructivas) === */
 

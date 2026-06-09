@@ -16,6 +16,37 @@
     padding: 12px 20px 40px;
 }
 
+.evaluation__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 16px 8px;
+}
+
+.eval-question-skeleton {
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eval-question-skeleton__title {
+    height: 16px;
+    width: 85%;
+}
+
+.eval-question-skeleton__option {
+    height: 14px;
+    width: 70%;
+}
+
+.eval-question-skeleton__option--short {
+    width: 45%;
+}
+
 .evaluation__submit ion-button {
     --border-radius: 100px;
     width: 100%;

@@ -1,7 +1,49 @@
-.doc-spinner {
-  display: block;
+.doc-skeleton__hero {
+  width: 100%;
+  height: 240px;
+  border-radius: 0;
+}
+
+.doc-skeleton__content {
+  padding: 20px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.doc-skeleton__badge {
+  height: 20px;
   width: 80px;
-  margin: 60px auto;
+  border-radius: 100px;
+}
+
+.doc-skeleton__title {
+  height: 26px;
+  width: 90%;
+}
+
+.doc-skeleton__subtitle {
+  height: 16px;
+  width: 70%;
+}
+
+.doc-skeleton__divider {
+  height: 1px;
+  width: 100%;
+  border-radius: 0;
+}
+
+.doc-skeleton__line {
+  height: 14px;
+  width: 100%;
+}
+
+.doc-skeleton__line--short {
+  width: 55%;
+}
+
+.doc-skeleton__line--mid {
+  width: 75%;
 }
 
 /* Hero image */

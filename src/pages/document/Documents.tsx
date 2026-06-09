@@ -75,11 +75,20 @@ const Documents: React.FC = () => {
 
       <IonContent fullscreen class="app-dark-bg">
         {loadingData && (
-          <img
-            className="doc-spinner"
-            src="/assets/Spinner-1s-200px_transparent.svg"
-            alt="cargando"
-          />
+          <div className="doc-skeleton">
+            <div className="doc-skeleton__hero shimmer" />
+            <div className="doc-skeleton__content">
+              <div className="doc-skeleton__badge shimmer" />
+              <div className="doc-skeleton__title shimmer" />
+              <div className="doc-skeleton__subtitle shimmer" />
+              <div className="doc-skeleton__divider shimmer" />
+              <div className="doc-skeleton__line shimmer" />
+              <div className="doc-skeleton__line shimmer" />
+              <div className="doc-skeleton__line doc-skeleton__line--short shimmer" />
+              <div className="doc-skeleton__line shimmer" />
+              <div className="doc-skeleton__line doc-skeleton__line--mid shimmer" />
+            </div>
+          </div>
         )}
 
         {!loadingData && article && (

@@ -11,6 +11,12 @@
     letter-spacing: 0.5px;
 }
 
+.favorites-skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .favorites-empty {
     display: flex;
     flex-direction: column;

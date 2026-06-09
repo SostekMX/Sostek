@@ -60,12 +60,18 @@ const Favorites: React.FC = () => {
           <h2 className='favorites-title'>Favoritos</h2>
 
           {isLoading && (
-            <img
-              className="imageArticleLoading visible"
-              src="/assets/Spinner-1s-200px_transparent.svg"
-              alt="cargando"
-              style={{ position: 'fixed' }}
-            />
+            <div className='favorites-skeleton-list'>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className='doc-card-skeleton'>
+                  <div className='doc-card-skeleton__image shimmer' />
+                  <div className='doc-card-skeleton__body'>
+                    <div className='doc-card-skeleton__badge shimmer' />
+                    <div className='doc-card-skeleton__title shimmer' />
+                    <div className='doc-card-skeleton__desc shimmer' />
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
 
           {!isLoading && resolvedItems.length === 0 && (
