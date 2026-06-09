@@ -30,9 +30,18 @@ const Tab3: React.FC = () => {
   const { search, changeSearch } = useContext(AppContext);
 
   useEffect(() => {
+    const cached = localStorage.getItem("evaluations");
+    if (cached) {
+      setEvaluations(JSON.parse(cached));
+      setLoading(false);
+    }
+
     axios.get(`${BACKEND_URL}/evaluations`)
       .then(res => {
-        if (res.data.success) setEvaluations(res.data.evaluations);
+        if (res.data.success) {
+          setEvaluations(res.data.evaluations);
+          localStorage.setItem("evaluations", JSON.stringify(res.data.evaluations));
+        }
       })
       .catch(err => console.log(err))
       .finally(() => setLoading(false));

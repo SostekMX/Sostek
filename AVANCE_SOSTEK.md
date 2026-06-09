@@ -145,7 +145,7 @@ src/
 |---|-------|---------|
 | S1 | Scan de URLs hardcodeadas | `http://localhost:8080` está hardcodeado en ~10 archivos — mover a `REACT_APP_BACKEND_URL` en `.env` |
 | S2 | Variables de entorno | Crear `.env.example` documentado para que cualquier dev sepa qué variables necesita |
-| U1 | Skeleton loaders en Tab1 y Tab3 | La lista de artículos y evaluaciones muestra spinner multicolor al cargar — reemplazar con skeleton oscuro |
+| ~~U1~~ | ~~Skeleton loaders en Tab1 y Tab3~~ | ✅ Resuelto — skeleton shimmer en Tab1, Tab3, Documents, Evaluation y Favorites. Spinner eliminado de toda la app |
 | U2 | Cachear evaluaciones y presentaciones | Solo artículos están cacheados en `localStorage` — agregar caché para evaluaciones y presentaciones |
 | U3 | Error boundary | Si un componente crashea hoy sale pantalla blanca — agregar error boundary global con mensaje amigable |
 | T1 | Unit tests frontend (Jest) | Testear lógica de negocio: cálculo de puntaje (`addScore`), normalización de búsqueda, lógica de favoritos. Jest ya incluido con `react-scripts` |

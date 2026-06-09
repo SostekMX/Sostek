@@ -12,11 +12,12 @@ const Tab1: React.FC = () => {
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
-    const cached = localStorage.getItem("articles");
-    if (cached) {
-      setArticles(JSON.parse(cached));
-      setLoadingData(false);
-    }
+    const cachedArticles = localStorage.getItem("articles");
+    const cachedPresentations = localStorage.getItem("presentations");
+
+    if (cachedArticles) setArticles(JSON.parse(cachedArticles));
+    if (cachedPresentations) setPresentations(JSON.parse(cachedPresentations));
+    if (cachedArticles) setLoadingData(false);
 
     Promise.all([
       axios.get(`${BACKEND_URL}/articles`),
@@ -27,7 +28,10 @@ const Tab1: React.FC = () => {
         setArticles(reversed);
         localStorage.setItem("articles", JSON.stringify(reversed));
       }
-      if (presRes.data.success) setPresentations(presRes.data.presentations);
+      if (presRes.data.success) {
+        setPresentations(presRes.data.presentations);
+        localStorage.setItem("presentations", JSON.stringify(presRes.data.presentations));
+      }
     }).catch(err => console.log(err))
       .finally(() => setLoadingData(false));
   }, []);
