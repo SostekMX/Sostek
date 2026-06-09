@@ -10,10 +10,11 @@ export const AppBarPopOver: React.FC = () => {
     const popoverRef = useRef<HTMLIonPopoverElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
-    const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [isSearching, setIsSearching] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
     const { search, changeSearch, transparentToolbar } = useContext(AppContext);
     const history = useHistory();
-    useLocation();
+    const location = useLocation();
 
     const isUserLogged = localStorage.getItem('login') === 'true';
     const avatarUrl = localStorage.getItem('avatar') || '';
@@ -26,6 +27,12 @@ export const AppBarPopOver: React.FC = () => {
         }
     }, []);
 
+    // Cierra el buscador al navegar a otra ruta
+    useEffect(() => {
+        setIsSearching(false);
+        setIsClosing(false);
+    }, [location.pathname]);
+
     useEffect(() => {
         if (isSearching) {
             setTimeout(() => searchbarRef.current?.setFocus(), 80);
@@ -34,14 +41,21 @@ export const AppBarPopOver: React.FC = () => {
 
     function handleSearch(value: string) {
         if (debounceRef.current) clearTimeout(debounceRef.current);
-        debounceRef.current = setTimeout(() => {
-            changeSearch!(value);
-        }, 300);
+        debounceRef.current = setTimeout(() => changeSearch!(value), 300);
+    }
+
+    function openSearch() {
+        setIsClosing(false);
+        setIsSearching(true);
     }
 
     function closeSearch() {
-        setIsSearching(false);
-        changeSearch!('');
+        if (isClosing) return;
+        setIsClosing(true);
+        setTimeout(() => {
+            setIsSearching(false);
+            setIsClosing(false);
+        }, 180);
     }
 
     function logOutUser() {
@@ -53,28 +67,31 @@ export const AppBarPopOver: React.FC = () => {
     return <>
         <IonToolbar className={transparentToolbar ? 'appbar appbar--transparent' : 'appbar'}>
 
+            {/* Logo — siempre visible */}
             <IonButtons slot='start'>
-                {!isSearching && (
-                    <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn">
-                        <img src="/assets/sostek-logo.png" className="appbar__logo" alt="SOSTEK" />
-                    </a>
-                )}
+                <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn">
+                    <img src="/assets/sostek-logo.png" className="appbar__logo" alt="SOSTEK" />
+                </a>
             </IonButtons>
 
+            {/* Searchbar en slot central — ocupa solo el espacio disponible entre logo y botones */}
+            {isSearching && (
+                <IonSearchbar
+                    ref={searchbarRef}
+                    className={`appbar__searchbar${isClosing ? ' appbar__searchbar--out' : ''}`}
+                    onIonInput={(e) => handleSearch(e.target.value ?? '')}
+                    onIonClear={() => { changeSearch!(''); closeSearch(); }}
+                    onIonBlur={() => setTimeout(closeSearch, 120)}
+                    showClearButton="always"
+                    value={search}
+                    placeholder="Búsqueda..."
+                />
+            )}
+
+            {/* Botones derecha — lupa + menú/avatar siempre juntos */}
             <div slot="end" className="appbar__end">
-                {isSearching ? (
-                    <IonSearchbar
-                        ref={searchbarRef}
-                        className="appbar__searchbar"
-                        animated={true}
-                        onIonInput={(e) => handleSearch(e.target.value ?? '')}
-                        onIonClear={closeSearch}
-                        showClearButton="always"
-                        value={search}
-                        placeholder="Búsqueda..."
-                    />
-                ) : (
-                    <IonButton fill="clear" onClick={() => setIsSearching(true)}>
+                {!isSearching && (
+                    <IonButton fill="clear" onClick={openSearch}>
                         <IonIcon slot="icon-only" icon={iconSearch} />
                     </IonButton>
                 )}
@@ -90,6 +107,7 @@ export const AppBarPopOver: React.FC = () => {
                         : <IonIcon slot="icon-only" icon={isUserLogged ? personCircle : menuOutline} />
                     }
                 </IonButton>
+
                 <IonPopover ref={popoverRef} trigger={popoverId} triggerAction="click">
                     <IonContent>
                         <IonList>
