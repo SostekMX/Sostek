@@ -3,6 +3,7 @@ import DocumentCard from './DocumentCard';
 import './ArticleCarrousel.css';
 import AppContext from '../context/AppContext';
 import useFavorites from '../hooks/useFavorites';
+import { normalize } from '../utils/search';
 
 export interface Article {
   _id: string;
@@ -42,9 +43,6 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
   const [filterType, setFilterType] = useState<FilterType>('all');
   const { search } = useContext(AppContext);
   const { isLoggedIn, isFavorite, addFavorite, removeFavorite } = useFavorites();
-
-  const normalize = (s: string) =>
-    s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 
   const searchNorm = normalize(search);
 

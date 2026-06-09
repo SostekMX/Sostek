@@ -147,7 +147,7 @@ src/
 | ~~S2~~ | ~~Variables de entorno~~ | ✅ Resuelto — `.env.example` creado con `REACT_APP_BACKEND_URL` |
 | ~~U1~~ | ~~Skeleton loaders en Tab1 y Tab3~~ | ✅ Resuelto — skeleton shimmer en Tab1, Tab3, Documents, Evaluation y Favorites. Spinner eliminado de toda la app |
 | ~~U2~~ | ~~Cachear evaluaciones y presentaciones~~ | ✅ Resuelto — evaluaciones y presentaciones cacheadas en `localStorage`, mismo patrón que artículos |
-| U3 | Error boundary | Si un componente crashea hoy sale pantalla blanca — agregar error boundary global con mensaje amigable |
+| ~~U3~~ | ~~Error boundary global~~ | ✅ Resuelto — `ErrorBoundary.tsx` envuelve toda la app; pantalla dark con logo + botón "Reintentar" |
 | T1 | Unit tests frontend (Jest) | Testear lógica de negocio: cálculo de puntaje (`addScore`), normalización de búsqueda, lógica de favoritos. Jest ya incluido con `react-scripts` |
 
 ### 🔒 SEGURIDAD / CALIDAD — PENDIENTE BACKEND
@@ -226,7 +226,7 @@ src/
 17. [S2] Crear `.env.example` documentado
 18. [U1] Skeleton loaders en Tab1 (lista de artículos) y Tab3 (lista de evaluaciones)
 19. [U2] Cachear evaluaciones y presentaciones en `localStorage`
-20. [U3] Error boundary global
+20. ~~[U3] Error boundary global~~ ✅
 21. [T1] Unit tests frontend con Jest (puntaje, búsqueda, favoritos)
 22. ⚠️ Foto de perfil — subir imagen desde el dispositivo, guardar en Cloudinary, mostrar en avatar de perfil (requiere cambios en backend: nuevo endpoint + campo `avatar` en modelo de usuario)
 18. ⚠️ Campo `description` en evaluaciones — frontend listo, backend debe agregar el campo al modelo y seed (descripciones sugeridas en `INFO_FRONTEND.md`)

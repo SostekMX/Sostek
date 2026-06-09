@@ -1,4 +1,5 @@
-import React, { useState, useEffect, createContext, FC } from 'react';
+import React, { useState, createContext, FC } from 'react';
+import { applyAnswer } from '../utils/scoring';
 
 interface IAppContext {
     search: string;
@@ -46,20 +47,10 @@ export const AppProvider: FC<Children> = ({children}) => {
     const toggleTutorial = (value : boolean) => {
       setTutorial(value);
     };
-    const addScore = (category: string, answer : string, value : number) => {
-      // console.log(answer, value)
-      // console.log(currentAnswersAndScores.has(answer))
-      if(currentAnswersAndScores.has(answer)) {
-        // console.log(typeof(score))
-        // console.log(typeof(currentAnswersAndScores.get(answer)!.value))
-
-        setScore(score - currentAnswersAndScores.get(answer)!.value);
-        currentAnswersAndScores.delete(answer);
-      }
-      else {
-        setScore(score + value);
-        currentAnswersAndScores.set(answer, {category: category, value: value});
-      }
+    const addScore = (category: string, answer: string, value: number) => {
+      const result = applyAnswer(currentAnswersAndScores, score, category, answer, value);
+      setScore(result.score);
+      setCurrentAnswersAndScores(result.map);
     }
 
   
