@@ -2,7 +2,7 @@
 
 > Documento de comunicación frontend → backend.
 > Se actualiza cada vez que hay un cambio en el frontend que afecta la integración.
-> Última actualización: 2026-06-08
+> Última actualización: 2026-06-09
 > Backend corre en: `http://localhost:8080`
 
 ---
@@ -11,6 +11,8 @@
 
 | Fecha | Cambio | Qué necesita el backend |
 |-------|--------|------------------------|
+| 2026-06-09 | Unit tests frontend completados (23 tests) | Sin cambios en backend — solo información |
+| 2026-06-09 | Error boundary global agregado | Sin cambios en backend |
 | 2026-06-08 | Artículos con imágenes rotas detectados | Actualizar `image` en MongoDB para 3 artículos — ver sección "Pendientes de datos" |
 | 2026-06-08 | Párrafos en artículos — frontend ya divide `body` por `\n` | Agregar `\n` entre párrafos en los artículos que se ven como bloque continuo en MongoDB |
 | 2026-06-08 | Evaluaciones — frontend listo para recibir `description` | Agregar campo `description` al schema y seed — ver sección "Pendientes de datos" |
@@ -302,11 +304,13 @@ app.use(cors({
     "occupation": "Estudiante",
     "gender": "masculino",
     "score_test": 120,
-    "score_game": 85
+    "score_game": 85,
+    "avatar": ""
   }
 }
 ```
 > `password`, `reset_token` y `reset_token_expiry` **nunca** deben incluirse en la respuesta.
+> `avatar` se agrega cuando se implemente `POST /user/avatar` — por ahora puede ser string vacío.
 
 **Errores:**
 ```json
@@ -460,6 +464,130 @@ El `content_id` va en la URL: `/user/favorites/664abc123...`
 { "success": false, "error": "Usuario no encontrado" }
 { "success": false, "error": "No se pudo eliminar el favorito" }
 ```
+
+---
+
+### `GET /articles` — público
+
+**Respuesta esperada:**
+```json
+{
+  "success": true,
+  "articles": [
+    {
+      "_id": "664abc...",
+      "title": "Cambio Climático y Sostenibilidad",
+      "subtitle": "Impacto global del calentamiento",
+      "type": "Artículo",
+      "body": "Primer párrafo.\nSegundo párrafo.",
+      "image": "https://res.cloudinary.com/.../imagen.jpg",
+      "author": "Nombre Autor",
+      "author_image": "https://...",
+      "page_image": "https://...",
+      "category": "Ambiental",
+      "tags": ["clima", "sostenibilidad"]
+    }
+  ]
+}
+```
+> El frontend invierte el array (`[...articles].reverse()`) para mostrar el más reciente primero.
+> El campo `body` se divide por `\n` para mostrar párrafos separados.
+
+---
+
+### `GET /articles/:id` — público
+
+**Respuesta esperada:**
+```json
+{
+  "success": true,
+  "article": {
+    "_id": "664abc...",
+    "title": "...",
+    "subtitle": "...",
+    "type": "Artículo",
+    "body": "Párrafo uno.\nPárrafo dos.",
+    "image": "https://...",
+    "author": "...",
+    "author_image": "https://...",
+    "page_image": "https://...",
+    "category": "Ambiental",
+    "tags": ["...]
+  }
+}
+```
+
+---
+
+### `GET /presentations` — público
+
+**Respuesta esperada:**
+```json
+{
+  "success": true,
+  "presentations": [
+    {
+      "_id": "664xyz...",
+      "name": "Sostenibilidad Urbana",
+      "slides": [
+        "https://res.cloudinary.com/.../slide1.jpg",
+        "https://res.cloudinary.com/.../slide2.jpg"
+      ]
+    }
+  ]
+}
+```
+> El frontend muestra `slides[0]` como imagen de portada en la tarjeta.
+
+---
+
+### `GET /evaluations` — público
+
+**Respuesta esperada:**
+```json
+{
+  "success": true,
+  "evaluations": [
+    {
+      "_id": "664def...",
+      "name": "Arquitectura Nivel 1",
+      "career": "Arquitectura",
+      "description": "Mide si conoces y tomaste en cuenta los factores ambientales..."
+    }
+  ]
+}
+```
+> El campo `description` es **pendiente de agregar** al schema (ver sección "Pendientes de datos").
+> `career` acepta valores: `"Arquitectura"`, `"Diseño Industrial"`, cualquier otro cae en el filtro "Otros".
+
+---
+
+### `GET /evaluations/:id` — público
+
+**Respuesta esperada:**
+```json
+{
+  "success": true,
+  "evaluation": {
+    "_id": "664def...",
+    "name": "Arquitectura Nivel 1",
+    "career": "Arquitectura",
+    "description": "...",
+    "questions": [
+      {
+        "category": "Ambiental",
+        "text": "¿Tu proyecto considera el impacto ambiental?",
+        "options": [
+          { "text": "Sí, completamente", "value": 10 },
+          { "text": "Parcialmente", "value": 5 },
+          { "text": "No", "value": 0 }
+        ]
+      }
+    ]
+  }
+}
+```
+> Cada opción tiene `text` (label visible) y `value` (número que suma al puntaje).
 
 ---
 

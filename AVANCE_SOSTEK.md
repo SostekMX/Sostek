@@ -25,12 +25,14 @@ El backend (login/registro/perfil/contenido) es un servidor externo en `http://l
 ```
 src/
 ├── App.tsx                          # Router principal + MainTabs + lógica de ocultar tab bar
+├── config.ts                        # BACKEND_URL desde variable de entorno REACT_APP_BACKEND_URL
 ├── context/
-│   └── AppContext.tsx               # Estado global: search, tutorial, dark, transparentToolbar
+│   └── AppContext.tsx               # Estado global: search, tutorial, score, transparentToolbar
 ├── components/
+│   ├── ErrorBoundary.tsx            # Error boundary global — pantalla de error con botón "Reintentar"
 │   ├── layout/
 │   │   ├── AppBarPopOver.tsx        # Toolbar: búsqueda, menú lateral, logout
-│   │   └── AppBarMenu.tsx           # ⚠️ HUÉRFANO — ya no se importa en ningún lado (reemplazado por AppBarPopOver en Documents.tsx)
+│   │   └── AppBarMenu.tsx           # ⚠️ HUÉRFANO — ya no se importa en ningún lado
 │   ├── ArticleCarrousel.tsx         # Carrusel horizontal de artículos y presentaciones
 │   ├── ArticleCardModal.tsx         # Modal del artículo más reciente
 │   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación en la lista (con botón favorito)
@@ -54,8 +56,16 @@ src/
 │   ├── finalScoreEvaluation/ FinalScoreEvaluation.tsx # Resultados y feedback
 │   └── profile/       Profile.tsx         # Edición de perfil del usuario
 ├── hooks/
-│   ├── useGetDocuments.ts           # Documentos desde Drive (solo tutorial)
+│   ├── useFavorites.ts              # GET/POST/DELETE /user/favorites con optimistic update
+│   ├── useGetDocuments.ts           # Hook legacy — solo usado por TutorialComponent
 │   └── useGetArticlesData.ts        # Hook legacy — solo usado por TutorialComponent
+├── utils/
+│   ├── scoring.ts                   # Lógica pura: getFeedback, applyAnswer, computeCategoryScores, clearScoreSession
+│   └── search.ts                    # normalize() — elimina tildes y pasa a minúsculas
+├── __tests__/
+│   ├── scoring.test.ts              # 14 tests: rangos de feedback, seleccionar/deseleccionar, agrupación por categoría
+│   ├── search.test.ts               # 5 tests: tildes, mayúsculas, cadena vacía
+│   └── favorites.test.ts            # 6 tests: isFavorite, add, remove, lista vacía
 └── models/
     └── File.ts                      # Modelo legacy — solo usado por tutorial
 ```
@@ -220,18 +230,18 @@ src/
 12. ~~Debounce en búsqueda~~ ✅
 13. ~~Lazy loading de imágenes optimizado~~ ✅
 14. ~~Reemplazar IonAlert por toasts/notificaciones custom~~ ✅
-15. Pantalla de Ajustes
-15. Juego online en Tab 2
-16. [S1] Mover `http://localhost:8080` a variable de entorno `REACT_APP_BACKEND_URL`
-17. [S2] Crear `.env.example` documentado
-18. [U1] Skeleton loaders en Tab1 (lista de artículos) y Tab3 (lista de evaluaciones)
-19. [U2] Cachear evaluaciones y presentaciones en `localStorage`
-20. ~~[U3] Error boundary global~~ ✅
-21. ~~[T1] Unit tests frontend con Jest (puntaje, búsqueda, favoritos)~~ ✅
-22. ⚠️ Foto de perfil — subir imagen desde el dispositivo, guardar en Cloudinary, mostrar en avatar de perfil (requiere cambios en backend: nuevo endpoint + campo `avatar` en modelo de usuario)
-18. ⚠️ Campo `description` en evaluaciones — frontend listo, backend debe agregar el campo al modelo y seed (descripciones sugeridas en `INFO_FRONTEND.md`)
-19. ⚠️ Imágenes rotas en 3 artículos — backend debe actualizar campo `image` en MongoDB (URLs nuevas en `INFO_FRONTEND.md`): "Dia Mundial de los Humedades", "El impacto del cine en el medio ambiente", "Muebles en Abuela"
-20. ⚠️ [LARGO PLAZO] Imágenes de artículos generadas con IA — generar 26 imágenes en Leonardo.ai (FLUX Schnell, 16:9, Stock Photo, Prompt Enhance Off), descargar nombradas como `01-cambio-climatico.jpg` etc., el backend las sube a Cloudinary y actualiza el campo `image` en MongoDB. Prompts por artículo ya definidos.
+15. ~~[S1] Mover `http://localhost:8080` a variable de entorno~~ ✅
+16. ~~[S2] Crear `.env.example` documentado~~ ✅
+17. ~~[U1] Skeleton loaders en toda la app~~ ✅
+18. ~~[U2] Cachear evaluaciones y presentaciones en `localStorage`~~ ✅
+19. ~~[U3] Error boundary global~~ ✅
+20. ~~[T1] Unit tests frontend con Jest (puntaje, búsqueda, favoritos)~~ ✅
+21. Pantalla de Ajustes (visible en menú, sin ruta ni lógica)
+22. Juego online en Tab 2 (Unity WebGL — largo plazo)
+23. ⚠️ Foto de perfil — UI pendiente; requiere `POST /user/avatar` en backend (ver `INFO_PARA_BACKEND.md`)
+24. ⚠️ Campo `description` en evaluaciones — frontend listo; backend debe agregar campo al modelo y seed (ver `INFO_PARA_BACKEND.md`)
+25. ⚠️ Imágenes rotas en 3 artículos — backend debe actualizar URLs en MongoDB (ver `INFO_PARA_BACKEND.md`)
+26. ⚠️ [LARGO PLAZO] Imágenes de artículos generadas con IA — generar 26 imágenes en Leonardo.ai (FLUX Schnell, 16:9, Stock Photo, Prompt Enhance Off), descargar nombradas como `01-cambio-climatico.jpg` etc., el backend las sube a Cloudinary y actualiza el campo `image` en MongoDB.
 
 ---
 
