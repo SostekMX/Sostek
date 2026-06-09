@@ -18,6 +18,9 @@ export const AppBarPopOver: React.FC = () => {
 
     // Leer directo en cada render para que siempre refleje el estado actual
     const isUserLogged = localStorage.getItem('login') === 'true';
+    const avatarUrl = localStorage.getItem('avatar') || '';
+    const rawPos = localStorage.getItem('avatar_position');
+    const avatarPos = rawPos ? JSON.parse(rawPos) : { x: 50, y: 50 };
 
     useEffect(() => {
         if (sessionStorage.getItem("search")) {
@@ -67,8 +70,16 @@ export const AppBarPopOver: React.FC = () => {
                 }
             </IonButtons>
             <IonButtons slot="end">
-                <IonButton id={popoverId}>
-                    <IonIcon slot="icon-only" icon={menuOutline} />
+                <IonButton id={popoverId} className='appbar__menu-btn'>
+                    {isUserLogged && avatarUrl
+                        ? <img
+                            src={avatarUrl}
+                            alt='perfil'
+                            className='appbar__avatar'
+                            style={{ objectPosition: `${avatarPos.x}% ${avatarPos.y}%` }}
+                          />
+                        : <IonIcon slot="icon-only" icon={isUserLogged ? personCircle : menuOutline} />
+                    }
                 </IonButton>
                 <IonPopover ref={popoverRef} trigger={popoverId} triggerAction="click">
                     <IonContent>

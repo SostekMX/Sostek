@@ -29,3 +29,12 @@
     width: auto;
 }
 
+.appbar__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #80b259;
+    display: block;
+}
+

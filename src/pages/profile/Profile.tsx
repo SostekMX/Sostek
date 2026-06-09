@@ -15,46 +15,104 @@ const Profile: React.FC = () => {
     const [occupation, setOccupation] = useState<string>('');
     const [gender, setGender] = useState<string>('');
     const [avatar, setAvatar] = useState<string>('');
+    const [cropPos, setCropPos] = useState({ x: 50, y: 50 });
+    const [cropMode, setCropMode] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string>('');
     const [avatarUploading, setAvatarUploading] = useState(false);
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const dragRef = useRef({ isDragging: false, startX: 0, startY: 0, startCropX: 50, startCropY: 50 });
     const history = useHistory();
 
     useEffect(() => {
         setEmail(localStorage.getItem('user_email') ?? '');
+        const savedPos = localStorage.getItem('avatar_position');
+        if (savedPos) setCropPos(JSON.parse(savedPos));
+
         const token = localStorage.getItem('token');
         axios.get(`${BACKEND_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` }
-        }).then(function (response) {
-            if (response.data.success) {
-                const u = response.data.user;
+        }).then(res => {
+            if (res.data.success) {
+                const u = res.data.user;
                 setName(u.name ?? '');
                 setSurname(u.surname ?? '');
                 setBirthDate(u.birth_date ?? '');
                 setOccupation(u.occupation ?? '');
                 setGender(u.gender ?? '');
-                setAvatar(u.avatar ?? '');
+                const avatarUrl = u.avatar ?? '';
+                setAvatar(avatarUrl);
+                localStorage.setItem('avatar', avatarUrl);
             }
-        }).catch(function (error) {
-            console.log(error);
-        });
+        }).catch(err => console.log(err));
     }, []);
 
-    function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file) return;
+        e.target.value = '';
+        setSelectedFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
+        setCropPos({ x: 50, y: 50 });
+        setCropMode(true);
+    }
+
+    function onCropPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        dragRef.current = {
+            isDragging: true,
+            startX: e.clientX,
+            startY: e.clientY,
+            startCropX: cropPos.x,
+            startCropY: cropPos.y,
+        };
+    }
+
+    function onCropPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+        if (!dragRef.current.isDragging) return;
+        const dx = e.clientX - dragRef.current.startX;
+        const dy = e.clientY - dragRef.current.startY;
+        const newX = Math.max(0, Math.min(100, dragRef.current.startCropX - dx * 0.4));
+        const newY = Math.max(0, Math.min(100, dragRef.current.startCropY - dy * 0.4));
+        setCropPos({ x: newX, y: newY });
+    }
+
+    function onCropPointerUp() {
+        dragRef.current.isDragging = false;
+    }
+
+    async function handleUploadConfirm() {
+        if (!selectedFile) return;
         const token = localStorage.getItem('token');
         const formData = new FormData();
-        formData.append('avatar', file);
+        formData.append('avatar', selectedFile);
         setAvatarUploading(true);
-        axios.post(`${BACKEND_URL}/user/avatar`, formData, {
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-        }).then(res => {
-            if (res.data.success) setAvatar(res.data.avatar_url);
-        }).catch(err => console.log(err))
-          .finally(() => setAvatarUploading(false));
+        try {
+            const res = await axios.post(`${BACKEND_URL}/user/avatar`, formData, {
+                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+            });
+            if (res.data.success) {
+                const url = res.data.avatar_url;
+                setAvatar(url);
+                localStorage.setItem('avatar', url);
+                localStorage.setItem('avatar_position', JSON.stringify(cropPos));
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setAvatarUploading(false);
+            setCropMode(false);
+            URL.revokeObjectURL(previewUrl);
+        }
+    }
+
+    function cancelCrop() {
+        setCropMode(false);
+        URL.revokeObjectURL(previewUrl);
+        setSelectedFile(null);
     }
 
     function deleteUser() {
@@ -64,9 +122,7 @@ const Profile: React.FC = () => {
         }).then(() => {
             localStorage.clear();
             history.replace('/');
-        }).catch((error) => {
-            console.error('Error al eliminar cuenta:', error);
-        });
+        }).catch(err => console.error(err));
     }
 
     function editUser() {
@@ -76,26 +132,61 @@ const Profile: React.FC = () => {
             birth_date: birthDate, occupation, gender,
         }, {
             headers: { Authorization: `Bearer ${token}` }
-        }).then(function (response) {
-            if (response.data.success) {
+        }).then(res => {
+            if (res.data.success) {
                 history.replace('/tab1');
             } else {
-                setMessage(response.data.message);
+                setMessage(res.data.message);
                 setShowAlert(true);
             }
-        }).catch(function (error) {
-            console.log(error);
-        });
+        }).catch(err => console.log(err));
     }
+
+    const avatarStyle = { objectPosition: `${cropPos.x}% ${cropPos.y}%` };
 
     return (
         <IonPage>
             <AppBarPopOver />
+
+            {cropMode && (
+                <div className='crop-overlay'>
+                    <p className='crop-title'>Ajusta tu foto</p>
+                    <div
+                        className='crop-circle-preview'
+                        onPointerDown={onCropPointerDown}
+                        onPointerMove={onCropPointerMove}
+                        onPointerUp={onCropPointerUp}
+                        onPointerCancel={onCropPointerUp}
+                    >
+                        <img
+                            src={previewUrl}
+                            alt='preview'
+                            className='crop-img'
+                            style={{ objectPosition: `${cropPos.x}% ${cropPos.y}%` }}
+                            draggable={false}
+                        />
+                    </div>
+                    <p className='crop-hint'>Arrastra para ajustar la posicion</p>
+                    <div className='crop-actions'>
+                        <button
+                            className='crop-btn crop-btn--confirm'
+                            onClick={handleUploadConfirm}
+                            disabled={avatarUploading}
+                        >
+                            {avatarUploading ? 'Subiendo...' : 'Subir foto'}
+                        </button>
+                        <button className='crop-btn crop-btn--cancel' onClick={cancelCrop}>
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <IonContent fullscreen class='app-dark-bg'>
                 <div className='profile-container'>
                     <div className='profile-avatar'>
                         {avatar
-                            ? <img src={avatar} alt='avatar' className='profile-avatar__img' />
+                            ? <img src={avatar} alt='avatar' className='profile-avatar__img' style={avatarStyle} />
                             : <IonIcon icon={personCircleOutline} className='profile-avatar__icon' />
                         }
                         <input
@@ -103,17 +194,17 @@ const Profile: React.FC = () => {
                             type='file'
                             accept='image/jpeg,image/png,image/webp'
                             style={{ display: 'none' }}
-                            onChange={handleAvatarChange}
+                            onChange={handleFileSelect}
                         />
                         <button
                             className='profile-avatar__change-btn'
                             onClick={() => fileInputRef.current?.click()}
-                            disabled={avatarUploading}
                         >
                             <IonIcon icon={cameraOutline} />
-                            {avatarUploading ? 'Subiendo...' : 'Cambiar foto'}
+                            Cambiar foto
                         </button>
                     </div>
+
                     <div className='profile-card'>
                         <h2 className='profile-title'>Modificar Perfil</h2>
                         <IonItem className='profile-input-item' lines='none'>
