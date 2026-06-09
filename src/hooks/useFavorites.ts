@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from '../config';
 
 export interface Favorite {
   content_id: string;
@@ -15,7 +16,7 @@ const useFavorites = () => {
     if (!isLoggedIn) return;
     const token = localStorage.getItem('token');
     setLoading(true);
-    axios.get('http://localhost:8080/user/favorites', {
+    axios.get(`${BACKEND_URL}/user/favorites`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       if (res.data.success) setFavorites(res.data.favorites);
@@ -28,7 +29,7 @@ const useFavorites = () => {
   const addFavorite = async (content_id: string, type: 'article' | 'presentation') => {
     const token = localStorage.getItem('token');
     try {
-      await axios.post('http://localhost:8080/user/favorites', { content_id, type }, {
+      await axios.post(`${BACKEND_URL}/user/favorites`, { content_id, type }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFavorites(prev => [...prev, { content_id, type }]);
@@ -40,7 +41,7 @@ const useFavorites = () => {
   const removeFavorite = async (content_id: string) => {
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`http://localhost:8080/user/favorites/${content_id}`, {
+      await axios.delete(`${BACKEND_URL}/user/favorites/${content_id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFavorites(prev => prev.filter(f => f.content_id !== content_id));

@@ -7,6 +7,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
+import { BACKEND_URL } from '../../config';
 import AppBarPopOver from "../../components/layout/AppBarPopOver";
 import QuestionTestCard from "../../components/QuestionTestCard";
 import AppContext from "../../context/AppContext";
@@ -40,7 +41,7 @@ const Evaluation: React.FC = () => {
   const { score, currentAnswersAndScores } = useContext(AppContext);
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/evaluations/${id}`)
+    axios.get(`${BACKEND_URL}/evaluations/${id}`)
       .then(res => {
         if (res.data.success) setEvaluation(res.data.evaluation);
       })

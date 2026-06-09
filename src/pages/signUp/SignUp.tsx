@@ -11,6 +11,7 @@ import '../../App.css';
 import './SignUp.css';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 
 const SignUp: React.FC = () => {
     const [email, setEmail] = useState<string | null>('');
@@ -42,7 +43,7 @@ const SignUp: React.FC = () => {
             setShowAlert(true);
             return;
         }
-        axios.post('http://localhost:8080/user/signup', {
+        axios.post(`${BACKEND_URL}/user/signup`, {
             email, password, name, surname,
             birth_date: birthDate, occupation, gender
         }).then(function (response) {

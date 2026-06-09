@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonText } from '@ionic/react';
 import { useHistory } from 'react-router';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import DocumentCard from '../../components/DocumentCard';
 import useFavorites from '../../hooks/useFavorites';
@@ -29,8 +30,8 @@ const Favorites: React.FC = () => {
       return;
     }
     Promise.all([
-      axios.get('http://localhost:8080/articles'),
-      axios.get('http://localhost:8080/presentations'),
+      axios.get(`${BACKEND_URL}/articles`),
+      axios.get(`${BACKEND_URL}/presentations`),
     ]).then(([artRes, presRes]) => {
       if (artRes.data.success) setAllArticles(artRes.data.articles);
       if (presRes.data.success) setAllPresentations(presRes.data.presentations);

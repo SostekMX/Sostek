@@ -3,6 +3,7 @@ import { personCircleOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Profile.css';
 
@@ -21,7 +22,7 @@ const Profile: React.FC = () => {
     useEffect(() => {
         setEmail(localStorage.getItem('user_email') ?? '');
         const token = localStorage.getItem('token');
-        axios.get('http://localhost:8080/user/profile', {
+        axios.get(`${BACKEND_URL}/user/profile`, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(function (response) {
             if (response.data.success) {
@@ -39,7 +40,7 @@ const Profile: React.FC = () => {
 
     function deleteUser() {
         const token = localStorage.getItem('token');
-        axios.delete('http://localhost:8080/user', {
+        axios.delete(`${BACKEND_URL}/user`, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(() => {
             localStorage.clear();
@@ -51,7 +52,7 @@ const Profile: React.FC = () => {
 
     function editUser() {
         const token = localStorage.getItem('token');
-        axios.post('http://localhost:8080/user/edit', {
+        axios.post(`${BACKEND_URL}/user/edit`, {
             email, name, surname,
             birth_date: birthDate, occupation, gender,
         }, {

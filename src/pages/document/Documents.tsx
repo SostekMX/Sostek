@@ -4,6 +4,7 @@ import { menuOutline, heart, personCircle, settings, logOut } from 'ionicons/ico
 import { useParams } from 'react-router';
 import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import './Documents.css';
 
 interface Article {
@@ -34,7 +35,7 @@ const Documents: React.FC = () => {
   const isUserLogged = localStorage.getItem('login') === 'true';
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/articles/${id}`)
+    axios.get(`${BACKEND_URL}/articles/${id}`)
       .then(res => {
         if (res.data.success) setArticle(res.data.article);
       })

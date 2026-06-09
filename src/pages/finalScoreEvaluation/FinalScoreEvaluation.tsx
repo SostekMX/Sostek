@@ -2,6 +2,7 @@ import { IonPage, IonContent, IonHeader, IonButton } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import AppContext from '../../context/AppContext';
 import './FinalScoreEvaluation.css';
@@ -70,7 +71,7 @@ const FinalScoreEvaluation: React.FC = () => {
 
         const token = localStorage.getItem('token');
         if (token) {
-            axios.post('http://localhost:8080/user/score', { score_test: finalScore }, {
+            axios.post(`${BACKEND_URL}/user/score`, { score_test: finalScore }, {
                 headers: { Authorization: `Bearer ${token}` }
             }).catch((error) => {
                 console.error('Error al guardar puntaje:', error);

@@ -1,6 +1,7 @@
 import { IonContent, IonPage } from '@ionic/react';
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import AppContext from '../../context/AppContext';
 import './Tab3.css';
@@ -29,7 +30,7 @@ const Tab3: React.FC = () => {
   const { search, changeSearch } = useContext(AppContext);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/evaluations')
+    axios.get(`${BACKEND_URL}/evaluations`)
       .then(res => {
         if (res.data.success) setEvaluations(res.data.evaluations);
       })

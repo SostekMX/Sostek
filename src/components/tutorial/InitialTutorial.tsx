@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { IonIcon } from '@ionic/react';
 import { close, arrowBack, arrowForward } from 'ionicons/icons';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import AppContext from '../../context/AppContext';
 import './InitialTutorial.css';
 
@@ -36,7 +37,7 @@ const InitialTutorial: React.FC = () => {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/tutorial')
+    axios.get(`${BACKEND_URL}/tutorial`)
       .then(res => {
         if (res.data.success) setTutorial(res.data.tutorial);
       })

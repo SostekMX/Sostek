@@ -2,6 +2,7 @@ import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage } from '@io
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import '../logIn/LogIn.css';
 
 const ForgotPassword: React.FC = () => {
@@ -14,7 +15,7 @@ const ForgotPassword: React.FC = () => {
     async function sendResetToken() {
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:8080/user/forgot-password', { email });
+            const response = await axios.post(`${BACKEND_URL}/user/forgot-password`, { email });
             if (response.data.success) {
                 sessionStorage.setItem('reset_token', response.data.reset_token);
                 history.push('/ResetPassword');

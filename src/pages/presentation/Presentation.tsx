@@ -4,6 +4,7 @@ import { IonContent, IonPage } from '@ionic/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy } from 'swiper';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Presentation.css';
 import 'swiper/css';
@@ -21,7 +22,7 @@ const Presentation: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/presentations')
+    axios.get(`${BACKEND_URL}/presentations`)
       .then(res => {
         if (res.data.success) {
           const match = res.data.presentations.find((p: any) => p._id === driveId);

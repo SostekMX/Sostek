@@ -2,6 +2,7 @@ import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage } from '@io
 import { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import '../../App.css';
 import './LogIn.css';
 
@@ -17,7 +18,7 @@ const LogIn: React.FC = () => {
     }, [])
 
     function loginUser() {
-        axios.post('http://localhost:8080/user/login', {
+        axios.post(`${BACKEND_URL}/user/login`, {
             email: email,
             password: password,
         }).then(function (response) {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab2.css';
 
@@ -26,7 +27,7 @@ const Tab2: React.FC = () => {
   const [cardFilter, setCardFilter] = useState<CardFilter>('scenario');
 
   useEffect(() => {
-    axios.get('http://localhost:8080/tutorial')
+    axios.get(`${BACKEND_URL}/tutorial`)
       .then(res => { if (res.data.success) setTutorial(res.data.tutorial); })
       .catch(err => console.log(err));
   }, []);
