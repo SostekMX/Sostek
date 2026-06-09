@@ -27,15 +27,15 @@
 
 ---
 
-## 2. Lo que falta integrar en el frontend
+## 2. Estado de integración frontend
 
-> El backend tiene todo implementado. Lo pendiente es solo trabajo del frontend.
+> Todo integrado. No hay pendientes en el frontend.
 
-| Elemento | Dónde integrarlo | Estado |
-|----------|-----------------|--------|
-| **Actualizar pantalla `ForgotPassword`** | Ya no leer `reset_token` de la respuesta. Mostrar mensaje "Revisá tu correo" y nada más. Ver flujo completo abajo. | 🔴 Requiere cambio — flujo roto si no se actualiza |
-| **Actualizar pantalla `ResetPassword`** | Leer el token del query param `?token=` de la URL en vez de `sessionStorage`. El link del email llega como `http://localhost:3000/ResetPassword?token=<token>`. | 🔴 Requiere cambio — flujo roto si no se actualiza |
-| Actualizar mensajes de error en login | Si el frontend compara el string de error (`"Cuenta no registrada"`, `"Contraseña incorrecta"`), ahora ambos son `"Correo o contraseña incorrectos"` | 🟡 Solo si se compara el string de error |
+| Elemento | Dónde está integrado | Estado |
+|----------|---------------------|--------|
+| Nuevo flujo `ForgotPassword` | `ForgotPassword.tsx` — muestra mensaje del backend, oculta el form al enviar, no guarda token | ✅ Integrado |
+| Nuevo flujo `ResetPassword` | `ResetPassword.tsx` — lee token de `?token=` en la URL con `useLocation` | ✅ Integrado |
+| Mensajes de error unificados en login | `LogIn.tsx` — muestra directamente `response.data.error`, sin comparar strings | ✅ Integrado |
 
 ---
 
