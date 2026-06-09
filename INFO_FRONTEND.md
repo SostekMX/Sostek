@@ -2,7 +2,7 @@
 
 > Para el equipo de frontend. Describe qué cambió, qué falta y cómo llamar cada endpoint.
 > Backend corre en: `http://localhost:8080`
-> Última actualización: 2026-06-09
+> Última actualización: 2026-06-06
 
 ---
 
@@ -10,13 +10,6 @@
 
 | Fecha | Qué cambió | Qué necesita saber el frontend |
 |-------|-----------|-------------------------------|
-| 2026-06-08 | **[PENDIENTE BACKEND]** 3 artículos con imagen rota en MongoDB | Las URLs de imagen de 3 artículos están caídas. El frontend ya maneja el error mostrando un placeholder, pero hay que actualizar los documentos en MongoDB con las URLs correctas. Ver tabla en sección 3. |
-| 2026-06-09 | Rediseño completo de UI — dark theme consistente en toda la app | Header, footer, perfil, evaluaciones, artículos, alertas y popovers ahora siguen la misma estética oscura. No requiere cambios en backend. |
-| 2026-06-08 | **[PENDIENTE BACKEND]** Campo `description` en evaluaciones | El frontend ya está preparado: `EvaluationCard` acepta `description` como prop opcional y lo usa si llega del backend. Mientras no exista el campo, muestra un texto hardcodeado por nombre de evaluación como fallback. Una vez que `GET /evaluations` incluya `description`, se reflejará automáticamente sin cambios en el frontend. Ver contrato en sección 3. |
-| 2026-06-08 | **[PENDIENTE BACKEND]** Foto de perfil — nuevo feature solicitado | El frontend necesita un endpoint `POST /user/avatar` que reciba `multipart/form-data` con un campo `avatar` (archivo de imagen), lo suba a Cloudinary y devuelva la URL. También se necesita el campo `avatar` en el modelo de usuario y que `GET /user/profile` lo incluya en la respuesta. Ver contrato propuesto en sección 3. |
-| 2026-06-08 | Párrafos en artículos | El frontend ahora divide el campo `body` por `\n` para renderizar párrafos. **Los artículos que aparecen como un solo bloque de texto necesitan saltos de línea (`\n`) en su campo `body` en MongoDB.** Actualizar el seed o editar directamente en Atlas. |
-| 2026-06-08 | Diseño de detalle de artículo completamente reescrito | `Documents.tsx` ya tiene `IonBackButton`, hero image 240px, badge de categoría, tipografía dark legible. `AppBarMenu.tsx` ya no se usa — puede eliminarse del repo. |
-| 2026-06-08 | Tutorial integrado en Tab2 — ya no es un popup separado | `Tab2.tsx` consume `GET /tutorial` directamente y muestra el instructivo del juego (stats, tipos de tarjeta, reglas, lista filtrable). **El backend debe tener la colección sembrada** — correr `npm run seed:tutorial` en el repo del backend antes de probar. |
 | 2026-06-06 | `GET /tutorial` implementado | El frontend ya NO necesita Google Drive para el tutorial. Reemplazar `useGetDocuments` con axios al backend. El instructivo tiene reglas del juego + 48 tarjetas (escenario y solución) con sus valores de recursos. |
 | 2026-06-06 | Endpoints de favoritos: `POST /user/favorites`, `GET /user/favorites`, `DELETE /user/favorites/:content_id` | Ya se puede implementar el guardado de artículos y presentaciones favoritas. Requieren JWT. Ver contratos en sección 3. |
 | 2026-06-06 | Campo `favorites` agregado al modelo de usuario | Array de `{ content_id, type }` — el frontend no lo recibe en `GET /user/profile`, se obtiene aparte con `GET /user/favorites`. |
@@ -34,22 +27,12 @@
 
 | Elemento | Dónde integrarlo | Estado |
 |----------|-----------------|--------|
-| Campo `description` en evaluaciones | Agregar campo `description` al modelo de evaluación en MongoDB y devolverlo en `GET /evaluations` — el frontend ya lo recibe y muestra automáticamente | ⚠️ Pendiente en backend |
-| Foto de perfil | Implementar `POST /user/avatar` + campo `avatar` en modelo de usuario + incluir en `GET /user/profile` | ⚠️ Pendiente en backend |
-| Párrafos en artículos | Añadir `\n` entre párrafos en el campo `body` de cada artículo en MongoDB — frontend ya lo maneja correctamente | ⚠️ Pendiente en backend (datos) |
-| Favoritos | ~~Pendiente~~ — implementado | ✅ Integrado |
-| Tutorial desde backend | ~~Pendiente~~ — integrado en Tab2 | ✅ Integrado |
-
-### ✅ Ya integrado en el frontend
-
-| Elemento | Dónde quedó |
-|----------|------------|
-| `POST /user/score` | `FinalScoreEvaluation.tsx` — se envía al terminar evaluación si hay JWT |
-| `DELETE /user` | `Profile.tsx` — botón "Eliminar cuenta" con confirmación |
-| `POST /user/forgot-password` + `POST /user/reset-password` | `ForgotPassword.tsx` y `ResetPassword.tsx` (rutas `/ForgotPassword` y `/ResetPassword`) |
-| Migración de `gapi.client` → axios | 100% completada — artículos, evaluaciones, presentaciones y tutorial desde backend; script `gapi` eliminado de `index.html` |
-| `POST /user/favorites` + `GET /user/favorites` + `DELETE /user/favorites/:id` | `useFavorites.ts` (hook), `DocumentCard.tsx` (botón corazón), `Favorites.tsx` (página `/Favorites`), `ArticleCarrousel.tsx` |
-| `GET /tutorial` | `Tab2.tsx` — muestra instructivo del juego con stats, tipos de tarjeta, reglas y lista filtrable de cartas |
+| Reemplazar `useGetDocuments` (tutorial) | Hook del tutorial — apuntar a `GET /tutorial` | ⚠️ Pendiente en frontend |
+| Reemplazar `gapi.client` con axios | Todas las pantallas que cargan evaluaciones, artículos y presentaciones | ⚠️ Pendiente en frontend |
+| Integrar favoritos | Menú lateral / pantalla de favoritos — usar los 3 endpoints de `/user/favorites` | ⚠️ Pendiente en frontend |
+| Integrar `POST /user/score` | `FinalScoreEvaluation.tsx` al terminar una evaluación | ⚠️ Pendiente en frontend |
+| Integrar `DELETE /user` | UI de perfil — opción "Eliminar cuenta" | ⚠️ Pendiente en frontend |
+| Integrar `POST /user/forgot-password` y `POST /user/reset-password` | Pantalla de login / recuperación de contraseña | ⚠️ Pendiente en frontend |
 
 ---
 
@@ -538,95 +521,6 @@ Retorna el instructivo completo del juego SOSTEK: reglas + 48 tarjetas.
 | `error` | Causa |
 |---------|-------|
 | `"Tutorial no encontrado"` | La colección `tutorial` está vacía — correr `npm run seed:tutorial` |
-
----
-
-### GET `/evaluations` — campo `description` pendiente ⚠️
-
-El frontend ya consume este endpoint y ya está preparado para recibir `description`. Solo falta agregarlo al modelo y al seed.
-
-**Cambios requeridos en el backend**
-- Agregar campo `description: { type: String, default: '' }` al schema de Mongoose de evaluaciones
-- Actualizar el seed de las 6 evaluaciones con sus descripciones (ver sugerencias abajo)
-- Incluir `description` en la respuesta de `GET /evaluations`
-
-**Descripciones sugeridas por evaluación** (basadas en análisis de las preguntas reales):
-
-| Evaluación | Descripción sugerida |
-|------------|---------------------|
-| Arquitectura Nivel 1 | Mide si conoces y tomaste en cuenta los factores ambientales y sociales básicos en el análisis de tu proyecto. |
-| Arquitectura Nivel 2 | Mide cómo integras estrategias de sostenibilidad en el diseño y desarrollo de tu proyecto. |
-| Arquitectura Nivel 3 | Mide si tu proyecto plantea sistemas y programas de sostenibilidad a largo plazo. |
-| Diseño Industrial Nivel 1 | Mide tu conocimiento básico sobre impacto ambiental y sostenibilidad en el diseño de productos. |
-| Diseño Industrial Nivel 2 | Mide cómo consideras la sostenibilidad en tu proceso de diseño y selección de materiales. |
-| Diseño Industrial Nivel 3 | Mide qué tan profundo integra tu proyecto criterios de sostenibilidad en todo su ciclo de vida. |
-
----
-
-### Imágenes rotas en artículos ⚠️ PENDIENTE — actualizar URLs en MongoDB
-
-3 artículos tienen el campo `image` con URLs caídas. El frontend muestra un placeholder cuando la imagen falla, pero lo correcto es actualizar el documento en MongoDB con la URL nueva.
-
-**Buscar en la colección `articles` por título y actualizar el campo `image`:**
-
-| Título del artículo | URL de imagen nueva |
-|---------------------|---------------------|
-| `Dia Mundial de los Humedades: Celebrando y Preservando Ecosistemas Vitales` | `https://provea.org/wp-content/uploads/2020/12/Efemerides_Humedales.jpg` |
-| `El impacto del cine en el medio ambiente` | `https://media.sitioandino.com.ar/p/bedcd30db0702619a8e5aac262fc8d38/adjuntos/335/imagenes/000/810/0000810381/790x0/smart/cine-medio-ambiente.png` |
-| `Muebles en Abuela` | `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQszpgQOrAHvdAqeYQKGcQ0qo8FXS84XH6WIg&s` |
-
-**Comando MongoDB (Atlas o mongo shell):**
-```js
-db.articles.updateOne(
-  { title: "Dia Mundial de los Humedades: Celebrando y Preservando Ecosistemas Vitales" },
-  { $set: { image: "https://provea.org/wp-content/uploads/2020/12/Efemerides_Humedales.jpg" } }
-)
-db.articles.updateOne(
-  { title: "El impacto del cine en el medio ambiente" },
-  { $set: { image: "https://media.sitioandino.com.ar/p/bedcd30db0702619a8e5aac262fc8d38/adjuntos/335/imagenes/000/810/0000810381/790x0/smart/cine-medio-ambiente.png" } }
-)
-db.articles.updateOne(
-  { title: "Muebles en Abuela" },
-  { $set: { image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQszpgQOrAHvdAqeYQKGcQ0qo8FXS84XH6WIg&s" } }
-)
-```
-
-> El frontend no necesita ningún cambio — ya consume `image` del endpoint `GET /articles` y lo muestra directo.
-
----
-
-### POST `/user/avatar` ⚠️ PENDIENTE — aún no implementado en backend
-
-Sube una imagen de perfil a Cloudinary y guarda la URL en el usuario. Requiere JWT.
-
-**Headers requeridos**
-```
-Authorization: Bearer <token>
-Content-Type: multipart/form-data
-```
-
-**Body (form-data)**
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `avatar` | File | Imagen (jpg/png/webp), máx recomendado 5MB |
-
-**Respuesta exitosa — 200**
-```json
-{
-  "success": true,
-  "avatar_url": "https://res.cloudinary.com/.../avatar_userid.jpg"
-}
-```
-
-**Errores posibles**
-| `error` | Causa |
-|---------|-------|
-| `"No se subió ninguna imagen"` | El campo `avatar` no llegó en el form-data |
-| `"Error al subir imagen"` | Fallo de Cloudinary |
-
-**Cambios requeridos en el modelo de usuario**
-- Agregar campo `avatar: { type: String, default: '' }` al schema de Mongoose
-- Incluir `avatar` en la respuesta de `GET /user/profile`
 
 ---
 
