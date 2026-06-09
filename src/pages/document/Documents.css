@@ -123,3 +123,27 @@
 .doc-body p:last-child {
   margin-bottom: 0;
 }
+
+.doc-bibliography {
+  margin-top: 8px;
+}
+
+.doc-bibliography__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 16px 0 10px;
+}
+
+.doc-bibliography__entry {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.6;
+  margin: 0 0 6px;
+}
+
+.doc-bibliography__entry:last-child {
+  margin-bottom: 0;
+}

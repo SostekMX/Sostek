@@ -18,6 +18,7 @@ interface Article {
   author_image: string;
   page_image: string;
   category: string;
+  bibliography?: string;
 }
 
 interface RouteParams {
@@ -118,6 +119,16 @@ const Documents: React.FC = () => {
                   <p key={i}>{para}</p>
                 ))}
               </div>
+
+              {article.bibliography && (
+                <div className="doc-bibliography">
+                  <div className="doc-divider" />
+                  <p className="doc-bibliography__label">Bibliografía</p>
+                  {article.bibliography.split('\n').filter(l => l.trim()).map((line, i) => (
+                    <p key={i} className="doc-bibliography__entry">{line}</p>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         )}

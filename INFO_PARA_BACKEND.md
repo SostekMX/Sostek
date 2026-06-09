@@ -13,6 +13,9 @@
 |-------|--------|------------------------|
 | 2026-06-09 | Unit tests frontend completados (23 tests) | Sin cambios en backend — solo información |
 | 2026-06-09 | Error boundary global agregado | Sin cambios en backend |
+| 2026-06-09 | `bibliography` ya se muestra en `Documents.tsx` | El campo ya llega en `GET /articles/:id` — el frontend lo renderiza automáticamente si existe |
+| 2026-06-09 | `description` en evaluaciones — **aún no llega del backend** | `GET /evaluations` devuelve solo `_id`, `name`, `career` — falta agregar `description` al schema y al seed |
+| 2026-06-09 | `REACT_APP_BACKEND_URL` ya está implementado | La nota en INFO_FRONTEND.md está obsoleta — el frontend ya usa variable de entorno desde `src/config.ts` |
 | 2026-06-08 | Artículos con imágenes rotas detectados | Actualizar `image` en MongoDB para 3 artículos — ver sección "Pendientes de datos" |
 | 2026-06-08 | Párrafos en artículos — frontend ya divide `body` por `\n` | Agregar `\n` entre párrafos en los artículos que se ven como bloque continuo en MongoDB |
 | 2026-06-08 | Evaluaciones — frontend listo para recibir `description` | Agregar campo `description` al schema y seed — ver sección "Pendientes de datos" |
