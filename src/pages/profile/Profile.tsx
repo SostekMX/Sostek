@@ -1,6 +1,6 @@
 import { IonContent, IonItem, IonPage, IonButton, IonLabel, IonInput, IonSelect, IonSelectOption, IonAlert, IonToast, IonIcon } from '@ionic/react';
-import { personCircleOutline } from 'ionicons/icons';
-import { useEffect, useState } from 'react';
+import { personCircleOutline, cameraOutline } from 'ionicons/icons';
+import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import axios from 'axios';
 import { BACKEND_URL } from '../../config';
@@ -14,9 +14,12 @@ const Profile: React.FC = () => {
     const [birthDate, setBirthDate] = useState<string>('');
     const [occupation, setOccupation] = useState<string>('');
     const [gender, setGender] = useState<string>('');
+    const [avatar, setAvatar] = useState<string>('');
+    const [avatarUploading, setAvatarUploading] = useState(false);
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const history = useHistory();
 
     useEffect(() => {
@@ -32,11 +35,27 @@ const Profile: React.FC = () => {
                 setBirthDate(u.birth_date ?? '');
                 setOccupation(u.occupation ?? '');
                 setGender(u.gender ?? '');
+                setAvatar(u.avatar ?? '');
             }
         }).catch(function (error) {
             console.log(error);
         });
     }, []);
+
+    function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const token = localStorage.getItem('token');
+        const formData = new FormData();
+        formData.append('avatar', file);
+        setAvatarUploading(true);
+        axios.post(`${BACKEND_URL}/user/avatar`, formData, {
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+        }).then(res => {
+            if (res.data.success) setAvatar(res.data.avatar_url);
+        }).catch(err => console.log(err))
+          .finally(() => setAvatarUploading(false));
+    }
 
     function deleteUser() {
         const token = localStorage.getItem('token');
@@ -75,7 +94,25 @@ const Profile: React.FC = () => {
             <IonContent fullscreen class='app-dark-bg'>
                 <div className='profile-container'>
                     <div className='profile-avatar'>
-                        <IonIcon icon={personCircleOutline} className='profile-avatar__icon' />
+                        {avatar
+                            ? <img src={avatar} alt='avatar' className='profile-avatar__img' />
+                            : <IonIcon icon={personCircleOutline} className='profile-avatar__icon' />
+                        }
+                        <input
+                            ref={fileInputRef}
+                            type='file'
+                            accept='image/jpeg,image/png,image/webp'
+                            style={{ display: 'none' }}
+                            onChange={handleAvatarChange}
+                        />
+                        <button
+                            className='profile-avatar__change-btn'
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={avatarUploading}
+                        >
+                            <IonIcon icon={cameraOutline} />
+                            {avatarUploading ? 'Subiendo...' : 'Cambiar foto'}
+                        </button>
                     </div>
                     <div className='profile-card'>
                         <h2 className='profile-title'>Modificar Perfil</h2>

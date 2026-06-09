@@ -8,14 +8,48 @@
 /* Avatar */
 .profile-avatar {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding: 24px 0 8px;
+    gap: 10px;
 }
 
 .profile-avatar__icon {
     font-size: 88px;
     color: #80b259;
     opacity: 0.9;
+}
+
+.profile-avatar__img {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #80b259;
+}
+
+.profile-avatar__change-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 20px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.profile-avatar__change-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.profile-avatar__change-btn ion-icon {
+    font-size: 14px;
 }
 
 /* Card */
