@@ -11,10 +11,11 @@
 
 | Fecha | Cambio | Qué necesita el backend |
 |-------|--------|------------------------|
+| 2026-06-09 | **`ForgotPassword` y `ResetPassword` — flujo nuevo integrado ✅** | Frontend actualizado: `ForgotPassword` ya no lee `reset_token` de la respuesta, muestra el mensaje del backend y oculta el form. `ResetPassword` lee el token desde `?token=` en la URL con `useLocation`. Sin cambios en backend. |
 | 2026-06-09 | **Token JWT movido a `sessionStorage`** | Sin cambios en backend — el frontend ya no usa `localStorage` para el token ni el flag de sesión. Si el backend alguna vez implementa HttpOnly cookies, avisar para eliminar el manejo manual del token en el frontend. |
 | 2026-06-09 | **Contraseña mínima subida a 8 caracteres** | El frontend ahora valida mínimo 8 caracteres en signup y reset-password. **El backend debe actualizar su validación de 6 → 8 caracteres** en `/user/signup` y `/user/reset-password`, y actualizar el mensaje de error a `"La contraseña debe tener al menos 8 caracteres"`. |
 | 2026-06-09 | **Guardias de ruta implementadas** | Sin cambios en backend — `/Profile` y `/Favorites` redirigen automáticamente a `/` si no hay sesión. |
-| 2026-06-09 | **Email removido del body de `POST /user/edit`** | Confirmar que el backend ya ignora el campo `email` en el body y usa solo el del JWT (según el contrato ya documentado). No enviar email desde frontend era un bug — ya corregido. |
+| 2026-06-09 | **Email removido del body de `POST /user/edit`** | Confirmado — el backend ignora el campo `email` en el body y usa solo el del JWT (según contrato). Bug corregido en frontend. |
 | 2026-06-08 | **Avatar upload — frontend ✅ completo** | ✅ Ya implementado según `INFO_FRONTEND.md` — `POST /user/avatar` activo. |
 | 2026-06-08 | Avatar mostrado en header (`AppBarPopOver`) | Sin cambios en backend — el frontend lee `avatar` de `GET /user/profile` y lo guarda en `localStorage` (es URL pública, no sensible). |
 | 2026-06-08 | Carrusel usa campo `cover` de presentaciones | Si el backend envía `cover` en `GET /presentations`, el frontend lo usa como portada; si no, cae en `slides[0]` — el campo es opcional |
@@ -661,7 +662,7 @@ El backend mantiene `INFO_FRONTEND.md` para comunicarle cambios al frontend. Las
 | Mostrar `cover` de presentaciones | ✅ Integrado — `Presentation.tsx` y carrusel usan `cover` si existe |
 
 ### Errores de contraseña — mensaje desactualizado
-Los mensajes de error de `/user/signup` y `/user/reset-password` dicen `"La contraseña debe tener al menos 6 caracteres"`. Actualizar a `"La contraseña debe tener al menos 8 caracteres"` para ser consistente con la validación del frontend.
+Los mensajes de error de `/user/signup` y `/user/reset-password` todavía dicen `"La contraseña debe tener al menos 6 caracteres"` según `INFO_FRONTEND.md`. Actualizar a `"La contraseña debe tener al menos 8 caracteres"` para ser consistente con la validación del frontend (ya actualizada a 8).
 
 ### Sección 4 — Variables de entorno
 El pie de página de `INFO_FRONTEND.md` dice: *"Actualmente la URL del backend está hardcodeada en el frontend"*. Eso ya no es verdad — el frontend usa `REACT_APP_BACKEND_URL` desde `src/config.ts`. Eliminar esa nota.
@@ -877,31 +878,11 @@ app.use(helmet()); // agrega X-Content-Type-Options, X-Frame-Options, HSTS, CSP 
 - IDs de MongoDB malformados en parámetros de URL → bloqueados por `isMongoId()`
 - Headers HTTP inseguros → mitigados por `helmet`
 
-### BS3 — Mensajes de error genéricos (prevenir enumeración de usuarios)
+### ~~BS3~~ — ~~Mensajes de error genéricos~~ ✅ Resuelto por el backend
 
-Actualmente los endpoints de login y forgot-password revelan si un email existe en la base de datos con mensajes distintos. Un atacante puede hacer un script y descubrir qué usuarios están registrados.
-
-**Endpoints afectados:**
-
-`POST /user/login` — cambiar:
-```js
-// ❌ Actual — revela si el email existe
-{ "success": false, "error": "Cuenta no registrada" }   // email no existe
-{ "success": false, "error": "Contraseña incorrecta" }  // email sí existe
-
-// ✅ Correcto — mismo mensaje en ambos casos
-{ "success": false, "error": "Correo o contraseña incorrectos" }
-```
-
-`POST /user/forgot-password` — cambiar:
-```js
-// ❌ Actual — revela si el email existe
-{ "success": false, "error": "Correo no registrado" }
-
-// ✅ Correcto — no revelar si existe o no
-{ "success": false, "error": "Si el correo está registrado, recibirás instrucciones pronto" }
-```
-> Nota: cuando el backend implemente el envío por email (Fix #1), el mensaje de éxito también debe ser el mismo independientemente de si el email existe o no, para no revelar el dato.
+`POST /user/login` ya devuelve `"Correo o contraseña incorrectos"` en ambos casos.
+`POST /user/forgot-password` ya devuelve el mismo mensaje sin importar si el email existe.
+El flujo de recuperación por email también está implementado. Frontend integrado.
 
 ---
 
