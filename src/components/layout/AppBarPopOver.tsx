@@ -16,6 +16,7 @@ export const AppBarPopOver: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
+    const showSearch = location.pathname === '/tab1' || location.pathname === '/MainMenu';
     const isUserLogged = sessionStorage.getItem('login') === 'true';
     const avatarUrl = localStorage.getItem('avatar') || '';
     const rawPos = localStorage.getItem('avatar_position');
@@ -75,7 +76,7 @@ export const AppBarPopOver: React.FC = () => {
             </IonButtons>
 
             {/* Searchbar en slot central — ocupa solo el espacio disponible entre logo y botones */}
-            {isSearching && (
+            {showSearch && isSearching && (
                 <IonSearchbar
                     ref={searchbarRef}
                     className={`appbar__searchbar${isClosing ? ' appbar__searchbar--out' : ''}`}
@@ -90,7 +91,7 @@ export const AppBarPopOver: React.FC = () => {
 
             {/* Botones derecha — lupa + menú/avatar siempre juntos */}
             <div slot="end" className="appbar__end">
-                {!isSearching && (
+                {showSearch && !isSearching && (
                     <IonButton fill="clear" onClick={openSearch}>
                         <IonIcon slot="icon-only" icon={iconSearch} />
                     </IonButton>
