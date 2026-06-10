@@ -273,6 +273,7 @@ src/
 | C12 | Solo aparece 1 artículo recomendado al terminar una evaluación — causa raíz: los 26 artículos tienen `category: null` en MongoDB, por lo que el filtro por categoría nunca matchea | — | Sí — backend puebla `category` (B2) |
 | C13 | 2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") se ven con diseño viejo — en realidad tienen datos rotos (encoding corrupto y campos vacíos/desordenados), no es un problema de UI | — | Sí — backend corrige datos (B1) |
 | C14 | Descripciones de evaluaciones con el rango de semestre por nivel (Nivel 1: 3°-4°, Nivel 2: 5°-6°, Nivel 3: 7°-8°) | `EvaluationCard.tsx` (fallback opcional mientras tanto) | Sí — backend llena `description` (B3) |
+| C15 | El footer (tab bar) al entrar a un artículo o presentación no es el mismo que en APRENDE/EVALÚATE/JUEGA — revisar `IonTabBar` en `App.tsx` y por qué difiere en `Documents.tsx` / `Presentation.tsx` | `App.tsx`, `Documents.tsx`, `Presentation.tsx` | No |
 
 ---
 
