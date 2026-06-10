@@ -906,3 +906,54 @@ Testear lógica crítica del backend:
 - Lógica de puntaje (`POST /user/score`)
 
 Herramienta recomendada: `jest` + `supertest` + `mongodb-memory-server` para base de datos de test en memoria.
+
+---
+
+## 🆕 Pendientes — revisión frontend (2026-06-10)
+
+> Hallazgos de QA manual (jefa). Se priorizan los que afectan datos en MongoDB.
+
+### B1 — 2 artículos con datos corruptos (parecen "diseño viejo" pero es un problema de datos)
+
+| Artículo | `_id` | Problema |
+|---|---|---|
+| "El impacto del cine en el medio ambiente" | `6a226c484b54f546d8876731` | `title`, `subtitle` y `tags` tienen saltos de línea metidos en medio de palabras/URLs (ej. `tags: ["https://unsplash.\ncom/photos/CiUR8zISX60"]`). El campo `body` solo tiene 24 caracteres: `"Alexa Valladares\nCristóbal"` — parece que ahí quedó el nombre del autor en vez del cuerpo del artículo. Hay que recargar el contenido completo de este artículo. |
+| "La Catástrofe Industrial de Bhopal: El Legado Perdurante de una Fuga Mortal" | `6a226c484b54f546d8876732` | El texto tiene caracteres corruptos por mal manejo de encoding (ej. `"Cat�strofe"`, `"Uni�n Carbide"`, `"f�brica"`, `"Bophal"` en vez de `"Bhopal"` en tags). Hay que reimportar este artículo asegurando codificación UTF-8. |
+
+Ambos también tienen `category: null` — ver B2.
+
+---
+
+### B2 — Los 26 artículos tienen `category: null`
+
+Esto rompe la recomendación de artículos al final de una evaluación. El frontend filtra los artículos por `category` (y por `title` como respaldo) usando la categoría con menor puntaje obtenida en la evaluación (ej. `"ECOSISTEMA"`, `"Economía y sociedad"`, etc.). Como `category` es siempre `null` en los 26 artículos, casi nunca hay match por categoría — hoy solo aparece 1 artículo recomendado porque su título contiene casualmente la palabra "Ecosistemas".
+
+**Pedido:** poblar el campo `category` en los 26 artículos con valores que correspondan a las categorías usadas en las preguntas de las evaluaciones (correr `GET /evaluations/:id` de cada una de las 6 evaluaciones para ver el set completo de categorías por carrera/nivel).
+
+---
+
+### B3 — `description` de evaluaciones sigue vacía (`""`)
+
+Ya estaba pendiente (ver "Pendiente de ambos lados"). Ahora la jefa pidió contenido específico: la descripción debe indicar para qué semestre es cada nivel:
+
+- **Nivel 1** → alumnos de 3°-4° semestre
+- **Nivel 2** → alumnos de 5°-6° semestre
+- **Nivel 3** → alumnos de 7°-8° semestre
+
+Aplica a las 6 evaluaciones (3 Arquitectura + 3 Diseño Industrial).
+
+---
+
+### B4 — Agregar conteo de preguntas a `GET /evaluations`
+
+El frontend va a mostrar "X preguntas" en cada tarjeta de evaluación (Tab3), pero `GET /evaluations` (lista) solo trae `_id`, `name`, `career`, `description` — no las preguntas. Pedido: agregar un campo, ej. `question_count`, con el total de preguntas de cada evaluación.
+
+```json
+{
+  "_id": "...",
+  "name": "Arquitectura Nivel 1",
+  "career": "Arquitectura",
+  "description": "...",
+  "question_count": 12
+}
+```
