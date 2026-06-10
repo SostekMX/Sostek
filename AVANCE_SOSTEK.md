@@ -253,6 +253,29 @@ src/
 
 ---
 
+## 🆕 Correcciones pendientes — revisión 2026-06-10
+
+> QA manual (jefa). Pendientes de frontend — algunos dependen de cambios del backend documentados en `INFO_PARA_BACKEND.md` (sección "Pendientes — revisión frontend 2026-06-10").
+
+| # | Descripción | Archivo(s) | Depende de backend |
+|---|-------------|------------|---------------------|
+| C1 | Barra de búsqueda solo visible en APRENDE — ocultarla en JUEGA y EVALÚATE | `AppBarPopOver.tsx` | No |
+| C2 | Mostrar foto de perfil en el header desde que se inicia sesión (hoy solo aparece después de entrar a Perfil al menos una vez) | `LogIn.tsx` | No |
+| C3 | Agregar botón de regreso en presentaciones, igual que en artículos | `Presentation.tsx` | No |
+| C4 | La presentación "Social Innovation and Design" abre en la última slide en vez de la primera — el orden de `slides` en el backend es correcto (Slide1→Slide5), es config de Swiper | `Presentation.tsx` | No |
+| C5 | Quitar botón "Ajustes" del menú (sin funcionalidad por ahora, se puede reagregar a futuro) | `AppBarPopOver.tsx`, `Documents.tsx` | No |
+| C6 | Cambiar texto de descarga en JUEGA: "Descarga y juega sin conexión a internet" → "Imprime las cartas y juega con tus amigos" | `Tab2.tsx` | No |
+| C7 | Bug: tras tocar "Artículos recomendados" y volver a EVALÚATE, no aparecen evaluaciones hasta tocar un filtro de carrera — el `search` global queda con el nombre de la categoría débil y filtra también las evaluaciones de Tab3 | `Tab3.tsx` | No |
+| C8 | Rediseñar pantalla de resultados (`/score/:name`, aplica a todas las evaluaciones) con el dark theme del resto de la app | `FinalScoreEvaluation.tsx`, `.css` | No |
+| C9 | Numerar cada pregunta de la evaluación (inciso 1, 2, 3...) | `Evaluation.tsx`, `QuestionTestCard.tsx` | No |
+| C10 | Mostrar el total de preguntas en cada tarjeta de evaluación (Tab3) | `EvaluationCard.tsx`, `Tab3.tsx` | Sí — backend agrega `question_count` (B4) |
+| C11 | Mostrar el puntaje máximo posible junto al obtenido en resultados — se calcula sumando los valores positivos de cada pregunta de `/evaluations/:id`, no requiere datos nuevos | `Evaluation.tsx` (calcular y guardar en sessionStorage), `FinalScoreEvaluation.tsx` (mostrar) | No |
+| C12 | Solo aparece 1 artículo recomendado al terminar una evaluación — causa raíz: los 26 artículos tienen `category: null` en MongoDB, por lo que el filtro por categoría nunca matchea | — | Sí — backend puebla `category` (B2) |
+| C13 | 2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") se ven con diseño viejo — en realidad tienen datos rotos (encoding corrupto y campos vacíos/desordenados), no es un problema de UI | — | Sí — backend corrige datos (B1) |
+| C14 | Descripciones de evaluaciones con el rango de semestre por nivel (Nivel 1: 3°-4°, Nivel 2: 5°-6°, Nivel 3: 7°-8°) | `EvaluationCard.tsx` (fallback opcional mientras tanto) | Sí — backend llena `description` (B3) |
+
+---
+
 ## Arquitectura de datos
 
 ```
@@ -272,5 +295,13 @@ npm run start        # dev server en http://localhost:3000
 ```
 
 El backend debe estar corriendo por separado en `http://localhost:8080`.
+
+---
+
+## Despliegue (Render)
+
+- **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
+- **Frontend** — pendiente: configurar la variable de entorno `REACT_APP_BACKEND_URL=https://sostek-backend.onrender.com` en el panel de Render del servicio del frontend (es una env var de build de CRA, no alcanza con cambiar `.env.example`).
+- En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
 > ⚠️ Al correr por primera vez después de la migración a MongoDB, limpiar la clave `articles` de `localStorage` en el navegador para evitar conflictos con el formato anterior.
