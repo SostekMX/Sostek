@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import './AppBarPopOver.css';
 import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
-import { personCircle, settings, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
+import { personCircle, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
 import { useHistory, useLocation } from "react-router-dom";
 import AppContext from '../../context/AppContext';
 
@@ -128,12 +128,6 @@ export const AppBarPopOver: React.FC = () => {
                                 <IonItem href='/'>
                                     <IonIcon icon={personCircle} color='secondary' /> &nbsp;
                                     <IonLabel>Iniciar Sesión</IonLabel>
-                                </IonItem>
-                            }
-                            {isUserLogged &&
-                                <IonItem>
-                                    <IonIcon icon={settings} color='secondary' /> &nbsp;
-                                    <IonLabel>Ajustes</IonLabel>
                                 </IonItem>
                             }
                             {isUserLogged &&

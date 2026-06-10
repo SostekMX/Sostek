@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonItem, IonLabel, IonPopover } from '@ionic/react';
-import { menuOutline, heart, personCircle, settings, logOut } from 'ionicons/icons';
+import { menuOutline, heart, personCircle, logOut } from 'ionicons/icons';
 import { useParams } from 'react-router';
 import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -66,7 +66,6 @@ const Documents: React.FC = () => {
                 {isUserLogged && <IonItem href="/Favorites"><IonIcon icon={heart} color="secondary" />&nbsp;<IonLabel>Favoritos</IonLabel></IonItem>}
                 {isUserLogged && <IonItem href="/Profile"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Perfil</IonLabel></IonItem>}
                 {!isUserLogged && <IonItem href="/"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Iniciar Sesión</IonLabel></IonItem>}
-                {isUserLogged && <IonItem><IonIcon icon={settings} color="secondary" />&nbsp;<IonLabel>Ajustes</IonLabel></IonItem>}
                 {isUserLogged && <IonItem onClick={logOutUser}><IonIcon icon={logOut} color="secondary" />&nbsp;<IonLabel>Log Out</IonLabel></IonItem>}
               </IonList>
             </IonPopover>
