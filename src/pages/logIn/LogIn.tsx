@@ -26,6 +26,7 @@ const LogIn: React.FC = () => {
                 sessionStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email);
                 sessionStorage.setItem('token', response.data.token);
+                fetchAvatar(response.data.token);
                 history.push("/tab1");
             } else {
                 setMessage(response.data.error);
@@ -34,6 +35,17 @@ const LogIn: React.FC = () => {
         }).catch(function (error) {
             console.log(error);
         });
+    }
+
+    // Trae la foto de perfil de una vez para que el header la muestre desde el login
+    function fetchAvatar(token: string) {
+        axios.get(`${BACKEND_URL}/user/profile`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(res => {
+            if (res.data.success) {
+                localStorage.setItem('avatar', res.data.user.avatar ?? '');
+            }
+        }).catch(err => console.log(err));
     }
 
     return (
