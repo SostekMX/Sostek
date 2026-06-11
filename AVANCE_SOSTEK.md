@@ -286,16 +286,23 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 ## Despliegue
 
 - **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
-- **Frontend (Render)** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅ — funcionando, CORS verificado.
-- **Frontend (Cloudflare Pages)** — `https://sostek.pages.dev` es el link que se va a compartir, pero existe desde hace 4 años con el build viejo (pre-integración al backend, usa `apis.google.com/js/api.js`). `CORS_ORIGIN` ya quedó en `https://sostek.pages.dev` ✅.
+- **Frontend (Render)** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅ — código actualizado, pero ahora mismo **sin CORS** (ver abajo).
+- **Frontend (Cloudflare Pages)** — `https://sostek.pages.dev` es el link que se va a compartir. Lo maneja el otro compañero (no hay acceso desde esta cuenta). Corre el build viejo de hace 4 años (pre-integración al backend, usa `apis.google.com/js/api.js`).
+
+### ⚠️ Estado actual de CORS_ORIGIN
+
+`CORS_ORIGIN` se cambió a `https://sostek.pages.dev` (el link que se va a compartir). Esto significa:
+- `sostek.pages.dev` → CORS ok, pero corre código viejo sin integración al backend → login no va a funcionar igual
+- `sostek-frontend.onrender.com` → código actualizado, pero CORS roto (origin ya no coincide) → login/perfil/favoritos van a fallar ahí
 
 ### Pendiente
 
-1. ⏳ **Redeployar `sostek.pages.dev`** desde el dashboard de Cloudflare Pages con el código actual de `main`:
+1. ⏳ **Pedirle al compañero que redeploye `sostek.pages.dev`** desde Cloudflare Pages con el código actual de `main`:
    - Build command: `npm run build`
    - Output directory: `build`
    - Variable de entorno: `REACT_APP_BACKEND_URL=https://sostek-backend.onrender.com`
    - Se agregó `public/_redirects` (`/* /index.html 200`) para que las rutas internas (`/Profile`, `/tab1`, etc.) funcionen en Cloudflare Pages.
+2. ⏳ Una vez redeployado, volver a probar login/perfil/favoritos en `sostek.pages.dev` para confirmar que CORS y backend funcionan juntos.
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
