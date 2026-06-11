@@ -64,7 +64,7 @@ const Tab2: React.FC = () => {
             <div className='juega-download-card__icon'>&#8595;</div>
             <div>
               <p className='juega-download-card__title'>Versión física</p>
-              <p className='juega-download-card__desc'>Descarga y juega sin conexión a internet</p>
+              <p className='juega-download-card__desc'>Imprime las cartas y juega con tus amigos</p>
             </div>
           </a>
 
