@@ -33,6 +33,12 @@
     font-family: 'Kiona-Regular', 'Raleway', sans-serif;
 }
 
+.score-card__points-max {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.35);
+}
+
 .score-card__pts-label {
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.5);

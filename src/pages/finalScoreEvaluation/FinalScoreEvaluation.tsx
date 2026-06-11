@@ -14,12 +14,14 @@ interface Params {
 
 const FinalScoreEvaluation: React.FC = () => {
     const [score, setScore] = useState<number>(0);
+    const [maxScore, setMaxScore] = useState<number>(0);
     const [weakestCategory, setWeakestCategory] = useState<string>("");
     const { changeSearch } = useContext(AppContext);
 
     useEffect(() => {
         const finalScore = Number(sessionStorage.getItem("finalScore"));
         setScore(finalScore);
+        setMaxScore(Number(sessionStorage.getItem("maxScore")));
 
         const totalCategories = Number(sessionStorage.getItem("totalCategories"));
         let lowPunctuation = Infinity;
@@ -55,7 +57,10 @@ const FinalScoreEvaluation: React.FC = () => {
                 <div className="score-page">
                     <div className="score-card">
                         <p className="score-card__evaluation-name">{name}</p>
-                        <p className="score-card__points">{score}</p>
+                        <p className="score-card__points">
+                            {score}
+                            {maxScore > 0 && <span className="score-card__points-max">/{maxScore}</span>}
+                        </p>
                         <p className="score-card__pts-label">puntos</p>
                         <p className="score-card__titulo">{titulo}</p>
                         <p className="score-card__mensaje">{mensaje}</p>
