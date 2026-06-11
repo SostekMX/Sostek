@@ -283,13 +283,19 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 
 ---
 
-## Despliegue (Render)
+## Despliegue
 
 - **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
-- **Frontend** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅.
-- **CORS** configurado con `CORS_ORIGIN=https://sostek-frontend.onrender.com` ✅ — verificado: preflight responde `access-control-allow-origin` correcto, `/user/login` y `/articles` funcionan desde el frontend, rutas internas (`/tab1`, `/Profile`) sirven bien gracias al rewrite SPA.
+- **Frontend (Render)** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅ — funcionando, CORS verificado.
+- **Frontend (Cloudflare Pages)** — `https://sostek.pages.dev` es el link que se va a compartir, pero existe desde hace 4 años con el build viejo (pre-integración al backend, usa `apis.google.com/js/api.js`). `CORS_ORIGIN` ya quedó en `https://sostek.pages.dev` ✅.
 
-> 🎉 Deploy completo — frontend y backend en producción y comunicándose correctamente.
+### Pendiente
+
+1. ⏳ **Redeployar `sostek.pages.dev`** desde el dashboard de Cloudflare Pages con el código actual de `main`:
+   - Build command: `npm run build`
+   - Output directory: `build`
+   - Variable de entorno: `REACT_APP_BACKEND_URL=https://sostek-backend.onrender.com`
+   - Se agregó `public/_redirects` (`/* /index.html 200`) para que las rutas internas (`/Profile`, `/tab1`, etc.) funcionen en Cloudflare Pages.
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
