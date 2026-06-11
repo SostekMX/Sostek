@@ -4,10 +4,10 @@
 }
 
 .score-card {
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 20px;
     padding: 28px 22px;
-    box-shadow: 0 8px 28px rgba(10, 26, 10, 0.22);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,7 +20,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: #5a7260;
+    color: rgba(255, 255, 255, 0.45);
     margin: 0;
 }
 
@@ -35,21 +35,21 @@
 
 .score-card__pts-label {
     font-size: 0.9rem;
-    color: #5a7260;
+    color: rgba(255, 255, 255, 0.5);
     margin-top: -8px;
 }
 
 .score-card__titulo {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #1a2e1a;
+    color: #f0f0f0;
     margin: 0;
     font-family: 'Kiona-Regular', 'Raleway', sans-serif;
 }
 
 .score-card__mensaje {
     font-size: 0.88rem;
-    color: #5a7260;
+    color: rgba(255, 255, 255, 0.6);
     line-height: 1.6;
     margin: 0;
 }
@@ -57,13 +57,13 @@
 .score-card__divider {
     width: 48px;
     height: 3px;
-    background: #ddebd5;
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
 }
 
 .score-card__weakest-label {
     font-size: 0.82rem;
-    color: #5a7260;
+    color: rgba(255, 255, 255, 0.5);
     margin: 0;
 }
 
@@ -75,13 +75,8 @@
 
 .score-card__cta-label {
     font-size: 0.82rem;
-    color: #5a7260;
+    color: rgba(255, 255, 255, 0.5);
     margin: 0;
-}
-
-.finalScoreEvaluation__category {
-    color: #80b259;
-    font-weight: 700;
 }
 
 .finalScoreEvaluation__button {

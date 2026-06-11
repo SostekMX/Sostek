@@ -50,7 +50,7 @@ const FinalScoreEvaluation: React.FC = () => {
     return (
         <IonPage>
             <AppBarPopOver />
-            <IonContent fullscreen class="bg-img">
+            <IonContent fullscreen class="app-dark-bg">
                 <IonHeader collapse="condense"></IonHeader>
                 <div className="score-page">
                     <div className="score-card">
