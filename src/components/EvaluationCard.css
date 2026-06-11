@@ -1,24 +1,73 @@
-.evaluation__container {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    width: 50vw;
+.evaluation__card {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-radius: 16px !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+    transition: background 0.18s !important;
+}
 
+.evaluation__card:active {
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.evaluation-card__accent {
+    height: 3px;
+    background: #80b259;
+}
+
+.evaluation-card__body {
+    padding: 14px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.evaluation-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.evaluation-card__icon {
+    font-size: 22px;
+    color: #80b259;
 }
 
 .evaluation__title {
-    font-size: medium;
-    padding-inline: 5px;
-    padding-block: 3vh;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: normal;
+    line-height: 1.35;
+    margin: 0;
 }
 
-.evaluationCard__image {
-    height: 15vh;
-    object-fit: cover;
-    transition: all 1s ease-in;
+.evaluation-card__badge {
+    font-size: 0.64rem;
+    font-weight: 700;
+    color: #80b259;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
 }
 
-.evaluation-card__title-container{
-    height: 15vh;
-    /* display: flex;
-    align-items: center; */
+.evaluation-card__desc {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.evaluation-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.74rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 2px 0 0;
+}
+
+.evaluation-card__meta ion-icon {
+    font-size: 14px;
 }

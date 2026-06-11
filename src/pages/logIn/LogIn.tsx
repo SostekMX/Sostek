@@ -1,18 +1,12 @@
-import { IonButton, IonAlert, IonContent, IonInput, IonItem, IonLabel, IonRow, IonPage } from '@ionic/react';
+import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
-import { NativeStorage } from '@ionic-native/native-storage';
-import  axios  from 'axios';
-
-
-/* Theme variables */
-import '../../theme/variables.css';
+import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import '../../App.css';
-
-import './LogIn.css'
+import './LogIn.css';
 
 const LogIn: React.FC = () => {
-
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string | null>('');
     const [message, setMessage] = useState<string>('');
@@ -20,81 +14,146 @@ const LogIn: React.FC = () => {
     const history = useHistory();
 
     useEffect(() => {
-        //NativeStorage.setItem('login', false);
         sessionStorage.setItem('login', 'false');
     }, [])
 
-
     function loginUser() {
-        axios.post('http://localhost:8080/user/login', {
+        axios.post(`${BACKEND_URL}/user/login`, {
             email: email,
             password: password,
         }).then(function (response) {
-            if (response.data.success){
-                //NativeStorage.setItem('login', true);
-                //NativeStorage.setItem('user_email', email);
+            if (response.data.success) {
                 sessionStorage.setItem('login', 'true');
-                sessionStorage.setItem('user_email', email);
+                localStorage.setItem('user_email', email);
+                sessionStorage.setItem('token', response.data.token);
+                fetchAvatar(response.data.token);
                 history.push("/tab1");
-            }else{
-                setMessage(response.data.error)
-                setShowAlert(true)
+            } else {
+                setMessage(response.data.error);
+                setShowAlert(true);
             }
         }).catch(function (error) {
             console.log(error);
         });
     }
-    
-    return(
-        <IonPage>
-            <IonContent fullscreen class='bg-img'>
-            <IonRow class='logo-display '>
-                <img src="/assets/sostek-logo.png" height="100px"/>
-            </IonRow>
-            <IonRow class='login-form'>
-                <h2 className='title__color'>Inicio de sesión</h2>
-            </IonRow>
-            <IonRow class='space'></IonRow>
-            <IonRow className='align-center'>
-                <IonItem color='none' className='input-field'>
-                    <IonLabel position='stacked' color="light" >Correo: </IonLabel> 
-                    <IonInput type='email' color="light"
-                    value={email} onIonChange={(e) => setEmail(e.target.value as string)} ></IonInput>
-                </IonItem>
 
-                <IonItem color='none' className='input-field'>
-                    <IonLabel position='stacked' color="light" >Contraseña: </IonLabel> 
-                    <IonInput type='password' color="light"
-                        value={password} onIonChange={(e) => setPassword(e.target.value as string)}
-                    ></IonInput>
-                </IonItem>
-            </IonRow>
-            <IonRow class='space'></IonRow>
-            <IonRow className='align-center'>
-                
-                <IonButton color='light-green' onClick={loginUser} >Iniciar sesión</IonButton>
-                
-                <IonButton color='greyish-blue' href='SignUp'>Registrarme</IonButton>
-                
-            </IonRow>
-            <IonRow class='space'></IonRow>
-            <IonRow className='align-center'>
-                <IonButton color='secondary' href='MainMenu'>Continuar como invitado</IonButton>
-            </IonRow>
-            <br></br>
-            <IonAlert
-                isOpen={showAlert}
-                onDidDismiss={() => setShowAlert(false)}
-                header="Error al iniciar sesión"
-                message={message}
-                buttons={['OK']}
-            />
-           
-            
+    // Trae la foto de perfil de una vez para que el header la muestre desde el login
+    function fetchAvatar(token: string) {
+        axios.get(`${BACKEND_URL}/user/profile`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(res => {
+            if (res.data.success) {
+                localStorage.setItem('avatar', res.data.user.avatar ?? '');
+            }
+        }).catch(err => console.log(err));
+    }
+
+    return (
+        <IonPage>
+            <IonContent fullscreen>
+                <div className='login-split'>
+
+                    {/* Panel izquierdo — solo desktop */}
+                    <div className='login-brand'>
+                        <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
+                        <div className='login-brand__content'>
+                            <p className='login-brand__tag'>Plataforma Educativa</p>
+                            <h1 className='login-brand__headline'>
+                                Aprende,<br />eval&uacute;a<br />y crece.
+                            </h1>
+                            <p className='login-brand__desc'>
+                                Mide el nivel de sostenibilidad de tus proyectos acad&eacute;micos
+                                y accede a contenido especializado.
+                            </p>
+                            <a
+                                href='https://sostek.tec.mx/es'
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='login-brand__site-link'
+                            >
+                                🌿 Visitar sitio oficial de <u>SOSTEK</u>
+                            </a>
+                        </div>
+                        <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
+                    </div>
+
+                    {/* Panel derecho — formulario */}
+                    <div className='login-form-panel'>
+                        <div className='login-form-inner'>
+
+                            {/* Logo — solo mobile */}
+                            <img src="/assets/sostek-logo.png" className='login-logo-mobile' alt='Sostek' />
+
+                            <div className='login-welcome'>
+                                <span className='login-welcome__line' />
+                                <span className='login-welcome__text'>BIENVENIDO</span>
+                                <span className='login-welcome__line' />
+                            </div>
+
+                            <h2 className='login-title'>Iniciar sesi&oacute;n</h2>
+                            <p className='login-subtitle'>Ingresa tus credenciales para continuar.</p>
+
+                            <div className='login-fields'>
+                                <div className='login-field'>
+                                    <label className='login-field__label'>Correo electr&oacute;nico</label>
+                                    <IonItem className='login-field__item' lines='none'>
+                                        <IonInput
+                                            type='email'
+                                            placeholder='usuario@ejemplo.com'
+                                            value={email}
+                                            onIonChange={(e) => setEmail(e.target.value as string)}
+                                        />
+                                    </IonItem>
+                                </div>
+                                <div className='login-field'>
+                                    <label className='login-field__label'>Contrase&ntilde;a</label>
+                                    <IonItem className='login-field__item' lines='none'>
+                                        <IonInput
+                                            type='password'
+                                            placeholder='••••••••'
+                                            value={password}
+                                            onIonChange={(e) => setPassword(e.target.value as string)}
+                                        />
+                                    </IonItem>
+                                </div>
+                            </div>
+
+                            <IonButton expand='block' color='primary' onClick={loginUser} className='login-btn-main'>
+                                Iniciar sesi&oacute;n
+                            </IonButton>
+
+                            <IonButton expand='block' fill='clear' href='/ForgotPassword' className='login-btn-secondary'>
+                                &iquest;Olvidaste tu contrase&ntilde;a?
+                            </IonButton>
+
+                            <IonButton expand='block' fill='clear' href='SignUp' className='login-btn-secondary'>
+                                &iquest;No tienes cuenta? Reg&iacute;strate
+                            </IonButton>
+
+                            <div className='login-divider'>
+                                <span /><small>o</small><span />
+                            </div>
+
+                            <IonButton expand='block' fill='clear' href='MainMenu' className='login-btn-guest'>
+                                Continuar como invitado
+                            </IonButton>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <IonToast
+                    isOpen={showAlert}
+                    onDidDismiss={() => setShowAlert(false)}
+                    message={message}
+                    duration={3500}
+                    color="danger"
+                    position="bottom"
+                />
             </IonContent>
         </IonPage>
     );
-
 };
 
 export default LogIn;

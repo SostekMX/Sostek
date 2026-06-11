@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import AppContext from '../context/AppContext';
 
 interface props {
+    number: number;
     question: string | undefined;
     category: string | undefined;
     comments: string | undefined;
@@ -14,7 +15,7 @@ interface props {
 /* Question card component that requires a question, comments (could be specific instructions for particular questions),
  * options (an array of all the options, doesn't matter the size).
  */
-const QuestionTestCard: React.FC<props> = ({ question, category, comments, options, points }) => {
+const QuestionTestCard: React.FC<props> = ({ number, question, category, comments, options, points }) => {
     // Variable that holds the choice the user selected
     const [selection, setSelection] = useState<string>();
     let sumArray : Array<boolean> = [];
@@ -22,34 +23,29 @@ const QuestionTestCard: React.FC<props> = ({ question, category, comments, optio
     const { addScore } = useContext(AppContext);
 
     return (
-        <IonCard>
+        <IonCard className="eval-card" style={{'--color': '#f0f0f0'} as any}>
             <IonCardHeader>
-                <IonCardTitle>{question}</IonCardTitle>
+                <IonCardTitle><span className="eval-card__number">{number}.</span> {question}</IonCardTitle>
             </IonCardHeader>
 
             <IonCardContent>
                 <IonList>
-                    { 
-                        // Verifies if there are any comments, if no, it avoids displaying an empty string within the card
-                        comments &&
+                    {comments &&
                         <IonListHeader>
                             <IonLabel>{comments}</IonLabel>
                         </IonListHeader>
                     }
-                        {
-                            // Iterates through all the elements in the array to create option components in React
-                            options && options.map((option, index) => (
-                                <IonItem class="ion-text-wrap">
-                                    <IonCheckbox
-                                    // The answer has the question and score added to prevent another answer to conflict in sumScore
-                                    onIonChange={(_e: any) => addScore!(category!,`${question}${option}${points![index]}`, index)} 
-                                    class="ion-text-wrap"
-                                    slot="start" 
-                                    value={Number(points![index])} />
-                                    <IonLabel class="ion-text-wrap">{option}</IonLabel>
-                                </IonItem>
-                            ))
-                        }
+                    {options && options.map((option, index) => (
+                        <IonItem key={index} class="ion-text-wrap">
+                            <IonCheckbox
+                                onIonChange={(_e: any) => addScore!(category!, `${question}${option}${points![index]}`, index)}
+                                class="ion-text-wrap"
+                                slot="start"
+                                value={Number(points![index])}
+                            />
+                            <IonLabel class="ion-text-wrap">{option}</IonLabel>
+                        </IonItem>
+                    ))}
                 </IonList>
             </IonCardContent>
         </IonCard>

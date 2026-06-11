@@ -1,33 +1,292 @@
-.logo-display {
+/* === LOGIN: Split layout === */
+
+.login-split {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #0e1a0e;
+}
+
+/* ─── Panel izquierdo (marca) ─── */
+.login-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 36px 28px 28px;
+    background: linear-gradient(155deg, #163016 0%, #245620 55%, #3a7c28 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Círculos decorativos */
+.login-brand::before {
+    content: '';
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    border: 1px solid rgba(128, 178, 89, 0.18);
+    bottom: 80px;
+    right: -90px;
+}
+
+.login-brand::after {
+    content: '';
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    border: 1px solid rgba(128, 178, 89, 0.09);
+    bottom: -130px;
+    right: -170px;
+}
+
+.login-brand__logo {
+    height: auto;
+    width: 140px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.88;
+    position: relative;
+    z-index: 1;
+}
+
+.login-brand__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.login-brand__tag {
+    color: #ecaf80;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    margin: 0 0 14px;
+}
+
+.login-brand__headline {
+    color: #ffffff;
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 18px;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+}
+
+.login-brand__desc {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin: 0;
+    max-width: 280px;
+}
+
+.login-brand__footer {
+    color: rgba(255, 255, 255, 0.28);
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Ocultar copyright en mobile */
+.login-brand__footer {
+    display: none;
+}
+
+/* ─── Panel derecho (formulario) ─── */
+.login-form-panel {
+    flex: 1;
+    display: flex;
     align-items: center;
-    align-content:flex-end;
-    justify-items: center;
     justify-content: center;
-    height: 8em;
+    padding: 40px 24px;
+    box-sizing: border-box;
+    min-height: 100vh;
 }
 
-.login-form {
-    margin-top: 2em;
-    justify-content: center;
-
+.login-form-inner {
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
 }
 
-.align-center {
+/* Logo mobile */
+.login-logo-mobile {
+    height: auto;
+    width: 160px;
+    max-width: 60%;
+    margin-bottom: 32px;
+    align-self: center;
+    object-fit: contain;
+}
+
+/* BIENVENIDO */
+.login-welcome {
+    display: flex;
     align-items: center;
-    align-content: center;
-    justify-content: center;
-    justify-items: center;
-    
+    gap: 12px;
+    margin-bottom: 18px;
 }
 
-.space {
-    height: 2em;
+.login-welcome__line {
+    flex: 1;
+    height: 1px;
+    background: rgba(128, 178, 89, 0.3);
+    display: block;
 }
 
-.input-field {
-    min-width: 20em;
+.login-welcome__text {
+    color: rgba(128, 178, 89, 0.8);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    white-space: nowrap;
 }
 
-.title__color {
-    color: white;
+/* Títulos */
+.login-title {
+    color: #ffffff;
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin: 0 0 8px;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    line-height: 1.15;
+}
+
+.login-subtitle {
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.87rem;
+    margin: 0 0 28px;
+    line-height: 1.5;
+}
+
+/* Campos */
+.login-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.login-field__label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-field__item {
+    --background: rgba(255, 255, 255, 0.07);
+    --border-radius: 10px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --min-height: 50px;
+    --inner-padding-end: 0;
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.26);
+    --highlight-color-focused: #80b259;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: border-color 0.2s;
+}
+
+/* Botones */
+.login-btn-main {
+    --border-radius: 10px;
+    height: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.login-btn-secondary {
+    --color: rgba(255, 255, 255, 0.42);
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+/* Divisor */
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0 4px;
+}
+
+.login-divider span {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    display: block;
+}
+
+.login-divider small {
+    color: rgba(255, 255, 255, 0.22);
+    font-size: 0.8rem;
+}
+
+/* Invitado */
+.login-btn-guest {
+    --color: rgba(255, 255, 255, 0.35);
+    font-size: 0.85rem;
+}
+
+/* Link sitio oficial — panel izquierdo */
+.login-brand__site-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+}
+
+.login-brand__site-link:hover {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+/* Logo mobile — ocultar en mobile porque el panel de marca ya muestra el logo */
+.login-logo-mobile {
+    display: none;
+}
+
+/* ─── Desktop: layout horizontal, restituir elementos de escritorio ─── */
+@media (min-width: 640px) {
+    .login-split {
+        flex-direction: row;
+    }
+
+    .login-brand {
+        flex: 0 0 44%;
+        padding: 48px 44px;
+        min-height: unset;
+    }
+
+    .login-brand__footer {
+        display: block;
+    }
+
+    .login-form-panel {
+        min-height: 100vh;
+    }
 }

@@ -1,27 +1,54 @@
-import { NativeStorage } from "@ionic-native/native-storage";
 import {
   IonButton,
   IonContent,
-  IonHeader,
   IonPage,
   IonRow,
 } from "@ionic/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import AppBarPopOver from "../../components/AppBarPopOver";
+import axios from "axios";
+import { BACKEND_URL } from '../../config';
+import AppBarPopOver from "../../components/layout/AppBarPopOver";
 import QuestionTestCard from "../../components/QuestionTestCard";
 import AppContext from "../../context/AppContext";
-import useGetEvaluationData from "../../hooks/useGetEvaluationData";
+import { computeMaxScore } from "../../utils/scoring";
 import "./evaluation.css";
+
+interface Option {
+  text: string;
+  value: number;
+}
+interface Question {
+  category: string;
+  text: string;
+  options: Option[];
+}
+interface EvaluationData {
+  _id: string;
+  name: string;
+  career: string;
+  questions: Question[];
+}
 
 interface RouteParams {
   name: string;
   id: string;
 }
+
 const Evaluation: React.FC = () => {
   const { name, id } = useParams<RouteParams>();
-  const { evaluation, loading } = useGetEvaluationData(id);
+  const [evaluation, setEvaluation] = useState<EvaluationData | null>(null);
+  const [loading, setLoading] = useState(true);
   const { score, currentAnswersAndScores } = useContext(AppContext);
+
+  useEffect(() => {
+    axios.get(`${BACKEND_URL}/evaluations/${id}`)
+      .then(res => {
+        if (res.data.success) setEvaluation(res.data.evaluation);
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+  }, [id]);
   // console.log(evaluation);
   function setFinalScore() {
     let arrayOfCategories: string[] = [];
@@ -35,85 +62,59 @@ const Evaluation: React.FC = () => {
       }
     });
 
-    NativeStorage.setItem(
-      `totalCategories`,
-      arrayOfCategories.length.toLocaleString()
-    );
-    sessionStorage.setItem(
-      `totalCategories`,
-      arrayOfCategories.length.toLocaleString()
-    );
+    sessionStorage.setItem("totalCategories", arrayOfCategories.length.toLocaleString());
     for (let i = 0; i < arrayOfCategories.length; i++) {
-      NativeStorage.setItem(`category${i}`, arrayOfCategories[i]);
       sessionStorage.setItem(`category${i}`, arrayOfCategories[i]);
-      NativeStorage.setItem(`categoryScore${i}`, arrayOfScore[i]);
-      sessionStorage.setItem(
-        `categoryScore${i}`,
-        arrayOfScore[i].toLocaleString()
-      );
+      sessionStorage.setItem(`categoryScore${i}`, arrayOfScore[i].toLocaleString());
     }
-
-    NativeStorage.setItem("finalScore", score);
     sessionStorage.setItem("finalScore", score.toLocaleString());
+    sessionStorage.setItem("maxScore", String(computeMaxScore(evaluation?.questions ?? [])));
   }
 
   return (
     <IonPage>
       <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class="bg-img">
-        <IonHeader collapse="condense">
-          <h1 className="header__title">{name}</h1>
-        </IonHeader>
-        {
-          <img
-            className={
-              loading
-                ? "imageArticleLoading visible"
-                : "imageArticleLoading hidden"
-            }
-            src="/assets/Spinner-1s-200px_transparent.svg"
-            alt="loading"
-            style={{ position: "fixed" }}
-          />
-        }
-        <div
-          className={
-            loading
-              ? "hidden evaluation__questions"
-              : "visible evaluation__questions"
-          }
-        >
-          {!loading &&
-            evaluation?.at(0)?.values.map((question, index) => {
-              return (
-                <QuestionTestCard
-                  question={question[1]}
-                  category={question[0]}
-                  comments={undefined}
-                  options={evaluation![1].values[index]}
-                  points={evaluation![2].values[index]}
-                />
-              );
-            })}
-        </div>
-        {!loading && (
-          <IonRow className="align-center">
-            <IonButton
-              onClick={setFinalScore}
-              color="secondary"
-              href={`/score/${name}`}
-            >
-              Obtener resultados
-            </IonButton>
-          </IonRow>
+      <IonContent fullscreen class="app-dark-bg">
+        {loading && (
+          <div className="evaluation__skeleton">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="eval-question-skeleton">
+                <div className="eval-question-skeleton__title shimmer" />
+                <div className="eval-question-skeleton__option shimmer" />
+                <div className="eval-question-skeleton__option shimmer" />
+                <div className="eval-question-skeleton__option eval-question-skeleton__option--short shimmer" />
+              </div>
+            ))}
+          </div>
         )}
-        {/* {!loading && <h1 className='evaluation__footer__title' 
-        style={{color:"white", textAlign:"center"}}>
-        {
-          `Resultado final: ${score}`
-        }
-        </h1>} */}
-        <IonRow class="space"></IonRow>
+        {!loading && (
+          <>
+            <h1 className="header__title">{name}</h1>
+            <div className="evaluation__questions">
+              {evaluation?.questions.map((question, index) => (
+                <QuestionTestCard
+                  key={index}
+                  number={index + 1}
+                  question={question.text}
+                  category={question.category}
+                  comments={undefined}
+                  options={question.options.map(o => o.text)}
+                  points={question.options.map(o => String(o.value))}
+                />
+              ))}
+            </div>
+            <IonRow className="align-center evaluation__submit">
+              <IonButton
+                onClick={setFinalScore}
+                color="primary"
+                href={`/score/${name}`}
+                expand="block"
+              >
+                Obtener resultados
+              </IonButton>
+            </IonRow>
+          </>
+        )}
       </IonContent>
     </IonPage>
   );

@@ -1,23 +1,21 @@
-import React, { useState, useEffect, createContext, FC } from 'react';
+import React, { useState, createContext, FC } from 'react';
+import { applyAnswer } from '../utils/scoring';
 
 interface IAppContext {
-    dark: boolean;
     search: string;
     tutorial: boolean;
     score: number;
     currentAnswersAndScores: Map<string, {category: string, value: number}>,
     transparentToolbar: boolean,
     changeSearch?: (currentSearch : string) => void;
-    toggleDark?: () => void;
     toggleTutorial?: (value : boolean) => void;
     addScore?: (category: string, answer : string, value : number) => void;
     toggleTransparent?: (value : boolean) => void;
 }
 
 const defaultState = {
-    dark: false,
     search: "",
-    tutorial: true,
+    tutorial: false,
     score: 0,
     currentAnswersAndScores: new Map(),
     transparentToolbar: false,
@@ -31,7 +29,6 @@ interface Children {
 }
 
 export const AppProvider: FC<Children> = ({children}) => {
-    const [dark, setDark] = useState(defaultState.dark);
     const [search, setSearch] = useState(defaultState.search);
     const [tutorial, setTutorial] = useState(defaultState.tutorial);
     const [score, setScore] = useState(defaultState.score);
@@ -42,10 +39,6 @@ export const AppProvider: FC<Children> = ({children}) => {
       setTransparentToolbar(value);
     };
 
-    const toggleDark = () => {
-      setDark(!dark);
-    };
-    
     const changeSearch = (currentSearch : string) => {
       sessionStorage.setItem("search", currentSearch);
       setSearch(currentSearch);
@@ -54,30 +47,18 @@ export const AppProvider: FC<Children> = ({children}) => {
     const toggleTutorial = (value : boolean) => {
       setTutorial(value);
     };
-    const addScore = (category: string, answer : string, value : number) => {
-      // console.log(answer, value)
-      // console.log(currentAnswersAndScores.has(answer))
-      if(currentAnswersAndScores.has(answer)) {
-        // console.log(typeof(score))
-        // console.log(typeof(currentAnswersAndScores.get(answer)!.value))
-
-        setScore(score - currentAnswersAndScores.get(answer)!.value);
-        currentAnswersAndScores.delete(answer);
-      }
-      else {
-        setScore(score + value);
-        currentAnswersAndScores.set(answer, {category: category, value: value});
-      }
+    const addScore = (category: string, answer: string, value: number) => {
+      const result = applyAnswer(currentAnswersAndScores, score, category, answer, value);
+      setScore(result.score);
+      setCurrentAnswersAndScores(result.map);
     }
 
   
     return (
       <AppContext.Provider
         value={{
-          dark,
           search,
           tutorial,
-          toggleDark,
           changeSearch,
           toggleTutorial,
           score,

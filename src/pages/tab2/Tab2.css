@@ -1,28 +1,286 @@
-.under_construction-container{
-    width: 100%;
-    padding-inline: 5%;
-}
-.under_construction_text{
-    color: white;
-    text-align: center;
-}
-
-.under_construction_link{
-    text-align: center;
-}
-
-.video-container{
+.juega-page {
+    padding: 8px 16px 40px;
     display: flex;
     flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    text-align: center;
+    gap: 20px;
 }
-.video-container__title{
-    color: white;
+
+/* Hero header */
+.juega-hero {
+    padding: 16px 0 4px;
 }
-.video-container__video {
+
+.juega-hero__label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #80b259;
+    margin: 0 0 6px;
+}
+
+.juega-hero__title {
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px;
+    line-height: 1.1;
+}
+
+.juega-hero__subtitle {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Video */
+.juega-video-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.juega-video {
+    width: 100%;
+    display: block;
+    max-height: 260px;
+    object-fit: cover;
+}
+
+/* Download card */
+.juega-download-card {
     display: flex;
-    width: 90%;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: rgba(128, 178, 89, 0.12);
+    border: 1px solid rgba(128, 178, 89, 0.3);
+    border-radius: 16px;
+    text-decoration: none;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.juega-download-card:active {
+    background: rgba(128, 178, 89, 0.2);
+}
+
+.juega-download-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #80b259;
+    color: #ffffff;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700;
+}
+
+.juega-download-card__title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 2px;
+}
+
+.juega-download-card__desc {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* En construcción */
+.juega-wip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 4px;
+}
+
+.juega-wip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ecaf80;
+    flex-shrink: 0;
+}
+
+.juega-wip__text {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.38);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Sección header */
+.juega-section-header {
+    padding: 4px 0 0;
+}
+.juega-section-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: #80b259;
+    margin: 0 0 4px;
+}
+.juega-section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+}
+
+/* Stats */
+.juega-stats {
+    display: flex;
+    gap: 10px;
+}
+.juega-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.juega-stat__value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #80b259;
+}
+.juega-stat__label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* Tipos de tarjeta */
+.juega-card-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.juega-card-type {
+    border-radius: 14px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.juega-card-type--scenario  { background: rgba(224,82,96,0.1);   border: 1px solid rgba(224,82,96,0.25); }
+.juega-card-type--ambiental { background: rgba(128,178,89,0.1);  border: 1px solid rgba(128,178,89,0.25); }
+.juega-card-type--economico { background: rgba(236,175,128,0.1); border: 1px solid rgba(236,175,128,0.25); }
+.juega-card-type--social    { background: rgba(100,160,220,0.1); border: 1px solid rgba(100,160,220,0.25); }
+
+.juega-card-type__name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+.juega-card-type__desc {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.5);
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* Reglas */
+.juega-rules {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 18px 16px;
+}
+.juega-rules__text {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.7;
+    margin: 8px 0 0;
+    white-space: pre-line;
+}
+
+/* Filtros de tarjetas */
+.juega-filter-pills {
+    display: flex;
+    gap: 8px;
+}
+.juega-filter-pill {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.juega-filter-pill--active {
+    background: rgba(128,178,89,0.15);
+    border-color: #80b259;
+    color: #80b259;
+}
+
+/* Lista de cartas del juego */
+.juega-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 16px;
+}
+.juega-game-card {
+    border-radius: 14px;
+    padding: 14px 14px 12px;
+}
+.juega-game-card--scenario {
+    background: rgba(224,82,96,0.08);
+    border: 1px solid rgba(224,82,96,0.2);
+}
+.juega-game-card--solution {
+    background: rgba(128,178,89,0.08);
+    border: 1px solid rgba(128,178,89,0.2);
+}
+.juega-game-card__name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 6px;
+}
+.juega-game-card__desc {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.55;
+    margin: 0 0 8px;
+}
+.juega-game-card__resources {
+    display: flex;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+}
+
+/* Desktop */
+@media (min-width: 640px) {
+    .juega-page {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .juega-video {
+        max-height: 340px;
+    }
 }

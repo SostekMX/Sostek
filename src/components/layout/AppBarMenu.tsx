@@ -2,10 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonMenuButton, IonContent, IonHeader, IonMenu, IonPage, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
 import { personCircle, settings, logOut, heart, informationCircleOutline } from 'ionicons/icons';
 import { search as iconSearch } from 'ionicons/icons' ;
-import { NativeStorage } from '@ionic-native/native-storage';
 import { useHistory } from "react-router-dom";
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import AppContext from '../context/AppContext';
+import AppContext from '../../context/AppContext';
 export const AppBarMenu: React.FC = () => {
     const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
     const [isSearching, setIsSearching] = useState<boolean>(false);

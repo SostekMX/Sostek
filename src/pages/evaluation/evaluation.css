@@ -1,7 +1,57 @@
-.evaluation__questions {
-    transition: all 1000ms ease-in;
-}
-.evaluation__footer__title {
-    color: white;
+.header__title {
+    color: #f0f0f0;
     text-align: center;
+    font-size: 1.15rem;
+    font-weight: 700;
+    padding: 20px 20px 8px;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    letter-spacing: 0.4px;
+}
+
+.evaluation__questions {
+    padding-bottom: 8px;
+}
+
+.evaluation__submit {
+    padding: 12px 20px 40px;
+}
+
+.evaluation__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 16px 8px;
+}
+
+.eval-question-skeleton {
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eval-question-skeleton__title {
+    height: 16px;
+    width: 85%;
+}
+
+.eval-question-skeleton__option {
+    height: 14px;
+    width: 70%;
+}
+
+.eval-question-skeleton__option--short {
+    width: 45%;
+}
+
+.evaluation__submit ion-button {
+    --border-radius: 100px;
+    width: 100%;
+    max-width: 340px;
+    height: 50px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
 }

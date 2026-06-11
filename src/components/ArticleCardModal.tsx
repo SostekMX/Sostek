@@ -4,12 +4,12 @@ import { useRef, useState } from "react";
 
 
 interface Props {
-    imageUrl: string, 
-    title: string, 
-    subtitle: string, 
+    imageUrl: string,
+    title: string,
+    subtitle: string,
     author: string,
     body: string,
-    id: number,
+    id: string,
 }
 
 const ArticleCardModal: React.FC<Props> = (props) => {

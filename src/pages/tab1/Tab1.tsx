@@ -1,61 +1,51 @@
-import TutorialCard from '../../components/TutorialCard';
-import {  IonContent, IonHeader, IonLoading, IonPage } from '@ionic/react';
+import { IonContent, IonHeader, IonPage } from '@ionic/react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { BACKEND_URL } from '../../config';
 import './Tab1.css';
-import ArticleCarrousel from '../../components/ArticleCarrousel';
-import ArticleCardModalWrapper from '../../components/ArticleCardModalWrapper';
-import AppBarPopOver from '../../components/AppBarPopOver';
-import useGetDocuments from '../../hooks/useGetDocuments';
-import { NativeStorage } from '@ionic-native/native-storage';
-import React, { useContext, useEffect, useState } from 'react';
-import useGetPresentations from '../../hooks/useGetPresentations';
-import InitialTutorial from '../../components/tutorial/InitialTutorial';
-import AppContext from '../../context/AppContext';
-import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
-import ArticleCardModal from '../../components/ArticleCardModal';
-import useGetConfiguration from '../../hooks/useGetConfiguration';
+import ArticleCarrousel, { Article, Presentation } from '../../components/ArticleCarrousel';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 
 const Tab1: React.FC = () => {
-  let presentationDriveID = process.env.REACT_APP_PRESENTATIONS_DRIVE_ID;
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
 
-  //const {files, lastFile, loading } = useGetDocuments(driveID);
-  const { articlesDataReversed, lastArticleData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
-  const [displayTutorial, setDisplayTutorial] = useState<boolean>(false);
-  const {presentations, loadingForAllPresentations} = useGetPresentations(presentationDriveID);
-  const { tutorial } = useContext(AppContext); 
-  //addToFiles(files);
   useEffect(() => {
-    // NativeStorage.getItem("login").then(
-    //   data => setIsUserLogged(data)
-    // )
-    let isTrue  = localStorage.getItem("tutorial") === 'true';
-    if (localStorage.getItem("tutorial") === undefined) {
-      isTrue = true;
-    }
-    setDisplayTutorial(isTrue == true && tutorial === true);
+    const cachedArticles = localStorage.getItem("articles");
+    const cachedPresentations = localStorage.getItem("presentations");
 
-}, [localStorage, tutorial])
+    if (cachedArticles) setArticles(JSON.parse(cachedArticles));
+    if (cachedPresentations) setPresentations(JSON.parse(cachedPresentations));
+    if (cachedArticles) setLoadingData(false);
+
+    Promise.all([
+      axios.get(`${BACKEND_URL}/articles`),
+      axios.get(`${BACKEND_URL}/presentations`),
+    ]).then(([artRes, presRes]) => {
+      if (artRes.data.success) {
+        const reversed = [...artRes.data.articles].reverse();
+        setArticles(reversed);
+        localStorage.setItem("articles", JSON.stringify(reversed));
+      }
+      if (presRes.data.success) {
+        setPresentations(presRes.data.presentations);
+        localStorage.setItem("presentations", JSON.stringify(presRes.data.presentations));
+      }
+    }).catch(err => console.log(err))
+      .finally(() => setLoadingData(false));
+  }, []);
+
   return (
     <IonPage>
-      <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class='bg-img'> 
-        <IonHeader collapse="condense">
-      
-        </IonHeader>
-        {
-          !loadingData && !loadingForAllPresentations && <> 
-            {/* <ArticleCardModalWrapper files={lastFile} /> */}
-            <ArticleCardModal 
-              title={lastArticleData![0]} 
-              subtitle={lastArticleData![1]}
-              body={lastArticleData![3]}
-              imageUrl={lastArticleData![4]} 
-              author={lastArticleData![5]}
-              id={articlesDataReversed!.length - 1}
+      <AppBarPopOver />
+      <IonContent fullscreen class='app-dark-bg'>
+        <IonHeader collapse="condense" />
+        <ArticleCarrousel
+          articlesData={articles}
+          loadingData={loadingData}
+          presentations={presentations}
         />
-             {displayTutorial &&<InitialTutorial />}
-            <ArticleCarrousel articlesData={articlesDataReversed} loadingData={loadingData} presentations={presentations}/>
-          </>
-        }
       </IonContent>
     </IonPage>
   );

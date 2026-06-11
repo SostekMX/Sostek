@@ -1,41 +1,32 @@
-
 /* Imported fonts */
 @font-face {
-    font-family: 'Kiona-Regular';  /* Títulos h1, h2 */
+    font-family: 'Kiona-Regular';
     font-style: normal;
     font-weight: normal;
     src: url('../public/assets/fonts/Kiona-Regular.ttf');
 }
 
 @font-face {
-    font-family: 'Raleway';  /* Cuerpo */
+    font-family: 'Raleway';
     font-style: normal;
     font-weight: normal;
     src: url('../public/assets/fonts/Raleway.ttf');
 }
 
 @font-face {
-    font-family: 'Cinzel';  /* Subtítutlos h3, h4,  */
+    font-family: 'Cinzel';
     font-style: normal;
     font-weight: normal;
     src: url('../public/assets/fonts/Cinzel.ttf');
 }
 
-.header-collapse-condense ion-toolbar {
-    --background: transparent;
-    --ion-color-base: transparent !important;
-}
-
-ion-toolbar.transparent {
-    --background: transparent;
-    --ion-color-base: transparent !important;
-}
+/* === GLOBAL RESETS === */
 
 ion-content {
     --background: none;
     --padding-top: 0px;
 }
-    
+
 ion-content.bg-img {
     background-image: url('../public/assets/bg-img.png');
     background-position: center center;
@@ -43,48 +34,394 @@ ion-content.bg-img {
     background-size: cover;
 }
 
-/* h1, h2 {
-    font-family: 'Kiona-Regular';
+ion-content.app-dark-bg {
+    --background: linear-gradient(160deg, #0e1a0e 0%, #163016 70%, #1e4018 100%);
 }
 
-h3, h4 {
-    font-family: 'Cinzel';
-} */
+.header-collapse-condense ion-toolbar,
+ion-toolbar.transparent {
+    --background: transparent;
+    --ion-color-base: transparent !important;
+}
+
+/* Header oscuro reutilizable para pantallas con botón de regreso
+   (Documents, Presentation) — mismo estilo que .appbar */
+.dark-toolbar {
+    --background: #0d1a0d;
+    --color: #ffffff;
+    --border-width: 0 0 1px 0;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-style: solid;
+    --min-height: 56px;
+}
+
+/* === TAB BAR === */
+
+ion-tab-bar {
+    --background: #0d1a0d;
+    --border: 1px solid rgba(255, 255, 255, 0.08);
+    height: 62px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+ion-tab-button {
+    --color: rgba(255, 255, 255, 0.4);
+    --color-selected: #80b259;
+    --background: transparent;
+    --background-focused: transparent;
+    position: relative;
+}
+
+ion-tab-button ion-icon {
+    font-size: 22px;
+    margin-bottom: 2px;
+}
+
 .tab-bar__label {
-    font-size: 1rem;
-}
-.article-modal__link{
-    text-decoration: none;
-}
-.article-modal__title{
-    color: black;
-}
-.appbar__searchbar-active {
-    width: 75%;
-    margin-inline: 10%;
+    font-size: 0.62rem;
+    letter-spacing: 0.8px;
+    font-weight: 700;
 }
 
-.appbar__searchbar {
-    padding: unset;
-    --box-shadow: 0px;
-    background: rgba(0, 0, 0, .15);
-    border-radius: 16px;
-    
-}
-.appbar__searchbar-container ion-searchbar {
-    height: 36px;
-    margin-block: 4px;
-    padding-top: 10px;
-}
-.appbar__searchbar-container ion-searchbar  div input {
-    background: inherit !important;
+ion-tab-button.tab-selected::before,
+ion-tab-button.tab-bar__btn--active::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 32px;
+    background: rgba(128, 178, 89, 0.15);
+    border-radius: 20px;
 }
 
-.tab-bar--hidden{
+ion-tab-button.tab-bar__btn--active {
+    --color: #80b259;
+}
+
+.tab-bar--hidden {
     display: none;
     opacity: 0;
 }
 
-.tab-bar--visible{
+.tab-bar--visible {
     opacity: 1;
+}
+
+
+/* === POPOVER MENU === */
+
+ion-popover {
+    --background: #1a2e1a;
+    --backdrop-opacity: 0.45;
+}
+
+ion-popover::part(content) {
+    background: #1a2e1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+ion-popover ion-content {
+    --background: #1a2e1a;
+    --ion-background-color: #1a2e1a;
+}
+
+ion-popover ion-list {
+    padding: 8px 0;
+    background: #1a2e1a !important;
+    --background: #1a2e1a;
+}
+
+ion-popover ion-item {
+    --min-height: 48px;
+    --padding-start: 16px;
+    --background: #1a2e1a;
+    --color: #f0f0f0;
+    --border-color: rgba(255, 255, 255, 0.07);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+
+/* === ERROR BOUNDARY === */
+
+.error-boundary {
+    min-height: 100vh;
+    background: #0d1a0d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    text-align: center;
+}
+
+.error-boundary__logo {
+    height: 48px;
+    width: auto;
+    margin-bottom: 32px;
+    opacity: 0.8;
+}
+
+.error-boundary__title {
+    color: #f0f0f0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+    font-family: 'Kiona-Regular', sans-serif;
+}
+
+.error-boundary__msg {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 32px;
+}
+
+.error-boundary__btn {
+    background: #80b259;
+    color: #ffffff;
+    border: none;
+    border-radius: 100px;
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.4px;
+}
+
+/* === DARK ALERT (confirmaciones destructivas) === */
+
+.dark-alert .alert-wrapper {
+    background: #1a2e1a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+}
+
+.dark-alert .alert-head {
+    padding-bottom: 4px;
+}
+
+.dark-alert .alert-title {
+    color: #f0f0f0;
+    font-weight: 700;
+}
+
+.dark-alert .alert-message {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.9rem;
+}
+
+.dark-alert .alert-button-group {
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.dark-alert .alert-button {
+    color: #80b259;
+    font-weight: 600;
+}
+
+.dark-alert .alert-button.ion-color-danger,
+.dark-alert [role="destructive"] {
+    color: #e05555 !important;
+}
+
+/* === SKELETON SHIMMER === */
+
+@keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.04) 0%,
+        rgba(255, 255, 255, 0.10) 50%,
+        rgba(255, 255, 255, 0.04) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+    border-radius: 6px;
+}
+
+/* === UTILITY === */
+
+.hidden {
+    opacity: 0;
+}
+
+.visible {
+    opacity: 1;
+}
+
+.article-modal__link {
+    text-decoration: none;
+}
+
+.article-modal__title {
+    color: var(--sos-text-primary, #1a2e1a);
+}
+
+/* === FILTER PILLS === */
+
+.filter-pills {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.filter-pills::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-pill {
+    flex-shrink: 0;
+    padding: 7px 18px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.filter-pill--active {
+    background: #80b259;
+    border-color: #80b259;
+    color: #ffffff;
+}
+
+/* === SHARED: Section messages === */
+
+.under_construction-container {
+    width: 100%;
+    padding: 20px 20px 32px;
+}
+
+.under_construction_text {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.under_construction_link {
+    text-align: center;
+}
+
+.under_construction_link a {
+    color: #deebd7;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* === AUTH PAGES (LogIn + SignUp) === */
+
+.auth-overlay {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #0d1f0d 0%, #1c3e1c 55%, #2f6b22 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.auth-wrapper {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.auth-logo {
+    height: 72px;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+}
+
+.auth-card {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    padding: 28px 22px 22px;
+    box-shadow: 0 12px 40px rgba(10, 26, 10, 0.28);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-title {
+    text-align: center;
+    color: #1a2e1a;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.auth-input-item {
+    --background: #f2f7ee;
+    --border-radius: 10px;
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --inner-padding-end: 0;
+    --highlight-color-focused: #80b259;
+    border-radius: 10px;
+}
+
+.auth-label {
+    color: #3d5e40 !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 2px;
+}
+
+.auth-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.auth-actions ion-button {
+    --border-radius: 100px;
+    height: 48px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.auth-guest-btn {
+    --color: rgba(255, 255, 255, 0.92) !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* === SHARED FORM (Profile) === */
+
+.align-center {
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+}
+
+.space {
+    height: 1.5em;
 }

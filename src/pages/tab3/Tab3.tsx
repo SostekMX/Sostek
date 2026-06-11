@@ -1,105 +1,103 @@
-import { IonContent, IonHeader, IonItem, IonList, IonLoading, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
-import { useContext, useState } from 'react';
-import AppBarPopOver from '../../components/AppBarPopOver';
-import ExploreContainer from '../../components/ExploreContainer';
-import QuestionTestCard from '../../components/QuestionTestCard';
-import AppContext from '../../context/AppContext';
-import useGetDocuments from '../../hooks/useGetDocuments';
-import useGetEvaluationData from '../../hooks/useGetEvaluationData';
+import { IonContent, IonPage } from '@ionic/react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { BACKEND_URL } from '../../config';
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
 
-const Tab3: React.FC = () => {
-  const [currentOption, setCurrentOption] = useState<"all" | "architect" | "design" | "others">('all');
-  let driveID = process.env.REACT_APP_EVALUATION_DRIVE_ID;
-  const {files, loading } = useGetDocuments(driveID);
-  const {search, changeSearch} = useContext(AppContext);
+interface EvaluationItem {
+  _id: string;
+  name: string;
+  career: string;
+  description?: string;
+  question_count?: number;
+}
 
-  let evaluationCards = !loading && files?.sort((a, b) => { return a.name.localeCompare(b.name)}).map((file, index) => {
-    if (file.name.toLowerCase().includes(search.toLowerCase())){ 
-      switch (currentOption) {
-        case 'architect':
-          if (file.name.toLowerCase().includes('arquitectura')){
-            return (
-              <EvaluationCard key={file.id}
-                name={file.name} 
-                img={`/assets/test${index + 1}.jpg`} 
-                id={file.id} />
-            )
-          }
-        break;
-        case 'design':
-          if (file.name.toLowerCase().includes('industrial')){
-            return (
-              <EvaluationCard 
-                name={file.name} 
-                img={`/assets/test${files.length - index}.jpg`} 
-                id={file.id} />
-            )
-          }
-        break;
-        case 'others':
-          return (
-            <div></div>
-            )
-          break;
-        default:
-        return (
-          <EvaluationCard 
-            name={file.name} 
-            img={`/assets/test${index + 1}.jpg`} 
-            id={file.id} />
-        )
-      }
+const FILTERS = [
+  { value: 'all', label: 'Todos' },
+  { value: 'architect', label: 'Arquitectura' },
+  { value: 'design', label: 'Diseño' },
+  { value: 'others', label: 'Otros' },
+] as const;
+
+type FilterValue = typeof FILTERS[number]['value'];
+
+const Tab3: React.FC = () => {
+  const [currentOption, setCurrentOption] = useState<FilterValue>('all');
+  const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const cached = localStorage.getItem("evaluations");
+    if (cached) {
+      setEvaluations(JSON.parse(cached));
+      setLoading(false);
     }
-  })
+
+    axios.get(`${BACKEND_URL}/evaluations`)
+      .then(res => {
+        if (res.data.success) {
+          setEvaluations(res.data.evaluations);
+          localStorage.setItem("evaluations", JSON.stringify(res.data.evaluations));
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = [...evaluations]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter(ev => {
+      if (currentOption === 'architect') return ev.career === 'Arquitectura';
+      if (currentOption === 'design') return ev.career === 'Diseño Industrial';
+      if (currentOption === 'others') return ev.career !== 'Arquitectura' && ev.career !== 'Diseño Industrial';
+      return true;
+    });
 
   return (
     <IonPage>
-      <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class='bg-img'> 
-        <IonHeader collapse="condense">
-          <IonRow className='filter-aligned evaluate__container__filter'>    
-          <IonList className='filter-size filter-rounded_border'>
-            <IonItem className='filter-item-size'>             
-              <IonSelect className='ion-select-article' placeholder="Filtrar" interface='popover' onIonChange={function filter(op) {
-                setCurrentOption(op.detail.value);
-                changeSearch!("");
-              }
-                }>
-              <IonSelectOption value="all" className='option-filter' >Todos</IonSelectOption>
-              <IonSelectOption value="architect" className='option-filter' >Arquitectura</IonSelectOption>
-              <IonSelectOption value="design" className='option-filter' >Dise&ntilde;o</IonSelectOption>
-              <IonSelectOption value="others" className='option-filter' >Otros</IonSelectOption>
-              </IonSelect>
-            </IonItem>
-          </IonList>
-          </IonRow>
-        </IonHeader>
-        <div>
-        {
-          <img className={loading ? "imageArticleLoading visible"
-              : "imageArticleLoading hidden"}
-              src="/assets/Spinner-1s-200px_transparent.svg"
-              alt="loading image" 
-              style={{"position":"fixed"}}/>
-        }
-        {
-          !loading && 
-          <div>{evaluationCards}</div>
-          // !loading && files?.sort((a, b) => { return a.name.localeCompare(b.name)}).map((file, index) => {
-          //   return <EvaluationCard 
-          //   name={file.name} 
-          //   img={`/assets/test${files.length - index}.jpg`} 
-          //   id={file.id} />
-          // })
-        }
+      <AppBarPopOver />
+      <IonContent fullscreen class='app-dark-bg'>
+        <div className='filter-pills'>
+          {FILTERS.map(f => (
+            <button
+              key={f.value}
+              className={`filter-pill ${currentOption === f.value ? 'filter-pill--active' : ''}`}
+              onClick={() => setCurrentOption(f.value)}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
-        <div>
-          <div className='under_construction-container'>
-            {!loading && <p className='under_construction_text'><b>Proximamente abr&aacute; otras evaluaciones.</b></p>}
+
+        {loading && (
+          <div className='evaluation-grid'>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className='eval-card-skeleton'>
+                <div className='eval-card-skeleton__header'>
+                  <div className='eval-card-skeleton__icon shimmer' />
+                  <div className='eval-card-skeleton__badge shimmer' />
+                </div>
+                <div className='eval-card-skeleton__title shimmer' />
+                <div className='eval-card-skeleton__desc shimmer' />
+                <div className='eval-card-skeleton__desc eval-card-skeleton__desc--short shimmer' />
+              </div>
+            ))}
           </div>
-        </div>
+        )}
+
+        {!loading && (
+          <div className='evaluation-grid'>
+            {filtered.map(ev => (
+              <EvaluationCard key={ev._id} name={ev.name} id={ev._id} career={ev.career} description={ev.description} questionCount={ev.question_count} />
+            ))}
+          </div>
+        )}
+
+        {!loading && filtered.length === 0 && (
+          <p className='tab3-empty'>No hay evaluaciones para este filtro.</p>
+        )}
       </IonContent>
     </IonPage>
   );

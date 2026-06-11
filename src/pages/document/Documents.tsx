@@ -1,75 +1,139 @@
-import React from 'react';
-import { IonCardSubtitle, IonCol, IonContent, IonPage, IonRow, IonText} from '@ionic/react';
-import './Documents.css'
+import React, { useEffect, useRef, useState } from 'react';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonItem, IonLabel, IonPopover } from '@ionic/react';
+import { menuOutline, heart, personCircle, logOut } from 'ionicons/icons';
 import { useParams } from 'react-router';
-import AppBarPopOver from '../../components/AppBarPopOver';
-import { AppBarMenu } from '../../components/AppBarMenu';
-import useGetSingleExcelAllData from '../../hooks/useGetSingleExcelAllData';
+import { useHistory, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { BACKEND_URL } from '../../config';
+import './Documents.css';
 
-interface PropsParams{
-  imgAuthor? : string,
-  imgPage? : string
+interface Article {
+  _id: string;
+  title: string;
+  subtitle: string;
+  type: string;
+  body: string;
+  image: string;
+  author: string;
+  author_image: string;
+  page_image: string;
+  category: string;
+  bibliography?: string;
 }
 
-interface RouteParams{
-    id: string,
-    imgAuthor? : string,
-    imgPage? : string
+interface RouteParams {
+  id: string;
 }
 
-const Documents: React.FC<PropsParams>= ({imgAuthor, imgPage}) => {
-    const {id} = useParams<RouteParams>();
-  const { articlesData, loadingData } = useGetSingleExcelAllData('1ChvjU94csQ3ncWFOU_HmbiFq6HU3H3TwJ-XwfzMrjPc');
-//   console.log(articlesData);
-    return(
-      <IonPage>
-        <div className={loadingData ? 'colorful_appbar_document' : 'colorful_appbar_document hidden'}><AppBarPopOver /></div>
-        <div className={loadingData ? 'transparent_appbar_document' : 'transparent_appbar_document visible'}><AppBarMenu /></div>
-        
-       {/* <IonContent fullscreen class='bg-img'> */}
-        <IonContent fullscreen class='bg-img'>
-          <img className={loadingData ? "imageArticleLoading visible" : "imageArticleLoading hidden"}
-          src="/assets/Spinner-1s-200px_transparent.svg"
-          alt="loading" />
-          <img className={loadingData ? "imageArticle hidden" : "imageArticle visible"}
-          src={loadingData ? "/assets/Spinner-1s-200px_transparent.svg" : articlesData![Number(id)][4]} 
-          alt={loadingData ? "loading" : articlesData![Number(id)][0]}
-        />
-        
-           { (imgPage || imgAuthor) &&
-                <IonCardSubtitle>
-                    Imagen
-                    {
-                        imgPage &&
-                        <>{` de ${imgPage}`}</>
-                    }
-                    { imgAuthor && 
-                        <>{` por ${imgAuthor}`}</>
-                    }
-                </IonCardSubtitle>
-                }
-           <br></br>
-           <IonCol className='content__container'>
-                <IonRow>
-                    <IonText className='content-row title__document ion-text-wrap'>
-                        {
-                            !loadingData && articlesData![Number(id)][0]
-                        }
-                    </IonText>
-                </IonRow>
-                <br></br>
-                <IonRow className = 'content-row content__document'>
-                    <IonText>
-                        {
-                        !loadingData && articlesData![Number(id)][3]
-                        }
-                    </IonText>
-                </IonRow>
-            </IonCol>
-            
-       </IonContent>
-       </IonPage>
-    );
+const Documents: React.FC = () => {
+  const { id } = useParams<RouteParams>();
+  const [article, setArticle] = useState<Article | null>(null);
+  const [loadingData, setLoadingData] = useState(true);
+  const { current: popoverId } = useRef(`doc-menu-${Math.random().toString(36).substr(2, 6)}`);
+  const history = useHistory();
+  useLocation();
+
+  const isUserLogged = sessionStorage.getItem('login') === 'true';
+
+  useEffect(() => {
+    axios.get(`${BACKEND_URL}/articles/${id}`)
+      .then(res => {
+        if (res.data.success) setArticle(res.data.article);
+      })
+      .catch(err => console.log(err))
+      .finally(() => setLoadingData(false));
+  }, [id]);
+
+  function logOutUser() {
+    sessionStorage.setItem('login', 'false');
+    sessionStorage.removeItem('token');
+    history.replace('/');
+  }
+
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar className="dark-toolbar">
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/tab1" text="" />
+          </IonButtons>
+          <IonButtons slot="end">
+            <IonButton id={popoverId}>
+              <IonIcon slot="icon-only" icon={menuOutline} />
+            </IonButton>
+            <IonPopover trigger={popoverId} triggerAction="click">
+              <IonList>
+                {isUserLogged && <IonItem href="/Favorites"><IonIcon icon={heart} color="secondary" />&nbsp;<IonLabel>Favoritos</IonLabel></IonItem>}
+                {isUserLogged && <IonItem href="/Profile"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Perfil</IonLabel></IonItem>}
+                {!isUserLogged && <IonItem href="/"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Iniciar Sesión</IonLabel></IonItem>}
+                {isUserLogged && <IonItem onClick={logOutUser}><IonIcon icon={logOut} color="secondary" />&nbsp;<IonLabel>Log Out</IonLabel></IonItem>}
+              </IonList>
+            </IonPopover>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+
+      <IonContent fullscreen class="app-dark-bg">
+        {loadingData && (
+          <div className="doc-skeleton">
+            <div className="doc-skeleton__hero shimmer" />
+            <div className="doc-skeleton__content">
+              <div className="doc-skeleton__badge shimmer" />
+              <div className="doc-skeleton__title shimmer" />
+              <div className="doc-skeleton__subtitle shimmer" />
+              <div className="doc-skeleton__divider shimmer" />
+              <div className="doc-skeleton__line shimmer" />
+              <div className="doc-skeleton__line shimmer" />
+              <div className="doc-skeleton__line doc-skeleton__line--short shimmer" />
+              <div className="doc-skeleton__line shimmer" />
+              <div className="doc-skeleton__line doc-skeleton__line--mid shimmer" />
+            </div>
+          </div>
+        )}
+
+        {!loadingData && article && (
+          <>
+            <div className="doc-hero">
+              <img src={article.image} alt={article.title} className="doc-hero__img" loading="lazy" decoding="async" />
+            </div>
+
+            <div className="doc-content">
+              {(article.page_image || article.author_image) && (
+                <p className="doc-image-credit">
+                  Imagen
+                  {article.page_image && ` de ${article.page_image}`}
+                  {article.author_image && ` por ${article.author_image}`}
+                </p>
+              )}
+
+              <span className="doc-category-badge">{article.category}</span>
+              <h1 className="doc-title">{article.title}</h1>
+              {article.subtitle && <p className="doc-subtitle">{article.subtitle}</p>}
+              {article.author && <p className="doc-author">{article.author}</p>}
+
+              <div className="doc-divider" />
+
+              <div className="doc-body">
+                {article.body.split('\n').filter(p => p.trim()).map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
+
+              {article.bibliography && (
+                <div className="doc-bibliography">
+                  <div className="doc-divider" />
+                  <p className="doc-bibliography__label">Bibliografía</p>
+                  {article.bibliography.split('\n').filter(l => l.trim()).map((line, i) => (
+                    <p key={i} className="doc-bibliography__entry">{line}</p>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default Documents;

@@ -1,8 +1,93 @@
-.finalScoreEvaluation__category {
-    color: var(--ion-color-primary);
+.score-page {
+    width: 100%;
+    padding: 24px 20px 40px;
 }
 
-.finalScoreEvaluation__button{
+.score-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+}
+
+.score-card__evaluation-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 0;
+}
+
+.score-card__points {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #80b259;
+    margin: 0;
+    line-height: 1;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+}
+
+.score-card__points-max {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.score-card__pts-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: -8px;
+}
+
+.score-card__titulo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    margin: 0;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+}
+
+.score-card__mensaje {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.score-card__divider {
+    width: 48px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.score-card__weakest-label {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+.score-card__weakest-category {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #80b259;
+}
+
+.score-card__cta-label {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+.finalScoreEvaluation__button {
     margin-inline: auto;
     display: flex;
+    --border-radius: 100px;
+    font-weight: 700;
 }

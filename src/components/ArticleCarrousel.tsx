@@ -1,190 +1,139 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { IonCol, IonHeader, IonIcon, IonItem,  IonList, IonLoading, IonRow, IonSelect, IonSelectOption} from '@ionic/react';
+import React, { useContext, useState } from 'react';
 import DocumentCard from './DocumentCard';
-import { File } from '../models/File';
-import './ArticleCarrousel.css'
-import useGetArticlesData from '../hooks/useGetArticlesData';
-import useGetFirstImageOfPresentations from '../hooks/useGetFirstImageOfPresentations';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import './ArticleCarrousel.css';
 import AppContext from '../context/AppContext';
-import useGetDocuments from '../hooks/useGetDocuments';
+import useFavorites from '../hooks/useFavorites';
+import { normalize } from '../utils/search';
 
-interface props {
-    articlesData: Array<Array<string>> | null | undefined;
-    loadingData: boolean;
-    presentations: Array<File>| null | undefined;
-  }
+export interface Article {
+  _id: string;
+  title: string;
+  subtitle: string;
+  type: string;
+  body: string;
+  image: string;
+  author: string;
+  author_image: string;
+  page_image: string;
+  category: string;
+  tags: string[];
+}
 
-const ArticleCarrousel: React.FC<props> = ({articlesData, loadingData, presentations}) => {
-  const [currentOption, setCurrentOption] = useState('');
-  const {search} = useContext(AppContext);
+export interface Presentation {
+  _id: string;
+  name: string;
+  cover?: string;
+  slides: string[];
+}
 
-  //const {articlesData, loading} = useGetArticlesData(files);
-    let presentationsAsStringArrayById = presentations?.map((url) => {
-         return url.id;
-    });
+interface Props {
+  articlesData: Article[] | null | undefined;
+  loadingData: boolean;
+  presentations: Presentation[] | null | undefined;
+}
 
-    let presentationsAsStringArrayTitle = presentations?.map((url) => {
-        return url.name;
-   });
-    const { loadingForPresentation } = useGetFirstImageOfPresentations(presentationsAsStringArrayById);
-    //console.log(urlImages);
-    //console.log(articlesData);
+type FilterType = 'all' | 'article' | 'presentation';
 
-    let articleCards = !loadingData && articlesData!.map((article : any, index) => {
-        if (
-          article[6]
-            .normalize("NFD")
-            .replace(/\p{Diacritic}/gu, "")
-            .toLowerCase()
-            .includes(
-              search
-                .normalize("NFD")
-                .replace(/\p{Diacritic}/gu, "")
-                .toLowerCase()
-            ) ||
-          article[0]
-            .normalize("NFD")
-            .replace(/\p{Diacritic}/gu, "")
-            .toLowerCase()
-            .includes(
-              search
-                .normalize("NFD")
-                .replace(/\p{Diacritic}/gu, "")
-                .toLowerCase()
-            )
-        ) {
-          return (
-            <div key={index}>
-              {article.length !== 0 && (
-                <DocumentCard
-                  name={article[0]}
-                  description={article[3]}
-                  img_url={article[4]}
-                  id={articlesData!.length - 1 - index}
-                  type={article[2]}
-                  imgAuthor={article[8] != " " ? article[8] : undefined}
-                  imgPage={article[9] != " " ? article[9] : undefined}
-                />
-              )}
-            </div>
-          );
+// Las evaluaciones miden 2 ejes (Ambiental / Económico y Social) pero los artículos
+// usan 3 categorías — este mapa traduce el eje débil de la evaluación a las
+// categorías de artículo que se deben recomendar.
+const CATEGORY_RECOMMENDATIONS: Record<string, string[]> = {
+  [normalize('Ambiental')]: [normalize('Ambiental')],
+  [normalize('Económico y Social')]: [normalize('Económico'), normalize('Social')],
+};
+
+const FILTERS: { value: FilterType; label: string }[] = [
+  { value: 'all', label: 'Ambos' },
+  { value: 'article', label: 'Artículos' },
+  { value: 'presentation', label: 'Presentaciones' },
+];
+
+const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations }) => {
+  const [filterType, setFilterType] = useState<FilterType>('all');
+  const { search } = useContext(AppContext);
+  const { isLoggedIn, isFavorite, addFavorite, removeFavorite } = useFavorites();
+
+  const searchNorm = normalize(search);
+
+  const recommendedCategories = CATEGORY_RECOMMENDATIONS[searchNorm];
+
+  const articleCards = articlesData
+    ?.filter(article => {
+      const categoryNorm = normalize(article.category ?? '');
+      if (recommendedCategories) return recommendedCategories.includes(categoryNorm);
+      return categoryNorm.includes(searchNorm) || normalize(article.title ?? '').includes(searchNorm);
+    })
+    .map(article => (
+      <DocumentCard
+        key={article._id}
+        name={article.title}
+        description={article.body}
+        img_url={article.image}
+        id={article._id}
+        type={article.type}
+        imgAuthor={article.author_image || undefined}
+        imgPage={article.page_image || undefined}
+        isLoggedIn={isLoggedIn}
+        isFavorite={isFavorite(article._id)}
+        onToggleFavorite={() =>
+          isFavorite(article._id) ? removeFavorite(article._id) : addFavorite(article._id, 'article')
         }
-    });
+      />
+    ));
 
-    let presentationCards = !loadingForPresentation && presentationsAsStringArrayById!.map((presentation : any, index) => {
-        if (
-          presentationsAsStringArrayTitle![index]
-            .normalize("NFD")
-            .replace(/\p{Diacritic}/gu, "")
-            .toLowerCase()
-            .includes(
-              search
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/\p{Diacritic}/gu, "")
-            )
-        ) {
-          return (
-            <div key={presentation}>
-              {presentation.length !== 0 && (
-                <DocumentCard
-                  name={presentationsAsStringArrayTitle![index]}
-                  description={""}
-                  img_url={`https://drive.google.com/uc?id=${presentation}`}
-                  id={presentation}
-                  type={"presentation"}
-                  imgAuthor={undefined}
-                  imgPage={undefined}
-                />
-              )}
-            </div>
-          );
+  const presentationCards = presentations
+    ?.filter(pres => normalize(pres.name ?? '').includes(searchNorm))
+    .map(pres => (
+      <DocumentCard
+        key={pres._id}
+        name={pres.name}
+        description=""
+        img_url={pres.cover || pres.slides?.[0] || ''}
+        id={pres._id}
+        type="presentation"
+        imgAuthor={undefined}
+        imgPage={undefined}
+        isLoggedIn={isLoggedIn}
+        isFavorite={isFavorite(pres._id)}
+        onToggleFavorite={() =>
+          isFavorite(pres._id) ? removeFavorite(pres._id) : addFavorite(pres._id, 'presentation')
         }
-    });
+      />
+    ));
 
-    return(
-            <IonCol>
-                <IonHeader>
-                <IonRow className='filter-aligned'>                   
-                <IonList className='filter-size filter-rounded_border'>
-                        <IonItem className='filter-item-size'>
-                            <IonSelect placeholder="Filtrar   " interface='popover' onIonChange={(op) => setCurrentOption(op.detail.value)}>
-                            <IonSelectOption value="article" className='option-filter' >Presentaciones</IonSelectOption>
-                            <IonSelectOption value="presentation" className='option-filter' >Artículos</IonSelectOption>
-                            <IonSelectOption value="" className='option-filter' >Ambos</IonSelectOption>
-                            </IonSelect>
-                        </IonItem>
-                    </IonList>
-                            {/* Tried to implement a different filter button
-                             <IonSelect className='ion-select-article' interface='popover' onIonChange={(op) => setCurrentOption(op.detail.value)}>
-                            <IonSelectOption value="article" className='option-filter' >Presentaciones</IonSelectOption>
-                            <IonSelectOption value="presentation" className='option-filter' >Artículos</IonSelectOption>
-                            <IonSelectOption value="" className='option-filter' >Ambos</IonSelectOption>
-                            </IonSelect> */}
-                </IonRow>
-                </IonHeader>
-                {
-                    <div>
-                        <img className={loadingData ? "imageArticleLoading visible"
-                        : "imageArticleLoading hidden"}
-                        src="/assets/Spinner-1s-200px_transparent.svg"
-                        alt="loading image" 
-                        style={{"position":"fixed"}}/>
-                    </div>
-                }
-                <div className={loadingData ? "ion-content-scroll-host hidden" : "ion-content-scroll-host visible"}>
+  const showArticles = filterType === 'all' || filterType === 'article';
+  const showPresentations = filterType === 'all' || filterType === 'presentation';
 
-                    {
-                        !loadingData  && !loadingForPresentation && currentOption === "" ? <div>
-                            {articleCards}
-                            {presentationCards}
-                             </div> : currentOption === "article" ? <div> 
-                             {presentationCards} 
+  return (
+    <div>
+      <div className='filter-pills'>
+        {FILTERS.map(f => (
+          <button
+            key={f.value}
+            className={`filter-pill ${filterType === f.value ? 'filter-pill--active' : ''}`}
+            onClick={() => setFilterType(f.value)}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
 
-                             </div> : <div>
-                             {articleCards}
-                                </div>
-                    }
-                    {/*
-                    {
-                        !loading && articlesData!.map((article : any, key) =>{
-                        if((currentOption === "ambos" || currentOption === "") && (article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))){
-                            return(
-                                <div key={article[10]}>
-                                {
-                                    article.length !== 0 && <DocumentCard 
-                                    name={article[0]} 
-                                    description={article[3]} 
-                                    img_url={article[4]} 
-                                    id={article[10]}
-                                    />
-                                }
-                                </div>
-                            );
-                        }
-                        else {
-                            if(article[3] === currentOption && (article[6].toLowerCase().includes(currentSearch.toLowerCase()) || article[0].toLowerCase().includes(currentSearch.toLowerCase()))){
-                                return(
-                                    <div key={article[10]}>
-                                    {
-                                        article.length !== 0 && <DocumentCard 
-                                        name={article[0]} 
-                                        description={article[3]} 
-                                        img_url={article[4]} 
-                                        id={article[10]}
-                                        />
-                                    }
-                                    </div>
-                                );
-                            }
-                        }
-                })
-                    }
-                    */}
-                    </div>
-            </IonCol>
-    );
+      <div className='carrousel-list'>
+        {loadingData && Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className='doc-card-skeleton'>
+            <div className='doc-card-skeleton__image shimmer' />
+            <div className='doc-card-skeleton__body'>
+              <div className='doc-card-skeleton__badge shimmer' />
+              <div className='doc-card-skeleton__title shimmer' />
+              <div className='doc-card-skeleton__desc shimmer' />
+            </div>
+          </div>
+        ))}
+        {!loadingData && showArticles && articleCards}
+        {!loadingData && showPresentations && presentationCards}
+      </div>
+    </div>
+  );
 };
 
 export default ArticleCarrousel;
