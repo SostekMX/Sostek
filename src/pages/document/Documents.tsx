@@ -53,7 +53,7 @@ const Documents: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="primary">
+        <IonToolbar className="dark-toolbar">
           <IonButtons slot="start">
             <IonBackButton defaultHref="/tab1" text="" />
           </IonButtons>

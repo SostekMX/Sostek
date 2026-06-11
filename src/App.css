@@ -44,6 +44,17 @@ ion-toolbar.transparent {
     --ion-color-base: transparent !important;
 }
 
+/* Header oscuro reutilizable para pantallas con botón de regreso
+   (Documents, Presentation) — mismo estilo que .appbar */
+.dark-toolbar {
+    --background: #0d1a0d;
+    --color: #ffffff;
+    --border-width: 0 0 1px 0;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-style: solid;
+    --min-height: 56px;
+}
+
 /* === TAB BAR === */
 
 ion-tab-bar {
@@ -72,7 +83,8 @@ ion-tab-button ion-icon {
     font-weight: 700;
 }
 
-ion-tab-button.tab-selected::before {
+ion-tab-button.tab-selected::before,
+ion-tab-button.tab-bar__btn--active::before {
     content: '';
     position: absolute;
     top: 6px;
@@ -82,6 +94,10 @@ ion-tab-button.tab-selected::before {
     height: 32px;
     background: rgba(128, 178, 89, 0.15);
     border-radius: 20px;
+}
+
+ion-tab-button.tab-bar__btn--active {
+    --color: #80b259;
 }
 
 .tab-bar--hidden {

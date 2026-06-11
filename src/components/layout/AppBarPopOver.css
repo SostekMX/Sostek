@@ -4,6 +4,7 @@
     --border-width: 0 0 1px 0;
     --border-color: rgba(255, 255, 255, 0.08);
     --border-style: solid;
+    --min-height: 56px;
 }
 
 .appbar--transparent {

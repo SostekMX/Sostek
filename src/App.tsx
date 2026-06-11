@@ -54,10 +54,27 @@ setupIonicReact();
 
 const HIDE_TABBAR_PATHS = ['/', '/SignUp', '/ForgotPassword', '/ResetPassword'];
 
+/* Las rutas de artículos/presentaciones y evaluación/puntaje son sub-pantallas
+   de APRENDE y EVALÚATE respectivamente: el tab correspondiente debe seguir
+   marcado como activo aunque la ruta no coincida exactamente con /tab1 o /tab3 */
+const getActiveTab = (pathname: string): 'tab1' | 'tab2' | 'tab3' | null => {
+  if (pathname.startsWith('/tab1') || pathname === '/MainMenu' || pathname.startsWith('/Documents') || pathname.startsWith('/presentation')) {
+    return 'tab1';
+  }
+  if (pathname.startsWith('/tab2')) {
+    return 'tab2';
+  }
+  if (pathname.startsWith('/tab3') || pathname.startsWith('/Evaluation') || pathname.startsWith('/score')) {
+    return 'tab3';
+  }
+  return null;
+};
+
 /* Dentro del router para poder usar useLocation */
 const MainTabs: React.FC = () => {
   const location = useLocation();
   const hidden = HIDE_TABBAR_PATHS.includes(location.pathname);
+  const activeTab = getActiveTab(location.pathname);
   return (
     <IonTabs>
       <IonRouterOutlet>
@@ -78,15 +95,15 @@ const MainTabs: React.FC = () => {
       </IonRouterOutlet>
 
       <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
-        <IonTabButton tab="tab1" href="/tab1">
+        <IonTabButton tab="tab1" href="/tab1" className={activeTab === 'tab1' ? 'tab-bar__btn--active' : undefined}>
           <IonIcon icon={bookOutline} />
           <IonLabel className='tab-bar__label'>APRENDE</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="tab2" href="/tab2">
+        <IonTabButton tab="tab2" href="/tab2" className={activeTab === 'tab2' ? 'tab-bar__btn--active' : undefined}>
           <IonIcon icon={gameControllerOutline} />
           <IonLabel className='tab-bar__label'>JUEGA</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="tab3" href="/tab3">
+        <IonTabButton tab="tab3" href="/tab3" className={activeTab === 'tab3' ? 'tab-bar__btn--active' : undefined}>
           <IonIcon icon={clipboardOutline} />
           <IonLabel className='tab-bar__label'>EVALÚATE</IonLabel>
         </IonTabButton>
