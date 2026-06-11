@@ -92,6 +92,7 @@ const Evaluation: React.FC = () => {
               {evaluation?.questions.map((question, index) => (
                 <QuestionTestCard
                   key={index}
+                  number={index + 1}
                   question={question.text}
                   category={question.category}
                   comments={undefined}

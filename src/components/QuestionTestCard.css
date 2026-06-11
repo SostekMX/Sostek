@@ -14,6 +14,10 @@
     line-height: 1.4;
 }
 
+.eval-card__number {
+    color: #80b259;
+}
+
 .eval-card ion-card-content {
     --color: #ccc;
     color: #ccc;

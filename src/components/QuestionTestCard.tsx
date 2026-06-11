@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import AppContext from '../context/AppContext';
 
 interface props {
+    number: number;
     question: string | undefined;
     category: string | undefined;
     comments: string | undefined;
@@ -14,7 +15,7 @@ interface props {
 /* Question card component that requires a question, comments (could be specific instructions for particular questions),
  * options (an array of all the options, doesn't matter the size).
  */
-const QuestionTestCard: React.FC<props> = ({ question, category, comments, options, points }) => {
+const QuestionTestCard: React.FC<props> = ({ number, question, category, comments, options, points }) => {
     // Variable that holds the choice the user selected
     const [selection, setSelection] = useState<string>();
     let sumArray : Array<boolean> = [];
@@ -24,7 +25,7 @@ const QuestionTestCard: React.FC<props> = ({ question, category, comments, optio
     return (
         <IonCard className="eval-card" style={{'--color': '#f0f0f0'} as any}>
             <IonCardHeader>
-                <IonCardTitle>{question}</IonCardTitle>
+                <IonCardTitle><span className="eval-card__number">{number}.</span> {question}</IonCardTitle>
             </IonCardHeader>
 
             <IonCardContent>
