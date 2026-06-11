@@ -138,7 +138,6 @@ src/
 
 | Elemento | Ubicación | Estado |
 |----------|-----------|--------|
-| Ajustes | `AppBarPopOver.tsx` | Visible en el menú, sin ruta ni lógica |
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
 | Tutorial popup (InitialTutorial) | `InitialTutorial.tsx` | Ya no se usa desde Tab1; el contenido del tutorial está integrado en Tab2 |
 
@@ -259,21 +258,21 @@ src/
 
 | # | Descripción | Archivo(s) | Depende de backend |
 |---|-------------|------------|---------------------|
-| C1 | Barra de búsqueda solo visible en APRENDE — ocultarla en JUEGA y EVALÚATE | `AppBarPopOver.tsx` | No |
-| C2 | Mostrar foto de perfil en el header desde que se inicia sesión (hoy solo aparece después de entrar a Perfil al menos una vez) | `LogIn.tsx` | No |
-| C3 | Agregar botón de regreso en presentaciones, igual que en artículos | `Presentation.tsx` | No |
-| C4 | La presentación "Social Innovation and Design" abre en la última slide en vez de la primera — el orden de `slides` en el backend es correcto (Slide1→Slide5), es config de Swiper | `Presentation.tsx` | No |
-| C5 | Quitar botón "Ajustes" del menú (sin funcionalidad por ahora, se puede reagregar a futuro) | `AppBarPopOver.tsx`, `Documents.tsx` | No |
-| C6 | Cambiar texto de descarga en JUEGA: "Descarga y juega sin conexión a internet" → "Imprime las cartas y juega con tus amigos" | `Tab2.tsx` | No |
-| C7 | Bug: tras tocar "Artículos recomendados" y volver a EVALÚATE, no aparecen evaluaciones hasta tocar un filtro de carrera — el `search` global queda con el nombre de la categoría débil y filtra también las evaluaciones de Tab3 | `Tab3.tsx` | No |
-| C8 | Rediseñar pantalla de resultados (`/score/:name`, aplica a todas las evaluaciones) con el dark theme del resto de la app | `FinalScoreEvaluation.tsx`, `.css` | No |
-| C9 | Numerar cada pregunta de la evaluación (inciso 1, 2, 3...) | `Evaluation.tsx`, `QuestionTestCard.tsx` | No |
-| C10 | Mostrar el total de preguntas en cada tarjeta de evaluación (Tab3) | `EvaluationCard.tsx`, `Tab3.tsx` | Sí — backend agrega `question_count` (B4) |
-| C11 | Mostrar el puntaje máximo posible junto al obtenido en resultados — se calcula sumando los valores positivos de cada pregunta de `/evaluations/:id`, no requiere datos nuevos | `Evaluation.tsx` (calcular y guardar en sessionStorage), `FinalScoreEvaluation.tsx` (mostrar) | No |
-| C12 | Solo aparece 1 artículo recomendado al terminar una evaluación — backend ya pobló `category` en los artículos (B2), pero usa una taxonomía distinta (`Ambiental`/`Social`/`Económico`) a la de las evaluaciones (`ECOSISTEMA`/`Economía y sociedad`/`Sociedad y Economía`), por lo que el filtro sigue sin matchear | — | Sí — backend debe alinear taxonomías (B6) |
-| C13 | 2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") — backend recargó el `body` (B1), pero la letra "í" quedó corrupta en todo el texto (bug de encoding) | — | Sí — backend corrige encoding (B5) |
-| ~~C14~~ | ~~Descripciones de evaluaciones con el rango de semestre por nivel (Nivel 1: 3°-4°, Nivel 2: 5°-6°, Nivel 3: 7°-8°)~~ | `EvaluationCard.tsx` | ✅ Resuelto — backend llenó `description` (B3), frontend ya lo muestra |
-| C15 | El footer (tab bar) al entrar a un artículo o presentación no es el mismo que en APRENDE/EVALÚATE/JUEGA — revisar `IonTabBar` en `App.tsx` y por qué difiere en `Documents.tsx` / `Presentation.tsx` | `App.tsx`, `Documents.tsx`, `Presentation.tsx` | No |
+| ~~C1~~ | ~~Barra de búsqueda solo visible en APRENDE — ocultarla en JUEGA y EVALÚATE~~ | `AppBarPopOver.tsx` | ✅ Resuelto — `showSearch` solo en `/tab1` y `/MainMenu` |
+| ~~C2~~ | ~~Mostrar foto de perfil en el header desde que se inicia sesión~~ | `LogIn.tsx` | ✅ Resuelto — `LogIn.tsx` guarda `avatar` en `localStorage` al loguear |
+| ~~C3~~ | ~~Agregar botón de regreso en presentaciones, igual que en artículos~~ | `Presentation.tsx` | ✅ Resuelto — `IonBackButton` agregado |
+| ~~C4~~ | ~~La presentación "Social Innovation and Design" abre en la última slide en vez de la primera~~ | `Presentation.tsx` | ✅ Resuelto — `initialSlide={0}` + `key={driveId}` |
+| ~~C5~~ | ~~Quitar botón "Ajustes" del menú~~ | `AppBarPopOver.tsx` | ✅ Resuelto — botón eliminado |
+| ~~C6~~ | ~~Cambiar texto de descarga en JUEGA~~ | `Tab2.tsx` | ✅ Resuelto — ahora dice "Imprime las cartas y juega con tus amigos" |
+| ~~C7~~ | ~~Bug: tras tocar "Artículos recomendados" y volver a EVALÚATE, no aparecen evaluaciones hasta tocar un filtro de carrera~~ | `Tab3.tsx` | ✅ Resuelto — Tab3 filtra solo por `currentOption` (pills de carrera), ya no depende del `search` global |
+| ~~C8~~ | ~~Rediseñar pantalla de resultados (`/score/:name`) con el dark theme del resto de la app~~ | `FinalScoreEvaluation.tsx`, `.css` | ✅ Resuelto |
+| ~~C9~~ | ~~Numerar cada pregunta de la evaluación (inciso 1, 2, 3...)~~ | `Evaluation.tsx`, `QuestionTestCard.tsx` | ✅ Resuelto |
+| ~~C10~~ | ~~Mostrar el total de preguntas en cada tarjeta de evaluación (Tab3)~~ | `EvaluationCard.tsx`, `Tab3.tsx` | ✅ Resuelto — backend agregó `question_count` (B4), frontend lo muestra |
+| ~~C11~~ | ~~Mostrar el puntaje máximo posible junto al obtenido en resultados~~ | `Evaluation.tsx`, `FinalScoreEvaluation.tsx` | ✅ Resuelto |
+| C12 | Solo aparece 1 artículo recomendado al terminar una evaluación — taxonomías de `category` no coinciden entre artículos y evaluaciones | `ArticleCarrousel.tsx` | ⚠️ Frontend listo (mapeo de categorías implementado) — falta que backend renombre `evaluations.questions[].category` a `"Ambiental"` / `"Económico y Social"` (B6) |
+| C13 | 2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") — la letra "í" quedó corrupta en todo el texto (bug de encoding) | — | Sí — backend corrige encoding (B5) |
+| ~~C14~~ | ~~Descripciones de evaluaciones con el rango de semestre por nivel~~ | `EvaluationCard.tsx` | ✅ Resuelto — backend llenó `description` (B3), frontend ya lo muestra |
+| ~~C15~~ | ~~El footer (tab bar) al entrar a un artículo o presentación no es el mismo que en APRENDE/EVALÚATE/JUEGA~~ | `App.tsx`, `App.css`, `Documents.tsx`, `Presentation.tsx`, `AppBarPopOver.css` | ✅ Resuelto — header con `.dark-toolbar` + tab activo via `getActiveTab()` |
 
 ---
 
