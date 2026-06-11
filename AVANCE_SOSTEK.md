@@ -39,10 +39,8 @@ src/
 │   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación en la lista (con botón favorito)
 │   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
 │   ├── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
-│   ├── TutorialCard.tsx             # Slide individual del tutorial (legacy, no usado activamente)
 │   └── tutorial/
-│       ├── InitialTutorial.tsx      # Tutorial — ya no se usa desde Tab1; Tab2 consume GET /tutorial directamente
-│       └── TutorialComponent.tsx   # Wrapper del tutorial (legacy)
+│       └── InitialTutorial.tsx      # Tutorial — consume GET /tutorial del backend
 ├── pages/
 │   ├── logIn/         LogIn.tsx          # Pantalla de inicio de sesión
 │   ├── signUp/        SignUp.tsx          # Pantalla de registro
@@ -57,18 +55,14 @@ src/
 │   ├── finalScoreEvaluation/ FinalScoreEvaluation.tsx # Resultados y feedback
 │   └── profile/       Profile.tsx         # Edición de perfil del usuario
 ├── hooks/
-│   ├── useFavorites.ts              # GET/POST/DELETE /user/favorites con optimistic update
-│   ├── useGetDocuments.ts           # Hook legacy — solo usado por TutorialComponent
-│   └── useGetArticlesData.ts        # Hook legacy — solo usado por TutorialComponent
+│   └── useFavorites.ts              # GET/POST/DELETE /user/favorites con optimistic update
 ├── utils/
 │   ├── scoring.ts                   # Lógica pura: getFeedback, applyAnswer, computeCategoryScores, clearScoreSession
 │   └── search.ts                    # normalize() — elimina tildes y pasa a minúsculas
-├── __tests__/
-│   ├── scoring.test.ts              # 14 tests: rangos de feedback, seleccionar/deseleccionar, agrupación por categoría
-│   ├── search.test.ts               # 5 tests: tildes, mayúsculas, cadena vacía
-│   └── favorites.test.ts            # 6 tests: isFavorite, add, remove, lista vacía
-└── models/
-    └── File.ts                      # Modelo legacy — solo usado por tutorial
+└── __tests__/
+    ├── scoring.test.ts              # 14 tests: rangos de feedback, seleccionar/deseleccionar, agrupación por categoría
+    ├── search.test.ts               # 5 tests: tildes, mayúsculas, cadena vacía
+    └── favorites.test.ts            # 6 tests: isFavorite, add, remove, lista vacía
 ```
 
 ---
@@ -296,11 +290,9 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 
 ### Pendientes para terminar el deploy
 
-1. ⏳ **Deployar el frontend en Render** — se agregó `render.yaml` (Static Site, build con `npm ci && npm run build`, publica `./build`, incluye rewrite `/* → /index.html` para que funcionen las rutas de React Router). Pasos en Render:
+1. ⏳ **Deployar el frontend en Render** — se agregó `render.yaml` (Static Site, build con `npm ci && npm run build`, publica `./build`, incluye rewrite `/* → /index.html` para que funcionen las rutas de React Router, y ya trae `REACT_APP_BACKEND_URL` configurada). Pasos en Render:
    - New → Blueprint → seleccionar el repo `SostekMX/Sostek` → rama a deployar
-   - Render detecta `render.yaml` y crea el servicio `sostek-frontend`
-   - Completar la variable `REACT_APP_PRIVATE_API_KEY` (no va en el repo, hay que cargarla manualmente con el valor del `.env` local)
-   - `REACT_APP_BACKEND_URL` ya viene seteada en `render.yaml`
+   - Render detecta `render.yaml` y crea el servicio `sostek-frontend` automáticamente, sin variables manuales pendientes
 2. ⏳ **CORS para producción**: el backend ya soporta `CORS_ORIGIN` por variable de entorno. Una vez que el frontend tenga su URL final (`https://sostek-frontend-xxxx.onrender.com`), configurarla como `CORS_ORIGIN` en el panel de Render del backend.
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
