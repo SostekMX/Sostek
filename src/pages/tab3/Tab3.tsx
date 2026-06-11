@@ -11,6 +11,7 @@ interface EvaluationItem {
   name: string;
   career: string;
   description?: string;
+  question_count?: number;
 }
 
 const FILTERS = [
@@ -89,7 +90,7 @@ const Tab3: React.FC = () => {
         {!loading && (
           <div className='evaluation-grid'>
             {filtered.map(ev => (
-              <EvaluationCard key={ev._id} name={ev.name} id={ev._id} career={ev.career} description={ev.description} />
+              <EvaluationCard key={ev._id} name={ev.name} id={ev._id} career={ev.career} description={ev.description} questionCount={ev.question_count} />
             ))}
           </div>
         )}

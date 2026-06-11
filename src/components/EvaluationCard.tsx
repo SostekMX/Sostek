@@ -1,6 +1,6 @@
 import React from 'react';
 import { IonCard, IonIcon } from '@ionic/react';
-import { businessOutline, colorPaletteOutline, schoolOutline } from 'ionicons/icons';
+import { businessOutline, colorPaletteOutline, schoolOutline, helpCircleOutline } from 'ionicons/icons';
 import './EvaluationCard.css';
 
 interface EvaluationCardProps {
@@ -8,6 +8,7 @@ interface EvaluationCardProps {
     id: string;
     career: string;
     description?: string;
+    questionCount?: number;
 }
 
 const EVALUATION_META: Record<string, { icon: string; description: string }> = {
@@ -44,7 +45,7 @@ function getCareerMeta(name: string, career: string) {
     };
 }
 
-const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, career, description }) => {
+const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, career, description, questionCount }) => {
     const meta = getCareerMeta(name, career);
     const displayDescription = description ?? meta.description;
 
@@ -63,6 +64,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, career, descr
                 </div>
                 <p className='evaluation__title'>{name}</p>
                 <p className='evaluation-card__desc'>{displayDescription}</p>
+                {questionCount !== undefined && (
+                    <p className='evaluation-card__meta'>
+                        <IonIcon icon={helpCircleOutline} />
+                        {questionCount} preguntas
+                    </p>
+                )}
             </div>
         </IonCard>
     );

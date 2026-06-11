@@ -58,3 +58,16 @@
     line-height: 1.45;
     margin: 0;
 }
+
+.evaluation-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.74rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 2px 0 0;
+}
+
+.evaluation-card__meta ion-icon {
+    font-size: 14px;
+}
