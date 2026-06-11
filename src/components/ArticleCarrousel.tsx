@@ -34,6 +34,14 @@ interface Props {
 
 type FilterType = 'all' | 'article' | 'presentation';
 
+// Las evaluaciones miden 2 ejes (Ambiental / Económico y Social) pero los artículos
+// usan 3 categorías — este mapa traduce el eje débil de la evaluación a las
+// categorías de artículo que se deben recomendar.
+const CATEGORY_RECOMMENDATIONS: Record<string, string[]> = {
+  [normalize('Ambiental')]: [normalize('Ambiental')],
+  [normalize('Económico y Social')]: [normalize('Económico'), normalize('Social')],
+};
+
 const FILTERS: { value: FilterType; label: string }[] = [
   { value: 'all', label: 'Ambos' },
   { value: 'article', label: 'Artículos' },
@@ -47,11 +55,14 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
 
   const searchNorm = normalize(search);
 
+  const recommendedCategories = CATEGORY_RECOMMENDATIONS[searchNorm];
+
   const articleCards = articlesData
-    ?.filter(article =>
-      normalize(article.category ?? '').includes(searchNorm) ||
-      normalize(article.title ?? '').includes(searchNorm)
-    )
+    ?.filter(article => {
+      const categoryNorm = normalize(article.category ?? '');
+      if (recommendedCategories) return recommendedCategories.includes(categoryNorm);
+      return categoryNorm.includes(searchNorm) || normalize(article.title ?? '').includes(searchNorm);
+    })
     .map(article => (
       <DocumentCard
         key={article._id}

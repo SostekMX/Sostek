@@ -979,3 +979,19 @@ B2 pidió poblar `category` en los 26 artículos usando las categorías de las p
 El frontend (`ArticleCarrousel.tsx`) filtra `article.category` (y `article.title` como respaldo) contra la categoría más débil de la evaluación. Como `"ECOSISTEMA"` / `"Economía y sociedad"` / `"Sociedad y Economía"` no coinciden con `"Ambiental"` / `"Social"` / `"Económico"`, **"Artículos recomendados" sigue sin matchear correctamente** para la mayoría de los casos — cambió la causa (ya no es `category: null`) pero el síntoma de C12 sigue presente.
 
 **Pedido:** alinear ambas taxonomías. Lo más simple sería que `articles.category` use los mismos valores que ya existen en `evaluations.questions[].category` (corrigiendo primero el encoding de B5). Si por alguna razón los artículos deben mantener `"Ambiental"/"Social"/"Económico"`, avisar para que el frontend agregue un mapeo categoría-evaluación → categoría-artículo.
+
+---
+
+### ✅ Plan acordado para B6 (2026-06-10)
+
+Las evaluaciones solo miden **2 ejes**, pero los artículos tienen **3 categorías** — no son taxonomías equivalentes 1 a 1. Se acordó:
+
+1. **Backend** normaliza `evaluations.questions[].category` (las 6 evaluaciones) a exactamente estos 2 valores:
+   - `"Ambiental"` (en vez de `"ECOSISTEMA"`)
+   - `"Económico y Social"` (unifica `"Economía y sociedad"` y `"Sociedad y Economía"`, corrigiendo también el encoding de B5)
+
+2. **Frontend** (ya implementado en `ArticleCarrousel.tsx`) mapea el eje débil a las categorías de artículo:
+   - `"Ambiental"` → artículos con `category: "Ambiental"`
+   - `"Económico y Social"` → artículos con `category: "Económico"` **o** `category: "Social"`
+
+El frontend ya quedó listo esperando estos 2 strings exactos. En cuanto el backend aplique el rename en MongoDB, "Artículos recomendados" debería funcionar para las 6 evaluaciones sin más cambios de este lado.
