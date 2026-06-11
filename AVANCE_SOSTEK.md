@@ -143,13 +143,6 @@ src/
 
 ---
 
-### ❌ NO IMPLEMENTADO
-
-- Pantalla de ajustes
-- Juego online en Tab 2 (Unity WebGL — largo plazo)
-
----
-
 ### 🔒 SEGURIDAD / CALIDAD — PENDIENTE FRONTEND
 
 | # | Tarea | Detalle |
@@ -244,12 +237,9 @@ src/
 18. ~~[U2] Cachear evaluaciones y presentaciones en `localStorage`~~ ✅
 19. ~~[U3] Error boundary global~~ ✅
 20. ~~[T1] Unit tests frontend con Jest (puntaje, búsqueda, favoritos)~~ ✅
-21. Pantalla de Ajustes (visible en menú, sin ruta ni lógica)
-22. Juego online en Tab 2 (Unity WebGL — largo plazo)
-23. ✅ Foto de perfil — frontend completo (upload + crop + reposición + header) + backend implementado (`POST /user/avatar` en Cloudinary)
-24. ~~Campo `description` en evaluaciones~~ ✅ — backend agregó el campo (B3), frontend lo muestra
-25. ~~Imágenes rotas en 3 artículos~~ ✅ — backend actualizó las URLs en MongoDB
-26. ⚠️ [LARGO PLAZO] Imágenes de artículos generadas con IA — generar 26 imágenes en Leonardo.ai (FLUX Schnell, 16:9, Stock Photo, Prompt Enhance Off), descargar nombradas como `01-cambio-climatico.jpg` etc., el backend las sube a Cloudinary y actualiza el campo `image` en MongoDB.
+21. ✅ Foto de perfil — frontend completo (upload + crop + reposición + header) + backend implementado (`POST /user/avatar` en Cloudinary)
+22. ~~Campo `description` en evaluaciones~~ ✅ — backend agregó el campo (B3), frontend lo muestra
+23. ~~Imágenes rotas en 3 artículos~~ ✅ — backend actualizó las URLs en MongoDB
 
 ---
 
