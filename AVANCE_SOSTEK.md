@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-09
+> Última actualización: 2026-06-10
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -270,9 +270,9 @@ src/
 | C9 | Numerar cada pregunta de la evaluación (inciso 1, 2, 3...) | `Evaluation.tsx`, `QuestionTestCard.tsx` | No |
 | C10 | Mostrar el total de preguntas en cada tarjeta de evaluación (Tab3) | `EvaluationCard.tsx`, `Tab3.tsx` | Sí — backend agrega `question_count` (B4) |
 | C11 | Mostrar el puntaje máximo posible junto al obtenido en resultados — se calcula sumando los valores positivos de cada pregunta de `/evaluations/:id`, no requiere datos nuevos | `Evaluation.tsx` (calcular y guardar en sessionStorage), `FinalScoreEvaluation.tsx` (mostrar) | No |
-| C12 | Solo aparece 1 artículo recomendado al terminar una evaluación — causa raíz: los 26 artículos tienen `category: null` en MongoDB, por lo que el filtro por categoría nunca matchea | — | Sí — backend puebla `category` (B2) |
-| C13 | 2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") se ven con diseño viejo — en realidad tienen datos rotos (encoding corrupto y campos vacíos/desordenados), no es un problema de UI | — | Sí — backend corrige datos (B1) |
-| C14 | Descripciones de evaluaciones con el rango de semestre por nivel (Nivel 1: 3°-4°, Nivel 2: 5°-6°, Nivel 3: 7°-8°) | `EvaluationCard.tsx` (fallback opcional mientras tanto) | Sí — backend llena `description` (B3) |
+| C12 | Solo aparece 1 artículo recomendado al terminar una evaluación — backend ya pobló `category` en los artículos (B2), pero usa una taxonomía distinta (`Ambiental`/`Social`/`Económico`) a la de las evaluaciones (`ECOSISTEMA`/`Economía y sociedad`/`Sociedad y Economía`), por lo que el filtro sigue sin matchear | — | Sí — backend debe alinear taxonomías (B6) |
+| C13 | 2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") — backend recargó el `body` (B1), pero la letra "í" quedó corrupta en todo el texto (bug de encoding) | — | Sí — backend corrige encoding (B5) |
+| ~~C14~~ | ~~Descripciones de evaluaciones con el rango de semestre por nivel (Nivel 1: 3°-4°, Nivel 2: 5°-6°, Nivel 3: 7°-8°)~~ | `EvaluationCard.tsx` | ✅ Resuelto — backend llenó `description` (B3), frontend ya lo muestra |
 | C15 | El footer (tab bar) al entrar a un artículo o presentación no es el mismo que en APRENDE/EVALÚATE/JUEGA — revisar `IonTabBar` en `App.tsx` y por qué difiere en `Documents.tsx` / `Presentation.tsx` | `App.tsx`, `Documents.tsx`, `Presentation.tsx` | No |
 
 ---

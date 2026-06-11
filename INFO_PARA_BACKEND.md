@@ -944,16 +944,38 @@ Aplica a las 6 evaluaciones (3 Arquitectura + 3 Diseño Industrial).
 
 ---
 
-### B4 — Agregar conteo de preguntas a `GET /evaluations`
+### ~~B4~~ — ~~Agregar conteo de preguntas a `GET /evaluations`~~ ✅ Resuelto por el backend
 
-El frontend va a mostrar "X preguntas" en cada tarjeta de evaluación (Tab3), pero `GET /evaluations` (lista) solo trae `_id`, `name`, `career`, `description` — no las preguntas. Pedido: agregar un campo, ej. `question_count`, con el total de preguntas de cada evaluación.
+`GET /evaluations` ya devuelve `question_count` por evaluación. Frontend integrado (muestra "X preguntas" en cada tarjeta de Tab3).
 
-```json
-{
-  "_id": "...",
-  "name": "Arquitectura Nivel 1",
-  "career": "Arquitectura",
-  "description": "...",
-  "question_count": 12
-}
-```
+---
+
+## 🆕 Pendientes — revisión frontend (2026-06-10, parte 2)
+
+> Verificación de B1/B2/B3. B3 quedó resuelto. B1 y B2 cambiaron de síntoma pero siguen sin resolverse del todo.
+
+### B5 — El carácter "í" se corrompe en textos largos (encoding)
+
+Revisando B1, el `body` de los 2 artículos ya se recargó (antes tenía 24 caracteres, ahora ~2000), pero **todas las apariciones de la letra "í" quedaron rotas**: en vez de "í" aparece el carácter de reemplazo `�` seguido de un guión suave invisible (U+00AD). Ejemplos reales del `body`:
+
+- "As**í** mismo" → "As`�`­ mismo"
+- "pel**í**cula" → "pel`�`­cula"
+- "d**í**a" → "d`�`­a"
+- "energ**í**as" → "energ`�`­as"
+- "s**í**ntomas" → "s`�`­ntomas"
+
+El resto de acentos (á, é, ó, ú, ñ) están bien — el problema es específico de "í" (en UTF-8 son los bytes `0xC3 0xAD`; parece que `0xC3` se está perdiendo/reemplazando y `0xAD` queda suelto como su propio carácter).
+
+**Mismo bug aparece en las categorías de las preguntas de evaluación** (`GET /evaluations/:id`): la categoría llega como `"Econom�­a y sociedad"` / `"Sociedad y Econom�­a"` en vez de `"Economía y sociedad"` / `"Sociedad y Economía"`.
+
+**Pedido:** revisar el pipeline de importación/guardado de texto largo a MongoDB — probablemente hay un `replace`/regex que está separando el byte `0xAD` de `0xC3` y tratándolo como soft-hyphen. Esto afecta tanto a `articles.body` como a `evaluations.questions[].category`.
+
+---
+
+### B6 — C12 sigue sin resolver: las categorías de artículos no coinciden con las de evaluaciones
+
+B2 pidió poblar `category` en los 26 artículos usando las categorías de las preguntas de evaluación (`ECOSISTEMA`, `Economía y sociedad`, `Sociedad y Economía`). Ya se pobló `category`, pero con otros 3 valores: `"Ambiental"`, `"Social"`, `"Económico"` (verificado en los 25 artículos actuales).
+
+El frontend (`ArticleCarrousel.tsx`) filtra `article.category` (y `article.title` como respaldo) contra la categoría más débil de la evaluación. Como `"ECOSISTEMA"` / `"Economía y sociedad"` / `"Sociedad y Economía"` no coinciden con `"Ambiental"` / `"Social"` / `"Económico"`, **"Artículos recomendados" sigue sin matchear correctamente** para la mayoría de los casos — cambió la causa (ya no es `category: null`) pero el síntoma de C12 sigue presente.
+
+**Pedido:** alinear ambas taxonomías. Lo más simple sería que `articles.category` use los mismos valores que ya existen en `evaluations.questions[].category` (corrigiendo primero el encoding de B5). Si por alguna razón los artículos deben mantener `"Ambiental"/"Social"/"Económico"`, avisar para que el frontend agregue un mapeo categoría-evaluación → categoría-artículo.
