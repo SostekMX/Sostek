@@ -170,10 +170,11 @@ src/
 
 | # | Tarea | Detalle |
 |---|-------|---------|
-| BS1 | Variables de entorno | Documentar y verificar que ningún secreto esté hardcodeado en el repo del backend |
-| BS2 | Sanitizar inputs + NoSQL injection | `express-mongo-sanitize` (global) + `express-validator` por endpoint + `helmet`. Código listo en `INFO_PARA_BACKEND.md` → sección BS2 |
-| BS5 | HTTPS / SSL (producción) | El backend corre en HTTP — para deploy: configurar TLS en el servidor (nginx/caddy o plataforma como Railway/Render). Sin HTTPS, tokens y contraseñas viajan en texto plano y los navegadores bloquean llamadas HTTP desde un frontend HTTPS (mixed content). No aplica en desarrollo local. |
-| BT1 | Unit tests backend (Jest + Supertest) | Testear validaciones, lógica de autenticación, queries a MongoDB |
+| ~~BS1~~ | ~~Variables de entorno~~ | ✅ Resuelto — sin secretos hardcodeados, `.env.example` completo |
+| ~~BS2~~ | ~~Sanitizar inputs + NoSQL injection~~ | ✅ Resuelto — `helmet`, `express-mongo-sanitize` y `express-validator` activos |
+| ~~BS4~~ | ~~Contraseña mínima 8 caracteres~~ | ✅ Resuelto — `isLength({ min: 8 })` en signup y reset-password |
+| ~~BS5~~ | ~~HTTPS / SSL (producción)~~ | ✅ Resuelto — Render provee TLS automáticamente |
+| ~~BT1~~ | ~~Unit tests backend (Jest + Supertest)~~ | ✅ Resuelto — 33 tests, corren en CI |
 
 ---
 
@@ -200,7 +201,7 @@ src/
 | ~~2~~ | ~~Alertas feos, no siguen la temática oscura~~ | ✅ Resuelto — IonToast para errores, IonAlert dark para confirmaciones destructivas |
 | ~~3~~ | ~~Tab bar footer poco estético~~ | ✅ Resuelto — dark theme + íconos + píldora activa + borde |
 | ~~4~~ | ~~Evaluación con diseño viejo~~ | ✅ Resuelto — dark theme + cards oscuras |
-| 5 | Las evaluaciones no tienen descripción — frontend listo, falta campo `description` en backend | `EvaluationCard.tsx` usa `description` del backend si existe, fallback hardcodeado mientras tanto |
+| ~~5~~ | ~~Las evaluaciones no tienen descripción~~ | ✅ Resuelto — backend agregó `description` (B3), `EvaluationCard.tsx` lo muestra |
 | ~~6~~ | ~~Contenido de artículos difícil de leer, no sigue la aesthetic~~ | ✅ Resuelto — rediseño con hero 240px + tipografía dark |
 | ~~7~~ | ~~Sin botón de regreso dentro de un artículo~~ | ✅ Resuelto — IonBackButton en IonHeader |
 | ~~D1~~ | ~~Perfil sin dark theme~~ | ✅ Resuelto — app-dark-bg + card oscuro + avatar icon |
@@ -246,8 +247,8 @@ src/
 21. Pantalla de Ajustes (visible en menú, sin ruta ni lógica)
 22. Juego online en Tab 2 (Unity WebGL — largo plazo)
 23. ✅ Foto de perfil — frontend completo (upload + crop + reposición + header) + backend implementado (`POST /user/avatar` en Cloudinary)
-24. ⚠️ Campo `description` en evaluaciones — frontend listo; backend debe agregar campo al modelo y seed (ver `INFO_PARA_BACKEND.md`)
-25. ⚠️ Imágenes rotas en 3 artículos — backend debe actualizar URLs en MongoDB (ver `INFO_PARA_BACKEND.md`)
+24. ~~Campo `description` en evaluaciones~~ ✅ — backend agregó el campo (B3), frontend lo muestra
+25. ~~Imágenes rotas en 3 artículos~~ ✅ — backend actualizó las URLs en MongoDB
 26. ⚠️ [LARGO PLAZO] Imágenes de artículos generadas con IA — generar 26 imágenes en Leonardo.ai (FLUX Schnell, 16:9, Stock Photo, Prompt Enhance Off), descargar nombradas como `01-cambio-climatico.jpg` etc., el backend las sube a Cloudinary y actualiza el campo `image` en MongoDB.
 
 ---
@@ -269,8 +270,8 @@ src/
 | ~~C9~~ | ~~Numerar cada pregunta de la evaluación (inciso 1, 2, 3...)~~ | `Evaluation.tsx`, `QuestionTestCard.tsx` | ✅ Resuelto |
 | ~~C10~~ | ~~Mostrar el total de preguntas en cada tarjeta de evaluación (Tab3)~~ | `EvaluationCard.tsx`, `Tab3.tsx` | ✅ Resuelto — backend agregó `question_count` (B4), frontend lo muestra |
 | ~~C11~~ | ~~Mostrar el puntaje máximo posible junto al obtenido en resultados~~ | `Evaluation.tsx`, `FinalScoreEvaluation.tsx` | ✅ Resuelto |
-| C12 | Solo aparece 1 artículo recomendado al terminar una evaluación — taxonomías de `category` no coinciden entre artículos y evaluaciones | `ArticleCarrousel.tsx` | ⚠️ Frontend listo (mapeo de categorías implementado) — falta que backend renombre `evaluations.questions[].category` a `"Ambiental"` / `"Económico y Social"` (B6) |
-| C13 | 2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") — la letra "í" quedó corrupta en todo el texto (bug de encoding) | — | Sí — backend corrige encoding (B5) |
+| ~~C12~~ | ~~Solo aparece 1 artículo recomendado al terminar una evaluación — taxonomías de `category` no coinciden entre artículos y evaluaciones~~ | `ArticleCarrousel.tsx` | ✅ Resuelto — backend renombró `evaluations.questions[].category` a `"Ambiental"` / `"Económico y Social"` (B6), matchea con el mapeo del frontend |
+| ~~C13~~ | ~~2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") — la letra "í" quedó corrupta en todo el texto (bug de encoding)~~ | — | ✅ Resuelto — backend corrigió el encoding (B5) |
 | ~~C14~~ | ~~Descripciones de evaluaciones con el rango de semestre por nivel~~ | `EvaluationCard.tsx` | ✅ Resuelto — backend llenó `description` (B3), frontend ya lo muestra |
 | ~~C15~~ | ~~El footer (tab bar) al entrar a un artículo o presentación no es el mismo que en APRENDE/EVALÚATE/JUEGA~~ | `App.tsx`, `App.css`, `Documents.tsx`, `Presentation.tsx`, `AppBarPopOver.css` | ✅ Resuelto — header con `.dark-toolbar` + tab activo via `getActiveTab()` |
 

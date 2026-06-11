@@ -2,7 +2,7 @@
 
 > Documento de comunicación frontend → backend.
 > Se actualiza cada vez que hay un cambio en el frontend que afecta la integración.
-> Última actualización: 2026-06-09
+> Última actualización: 2026-06-10
 > Backend corre en: `http://localhost:8080`
 
 ---
@@ -65,12 +65,14 @@
 
 ## Pendiente de ambos lados
 
+✅ Todo resuelto — ver `AVANCE_SOSTEK.md` para el detalle.
+
 | Elemento | Frontend | Backend |
 |----------|----------|---------|
-| Foto de perfil | ✅ Frontend completo (upload + crop + reposición + header) | Implementar `POST /user/avatar` + campo `avatar` en modelo |
-| Imágenes rotas en 3 artículos | ✅ Muestra placeholder cuando imagen falla | Actualizar URLs en MongoDB |
-| Párrafos en artículos | ✅ Divide `body` por `\n` | Agregar saltos de línea en datos de MongoDB |
-| `description` en evaluaciones | ✅ Listo para recibirlo | Agregar campo al schema + seed |
+| Foto de perfil | ✅ Completo (upload + crop + reposición + header) | ✅ `POST /user/avatar` implementado |
+| Imágenes rotas en 3 artículos | ✅ Completo | ✅ URLs actualizadas en MongoDB |
+| Párrafos en artículos | ✅ Completo | ✅ Saltos de línea agregados en MongoDB |
+| `description` en evaluaciones | ✅ Completo | ✅ Campo agregado al schema y seed (B3) |
 
 ---
 
@@ -683,9 +685,9 @@ Aplicar a `/user/signup`, `/user/login` y `/user/forgot-password`: 10 requests p
 
 ---
 
-## Pendientes del backend — datos
+## Pendientes del backend — datos ✅ Resueltos
 
-### 1. Imágenes rotas en 3 artículos
+### ~~1. Imágenes rotas en 3 artículos~~ ✅ Resuelto
 Actualizar el campo `image` en MongoDB para estos artículos:
 
 | Título | URL nueva |
@@ -700,10 +702,10 @@ db.articles.updateOne({ title: "El impacto del cine en el medio ambiente" }, { $
 db.articles.updateOne({ title: "Muebles en Abuela" }, { $set: { image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQszpgQOrAHvdAqeYQKGcQ0qo8FXS84XH6WIg&s" } })
 ```
 
-### 2. Párrafos en artículos
+### ~~2. Párrafos en artículos~~ ✅ Resuelto — 24/25 artículos con `\n`; "Muebles de la Abuela" no lo necesita por ser un párrafo corto
 El frontend ya divide el campo `body` por `\n` para mostrar párrafos separados. Los artículos que se ven como un bloque de texto continuo necesitan saltos de línea (`\n`) en su campo `body` en MongoDB.
 
-### 3. Campo `description` en evaluaciones
+### ~~3. Campo `description` en evaluaciones~~ ✅ Resuelto (B3)
 Agregar campo `description: { type: String, default: '' }` al schema de evaluaciones e incluirlo en `GET /evaluations`. El frontend ya lo recibe y muestra automáticamente si existe.
 
 | Evaluación | Descripción sugerida |
@@ -717,12 +719,12 @@ Agregar campo `description: { type: String, default: '' }` al schema de evaluaci
 
 ---
 
-## Pendientes del backend — seguridad y calidad
+## Pendientes del backend — seguridad y calidad ✅ Resueltos
 
-### BS1 — Variables de entorno
+### ~~BS1~~ — ~~Variables de entorno~~ ✅ Resuelto — sin secretos hardcodeados, `.env.example` completo
 Verificar que ningún secreto (API keys, connection strings, JWT secret) esté hardcodeado en el código. Documentar en un `.env.example` todas las variables requeridas.
 
-### BS2 — Sanitizar inputs + prevenir NoSQL Injection
+### ~~BS2~~ — ~~Sanitizar inputs + prevenir NoSQL Injection~~ ✅ Resuelto — `helmet`, `express-mongo-sanitize` y `express-validator` activos
 
 MongoDB no tiene SQL, pero sí tiene **NoSQL injection**. Sin sanitización, un atacante puede enviar:
 
@@ -887,7 +889,7 @@ El flujo de recuperación por email también está implementado. Frontend integr
 
 ---
 
-### BS4 — Contraseña mínima 8 caracteres
+### ~~BS4~~ — ~~Contraseña mínima 8 caracteres~~ ✅ Resuelto — `isLength({ min: 8 })` en signup y reset-password
 
 El frontend ya valida mínimo 8 caracteres. El backend debe actualizar su validación para ser consistente:
 
@@ -898,7 +900,7 @@ El frontend ya valida mínimo 8 caracteres. El backend debe actualizar su valida
 
 ---
 
-### BT1 — Unit tests (Jest + Supertest)
+### ~~BT1~~ — ~~Unit tests (Jest + Supertest)~~ ✅ Resuelto — 33 tests, corren en CI
 Testear lógica crítica del backend:
 - Validaciones de autenticación (login, signup, tokens)
 - Rate limiting activo
@@ -909,11 +911,11 @@ Herramienta recomendada: `jest` + `supertest` + `mongodb-memory-server` para bas
 
 ---
 
-## 🆕 Pendientes — revisión frontend (2026-06-10)
+## 🆕 Pendientes — revisión frontend (2026-06-10) ✅ Resueltos
 
 > Hallazgos de QA manual (jefa). Se priorizan los que afectan datos en MongoDB.
 
-### B1 — 2 artículos con datos corruptos (parecen "diseño viejo" pero es un problema de datos)
+### ~~B1~~ — ~~2 artículos con datos corruptos~~ ✅ Resuelto — body recargado y encoding corregido (B5)
 
 | Artículo | `_id` | Problema |
 |---|---|---|
@@ -924,7 +926,7 @@ Ambos también tienen `category: null` — ver B2.
 
 ---
 
-### B2 — Los 26 artículos tienen `category: null`
+### ~~B2~~ — ~~Los 26 artículos tienen `category: null`~~ ✅ Resuelto — `category` poblada y alineada con evaluaciones (B6)
 
 Esto rompe la recomendación de artículos al final de una evaluación. El frontend filtra los artículos por `category` (y por `title` como respaldo) usando la categoría con menor puntaje obtenida en la evaluación (ej. `"ECOSISTEMA"`, `"Economía y sociedad"`, etc.). Como `category` es siempre `null` en los 26 artículos, casi nunca hay match por categoría — hoy solo aparece 1 artículo recomendado porque su título contiene casualmente la palabra "Ecosistemas".
 
@@ -950,11 +952,11 @@ Aplica a las 6 evaluaciones (3 Arquitectura + 3 Diseño Industrial).
 
 ---
 
-## 🆕 Pendientes — revisión frontend (2026-06-10, parte 2)
+## 🆕 Pendientes — revisión frontend (2026-06-10, parte 2) ✅ Resueltos
 
-> Verificación de B1/B2/B3. B3 quedó resuelto. B1 y B2 cambiaron de síntoma pero siguen sin resolverse del todo.
+> Verificación de B1/B2/B3. Todos resueltos: B5 (encoding) y B6 (taxonomías) confirmados por escaneo completo de `articles` y `evaluations`.
 
-### B5 — El carácter "í" se corrompe en textos largos (encoding)
+### ~~B5~~ — ~~El carácter "í" se corrompe en textos largos (encoding)~~ ✅ Resuelto — escaneo completo sin caracteres `�` (U+FFFD) restantes
 
 Revisando B1, el `body` de los 2 artículos ya se recargó (antes tenía 24 caracteres, ahora ~2000), pero **todas las apariciones de la letra "í" quedaron rotas**: en vez de "í" aparece el carácter de reemplazo `�` seguido de un guión suave invisible (U+00AD). Ejemplos reales del `body`:
 
@@ -972,7 +974,7 @@ El resto de acentos (á, é, ó, ú, ñ) están bien — el problema es específ
 
 ---
 
-### B6 — C12 sigue sin resolver: las categorías de artículos no coinciden con las de evaluaciones
+### ~~B6~~ — ~~C12 sigue sin resolver: las categorías de artículos no coinciden con las de evaluaciones~~ ✅ Resuelto — ver plan acordado abajo
 
 B2 pidió poblar `category` en los 26 artículos usando las categorías de las preguntas de evaluación (`ECOSISTEMA`, `Economía y sociedad`, `Sociedad y Economía`). Ya se pobló `category`, pero con otros 3 valores: `"Ambiental"`, `"Social"`, `"Económico"` (verificado en los 25 artículos actuales).
 
@@ -982,7 +984,7 @@ El frontend (`ArticleCarrousel.tsx`) filtra `article.category` (y `article.title
 
 ---
 
-### ✅ Plan acordado para B6 (2026-06-10)
+### ✅ Plan acordado para B6 (2026-06-10) — aplicado
 
 Las evaluaciones solo miden **2 ejes**, pero los artículos tienen **3 categorías** — no son taxonomías equivalentes 1 a 1. Se acordó:
 
