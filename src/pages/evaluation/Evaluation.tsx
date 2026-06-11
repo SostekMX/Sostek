@@ -11,6 +11,7 @@ import { BACKEND_URL } from '../../config';
 import AppBarPopOver from "../../components/layout/AppBarPopOver";
 import QuestionTestCard from "../../components/QuestionTestCard";
 import AppContext from "../../context/AppContext";
+import { computeMaxScore } from "../../utils/scoring";
 import "./evaluation.css";
 
 interface Option {
@@ -67,6 +68,7 @@ const Evaluation: React.FC = () => {
       sessionStorage.setItem(`categoryScore${i}`, arrayOfScore[i].toLocaleString());
     }
     sessionStorage.setItem("finalScore", score.toLocaleString());
+    sessionStorage.setItem("maxScore", String(computeMaxScore(evaluation?.questions ?? [])));
   }
 
   return (

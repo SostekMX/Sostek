@@ -67,4 +67,11 @@ export function clearScoreSession(totalCategories: number) {
   }
   sessionStorage.removeItem("finalScore");
   sessionStorage.removeItem("totalCategories");
+  sessionStorage.removeItem("maxScore");
+}
+
+export function computeMaxScore(questions: { options: { value: number }[] }[]): number {
+  return questions.reduce((total, question) =>
+    total + question.options.reduce((sum, option) => sum + (option.value > 0 ? option.value : 0), 0)
+  , 0);
 }
