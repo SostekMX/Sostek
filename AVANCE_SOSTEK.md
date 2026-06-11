@@ -292,11 +292,11 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 ## Despliegue (Render)
 
 - **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
+- **Frontend** ya está desplegado en Render con `REACT_APP_BACKEND_URL=https://sostek-backend.onrender.com` configurado ✅.
 
 ### Pendientes para terminar el deploy
 
-1. ⏳ **Frontend — `REACT_APP_BACKEND_URL`**: configurar la variable de entorno `REACT_APP_BACKEND_URL=https://sostek-backend.onrender.com` en el panel del servicio donde se deployee el frontend (es una env var de build de CRA, no alcanza con cambiar `.env.example`).
-2. ⏳ **CORS para producción**: el backend ya soporta `CORS_ORIGIN` por variable de entorno. Falta decidir/confirmar la URL final del frontend (Cloudflare Pages u otra plataforma) y configurarla como `CORS_ORIGIN` en el panel de Render del backend.
+1. ⏳ **CORS para producción**: el backend ya soporta `CORS_ORIGIN` por variable de entorno. Falta tomar la URL del frontend deployado en Render y configurarla como `CORS_ORIGIN` en el panel de Render del backend.
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
