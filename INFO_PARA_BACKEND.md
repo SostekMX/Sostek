@@ -112,7 +112,7 @@ Cuando el usuario termina una evaluación:
 | Hash de contraseñas | `bcrypt` |
 | Base de datos | MongoDB |
 | Rate limiting | `express-rate-limit` |
-| CORS | Habilitado para `http://localhost:3000` y `http://localhost:8100` |
+| CORS | Configurable por variable de entorno `CORS_ORIGIN` (antes hardcodeado a `localhost`) |
 
 ---
 
@@ -164,13 +164,17 @@ function authMiddleware(req, res, next) {
 
 ## CORS
 
+El backend ahora lee el origin permitido desde la variable de entorno `CORS_ORIGIN` (antes hardcodeado a `localhost`):
+
 ```js
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:8100'],
+  origin: process.env.CORS_ORIGIN || ['http://localhost:3000', 'http://localhost:8100'],
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 ```
+
+> ⏳ Falta definir `CORS_ORIGIN` en producción (Render, backend) con la URL final del frontend deployado — ver "CORS para producción" más abajo.
 
 ---
 
@@ -670,8 +674,8 @@ Los mensajes de error de `/user/signup` y `/user/reset-password` todavía dicen 
 ### Sección 4 — Variables de entorno
 El pie de página de `INFO_FRONTEND.md` dice: *"Actualmente la URL del backend está hardcodeada en el frontend"*. Eso ya no es verdad — el frontend usa `REACT_APP_BACKEND_URL` desde `src/config.ts`. Eliminar esa nota.
 
-### CORS para producción
-Cuando se haga el deploy, agregar la URL de producción del frontend al array de `origin` en la configuración de CORS. Coordinar con frontend para saber la URL antes del deploy.
+### CORS para producción ⏳
+Backend ✅ — ya soporta `CORS_ORIGIN` por variable de entorno. Falta que el frontend confirme su URL final de producción (Cloudflare Pages u otra) para configurarla como `CORS_ORIGIN` en el panel de Render del backend.
 
 ---
 
