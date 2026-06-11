@@ -1,9 +1,8 @@
 import { IonContent, IonPage } from '@ionic/react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BACKEND_URL } from '../../config';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
-import AppContext from '../../context/AppContext';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
 
@@ -27,7 +26,6 @@ const Tab3: React.FC = () => {
   const [currentOption, setCurrentOption] = useState<FilterValue>('all');
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const { search, changeSearch } = useContext(AppContext);
 
   useEffect(() => {
     const cached = localStorage.getItem("evaluations");
@@ -49,7 +47,6 @@ const Tab3: React.FC = () => {
 
   const filtered = [...evaluations]
     .sort((a, b) => a.name.localeCompare(b.name))
-    .filter(ev => ev.name.toLowerCase().includes(search.toLowerCase()))
     .filter(ev => {
       if (currentOption === 'architect') return ev.career === 'Arquitectura';
       if (currentOption === 'design') return ev.career === 'Diseño Industrial';
@@ -66,7 +63,7 @@ const Tab3: React.FC = () => {
             <button
               key={f.value}
               className={`filter-pill ${currentOption === f.value ? 'filter-pill--active' : ''}`}
-              onClick={() => { setCurrentOption(f.value); changeSearch!(''); }}
+              onClick={() => setCurrentOption(f.value)}
             >
               {f.label}
             </button>
