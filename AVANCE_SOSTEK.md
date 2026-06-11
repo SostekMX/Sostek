@@ -296,8 +296,12 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 
 ### Pendientes para terminar el deploy
 
-1. ⏳ **Crear/actualizar el deploy del frontend** en una plataforma (Render, Vercel, Netlify, Cloudflare Pages, etc.), con `REACT_APP_BACKEND_URL=https://sostek-backend.onrender.com` configurado como variable de entorno de build.
-2. ⏳ **CORS para producción**: el backend ya soporta `CORS_ORIGIN` por variable de entorno. Una vez que el frontend tenga su URL final, configurarla como `CORS_ORIGIN` en el panel de Render del backend.
+1. ⏳ **Deployar el frontend en Render** — se agregó `render.yaml` (Static Site, build con `npm ci && npm run build`, publica `./build`, incluye rewrite `/* → /index.html` para que funcionen las rutas de React Router). Pasos en Render:
+   - New → Blueprint → seleccionar el repo `SostekMX/Sostek` → rama a deployar
+   - Render detecta `render.yaml` y crea el servicio `sostek-frontend`
+   - Completar la variable `REACT_APP_PRIVATE_API_KEY` (no va en el repo, hay que cargarla manualmente con el valor del `.env` local)
+   - `REACT_APP_BACKEND_URL` ya viene seteada en `render.yaml`
+2. ⏳ **CORS para producción**: el backend ya soporta `CORS_ORIGIN` por variable de entorno. Una vez que el frontend tenga su URL final (`https://sostek-frontend-xxxx.onrender.com`), configurarla como `CORS_ORIGIN` en el panel de Render del backend.
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
