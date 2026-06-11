@@ -287,10 +287,9 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 
 - **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
 - **Frontend** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅.
+- **CORS** configurado con `CORS_ORIGIN=https://sostek-frontend.onrender.com` ✅ — verificado: preflight responde `access-control-allow-origin` correcto, `/user/login` y `/articles` funcionan desde el frontend, rutas internas (`/tab1`, `/Profile`) sirven bien gracias al rewrite SPA.
 
-### Pendientes para terminar el deploy
-
-1. ⏳ **CORS para producción**: configurar `CORS_ORIGIN=https://sostek-frontend.onrender.com` en las variables de entorno del servicio del backend en Render (`sostek-backend`).
+> 🎉 Deploy completo — frontend y backend en producción y comunicándose correctamente.
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
