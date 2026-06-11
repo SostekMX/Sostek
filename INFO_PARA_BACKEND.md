@@ -174,7 +174,7 @@ app.use(cors({
 }));
 ```
 
-> ⏳ Falta definir `CORS_ORIGIN` en producción (Render, backend) con la URL final del frontend deployado — ver "CORS para producción" más abajo.
+> ⏳ El frontend ya está deployado en `https://sostek-frontend.onrender.com`. Falta definir `CORS_ORIGIN=https://sostek-frontend.onrender.com` en las variables de entorno del backend en Render — ver "CORS para producción" más abajo.
 
 ---
 
@@ -675,7 +675,7 @@ Los mensajes de error de `/user/signup` y `/user/reset-password` todavía dicen 
 El pie de página de `INFO_FRONTEND.md` dice: *"Actualmente la URL del backend está hardcodeada en el frontend"*. Eso ya no es verdad — el frontend usa `REACT_APP_BACKEND_URL` desde `src/config.ts`. Eliminar esa nota.
 
 ### CORS para producción ⏳
-Backend ✅ — ya soporta `CORS_ORIGIN` por variable de entorno. Falta que el frontend confirme su URL final de producción (Cloudflare Pages u otra) para configurarla como `CORS_ORIGIN` en el panel de Render del backend.
+Frontend deployado en `https://sostek-frontend.onrender.com`. Falta configurar `CORS_ORIGIN=https://sostek-frontend.onrender.com` en las variables de entorno del servicio `sostek-backend` en Render.
 
 ---
 

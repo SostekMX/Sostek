@@ -286,14 +286,10 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 ## Despliegue (Render)
 
 - **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
-- **Frontend** — había una versión deployada por un compañero anterior, pero solo mostraba artículos (Google Drive/Sheets); login/perfil no funcionaban porque el backend no estaba deployado todavía. No se encontró registro de en qué plataforma ni con qué URL (no hay configs de Vercel/Netlify/Cloudflare en el repo, ni `homepage` en `package.json`, ni deployments en GitHub).
+- **Frontend** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅.
+- **CORS** configurado con `CORS_ORIGIN=https://sostek-frontend.onrender.com` ✅ — verificado: preflight responde `access-control-allow-origin` correcto, `/user/login` y `/articles` funcionan desde el frontend, rutas internas (`/tab1`, `/Profile`) sirven bien gracias al rewrite SPA.
 
-### Pendientes para terminar el deploy
-
-1. ⏳ **Deployar el frontend en Render** — se agregó `render.yaml` (Static Site, build con `npm ci && npm run build`, publica `./build`, incluye rewrite `/* → /index.html` para que funcionen las rutas de React Router, y ya trae `REACT_APP_BACKEND_URL` configurada). Pasos en Render:
-   - New → Blueprint → seleccionar el repo `SostekMX/Sostek` → rama a deployar
-   - Render detecta `render.yaml` y crea el servicio `sostek-frontend` automáticamente, sin variables manuales pendientes
-2. ⏳ **CORS para producción**: el backend ya soporta `CORS_ORIGIN` por variable de entorno. Una vez que el frontend tenga su URL final (`https://sostek-frontend-xxxx.onrender.com`), configurarla como `CORS_ORIGIN` en el panel de Render del backend.
+> 🎉 Deploy completo — frontend y backend en producción y comunicándose correctamente.
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
