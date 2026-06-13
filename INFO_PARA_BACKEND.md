@@ -2,7 +2,7 @@
 
 > Documento de comunicación frontend → backend.
 > Se actualiza cada vez que hay un cambio en el frontend que afecta la integración.
-> Última actualización: 2026-06-10
+> Última actualización: 2026-06-12
 > Backend corre en: `http://localhost:8080`
 
 ---
@@ -174,7 +174,9 @@ app.use(cors({
 }));
 ```
 
-> ⏳ El frontend ya está deployado en `https://sostek-frontend.onrender.com`. Falta definir `CORS_ORIGIN=https://sostek-frontend.onrender.com` en las variables de entorno del backend en Render — ver "CORS para producción" más abajo.
+> ⏳ El frontend ya está deployado en `https://sostek-frontend.onrender.com`. **Acción pedida ahora:** cambiar `CORS_ORIGIN=https://sostek-frontend.onrender.com` en las variables de entorno del backend en Render (actualmente está en `https://sostek.pages.dev`, dominio que se va a abandonar — ver `AVANCE_SOSTEK.md`) — ver "CORS para producción" más abajo.
+>
+> 🔜 Más adelante el equipo va a configurar un dominio propio (ej. `app.sostek.com.mx`) apuntando a este mismo Static Site de Render. Cuando esté listo, va a haber un segundo pedido de cambio de `CORS_ORIGIN` a ese dominio.
 
 ---
 
@@ -675,7 +677,9 @@ Los mensajes de error de `/user/signup` y `/user/reset-password` todavía dicen 
 El pie de página de `INFO_FRONTEND.md` dice: *"Actualmente la URL del backend está hardcodeada en el frontend"*. Eso ya no es verdad — el frontend usa `REACT_APP_BACKEND_URL` desde `src/config.ts`. Eliminar esa nota.
 
 ### CORS para producción ⏳
-Frontend deployado en `https://sostek-frontend.onrender.com`. Falta configurar `CORS_ORIGIN=https://sostek-frontend.onrender.com` en las variables de entorno del servicio `sostek-backend` en Render.
+Frontend deployado en `https://sostek-frontend.onrender.com`. Falta configurar `CORS_ORIGIN=https://sostek-frontend.onrender.com` en las variables de entorno del servicio `sostek-backend` en Render (reemplaza el valor actual `https://sostek.pages.dev`, que se abandona — ver `AVANCE_SOSTEK.md`).
+
+Más adelante, cuando el equipo configure un dominio propio (ej. `app.sostek.com.mx`) sobre el mismo Static Site de Render, va a haber que volver a cambiar `CORS_ORIGIN` a ese dominio.
 
 ---
 
