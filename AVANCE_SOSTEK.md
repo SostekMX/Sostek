@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-10
+> Última actualización: 2026-06-12
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -287,22 +287,28 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 
 - **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
 - **Frontend (Render)** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅ — código actualizado, pero ahora mismo **sin CORS** (ver abajo).
-- **Frontend (Cloudflare Pages)** — `https://sostek.pages.dev` es el link que se va a compartir. Lo maneja el otro compañero (no hay acceso desde esta cuenta). Corre el build viejo de hace 4 años (pre-integración al backend, usa `apis.google.com/js/api.js`).
+- **Frontend (Cloudflare Pages)** — `https://sostek.pages.dev`. Lo maneja el compañero que inició el proyecto hace 4 años, corre el build viejo (pre-integración al backend, usa `apis.google.com/js/api.js`). **Decisión 2026-06-12: se abandona este link.** No hay forma de transferir el proyecto entre cuentas de Cloudflare sin riesgo de perder la URL `sostek.pages.dev` por tiempo indefinido. El link público va a ser un dominio propio sobre el deploy de Render (ver "Plan de dominio personalizado" abajo).
 
 ### ⚠️ Estado actual de CORS_ORIGIN
 
-`CORS_ORIGIN` se cambió a `https://sostek.pages.dev` (el link que se va a compartir). Esto significa:
-- `sostek.pages.dev` → CORS ok, pero corre código viejo sin integración al backend → login no va a funcionar igual
-- `sostek-frontend.onrender.com` → código actualizado, pero CORS roto (origin ya no coincide) → login/perfil/favoritos van a fallar ahí
+`CORS_ORIGIN` está configurado como `https://sostek.pages.dev` — desactualizado, hay que cambiarlo:
+- **Ahora:** `CORS_ORIGIN=https://sostek-frontend.onrender.com` (para que login/perfil/favoritos funcionen mientras no haya dominio propio) — pedido en `INFO_PARA_BACKEND.md`
+- **Más adelante:** cuando esté listo el dominio personalizado, cambiarlo de nuevo a ese dominio
 
-### Pendiente
+### 🌐 Plan de dominio personalizado — `app.sostek.com.mx` (o el que se compre/asigne)
 
-1. ⏳ **Pedirle al compañero que redeploye `sostek.pages.dev`** desde Cloudflare Pages con el código actual de `main`:
-   - Build command: `npm run build`
-   - Output directory: `build`
-   - Variable de entorno: `REACT_APP_BACKEND_URL=https://sostek-backend.onrender.com`
-   - Se agregó `public/_redirects` (`/* /index.html 200`) para que las rutas internas (`/Profile`, `/tab1`, etc.) funcionen en Cloudflare Pages.
-2. ⏳ Una vez redeployado, volver a probar login/perfil/favoritos en `sostek.pages.dev` para confirmar que CORS y backend funcionan juntos.
+Para que el link público no diga "onrender", se va a usar un dominio propio apuntando al mismo Static Site de Render. No requiere Cloudflare ni la cuenta del compañero.
+
+**Frontend — ya listo, no requiere cambios de código:**
+- `src/config.ts` lee `REACT_APP_BACKEND_URL` desde variable de entorno → domain-agnostic
+- `render.yaml` ya tiene la rewrite SPA (`/* → /index.html`)
+- No hay URLs hardcodeadas en el código
+
+**Checklist para cuando se tenga el dominio** (subdominio de algo que ya tenga la Dra Martha, o uno comprado):
+1. ⏳ En Render → servicio `sostek-frontend` → Settings → Custom Domains → agregar `app.sostek.com.mx` (o el dominio que sea)
+2. ⏳ Render entrega un registro DNS (CNAME/ALIAS) — agregarlo en el proveedor del dominio
+3. ⏳ Render emite el certificado SSL automáticamente (puede tardar unos minutos)
+4. ⏳ Backend: cambiar `CORS_ORIGIN` al nuevo dominio (`https://app.sostek.com.mx`) — ver `INFO_PARA_BACKEND.md`
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
