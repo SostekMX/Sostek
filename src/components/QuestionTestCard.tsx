@@ -1,6 +1,6 @@
 import './QuestionTestCard.css';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonRadioGroup, IonListHeader, IonLabel, IonRadio, IonCheckbox } from '@ionic/react';
-import { useContext, useState } from 'react';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonListHeader, IonLabel, IonCheckbox } from '@ionic/react';
+import { useContext } from 'react';
 import AppContext from '../context/AppContext';
 
 interface props {
@@ -16,10 +16,6 @@ interface props {
  * options (an array of all the options, doesn't matter the size).
  */
 const QuestionTestCard: React.FC<props> = ({ number, question, category, comments, options, points }) => {
-    // Variable that holds the choice the user selected
-    const [selection, setSelection] = useState<string>();
-    let sumArray : Array<boolean> = [];
-
     const { addScore } = useContext(AppContext);
 
     return (
