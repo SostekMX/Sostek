@@ -1,8 +1,8 @@
 import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { login } from '../../api/auth';
+import { getProfile } from '../../api/user';
 import '../../App.css';
 import './LogIn.css';
 
@@ -18,34 +18,28 @@ const LogIn: React.FC = () => {
     }, [])
 
     function loginUser() {
-        axios.post(`${BACKEND_URL}/user/login`, {
-            email: email,
-            password: password,
-        }).then(function (response) {
-            if (response.data.success) {
+        login(email, password ?? '').then(function (data) {
+            if (data.success) {
                 sessionStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email);
-                sessionStorage.setItem('token', response.data.token);
-                fetchAvatar(response.data.token);
-                history.push("/tab1");
+                sessionStorage.setItem('token', data.token);
+                fetchAvatar().finally(() => history.push("/tab1"));
             } else {
-                setMessage(response.data.error);
+                setMessage(data.error);
                 setShowAlert(true);
             }
         }).catch(function (error) {
-            console.log(error);
+            console.error(error);
         });
     }
 
-    // Trae la foto de perfil de una vez para que el header la muestre desde el login
-    function fetchAvatar(token: string) {
-        axios.get(`${BACKEND_URL}/user/profile`, {
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(res => {
-            if (res.data.success) {
-                localStorage.setItem('avatar', res.data.user.avatar ?? '');
+    // Trae la foto de perfil antes de navegar para que el header la muestre desde el primer render
+    function fetchAvatar() {
+        return getProfile().then(data => {
+            if (data.success) {
+                localStorage.setItem('avatar', data.user.avatar ?? '');
             }
-        }).catch(err => console.log(err));
+        }).catch(err => console.error(err));
     }
 
     return (

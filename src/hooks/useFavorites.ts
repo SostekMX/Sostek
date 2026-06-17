@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BACKEND_URL } from '../config';
+import { getFavorites, addFavorite as addFavoriteRequest, removeFavorite as removeFavoriteRequest } from '../api/user';
 
 export interface Favorite {
   content_id: string;
@@ -14,13 +13,10 @@ const useFavorites = () => {
 
   useEffect(() => {
     if (!isLoggedIn) return;
-    const token = sessionStorage.getItem('token');
     setLoading(true);
-    axios.get(`${BACKEND_URL}/user/favorites`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(res => {
-      if (res.data.success) setFavorites(res.data.favorites);
-    }).catch(err => console.log(err))
+    getFavorites().then(data => {
+      if (data.success) setFavorites(data.favorites);
+    }).catch(err => console.error(err))
       .finally(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -28,26 +24,20 @@ const useFavorites = () => {
   const isFavorite = (id: string) => favorites.some(f => f.content_id === id);
 
   const addFavorite = async (content_id: string, type: 'article' | 'presentation') => {
-    const token = sessionStorage.getItem('token');
     try {
-      await axios.post(`${BACKEND_URL}/user/favorites`, { content_id, type }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await addFavoriteRequest(content_id, type);
       setFavorites(prev => [...prev, { content_id, type }]);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const removeFavorite = async (content_id: string) => {
-    const token = sessionStorage.getItem('token');
     try {
-      await axios.delete(`${BACKEND_URL}/user/favorites/${content_id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await removeFavoriteRequest(content_id);
       setFavorites(prev => prev.filter(f => f.content_id !== content_id));
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

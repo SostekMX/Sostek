@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonPage } from '@ionic/react';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { IonContent, IonIcon, IonPage } from '@ionic/react';
+import { downloadOutline } from 'ionicons/icons';
+import { getTutorial } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab2.css';
 
@@ -27,9 +27,9 @@ const Tab2: React.FC = () => {
   const [cardFilter, setCardFilter] = useState<CardFilter>('scenario');
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/tutorial`)
-      .then(res => { if (res.data.success) setTutorial(res.data.tutorial); })
-      .catch(err => console.log(err));
+    getTutorial()
+      .then(data => { if (data.success) setTutorial(data.tutorial); })
+      .catch(err => console.error(err));
   }, []);
 
   const filteredCards = tutorial?.cards.filter(c => c.type === cardFilter) ?? [];
@@ -61,7 +61,7 @@ const Tab2: React.FC = () => {
             rel="noopener noreferrer"
             className='juega-download-card'
           >
-            <div className='juega-download-card__icon'>&#8595;</div>
+            <div className='juega-download-card__icon'><IonIcon icon={downloadOutline} /></div>
             <div>
               <p className='juega-download-card__title'>Versión física</p>
               <p className='juega-download-card__desc'>Imprime las cartas y juega con tus amigos</p>

@@ -2,8 +2,7 @@ import { IonContent, IonItem, IonPage, IonButton, IonLabel, IonInput, IonSelect,
 import { personCircleOutline, cameraOutline } from 'ionicons/icons';
 import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { getProfile, editProfile, uploadAvatar, deleteAccount } from '../../api/user';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Profile.css';
 
@@ -30,12 +29,9 @@ const Profile: React.FC = () => {
         const savedPos = localStorage.getItem('avatar_position');
         try { if (savedPos) setCropPos(JSON.parse(savedPos)); } catch { /* valor corrupto, usar default */ }
 
-        const token = sessionStorage.getItem('token');
-        axios.get(`${BACKEND_URL}/user/profile`, {
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(res => {
-            if (res.data.success) {
-                const u = res.data.user;
+        getProfile().then(data => {
+            if (data.success) {
+                const u = data.user;
                 setName(u.name ?? '');
                 setSurname(u.surname ?? '');
                 setBirthDate(u.birth_date ?? '');
@@ -45,7 +41,7 @@ const Profile: React.FC = () => {
                 setAvatar(avatarUrl);
                 localStorage.setItem('avatar', avatarUrl);
             }
-        }).catch(err => console.log(err));
+        }).catch(err => console.error(err));
     }, []);
 
     function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
@@ -84,22 +80,19 @@ const Profile: React.FC = () => {
 
     async function handleUploadConfirm() {
         if (!selectedFile) return;
-        const token = sessionStorage.getItem('token');
         const formData = new FormData();
         formData.append('avatar', selectedFile);
         setAvatarUploading(true);
         try {
-            const res = await axios.post(`${BACKEND_URL}/user/avatar`, formData, {
-                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-            });
-            if (res.data.success) {
-                const url = res.data.avatar_url;
+            const data = await uploadAvatar(formData);
+            if (data.success) {
+                const url = data.avatar_url;
                 setAvatar(url);
                 localStorage.setItem('avatar', url);
                 localStorage.setItem('avatar_position', JSON.stringify(cropPos));
             }
         } catch (err) {
-            console.log(err);
+            console.error(err);
         } finally {
             setAvatarUploading(false);
             setCropMode(false);
@@ -114,30 +107,24 @@ const Profile: React.FC = () => {
     }
 
     function deleteUser() {
-        const token = sessionStorage.getItem('token');
-        axios.delete(`${BACKEND_URL}/user`, {
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(() => {
+        deleteAccount().then(() => {
             localStorage.clear();
             history.replace('/');
         }).catch(err => console.error(err));
     }
 
     function editUser() {
-        const token = sessionStorage.getItem('token');
-        axios.post(`${BACKEND_URL}/user/edit`, {
+        editProfile({
             name, surname,
             birth_date: birthDate, occupation, gender,
-        }, {
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(res => {
-            if (res.data.success) {
+        }).then(data => {
+            if (data.success) {
                 history.replace('/tab1');
             } else {
-                setMessage(res.data.message);
+                setMessage(data.message);
                 setShowAlert(true);
             }
-        }).catch(err => console.log(err));
+        }).catch(err => console.error(err));
     }
 
     const avatarStyle = { objectPosition: `${cropPos.x}% ${cropPos.y}%` };

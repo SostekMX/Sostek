@@ -1,8 +1,7 @@
 import { IonButton, IonToast, IonAlert, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
 import { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { resetPassword as resetPasswordRequest } from '../../api/auth';
 import '../logIn/LogIn.css';
 
 const ResetPassword: React.FC = () => {
@@ -25,16 +24,13 @@ const ResetPassword: React.FC = () => {
         }
         setLoading(true);
         try {
-            const response = await axios.post(`${BACKEND_URL}/user/reset-password`, {
-                token,
-                new_password: newPassword,
-            });
-            if (response.data.success) {
+            const data = await resetPasswordRequest(token, newPassword);
+            if (data.success) {
                 setMessage('Contraseña actualizada. Ya puedes iniciar sesión.');
                 setSuccess(true);
                 setShowAlert(true);
             } else {
-                setMessage(response.data.error);
+                setMessage(data.error);
                 setSuccess(false);
                 setShowAlert(true);
             }

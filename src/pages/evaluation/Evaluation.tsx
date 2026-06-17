@@ -6,13 +6,12 @@ import {
 } from "@ionic/react";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import axios from "axios";
-import { BACKEND_URL } from '../../config';
+import { getEvaluation } from '../../api/content';
 import AppBarPopOver from "../../components/layout/AppBarPopOver";
 import QuestionTestCard from "../../components/QuestionTestCard";
 import AppContext from "../../context/AppContext";
 import { computeMaxScore } from "../../utils/scoring";
-import "./evaluation.css";
+import "./Evaluation.css";
 
 interface Option {
   text: string;
@@ -42,14 +41,14 @@ const Evaluation: React.FC = () => {
   const { score, currentAnswersAndScores } = useContext(AppContext);
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/evaluations/${id}`)
-      .then(res => {
-        if (res.data.success) setEvaluation(res.data.evaluation);
+    getEvaluation(id)
+      .then(data => {
+        if (data.success) setEvaluation(data.evaluation);
       })
-      .catch(err => console.log(err))
+      .catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, [id]);
-  // console.log(evaluation);
+
   function setFinalScore() {
     let arrayOfCategories: string[] = [];
     let arrayOfScore: number[] = [];

@@ -10,8 +10,7 @@ import { useHistory } from "react-router-dom";
 import '../../App.css';
 import './SignUp.css';
 import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { signup } from '../../api/auth';
 
 const SignUp: React.FC = () => {
     const [email, setEmail] = useState<string | null>('');
@@ -43,21 +42,21 @@ const SignUp: React.FC = () => {
             setShowAlert(true);
             return;
         }
-        axios.post(`${BACKEND_URL}/user/signup`, {
+        signup({
             email, password, name, surname,
             birth_date: birthDate, occupation, gender
-        }).then(function (response) {
-            if (response.data.success) {
+        }).then(function (data) {
+            if (data.success) {
                 sessionStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email as string);
-                sessionStorage.setItem('token', response.data.token);
+                sessionStorage.setItem('token', data.token);
                 history.push("/tab1");
             } else {
-                setMessage(response.data.error);
+                setMessage(data.error);
                 setShowAlert(true);
             }
         }).catch(function (error) {
-            console.log(error);
+            console.error(error);
         });
     }
 

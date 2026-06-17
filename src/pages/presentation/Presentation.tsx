@@ -5,8 +5,7 @@ import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, 
 import { menuOutline, heart, personCircle, logOut } from 'ionicons/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy } from 'swiper';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { getPresentations } from '../../api/content';
 import './Presentation.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -27,14 +26,14 @@ const Presentation: React.FC = () => {
   const isUserLogged = sessionStorage.getItem('login') === 'true';
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/presentations`)
-      .then(res => {
-        if (res.data.success) {
-          const match = res.data.presentations.find((p: any) => p._id === driveId);
+    getPresentations()
+      .then(data => {
+        if (data.success) {
+          const match = data.presentations.find((p: any) => p._id === driveId);
           if (match) setSlides(match.slides);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, [driveId]);
 
