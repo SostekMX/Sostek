@@ -26,6 +26,7 @@ export const AppBarPopOver: React.FC = () => {
         if (sessionStorage.getItem("search")) {
             changeSearch!(sessionStorage.getItem("search")!);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Cierra el buscador al navegar a otra ruta

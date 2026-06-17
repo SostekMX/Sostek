@@ -13,7 +13,6 @@ import {
 } from '@ionic/react';
 import { bookOutline, gameControllerOutline, clipboardOutline } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
-import { useContext } from 'react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -43,7 +42,7 @@ import Tab3 from './pages/tab3/Tab3';
 import Profile from './pages/profile/Profile';
 import Presentation from './pages/presentation/Presentation';
 import Documents from './pages/document/Documents';
-import AppContext, { AppProvider } from './context/AppContext';
+import { AppProvider } from './context/AppContext';
 import Evaluation from './pages/evaluation/Evaluation';
 import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
 import ForgotPassword from './pages/forgotPassword/ForgotPassword';

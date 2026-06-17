@@ -37,6 +37,7 @@ const Favorites: React.FC = () => {
       if (presRes.data.success) setAllPresentations(presRes.data.presentations);
     }).catch(err => console.log(err))
       .finally(() => setContentLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const resolvedItems: FavoriteItem[] = favorites.map(fav => {

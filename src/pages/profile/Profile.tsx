@@ -8,7 +8,6 @@ import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Profile.css';
 
 const Profile: React.FC = () => {
-    const [email, setEmail] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
     const [birthDate, setBirthDate] = useState<string>('');
@@ -28,7 +27,6 @@ const Profile: React.FC = () => {
     const history = useHistory();
 
     useEffect(() => {
-        setEmail(localStorage.getItem('user_email') ?? '');
         const savedPos = localStorage.getItem('avatar_position');
         try { if (savedPos) setCropPos(JSON.parse(savedPos)); } catch { /* valor corrupto, usar default */ }
 

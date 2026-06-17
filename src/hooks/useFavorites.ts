@@ -22,6 +22,7 @@ const useFavorites = () => {
       if (res.data.success) setFavorites(res.data.favorites);
     }).catch(err => console.log(err))
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isFavorite = (id: string) => favorites.some(f => f.content_id === id);
