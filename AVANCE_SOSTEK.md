@@ -18,6 +18,8 @@ La aplicación **web/móvil de SOSTEK**: una plataforma educativa de sostenibili
 
 El backend (login/registro/perfil/contenido) es un servidor externo en `http://localhost:8080` que **no está en este repositorio**.
 
+> ¿Primera vez en este repo? Lee `ONBOARDING_FRONTEND.md` — tiene la historia del proyecto (por qué se migró de Google Sheets/Drive a esta base de datos) y cómo conseguir acceso a todo lo que necesitas. Este archivo (`AVANCE_SOSTEK.md`) es el estado actual, no el punto de partida.
+
 ---
 
 ## Estructura del proyecto
@@ -135,7 +137,6 @@ src/
 | Elemento | Ubicación | Estado |
 |----------|-----------|--------|
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
-| Tutorial popup (InitialTutorial) | `InitialTutorial.tsx` | Ya no se usa desde Tab1; el contenido del tutorial está integrado en Tab2 |
 
 ---
 
@@ -242,7 +243,7 @@ src/
 
 ## 🆕 Correcciones pendientes — revisión 2026-06-10
 
-> QA manual (jefa). Pendientes de frontend — algunos dependen de cambios del backend documentados en `INFO_PARA_BACKEND.md` (sección "Pendientes — revisión frontend 2026-06-10").
+> QA manual (jefa). Pendientes de frontend — algunos dependieron de cambios del backend (coordinados directamente con el equipo de backend, ya no por archivo de texto).
 
 | # | Descripción | Archivo(s) | Depende de backend |
 |---|-------------|------------|---------------------|
@@ -320,7 +321,7 @@ El backend debe estar corriendo por separado en `http://localhost:8080`.
 ### ⚠️ Estado actual de CORS_ORIGIN
 
 `CORS_ORIGIN` está configurado como `https://sostek.pages.dev` — desactualizado, hay que cambiarlo:
-- **Ahora:** `CORS_ORIGIN=https://sostek-frontend.onrender.com` (para que login/perfil/favoritos funcionen mientras no haya dominio propio) — pedido en `INFO_PARA_BACKEND.md`
+- **Ahora:** `CORS_ORIGIN=https://sostek-frontend.onrender.com` (para que login/perfil/favoritos funcionen mientras no haya dominio propio) — pedir directamente a quien administre las variables de entorno del servicio backend en Render
 - **Más adelante:** cuando esté listo el dominio personalizado, cambiarlo de nuevo a ese dominio
 
 ### 🌐 Plan de dominio personalizado — `app.sostek.com.mx` (o el que se compre/asigne)
@@ -332,11 +333,11 @@ Para que el link público no diga "onrender", se va a usar un dominio propio apu
 - `render.yaml` ya tiene la rewrite SPA (`/* → /index.html`)
 - No hay URLs hardcodeadas en el código
 
-**Checklist para cuando se tenga el dominio** (subdominio de algo que ya tenga la Dra Martha, o uno comprado):
+**Checklist para cuando se tenga el dominio** (subdominio de algo que ya tenga la facultad, o uno comprado):
 1. ⏳ En Render → servicio `sostek-frontend` → Settings → Custom Domains → agregar `app.sostek.com.mx` (o el dominio que sea)
 2. ⏳ Render entrega un registro DNS (CNAME/ALIAS) — agregarlo en el proveedor del dominio
 3. ⏳ Render emite el certificado SSL automáticamente (puede tardar unos minutos)
-4. ⏳ Backend: cambiar `CORS_ORIGIN` al nuevo dominio (`https://app.sostek.com.mx`) — ver `INFO_PARA_BACKEND.md`
+4. ⏳ Backend: cambiar `CORS_ORIGIN` al nuevo dominio (`https://app.sostek.com.mx`) — coordinar directamente con quien administre el backend en Render
 
 - En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
 
