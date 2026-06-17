@@ -1,6 +1,6 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-12
+> Última actualización: 2026-06-17
 > Rama activa: `development`
 > Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
 
@@ -26,21 +26,23 @@ El backend (login/registro/perfil/contenido) es un servidor externo en `http://l
 src/
 ├── App.tsx                          # Router principal + MainTabs + lógica de ocultar tab bar
 ├── config.ts                        # BACKEND_URL desde variable de entorno REACT_APP_BACKEND_URL
+├── api/
+│   ├── client.ts                    # Instancia única de axios — baseURL + interceptor que agrega Authorization automáticamente
+│   ├── auth.ts                      # login, signup, forgotPassword, resetPassword
+│   ├── user.ts                      # getProfile, editProfile, uploadAvatar, deleteAccount, saveScore, favoritos
+│   └── content.ts                   # getArticles, getArticle, getPresentations, getEvaluations, getEvaluation, getTutorial
 ├── context/
 │   └── AppContext.tsx               # Estado global: search, tutorial, score, transparentToolbar
 ├── components/
 │   ├── ErrorBoundary.tsx            # Error boundary global — pantalla de error con botón "Reintentar"
 │   ├── PrivateRoute.tsx             # HOC de ruta privada — redirige a / si no hay sesión activa
 │   ├── layout/
-│   │   ├── AppBarPopOver.tsx        # Toolbar: búsqueda, menú lateral, logout
-│   │   └── AppBarMenu.tsx           # ⚠️ HUÉRFANO — ya no se importa en ningún lado
+│   │   └── AppBarPopOver.tsx        # Toolbar: búsqueda, menú lateral, logout
 │   ├── ArticleCarrousel.tsx         # Carrusel horizontal de artículos y presentaciones
-│   ├── ArticleCardModal.tsx         # Modal del artículo más reciente
+│   ├── ArticleCardModal.tsx         # ⚠️ HUÉRFANO — no se importa en ningún lado, ver bug #9
 │   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación en la lista (con botón favorito)
 │   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
-│   ├── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
-│   └── tutorial/
-│       └── InitialTutorial.tsx      # Tutorial — consume GET /tutorial del backend
+│   └── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
 ├── pages/
 │   ├── logIn/         LogIn.tsx          # Pantalla de inicio de sesión
 │   ├── signUp/        SignUp.tsx          # Pantalla de registro
@@ -95,7 +97,7 @@ src/
 - **Login / Registro** — formularios completos, JWT guardado en `sessionStorage`, redirige a `/tab1`
 - **Tab 1 — APRENDE**
   - Artículos cargados desde `GET /articles` (backend MongoDB)
-  - Modal del artículo más reciente al entrar
+  - ⚠️ Modal del artículo más reciente al entrar — **no está activo actualmente**, ver bug #9
   - Carrusel de artículos + presentaciones desde `GET /presentations`
   - Búsqueda con normalización de tildes
   - Filtro por tipo (Artículos / Presentaciones / Ambos)
@@ -177,6 +179,7 @@ src/
 | 6 | aria-hidden sobre elemento con focus en página de presentación | `Presentation.tsx` — warning de accesibilidad de Ionic | Baja |
 | ~~7~~ | ~~Meta tag deprecated~~ | ✅ Resuelto — agregado `mobile-web-app-capable` + quitado script gapi | ~~Baja~~ |
 | 8 | `Failed to mount content script UI: could not find anchor element` en consola | Error de extensión del navegador (all.js), **no es un bug de la app** — ignorar | Ninguna |
+| 9 | `ArticleCardModal.tsx` existe pero no se importa en ningún lado — la sección "implementado" de este doc decía "Modal del artículo más reciente al entrar" a Tab1, pero `Tab1.tsx` no tiene ningún rastro de esa lógica. **Pendiente de decisión**: ¿se reactiva (parece una regresión de algún refactor anterior) o se borra como código muerto? | `components/ArticleCardModal.tsx`, `pages/tab1/Tab1.tsx` | Media |
 
 ---
 
@@ -258,6 +261,31 @@ src/
 | ~~C13~~ | ~~2 artículos ("El impacto del cine en el medio ambiente" y "La Catástrofe Industrial de Bhopal...") — la letra "í" quedó corrupta en todo el texto (bug de encoding)~~ | — | ✅ Resuelto — backend corrigió el encoding (B5) |
 | ~~C14~~ | ~~Descripciones de evaluaciones con el rango de semestre por nivel~~ | `EvaluationCard.tsx` | ✅ Resuelto — backend llenó `description` (B3), frontend ya lo muestra |
 | ~~C15~~ | ~~El footer (tab bar) al entrar a un artículo o presentación no es el mismo que en APRENDE/EVALÚATE/JUEGA~~ | `App.tsx`, `App.css`, `Documents.tsx`, `Presentation.tsx`, `AppBarPopOver.css` | ✅ Resuelto — header con `.dark-toolbar` + tab activo via `getActiveTab()` |
+
+---
+
+## 🆕 Correcciones pendientes — revisión 2026-06-17
+
+| # | Descripción | Archivo(s) | Estado |
+|---|-------------|------------|--------|
+| ~~C16~~ | ~~Ícono de descarga de "Versión física" era una flecha de texto, no un ícono real~~ | `Tab2.tsx` | ✅ Resuelto — reemplazado por `IonIcon` con `downloadOutline` de Ionicons |
+| ~~C17~~ | ~~Al tocar "Artículos recomendados" tras una evaluación, el buscador filtraba pero no se mostraba abierto/activo — había que tocar la lupa manualmente para verlo~~ | `AppBarPopOver.tsx` | ✅ Resuelto — el efecto que resetea `isSearching` al cambiar de ruta ahora lo deja abierto si ya hay un término guardado en `sessionStorage` |
+| ~~C18~~ | ~~La foto de perfil no aparecía en el header al iniciar sesión, solo después de entrar a Perfil~~ | `LogIn.tsx` | ✅ Resuelto — causa: `fetchAvatar` corría en paralelo con `history.push("/tab1")` (race condition); ahora se espera a que termine antes de navegar |
+
+---
+
+## 🆕 Refactor general — 2026-06-17
+
+> Limpieza de código sin cambios de comportamiento. No se reorganizaron carpetas (se evaluó y se descartó para un repo de este tamaño — ver discusión, solo 2 componentes eran de una sola página).
+
+| # | Descripción | Archivo(s) | Estado |
+|---|-------------|------------|--------|
+| R1 | Código muerto: `AppBarMenu.tsx` e `InitialTutorial.tsx` (huérfanos, nadie los importaba) | `components/layout/AppBarMenu.tsx`, `components/tutorial/InitialTutorial.tsx` | ✅ Borrados |
+| R2 | `useLocation()` llamado sin usar su valor en `Documents.tsx` | `Documents.tsx` | ✅ Resuelto — import y llamada eliminados |
+| R3 | 23+ `console.log` sueltos en catches de axios — debug residual y falta de consistencia | 14 archivos | ✅ Resuelto — se eliminó 1 línea de debug comentada (`Evaluation.tsx`) y se estandarizaron los catches reales a `console.error` |
+| R4 | 15 archivos llamaban `axios` directo con `BACKEND_URL` y repetían el header `Authorization` en cada endpoint protegido — sin capa central de API | Todas las páginas + `useFavorites.ts` | ✅ Resuelto — nueva capa `src/api/` (`client.ts`, `auth.ts`, `user.ts`, `content.ts`) con interceptor que agrega el token automáticamente |
+| R5 | Inconsistencia de nombre `evaluation.css` (minúscula) vs `Evaluation.tsx` | `pages/evaluation/` | ✅ Resuelto — renombrado a `Evaluation.css` |
+| R6 | `ArticleCardModal.tsx` huérfano pero documentado como funcionalidad activa | `components/ArticleCardModal.tsx` | ⚠️ No se tocó — ver bug #9, pendiente de decisión |
 
 ---
 

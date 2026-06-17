@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonText } from '@ionic/react';
 import { useHistory } from 'react-router';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { getArticles, getPresentations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import DocumentCard from '../../components/DocumentCard';
 import useFavorites from '../../hooks/useFavorites';
@@ -30,12 +29,12 @@ const Favorites: React.FC = () => {
       return;
     }
     Promise.all([
-      axios.get(`${BACKEND_URL}/articles`),
-      axios.get(`${BACKEND_URL}/presentations`),
-    ]).then(([artRes, presRes]) => {
-      if (artRes.data.success) setAllArticles(artRes.data.articles);
-      if (presRes.data.success) setAllPresentations(presRes.data.presentations);
-    }).catch(err => console.log(err))
+      getArticles(),
+      getPresentations(),
+    ]).then(([articlesData, presentationsData]) => {
+      if (articlesData.success) setAllArticles(articlesData.articles);
+      if (presentationsData.success) setAllPresentations(presentationsData.presentations);
+    }).catch(err => console.error(err))
       .finally(() => setContentLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

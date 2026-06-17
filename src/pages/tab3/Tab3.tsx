@@ -1,7 +1,6 @@
 import { IonContent, IonPage } from '@ionic/react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { getEvaluations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
@@ -35,14 +34,14 @@ const Tab3: React.FC = () => {
       setLoading(false);
     }
 
-    axios.get(`${BACKEND_URL}/evaluations`)
-      .then(res => {
-        if (res.data.success) {
-          setEvaluations(res.data.evaluations);
-          localStorage.setItem("evaluations", JSON.stringify(res.data.evaluations));
+    getEvaluations()
+      .then(data => {
+        if (data.success) {
+          setEvaluations(data.evaluations);
+          localStorage.setItem("evaluations", JSON.stringify(data.evaluations));
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 

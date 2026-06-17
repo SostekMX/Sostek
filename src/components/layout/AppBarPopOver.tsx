@@ -29,10 +29,12 @@ export const AppBarPopOver: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Cierra el buscador al navegar a otra ruta
+    // Al navegar, abre el buscador solo si ya hay un término activo guardado
     useEffect(() => {
-        setIsSearching(false);
+        const hasSearch = !!sessionStorage.getItem('search');
+        setIsSearching(showSearch && hasSearch);
         setIsClosing(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname]);
 
     useEffect(() => {

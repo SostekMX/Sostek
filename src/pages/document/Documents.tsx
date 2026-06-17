@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonItem, IonLabel, IonPopover } from '@ionic/react';
 import { menuOutline, heart, personCircle, logOut } from 'ionicons/icons';
 import { useParams } from 'react-router';
-import { useHistory, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import { BACKEND_URL } from '../../config';
+import { useHistory } from 'react-router-dom';
+import { getArticle } from '../../api/content';
 import './Documents.css';
 
 interface Article {
@@ -31,16 +30,15 @@ const Documents: React.FC = () => {
   const [loadingData, setLoadingData] = useState(true);
   const { current: popoverId } = useRef(`doc-menu-${Math.random().toString(36).substr(2, 6)}`);
   const history = useHistory();
-  useLocation();
 
   const isUserLogged = sessionStorage.getItem('login') === 'true';
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/articles/${id}`)
-      .then(res => {
-        if (res.data.success) setArticle(res.data.article);
+    getArticle(id)
+      .then(data => {
+        if (data.success) setArticle(data.article);
       })
-      .catch(err => console.log(err))
+      .catch(err => console.error(err))
       .finally(() => setLoadingData(false));
   }, [id]);
 
