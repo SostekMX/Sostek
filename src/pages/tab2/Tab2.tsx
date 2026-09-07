@@ -54,7 +54,12 @@ const Tab2: React.FC = () => {
 
             {/* Video */}
             <div className='juega-video-wrapper'>
-              <video className='juega-video' controls>
+              <video
+                className='juega-video'
+                controls
+                poster="/assets/survivor-poster.png"
+                preload="metadata"
+              >
                 <source src="/assets/survivor.m4v" />
               </video>
             </div>
