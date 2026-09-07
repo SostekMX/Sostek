@@ -257,6 +257,10 @@
 .juega-game-card {
     border-radius: 14px;
     padding: 14px 14px 12px;
+    /* En el grid de desktop las tarjetas de una fila igualan altura;
+       la columna flexible mantiene los recursos pegados al pie. */
+    display: flex;
+    flex-direction: column;
 }
 .juega-game-card--scenario {
     background: rgba(224,82,96,0.08);
@@ -280,19 +284,91 @@
 }
 .juega-game-card__resources {
     display: flex;
+    margin-top: auto;
     gap: 8px;
     font-size: 0.75rem;
     font-weight: 600;
     color: rgba(255,255,255,0.75);
 }
 
-/* Desktop */
+/* ==========================================================
+   Responsive
+   Mobile (< 640px) es el estado base de arriba: una columna.
+   ========================================================== */
+
+/* Tablet: la columna se ensancha y las cartas pasan a dos por fila. */
 @media (min-width: 640px) {
     .juega-page {
-        max-width: 600px;
+        max-width: 760px;
         margin: 0 auto;
     }
     .juega-video {
         max-height: 340px;
+    }
+    .juega-cards-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Desktop: full bleed y bloque superior en dos columnas.
+   El video ocupa la izquierda completa; instructivo y reglas se
+   apilan a la derecha. */
+@media (min-width: 1024px) {
+    .juega-page {
+        max-width: none;
+        margin: 0;
+        padding: 8px 40px 48px;
+    }
+
+    .juega-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        gap: 20px 32px;
+        align-content: start;
+    }
+    .juega-top__media {
+        grid-row: span 2;
+    }
+
+    /* Sin tope de altura el video conserva su proporcion real en vez
+       de recortarse contra los 340px del breakpoint de tablet. */
+    .juega-video {
+        max-height: none;
+    }
+
+    /* Full bleed sin tope: sin esta medida el parrafo de reglas llega a
+       ~135 caracteres por linea en un monitor de 2560px. Lo comodo son
+       60-75, asi que el texto se limita aunque la tarjeta llene la columna. */
+    .juega-rules__text {
+        max-width: 62ch;
+    }
+
+    /* Sin flex:1 cada pill se estiraria a media pantalla. */
+    .juega-filter-pills {
+        justify-content: flex-start;
+    }
+    .juega-filter-pill {
+        flex: 0 0 auto;
+        min-width: 170px;
+    }
+
+    .juega-cards-list {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 14px;
+    }
+}
+
+/* Pantallas anchas: los tres bloques del tope caben uno junto al otro. */
+@media (min-width: 1440px) {
+    .juega-page {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+    .juega-top {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1.05fr);
+    }
+    .juega-top__media {
+        grid-row: auto;
     }
 }
