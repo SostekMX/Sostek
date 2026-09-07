@@ -184,3 +184,71 @@ dos es de esta rama, pero ensucian la salida de `npx tsc --noEmit`.
 multicolumna, los párrafos pueden partirse entre columna y columna (comportamiento
 de periódico). Se ve bien, pero si algún día quieres control fino sobre los saltos,
 habría que separar los párrafos en `<p>` reales en el JSX.
+
+
+---
+
+## 2026-09-07 (2) — Dos arreglos técnicos en JUEGA
+
+Misma rama: `feat/juega-layout-desktop`. Commits `f192ca4` y `ed1a335`.
+
+### Video: poster + preload
+
+`survivor.m4v` pesa 15.4 MB y el `<video>` no declaraba `poster` ni `preload`.
+
+- **`survivor-poster.png` (67 KB)** — frame del segundo 0.4, extraído del propio
+  video con Chrome headless. Es la pantalla del logo SOSTEK; los demás frames
+  tienen subtítulos quemados, así que este es el único limpio.
+- **`preload="metadata"`** — el átomo `moov` está al inicio del archivo, así que
+  el navegador lee un rango chico, muestra la duración real en los controles y
+  permite hacer seek sin bajar el video.
+
+**Lo que quedó sin verificar:** intenté medir el ahorro de bytes de seis formas
+distintas y ninguna dio un número confiable. `performance.transferSize` devuelve
+0 para media con range requests; contar bytes en el servidor sobreestima porque
+el stream vacía el archivo al socket antes de que el navegador aborte; y con
+throttle quedó claro que **Chrome headless ignora el hint de `preload`**, así que
+no hay diferencia observable en ese entorno. El atributo es correcto y estándar,
+pero **el ahorro real hay que confirmarlo en Chrome normal**, en la pestaña
+Network de DevTools, mirando el tamaño transferido de `survivor.m4v` al entrar a
+JUEGA sin darle play. Pendiente para cuando esté el `.env` de producción.
+
+El poster sí está verificado: se ve el logo SOSTEK de inmediato en vez del
+rectángulo negro, y el layout no se movió.
+
+### Estado de carga y de error
+
+Tab2 era la única pestaña sin estado de carga. Se replicó el patrón de
+`Tab3.tsx:28-46` (`loading` + `.finally`) reutilizando `.shimmer` de
+`App.css:238` — no se creó ninguna animación nueva.
+
+| Estado | Qué se ve |
+| --- | --- |
+| cargando | Skeleton de reglas (7 líneas), 2 pills y 6 tarjetas |
+| cargado | Igual que antes |
+| fallo | Mensaje en la tarjeta de reglas; la sección de cartas no se renderiza |
+
+`.juega-rules` pasa a renderizarse **siempre** y solo cambia su contenido, para
+que conserve su celda en el grid (`grid-column: 1 / -1`) sin CSS extra.
+
+**No se agregó cache en `localStorage`** aunque Tab1 y Tab3 sí lo hacen:
+`ARQUITECTURA.md` §5 señala esa capa como la principal trampa de depuración del
+proyecto, y sumar una tercera merece su propia decisión.
+
+### Verificación
+
+- 23/23 tests pasan; `tsc` sin errores en Tab2
+- Capturas a 1920, 1440, 1024, 768 y 390px: el estado cargado no se movió
+- Estado de error verificado apuntando el frontend a un puerto sin backend
+- Skeleton verificado montando su markup con el CSS real (el backend local
+  responde en ~10ms, imposible atrapar el transitorio en una captura)
+
+### Nota de proceso
+
+Para forzar el estado de error maté por PID el proceso del puerto 8080. Resultó
+que **SearXNG (contenedor `odysseus-searxng-1`) también está en 8080**, así que
+fue más arriesgado de lo necesario. No se perdió nada —SearXNG es Docker y
+sobrevivió al `taskkill` del host, con 5 días de uptime intactos— y el backend de
+Sostek quedó levantado de nuevo y respondiendo. Para la próxima: usar
+`--host-resolver-rules` de Chrome, que redirige solo dentro de esa instancia y no
+toca ningún puerto del sistema.
