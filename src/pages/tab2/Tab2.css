@@ -351,27 +351,34 @@
         padding: 8px 40px 48px;
     }
 
+    /* Fila 1: video | instructivo. Fila 2: reglas a lo ancho.
+       Las reglas son el bloque mas alto de la pagina: metidas en una
+       columna vertical dejan un hueco de ~370px junto al video. A lo
+       ancho y en multicolumna caben en un tercio de esa altura. */
     .juega-top {
         display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
         gap: 20px 32px;
         align-content: start;
     }
-    .juega-top__media {
-        grid-row: span 2;
+    .juega-rules {
+        grid-column: 1 / -1;
     }
 
-    /* Sin tope de altura el video conserva su proporcion real en vez
-       de recortarse contra los 340px del breakpoint de tablet. */
+    /* contain en vez del cover de mobile: el video conserva su proporcion
+       real en vez de recortarse. El tope de 420px evita que a 1920px
+       crezca a 530 y desbalancee la fila; a 1440 no llega a activarse. */
     .juega-video {
-        max-height: none;
+        max-height: 420px;
+        object-fit: contain;
     }
 
-    /* Full bleed sin tope: sin esta medida el parrafo de reglas llega a
-       ~135 caracteres por linea en un monitor de 2560px. Lo comodo son
-       60-75, asi que el texto se limita aunque la tarjeta llene la columna. */
+    /* A 24rem por columna el navegador reparte solo: 2 columnas a
+       1024px, 3 a 1440 y 4 a 1920, cada una de ~60 caracteres. Sin esto
+       una sola linea llegaria a ~200 caracteres a lo ancho de la pagina. */
     .juega-rules__text {
-        max-width: 62ch;
+        column-width: 24rem;
+        column-gap: 40px;
     }
 
     /* Sin flex:1 cada pill se estiraria a media pantalla. */
@@ -389,16 +396,11 @@
     }
 }
 
-/* Pantallas anchas: los tres bloques del tope caben uno junto al otro. */
+/* Pantallas anchas: solo mas aire lateral; el reparto de columnas del
+   texto de reglas lo resuelve column-width por si solo. */
 @media (min-width: 1440px) {
     .juega-page {
         padding-left: 48px;
         padding-right: 48px;
-    }
-    .juega-top {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1.05fr);
-    }
-    .juega-top__media {
-        grid-row: auto;
     }
 }
