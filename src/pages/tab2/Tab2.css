@@ -10,7 +10,6 @@
    asi que el ritmo vertical queda identico al de una lista plana.
    El grid de desktop se arma en los media queries del final. */
 .juega-top,
-.juega-top__media,
 .juega-top__howto {
     display: flex;
     flex-direction: column;
@@ -361,8 +360,22 @@
         gap: 20px 32px;
         align-content: start;
     }
-    .juega-rules {
-        grid-column: 1 / -1;
+
+    /* Colocacion explicita: el grid manda sobre el orden del DOM, asi
+       que descarga y aviso pasan a la columna derecha en desktop sin
+       moverse de su sitio en mobile (donde el CTA debe ir bajo el video,
+       no enterrado tras los tipos de tarjeta). */
+    .juega-video-wrapper  { grid-column: 1; grid-row: 1 / 4; align-self: stretch; }
+    .juega-top__howto     { grid-column: 2; grid-row: 1; }
+    .juega-download-card  { grid-column: 2; grid-row: 2; }
+    .juega-wip            { grid-column: 2; grid-row: 3; align-self: start; }
+    .juega-rules          { grid-column: 1 / -1; grid-row: 4; }
+
+    /* El video se centra en el alto que le toque a la columna; las
+       franjas oscuras del wrapper leen como el marco del reproductor. */
+    .juega-video-wrapper {
+        display: flex;
+        align-items: center;
     }
 
     /* contain en vez del cover de mobile: el video conserva su proporcion

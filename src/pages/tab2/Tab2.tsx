@@ -47,39 +47,38 @@ const Tab2: React.FC = () => {
             <p className='juega-hero__subtitle'>Aprende sobre sostenibilidad mientras juegas</p>
           </div>
 
-          {/* Bloque superior: media | instructivo | reglas.
-              En mobile es una columna; en desktop se reparte en grid. */}
+          {/* Bloque superior. En mobile es una columna en el orden del DOM;
+              en desktop el grid coloca descarga y aviso en la columna
+              derecha, sin alterar ese orden. */}
           <div className='juega-top'>
 
-            <div className='juega-top__media'>
-              {/* Video */}
-              <div className='juega-video-wrapper'>
-                <video className='juega-video' controls>
-                  <source src="/assets/survivor.m4v" />
-                </video>
+            {/* Video */}
+            <div className='juega-video-wrapper'>
+              <video className='juega-video' controls>
+                <source src="/assets/survivor.m4v" />
+              </video>
+            </div>
+
+            {/* Descarga */}
+            <a
+              href="https://drive.google.com/file/d/1ZBfQKAAVHg7BtDwt1iblhgKk3ykbTOO3/view"
+              target="_blank"
+              rel="noopener noreferrer"
+              className='juega-download-card'
+            >
+              <div className='juega-download-card__icon'><IonIcon icon={downloadOutline} /></div>
+              <div>
+                <p className='juega-download-card__title'>Versión física</p>
+                <p className='juega-download-card__desc'>Imprime las cartas y juega con tus amigos</p>
               </div>
+            </a>
 
-              {/* Descarga */}
-              <a
-                href="https://drive.google.com/file/d/1ZBfQKAAVHg7BtDwt1iblhgKk3ykbTOO3/view"
-                target="_blank"
-                rel="noopener noreferrer"
-                className='juega-download-card'
-              >
-                <div className='juega-download-card__icon'><IonIcon icon={downloadOutline} /></div>
-                <div>
-                  <p className='juega-download-card__title'>Versión física</p>
-                  <p className='juega-download-card__desc'>Imprime las cartas y juega con tus amigos</p>
-                </div>
-              </a>
-
-              {/* Versión online */}
-              <div className='juega-wip'>
-                <div className='juega-wip__dot' />
-                <div>
-                  <p className='juega-wip__text'>La versión online está en construcción</p>
-                  <p className='juega-wip__text'>Próximamente disponible</p>
-                </div>
+            {/* Versión online */}
+            <div className='juega-wip'>
+              <div className='juega-wip__dot' />
+              <div>
+                <p className='juega-wip__text'>La versión online está en construcción</p>
+                <p className='juega-wip__text'>Próximamente disponible</p>
               </div>
             </div>
 

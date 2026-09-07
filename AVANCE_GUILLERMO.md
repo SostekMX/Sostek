@@ -132,20 +132,40 @@ inferior no se tocó.
 
 ---
 
+### Ajuste posterior — descarga y aviso a la columna derecha
+
+A pedido tuyo, "Versión física" y el aviso de construcción pasaron a la columna
+derecha, debajo de los tipos de tarjeta. **Esto cerró el desbalance de ~275px:
+ahora las dos columnas terminan exactamente a la misma altura a 1024, 1440 y
+1920px.**
+
+Al planearlo lo había descartado porque moverlos en el DOM hundiría el CTA
+principal por debajo de los tipos de tarjeta en mobile. La salida fue **no tocar
+el DOM**: se aplanó el wrapper `.juega-top__media` para que el video, la descarga
+y el aviso sean hijos directos de `.juega-top`, y el reparto se hace con
+colocación explícita de grid, que manda sobre el orden del documento:
+
+```css
+.juega-video-wrapper  { grid-column: 1; grid-row: 1 / 4; align-self: stretch; }
+.juega-top__howto     { grid-column: 2; grid-row: 1; }
+.juega-download-card  { grid-column: 2; grid-row: 2; }
+.juega-wip            { grid-column: 2; grid-row: 3; }
+.juega-rules          { grid-column: 1 / -1; grid-row: 4; }
+```
+
+El orden del DOM sigue siendo video → descarga → aviso → instructivo → reglas,
+así que en mobile la columna queda **igual que antes**: el CTA sigue justo debajo
+del video.
+
+El wrapper del video pasó a `align-self: stretch` con `display: flex;
+align-items: center`, de modo que el video se centra vertical en el alto que le
+toque a la columna. Cuando la columna derecha es más alta que el video (pasa a
+1024px), aparecen franjas oscuras arriba y abajo: es el fondo del wrapper, y lee
+como el marco de un reproductor.
+
+---
+
 ### Notas del camino
-
-**Queda un desbalance de ~275px** entre las dos columnas superiores a 1920px: el
-bloque de video mide 545px y el instructivo 300px. Se probaron tres alternativas
-y todas empeoraban el resultado:
-
-1. `grid-auto-rows: 1fr` en los tipos de tarjeta — las infla a cajas de 190px con
-   dos líneas de texto arriba. Mueve el hueco adentro de las tarjetas.
-2. Recortar el video para igualar alturas — habría que bajarlo a ~140px.
-3. Mover "Versión física" a la columna derecha — equilibra bien, pero en mobile
-   empujaría el CTA principal por debajo de los tipos de tarjeta.
-
-Se dejó como está: es una diferencia acotada, cerrada por abajo por la banda de
-reglas, y se lee como un layout editorial normal.
 
 **El H1 "SURVIVOR" sigue en 2rem** por decisión explícita de no tocar tipografía.
 En un layout de 1900px se ve chico. Candidato a revisar viéndolo en pantalla; es
