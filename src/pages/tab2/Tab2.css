@@ -72,12 +72,13 @@
     border: 1px solid rgba(128, 178, 89, 0.3);
     border-radius: 16px;
     text-decoration: none;
-    transition: background 0.2s;
+    transition: background-color 200ms ease-out, transform 160ms ease-out;
     -webkit-tap-highlight-color: transparent;
 }
 
 .juega-download-card:active {
     background: rgba(128, 178, 89, 0.2);
+    transform: scale(0.97);
 }
 
 .juega-download-card__icon {
@@ -239,7 +240,12 @@
     font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: background-color 150ms ease-out, border-color 150ms ease-out,
+                color 150ms ease-out, transform 150ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+}
+.juega-filter-pill:active {
+    transform: scale(0.97);
 }
 .juega-filter-pill--active {
     background: rgba(128,178,89,0.15);
@@ -270,6 +276,30 @@
     background: rgba(128,178,89,0.08);
     border: 1px solid rgba(128,178,89,0.2);
 }
+/* El hover va detras del gate de puntero fino: en tactil el :hover se
+   queda pegado tras el tap y deja tarjetas iluminadas al azar. */
+@media (hover: hover) and (pointer: fine) {
+    .juega-game-card {
+        transition: border-color 160ms ease-out, background-color 160ms ease-out;
+    }
+    .juega-game-card--scenario:hover {
+        border-color: rgba(224, 82, 96, 0.45);
+        background: rgba(224, 82, 96, 0.12);
+    }
+    .juega-game-card--solution:hover {
+        border-color: rgba(128, 178, 89, 0.45);
+        background: rgba(128, 178, 89, 0.12);
+    }
+}
+
+/* Se conservan los cambios de color, se quita el movimiento. */
+@media (prefers-reduced-motion: reduce) {
+    .juega-download-card:active,
+    .juega-filter-pill:active {
+        transform: none;
+    }
+}
+
 .juega-game-card__name {
     font-size: 0.88rem;
     font-weight: 700;
