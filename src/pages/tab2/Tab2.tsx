@@ -24,12 +24,14 @@ const formatResource = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 
 const Tab2: React.FC = () => {
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
+  const [loading, setLoading] = useState(true);
   const [cardFilter, setCardFilter] = useState<CardFilter>('scenario');
 
   useEffect(() => {
     getTutorial()
       .then(data => { if (data.success) setTutorial(data.tutorial); })
-      .catch(err => console.error(err));
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
   }, []);
 
   const filteredCards = tutorial?.cards.filter(c => c.type === cardFilter) ?? [];
@@ -131,24 +133,60 @@ const Tab2: React.FC = () => {
               </div>
             </div>
 
-            {/* Reglas */}
-            {tutorial && (
-              <div className='juega-rules'>
-                <p className='juega-section-label'>REGLAS</p>
+            {/* Reglas. El card se renderiza siempre para conservar su
+                celda en el grid; lo que cambia es el contenido. */}
+            <div className='juega-rules'>
+              <p className='juega-section-label'>REGLAS</p>
+              {loading ? (
+                <div className='juega-rules__skeleton'>
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <div key={i} className='juega-rules__skeleton-line shimmer' />
+                  ))}
+                </div>
+              ) : tutorial ? (
                 <p className='juega-rules__text'>{tutorial.rules}</p>
-              </div>
-            )}
+              ) : (
+                <p className='juega-empty'>
+                  No pudimos cargar el instructivo. Revisa tu conexión e intenta de nuevo.
+                </p>
+              )}
+            </div>
 
           </div>
 
           {/* Tarjetas */}
-          {tutorial && (
+          {(loading || tutorial) && (
             <>
               <div className='juega-section-header'>
                 <p className='juega-section-label'>TARJETAS DEL JUEGO</p>
                 <h2 className='juega-section-title'>Explora las cartas</h2>
               </div>
+            </>
+          )}
 
+          {loading && (
+            <>
+              <div className='juega-filter-pills'>
+                <div className='juega-filter-pill juega-filter-pill--skeleton shimmer' />
+                <div className='juega-filter-pill juega-filter-pill--skeleton shimmer' />
+              </div>
+
+              <div className='juega-cards-list'>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className='juega-game-card juega-game-card--skeleton'>
+                    <div className='juega-game-card__skeleton-name shimmer' />
+                    <div className='juega-game-card__skeleton-line shimmer' />
+                    <div className='juega-game-card__skeleton-line shimmer' />
+                    <div className='juega-game-card__skeleton-line shimmer' />
+                    <div className='juega-game-card__skeleton-line juega-game-card__skeleton-line--short shimmer' />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {!loading && tutorial && (
+            <>
               <div className='juega-filter-pills'>
                 <button
                   className={`juega-filter-pill ${cardFilter === 'scenario' ? 'juega-filter-pill--active' : ''}`}

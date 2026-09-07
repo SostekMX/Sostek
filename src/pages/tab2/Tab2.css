@@ -224,6 +224,51 @@
     white-space: pre-line;
 }
 
+/* Skeletons de carga. La animacion viene de .shimmer (App.css), que ya
+   usan Tab1 y Tab3; aqui solo se definen las formas. */
+.juega-rules__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-top: 12px;
+}
+.juega-rules__skeleton-line {
+    height: 13px;
+}
+.juega-rules__skeleton-line:nth-child(3n) {
+    width: 72%;
+}
+
+.juega-empty {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 12px 0 0;
+}
+
+.juega-filter-pill--skeleton {
+    height: 39px;
+    padding: 0;
+    border-color: transparent;
+    pointer-events: none;
+}
+
+.juega-game-card--skeleton {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 9px;
+}
+.juega-game-card__skeleton-name {
+    height: 15px;
+    width: 62%;
+}
+.juega-game-card__skeleton-line {
+    height: 11px;
+}
+.juega-game-card__skeleton-line--short {
+    width: 45%;
+}
+
 /* Filtros de tarjetas */
 .juega-filter-pills {
     display: flex;
