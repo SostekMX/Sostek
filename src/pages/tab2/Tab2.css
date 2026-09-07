@@ -5,6 +5,18 @@
     gap: 20px;
 }
 
+/* Bloque superior (media / instructivo / reglas).
+   En mobile son tres columnas apiladas con el mismo gap que .juega-page,
+   asi que el ritmo vertical queda identico al de una lista plana.
+   El grid de desktop se arma en los media queries del final. */
+.juega-top,
+.juega-top__media,
+.juega-top__howto {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 /* Hero header */
 .juega-hero {
     padding: 16px 0 4px;

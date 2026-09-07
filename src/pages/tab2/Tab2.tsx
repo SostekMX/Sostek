@@ -47,85 +47,95 @@ const Tab2: React.FC = () => {
             <p className='juega-hero__subtitle'>Aprende sobre sostenibilidad mientras juegas</p>
           </div>
 
-          {/* Video */}
-          <div className='juega-video-wrapper'>
-            <video className='juega-video' controls>
-              <source src="/assets/survivor.m4v" />
-            </video>
+          {/* Bloque superior: media | instructivo | reglas.
+              En mobile es una columna; en desktop se reparte en grid. */}
+          <div className='juega-top'>
+
+            <div className='juega-top__media'>
+              {/* Video */}
+              <div className='juega-video-wrapper'>
+                <video className='juega-video' controls>
+                  <source src="/assets/survivor.m4v" />
+                </video>
+              </div>
+
+              {/* Descarga */}
+              <a
+                href="https://drive.google.com/file/d/1ZBfQKAAVHg7BtDwt1iblhgKk3ykbTOO3/view"
+                target="_blank"
+                rel="noopener noreferrer"
+                className='juega-download-card'
+              >
+                <div className='juega-download-card__icon'><IonIcon icon={downloadOutline} /></div>
+                <div>
+                  <p className='juega-download-card__title'>Versión física</p>
+                  <p className='juega-download-card__desc'>Imprime las cartas y juega con tus amigos</p>
+                </div>
+              </a>
+
+              {/* Versión online */}
+              <div className='juega-wip'>
+                <div className='juega-wip__dot' />
+                <div>
+                  <p className='juega-wip__text'>La versión online está en construcción</p>
+                  <p className='juega-wip__text'>Próximamente disponible</p>
+                </div>
+              </div>
+            </div>
+
+            <div className='juega-top__howto'>
+              {/* Instructivo */}
+              <div className='juega-section-header'>
+                <p className='juega-section-label'>INSTRUCTIVO</p>
+                <h2 className='juega-section-title'>¿Cómo se juega?</h2>
+              </div>
+
+              {/* Stats */}
+              <div className='juega-stats'>
+                <div className='juega-stat'>
+                  <span className='juega-stat__value'>4–6</span>
+                  <span className='juega-stat__label'>jugadores</span>
+                </div>
+                <div className='juega-stat'>
+                  <span className='juega-stat__value'>4</span>
+                  <span className='juega-stat__label'>tipos de tarjeta</span>
+                </div>
+                <div className='juega-stat'>
+                  <span className='juega-stat__value'>20</span>
+                  <span className='juega-stat__label'>fichas por recurso</span>
+                </div>
+              </div>
+
+              {/* Tipos de tarjeta */}
+              <div className='juega-card-types'>
+                <div className='juega-card-type juega-card-type--scenario'>
+                  <span className='juega-card-type__name'>Escenario</span>
+                  <span className='juega-card-type__desc'>Problema al centro de la mesa</span>
+                </div>
+                <div className='juega-card-type juega-card-type--ambiental'>
+                  <span className='juega-card-type__name'>🌿 Ambiental</span>
+                  <span className='juega-card-type__desc'>Solución de impacto ambiental</span>
+                </div>
+                <div className='juega-card-type juega-card-type--economico'>
+                  <span className='juega-card-type__name'>💰 Económico</span>
+                  <span className='juega-card-type__desc'>Solución de impacto económico</span>
+                </div>
+                <div className='juega-card-type juega-card-type--social'>
+                  <span className='juega-card-type__name'>👥 Social</span>
+                  <span className='juega-card-type__desc'>Solución de impacto social</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Reglas */}
+            {tutorial && (
+              <div className='juega-rules'>
+                <p className='juega-section-label'>REGLAS</p>
+                <p className='juega-rules__text'>{tutorial.rules}</p>
+              </div>
+            )}
+
           </div>
-
-          {/* Descarga */}
-          <a
-            href="https://drive.google.com/file/d/1ZBfQKAAVHg7BtDwt1iblhgKk3ykbTOO3/view"
-            target="_blank"
-            rel="noopener noreferrer"
-            className='juega-download-card'
-          >
-            <div className='juega-download-card__icon'><IonIcon icon={downloadOutline} /></div>
-            <div>
-              <p className='juega-download-card__title'>Versión física</p>
-              <p className='juega-download-card__desc'>Imprime las cartas y juega con tus amigos</p>
-            </div>
-          </a>
-
-          {/* Versión online */}
-          <div className='juega-wip'>
-            <div className='juega-wip__dot' />
-            <div>
-              <p className='juega-wip__text'>La versión online está en construcción</p>
-              <p className='juega-wip__text'>Próximamente disponible</p>
-            </div>
-          </div>
-
-          {/* Instructivo */}
-          <div className='juega-section-header'>
-            <p className='juega-section-label'>INSTRUCTIVO</p>
-            <h2 className='juega-section-title'>¿Cómo se juega?</h2>
-          </div>
-
-          {/* Stats */}
-          <div className='juega-stats'>
-            <div className='juega-stat'>
-              <span className='juega-stat__value'>4–6</span>
-              <span className='juega-stat__label'>jugadores</span>
-            </div>
-            <div className='juega-stat'>
-              <span className='juega-stat__value'>4</span>
-              <span className='juega-stat__label'>tipos de tarjeta</span>
-            </div>
-            <div className='juega-stat'>
-              <span className='juega-stat__value'>20</span>
-              <span className='juega-stat__label'>fichas por recurso</span>
-            </div>
-          </div>
-
-          {/* Tipos de tarjeta */}
-          <div className='juega-card-types'>
-            <div className='juega-card-type juega-card-type--scenario'>
-              <span className='juega-card-type__name'>Escenario</span>
-              <span className='juega-card-type__desc'>Problema al centro de la mesa</span>
-            </div>
-            <div className='juega-card-type juega-card-type--ambiental'>
-              <span className='juega-card-type__name'>🌿 Ambiental</span>
-              <span className='juega-card-type__desc'>Solución de impacto ambiental</span>
-            </div>
-            <div className='juega-card-type juega-card-type--economico'>
-              <span className='juega-card-type__name'>💰 Económico</span>
-              <span className='juega-card-type__desc'>Solución de impacto económico</span>
-            </div>
-            <div className='juega-card-type juega-card-type--social'>
-              <span className='juega-card-type__name'>👥 Social</span>
-              <span className='juega-card-type__desc'>Solución de impacto social</span>
-            </div>
-          </div>
-
-          {/* Reglas */}
-          {tutorial && (
-            <div className='juega-rules'>
-              <p className='juega-section-label'>REGLAS</p>
-              <p className='juega-rules__text'>{tutorial.rules}</p>
-            </div>
-          )}
 
           {/* Tarjetas */}
           {tutorial && (
