@@ -2,9 +2,116 @@
 
 Log de trabajo. Cada entrada dice qué se tocó, qué se decidió y por qué.
 
+## Sesión del 2026-09-07
+
+| # | Tema | Commits |
+| --- | --- | --- |
+| 1 | Levantar el stack local (Mongo + backend + frontend) | ninguno — configuración de máquina |
+| 2 | Rediseño de layout de la página JUEGA | `c1ffdb6` … `93128ae` |
+| 3 | Dos arreglos técnicos en JUEGA | `f192ca4`, `ed1a335`, `8099c49` |
+
+Todo vive en la rama **`feat/juega-layout-desktop`**. `main` sigue en `70de48f`,
+sin tocar, y nada se pusheó al remoto.
+
 ---
 
-## 2026-09-07 — Rediseño de layout de la página JUEGA (Tab2)
+## 1 · Levantar el stack local
+
+Punto de partida: la creencia de que faltaba "una API key de la base de datos de
+MongoDB" para poder ver información en localhost.
+
+**Eso no era el problema.** MongoDB Atlas no usa API keys: necesita un
+*connection string* (`DB_URL`) con usuario, contraseña y cluster, más una entrada
+en el whitelist de IPs. Y resultó que no hacía falta Atlas para trabajar — con un
+Mongo local en Docker y dos seeds, casi toda la app funciona.
+
+### Por qué el backend no arrancaba
+
+`Sostek-backend/.env` era una **copia byte a byte de `.env.example`** (mismo md5),
+o sea puros placeholders. Dos consecuencias:
+
+- `JWT_CODE` vacío → `jsonWebToken.sign()` lanza al intentar firmar
+- `DB_URL` con placeholder → `mongoose.connect()` falla y, como
+  `src/models/authModel.js:4-7` no tiene `.catch()` y corre al importar, el
+  proceso se muere con un stack trace de Mongoose sin explicación
+
+### Lo que se configuró
+
+En `Sostek-backend/.env` (gitignoreado, no sale del repo):
+
+```
+PORT=8080
+JWT_CODE=<96 hex, generado con crypto.randomBytes(48)>
+DB_URL=mongodb://127.0.0.1:27017/SostekDB
+FRONTEND_URL=http://localhost:3000
+```
+
+No se perdió nada al reescribirlo: se verificó por md5 que era idéntico al
+`.example` antes de tocarlo. Cuando tengas el connection string de Atlas, solo
+reemplazas la línea de `DB_URL`.
+
+`EMAIL_USER` / `EMAIL_PASS` (recuperación de contraseña) y `CLOUDINARY_*`
+(avatares y `seed:presentations`) quedaron sin configurar: son opcionales en local.
+
+### Mongo en Docker
+
+No hay `mongod` ni `mongosh` instalados en la máquina, así que:
+
+```bash
+docker run -d --name sostek-mongo -p 27017:27017 mongo:6
+```
+
+### Qué se pudo sembrar y qué no
+
+| Seed | Resultado |
+| --- | --- |
+| `npm run seed:tutorial` | ✅ "Instructivo SOSTEK" con **48 tarjetas** |
+| `npm run seed:evaluations` | ✅ **6 evaluaciones** — Arquitectura N1/N2/N3 (23/24/21 preguntas) y Diseño Industrial N1/N2/N3 (22/22/25) |
+| `npm run seed:articles` | ❌ necesita `articles.csv`, que no está versionado |
+| `npm run seed:presentations` | ❌ necesita credenciales de Cloudinary |
+
+Por eso `/articles` y `/presentations` devuelven `[]` en local. Es lo esperado, no
+un error.
+
+### Verificación de endpoints
+
+`/health`, `/evaluations`, `/tutorial`, y la cadena de auth completa:
+signup → login → JWT → `GET /user/profile` con `Authorization: Bearer`,
+devolviendo el perfil **sin** `password` ni `reset_token`.
+
+Quedó un usuario de prueba en la base local: **`prueba@local.test` /
+`prueba12345`** (solo sirve contra el Mongo de Docker de tu máquina).
+
+### Una trampa que costó dos intentos
+
+`POST /user/signup` respondía `{"success":false,"error":"El apellido es
+requerido"}` mandando `lastname` y `birthdate`. Los validadores de
+`express-validator` en `src/index.js:124-144` esperan **`surname`** y
+**`birth_date`**. Antes de curlear un endpoint, conviene leer su cadena de
+validadores: los nombres de campo no siempre son los obvios.
+
+### Prender y apagar
+
+```bash
+docker start sostek-mongo                      # los datos se conservan
+cd Sostek-backend && npm run dev:js            # backend en :8080
+cd Sostek       && ionic serve --external -p=3000
+docker stop sostek-mongo                       # apagar
+```
+
+### Sobre ARQUITECTURA.md
+
+Confirmado que lo escribí yo en una sesión anterior (aparece la llamada al Write
+en el transcript del 31 de agosto). Se agregó al `.gitignore` en vez de
+commitearlo.
+
+Al analizarlo salió **un dato desactualizado**: dice que hay que pasarle el ID de
+la Google Sheet a `seed:evaluations`, pero `seed/seedEvaluations.js:8-13` ya trae
+los 6 IDs hardcodeados, así que el script se basta solo.
+
+---
+
+## 2 · Rediseño de layout de la página JUEGA (Tab2)
 
 Rama: `feat/juega-layout-desktop`
 
@@ -32,6 +139,8 @@ dd98ae9  refactor(tab2): agrupa el contenido de JUEGA en tres bloques
 da0ca68  feat(tab2): reparte JUEGA en columnas y aprovecha el ancho en desktop
 2e0c027  feat(tab2): afina el feedback tactil de la pagina JUEGA
 4ef45d8  fix(tab2): pasa las reglas a ancho completo y acota el video
+3de3427  docs: agrega AVANCE_GUILLERMO.md con el log del rediseno
+93128ae  feat(tab2): mueve descarga y aviso a la columna derecha
 ```
 
 ---
@@ -188,9 +297,9 @@ habría que separar los párrafos en `<p>` reales en el JSX.
 
 ---
 
-## 2026-09-07 (2) — Dos arreglos técnicos en JUEGA
+## 3 · Dos arreglos técnicos en JUEGA
 
-Misma rama: `feat/juega-layout-desktop`. Commits `f192ca4` y `ed1a335`.
+Misma rama. Commits `f192ca4`, `ed1a335` y `8099c49`.
 
 ### Video: poster + preload
 
