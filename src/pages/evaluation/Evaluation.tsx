@@ -4,19 +4,14 @@ import {
   IonPage,
   IonRow,
 } from "@ionic/react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { getEvaluation } from '../../api/content';
 import AppBarPopOver from "../../components/layout/AppBarPopOver";
-import QuestionTestCard from "../../components/QuestionTestCard";
-import AppContext from "../../context/AppContext";
-import { computeMaxScore } from "../../utils/scoring";
+import QuestionTestCard, { Option } from "../../components/QuestionTestCard";
+import { AnswerMap, computeCategoryScores, computeMaxScore, toggleAnswer, totalScore } from "../../utils/scoring";
 import "./Evaluation.css";
 
-interface Option {
-  text: string;
-  value: number;
-}
 interface Question {
   category: string;
   text: string;
@@ -38,9 +33,15 @@ const Evaluation: React.FC = () => {
   const { name, id } = useParams<RouteParams>();
   const [evaluation, setEvaluation] = useState<EvaluationData | null>(null);
   const [loading, setLoading] = useState(true);
-  const { score, currentAnswersAndScores } = useContext(AppContext);
+  const [answers, setAnswers] = useState<AnswerMap>(new Map());
 
   useEffect(() => {
+    /* Las respuestas arrancan en blanco en cada evaluacion. El outlet de Ionic no
+       desmonta la pagina al navegar, asi que sin este borron las respuestas de la
+       evaluacion anterior seguirian contando en la siguiente. */
+    setAnswers(new Map());
+    setLoading(true);
+
     getEvaluation(id)
       .then(data => {
         if (data.success) setEvaluation(data.evaluation);
@@ -49,23 +50,20 @@ const Evaluation: React.FC = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  function setFinalScore() {
-    let arrayOfCategories: string[] = [];
-    let arrayOfScore: number[] = [];
-    currentAnswersAndScores.forEach((value, key) => {
-      if (arrayOfCategories.includes(value.category)) {
-        arrayOfScore[arrayOfCategories.indexOf(value.category)] += value.value;
-      } else {
-        arrayOfCategories.push(value.category);
-        arrayOfScore[arrayOfCategories.indexOf(value.category)] = value.value;
-      }
-    });
+  const score = useMemo(() => totalScore(answers), [answers]);
 
-    sessionStorage.setItem("totalCategories", String(arrayOfCategories.length));
-    for (let i = 0; i < arrayOfCategories.length; i++) {
-      sessionStorage.setItem(`category${i}`, arrayOfCategories[i]);
-      sessionStorage.setItem(`categoryScore${i}`, String(arrayOfScore[i]));
-    }
+  function handleToggle(key: string, category: string, value: number) {
+    setAnswers(prev => toggleAnswer(prev, key, category, value));
+  }
+
+  function setFinalScore() {
+    const { categories, scores } = computeCategoryScores(answers);
+
+    sessionStorage.setItem("totalCategories", String(categories.length));
+    categories.forEach((category, i) => {
+      sessionStorage.setItem(`category${i}`, category);
+      sessionStorage.setItem(`categoryScore${i}`, String(scores[i]));
+    });
     sessionStorage.setItem("finalScore", String(score));
     sessionStorage.setItem("maxScore", String(computeMaxScore(evaluation?.questions ?? [])));
   }
@@ -94,11 +92,13 @@ const Evaluation: React.FC = () => {
                 <QuestionTestCard
                   key={index}
                   number={index + 1}
+                  questionIndex={index}
                   question={question.text}
                   category={question.category}
                   comments={undefined}
-                  options={question.options.map(o => o.text)}
-                  points={question.options.map(o => String(o.value))}
+                  options={question.options}
+                  answers={answers}
+                  onToggle={handleToggle}
                 />
               ))}
             </div>

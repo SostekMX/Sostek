@@ -1,23 +1,30 @@
 import './QuestionTestCard.css';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonListHeader, IonLabel, IonCheckbox } from '@ionic/react';
-import { useContext } from 'react';
-import AppContext from '../context/AppContext';
+import { AnswerMap } from '../utils/scoring';
+
+export interface Option {
+    text: string;
+    value: number;
+}
 
 interface props {
     number: number;
+    questionIndex: number;
     question: string | undefined;
     category: string | undefined;
     comments: string | undefined;
-    options: Array<string> | undefined;
-    points: Array<string> | undefined;
+    options: Option[];
+    answers: AnswerMap;
+    onToggle: (key: string, category: string, value: number) => void;
 }
 
 /* Question card component that requires a question, comments (could be specific instructions for particular questions),
  * options (an array of all the options, doesn't matter the size).
+ *
+ * Las casillas son controladas: lo que se ve marcado sale del mismo mapa del que sale el
+ * puntaje, asi que no pueden decir cosas distintas.
  */
-const QuestionTestCard: React.FC<props> = ({ number, question, category, comments, options, points }) => {
-    const { addScore } = useContext(AppContext);
-
+const QuestionTestCard: React.FC<props> = ({ number, questionIndex, question, category, comments, options, answers, onToggle }) => {
     return (
         <IonCard className="eval-card" style={{'--color': '#f0f0f0'} as any}>
             <IonCardHeader>
@@ -31,17 +38,27 @@ const QuestionTestCard: React.FC<props> = ({ number, question, category, comment
                             <IonLabel>{comments}</IonLabel>
                         </IonListHeader>
                     }
-                    {options && options.map((option, index) => (
-                        <IonItem key={index} class="ion-text-wrap">
-                            <IonCheckbox
-                                onIonChange={(_e: any) => addScore!(category!, `${question}${option}${points![index]}`, Number(points![index]))}
-                                class="ion-text-wrap"
-                                slot="start"
-                                value={Number(points![index])}
-                            />
-                            <IonLabel class="ion-text-wrap">{option}</IonLabel>
-                        </IonItem>
-                    ))}
+                    {options.map((option, index) => {
+                        const key = `${questionIndex}:${index}`;
+                        const checked = answers.has(key);
+                        return (
+                            <IonItem key={key} class="ion-text-wrap">
+                                <IonCheckbox
+                                    checked={checked}
+                                    /* ionChange tambien se emite cuando `checked` cambia desde
+                                       React (al vaciar el mapa, por ejemplo). Solo actuamos si
+                                       lo que pide el evento difiere de lo que ya tenemos, para
+                                       no volver a marcar lo que acabamos de limpiar. */
+                                    onIonChange={(e: any) => {
+                                        if (e.detail.checked !== checked) onToggle(key, category!, option.value);
+                                    }}
+                                    class="ion-text-wrap"
+                                    slot="start"
+                                />
+                                <IonLabel class="ion-text-wrap">{option.text}</IonLabel>
+                            </IonItem>
+                        );
+                    })}
                 </IonList>
             </IonCardContent>
         </IonCard>

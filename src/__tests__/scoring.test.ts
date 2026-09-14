@@ -1,4 +1,4 @@
-import { getFeedback, applyAnswer, computeCategoryScores, clearScoreSession } from '../utils/scoring';
+import { getFeedback, toggleAnswer, totalScore, computeCategoryScores, clearScoreSession } from '../utils/scoring';
 
 /* Maximos reales de las 6 evaluaciones sembradas, medidos con computeMaxScore
  * contra los datos que devuelve GET /evaluations/:id. Los umbrales tienen que
@@ -58,39 +58,51 @@ describe('getFeedback', () => {
   });
 });
 
-describe('applyAnswer', () => {
-  it('agrega una respuesta nueva al mapa y suma al puntaje', () => {
-    const map = new Map();
-    const result = applyAnswer(map, 0, 'Ambiental', 'opcion-A', 10);
-    expect(result.score).toBe(10);
-    expect(result.map.get('opcion-A')).toEqual({ category: 'Ambiental', value: 10 });
+describe('toggleAnswer', () => {
+  it('agrega una respuesta nueva al mapa', () => {
+    const map = toggleAnswer(new Map(), '0:1', 'Ambiental', 10);
+    expect(map.get('0:1')).toEqual({ category: 'Ambiental', value: 10 });
   });
 
-  it('quita la respuesta si ya existe (deseleccionar) y resta el valor', () => {
-    const map = new Map([['opcion-A', { category: 'Ambiental', value: 10 }]]);
-    const result = applyAnswer(map, 10, 'Ambiental', 'opcion-A', 10);
-    expect(result.score).toBe(0);
-    expect(result.map.has('opcion-A')).toBe(false);
+  it('quita la respuesta si ya existe (deseleccionar)', () => {
+    const marcada = toggleAnswer(new Map(), '0:1', 'Ambiental', 10);
+    expect(toggleAnswer(marcada, '0:1', 'Ambiental', 10).has('0:1')).toBe(false);
   });
 
   it('no muta el mapa original', () => {
-    const original = new Map([['opcion-A', { category: 'Social', value: 5 }]]);
-    applyAnswer(original, 5, 'Social', 'opcion-A', 5);
-    expect(original.has('opcion-A')).toBe(true);
+    const original = toggleAnswer(new Map(), '0:1', 'Social', 5);
+    toggleAnswer(original, '0:1', 'Social', 5);
+    expect(original.has('0:1')).toBe(true);
   });
 
-  it('acumula multiples respuestas correctamente', () => {
-    let map = new Map();
-    let score = 0;
-
-    const r1 = applyAnswer(map, score, 'Ambiental', 'A', 10);
-    map = r1.map; score = r1.score;
-
-    const r2 = applyAnswer(map, score, 'Social', 'B', 20);
-    map = r2.map; score = r2.score;
-
-    expect(score).toBe(30);
+  it('distingue opciones de preguntas distintas con el mismo indice', () => {
+    let map = toggleAnswer(new Map(), '0:0', 'Ambiental', 3);
+    map = toggleAnswer(map, '1:0', 'Social', 2);
     expect(map.size).toBe(2);
+    expect(totalScore(map)).toBe(5);
+  });
+});
+
+describe('totalScore', () => {
+  it('suma el valor de todas las respuestas marcadas', () => {
+    let map = toggleAnswer(new Map(), '0:0', 'Ambiental', 10);
+    map = toggleAnswer(map, '1:2', 'Social', 20);
+    expect(totalScore(map)).toBe(30);
+  });
+
+  it('un mapa vacio vale cero', () => {
+    expect(totalScore(new Map())).toBe(0);
+  });
+
+  /* Regresion: el puntaje se derivaba en paralelo al mapa y podian separarse.
+   * Marcar y desmarcar lo mismo tiene que volver exactamente a cero. */
+  it('marcar y desmarcar regresa al puntaje inicial', () => {
+    let map = toggleAnswer(new Map(), '0:0', 'Ambiental', 7);
+    map = toggleAnswer(map, '0:1', 'Ambiental', 3);
+    map = toggleAnswer(map, '0:0', 'Ambiental', 7);
+    map = toggleAnswer(map, '0:1', 'Ambiental', 3);
+    expect(totalScore(map)).toBe(0);
+    expect(map.size).toBe(0);
   });
 });
 

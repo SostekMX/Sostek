@@ -33,21 +33,25 @@ export function getFeedback(score: number, maxScore: number): Feedback {
   };
 }
 
-export function applyAnswer(
+/* El mapa de respuestas es la unica fuente de verdad: el puntaje se deriva de el con
+ * totalScore(), en vez de llevarse aparte. Antes se mantenian los dos en paralelo y
+ * podian desincronizarse. */
+export function toggleAnswer(
   map: AnswerMap,
-  score: number,
+  key: string,
   category: string,
-  answer: string,
   value: number
-): { score: number; map: AnswerMap } {
-  const newMap = new Map(map);
-  if (newMap.has(answer)) {
-    const prev = newMap.get(answer)!.value;
-    newMap.delete(answer);
-    return { score: score - prev, map: newMap };
-  }
-  newMap.set(answer, { category, value });
-  return { score: score + value, map: newMap };
+): AnswerMap {
+  const next = new Map(map);
+  if (next.has(key)) next.delete(key);
+  else next.set(key, { category, value });
+  return next;
+}
+
+export function totalScore(answers: AnswerMap): number {
+  let total = 0;
+  answers.forEach(({ value }) => { total += value; });
+  return total;
 }
 
 export function computeCategoryScores(answers: AnswerMap): { categories: string[]; scores: number[] } {
