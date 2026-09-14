@@ -34,7 +34,7 @@ const QuestionTestCard: React.FC<props> = ({ number, question, category, comment
                     {options && options.map((option, index) => (
                         <IonItem key={index} class="ion-text-wrap">
                             <IonCheckbox
-                                onIonChange={(_e: any) => addScore!(category!, `${question}${option}${points![index]}`, index)}
+                                onIonChange={(_e: any) => addScore!(category!, `${question}${option}${points![index]}`, Number(points![index]))}
                                 class="ion-text-wrap"
                                 slot="start"
                                 value={Number(points![index])}
