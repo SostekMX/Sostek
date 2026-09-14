@@ -34,12 +34,14 @@ interface Props {
 
 type FilterType = 'all' | 'article' | 'presentation';
 
-// Las evaluaciones miden 2 ejes (Ambiental / Económico y Social) pero los artículos
-// usan 3 categorías — este mapa traduce el eje débil de la evaluación a las
-// categorías de artículo que se deben recomendar.
+// Traduce el eje más débil de una evaluación a los términos con que se buscan los
+// artículos que la refuerzan. Las llaves son las categorías tal como vienen sembradas
+// desde las Google Sheets de las evaluaciones — el segundo eje no está normalizado y
+// aparece con las dos palabras en ambos órdenes, así que van los dos.
 const CATEGORY_RECOMMENDATIONS: Record<string, string[]> = {
-  [normalize('Ambiental')]: [normalize('Ambiental')],
-  [normalize('Económico y Social')]: [normalize('Económico'), normalize('Social')],
+  [normalize('ECOSISTEMA')]: [normalize('ambiental'), normalize('ecosistema'), normalize('medio ambiente')],
+  [normalize('Economía y sociedad')]: [normalize('economico'), normalize('social')],
+  [normalize('Sociedad y Economía')]: [normalize('economico'), normalize('social')],
 };
 
 const FILTERS: { value: FilterType; label: string }[] = [
@@ -59,9 +61,12 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
 
   const articleCards = articlesData
     ?.filter(article => {
-      const categoryNorm = normalize(article.category ?? '');
-      if (recommendedCategories) return recommendedCategories.includes(categoryNorm);
-      return categoryNorm.includes(searchNorm) || normalize(article.title ?? '').includes(searchNorm);
+      /* Se busca contra categoría, título y tags: el seed de artículos llena `tags`
+         (desde la columna keywords del CSV) y nunca `category`, así que mirar solo la
+         categoría dejaba fuera el único campo con información temática. */
+      const campos = [article.category, article.title, ...(article.tags ?? [])].map(c => normalize(c ?? ''));
+      const terminos = recommendedCategories ?? [searchNorm];
+      return terminos.some(termino => campos.some(campo => campo.includes(termino)));
     })
     .map(article => (
       <DocumentCard
