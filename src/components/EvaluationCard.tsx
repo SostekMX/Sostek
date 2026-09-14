@@ -38,7 +38,7 @@ const EVALUATION_META: Record<string, { icon: string; description: string }> = {
     },
 };
 
-function getCareerMeta(name: string, career: string) {
+function getEvaluationMeta(name: string) {
     return EVALUATION_META[name] ?? {
         icon: schoolOutline,
         description: 'Evaluación general de sostenibilidad para proyectos académicos.',
@@ -46,8 +46,10 @@ function getCareerMeta(name: string, career: string) {
 }
 
 const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, career, description, questionCount }) => {
-    const meta = getCareerMeta(name, career);
-    const displayDescription = description ?? meta.description;
+    const meta = getEvaluationMeta(name);
+    /* `||` y no `??`: el backend manda description: '' por defecto del esquema, y la
+       cadena vacia no es nullish, asi que con ?? ganaba '' y la tarjeta salia sin texto. */
+    const displayDescription = description || meta.description;
 
     return (
         <IonCard
