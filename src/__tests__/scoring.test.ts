@@ -1,29 +1,60 @@
 import { getFeedback, applyAnswer, computeCategoryScores, clearScoreSession } from '../utils/scoring';
 
+/* Maximos reales de las 6 evaluaciones sembradas, medidos con computeMaxScore
+ * contra los datos que devuelve GET /evaluations/:id. Los umbrales tienen que
+ * funcionar para todas, no solo para las de mayor escala. */
+const MAXIMOS = {
+  'Arquitectura Nivel 1': 96,
+  'Arquitectura Nivel 2': 92,
+  'Arquitectura Nivel 3': 86,
+  'Diseño Industrial Nivel 1': 100,
+  'Diseño Industrial Nivel 2': 100,
+  'Diseño Industrial Nivel 3': 92,
+};
+
 describe('getFeedback', () => {
-  it('devuelve Excelente para puntaje >= 150', () => {
-    expect(getFeedback(150).titulo).toBe('¡Excelente!');
-    expect(getFeedback(200).titulo).toBe('¡Excelente!');
+  it('devuelve Excelente desde el 85% del maximo', () => {
+    expect(getFeedback(85, 100).titulo).toBe('¡Excelente!');
+    expect(getFeedback(100, 100).titulo).toBe('¡Excelente!');
   });
 
-  it('devuelve Muy bien para puntaje 120-149', () => {
-    expect(getFeedback(120).titulo).toBe('Muy bien');
-    expect(getFeedback(149).titulo).toBe('Muy bien');
+  it('devuelve Muy bien entre 70% y 85%', () => {
+    expect(getFeedback(70, 100).titulo).toBe('Muy bien');
+    expect(getFeedback(84, 100).titulo).toBe('Muy bien');
   });
 
-  it('devuelve Buen avance para puntaje 90-119', () => {
-    expect(getFeedback(90).titulo).toBe('Buen avance');
-    expect(getFeedback(119).titulo).toBe('Buen avance');
+  it('devuelve Buen avance entre 50% y 70%', () => {
+    expect(getFeedback(50, 100).titulo).toBe('Buen avance');
+    expect(getFeedback(69, 100).titulo).toBe('Buen avance');
   });
 
-  it('devuelve En desarrollo para puntaje 50-89', () => {
-    expect(getFeedback(50).titulo).toBe('En desarrollo');
-    expect(getFeedback(89).titulo).toBe('En desarrollo');
+  it('devuelve En desarrollo entre 30% y 50%', () => {
+    expect(getFeedback(30, 100).titulo).toBe('En desarrollo');
+    expect(getFeedback(49, 100).titulo).toBe('En desarrollo');
   });
 
-  it('devuelve Por mejorar para puntaje < 50', () => {
-    expect(getFeedback(49).titulo).toBe('Por mejorar');
-    expect(getFeedback(0).titulo).toBe('Por mejorar');
+  it('devuelve Por mejorar por debajo del 30%', () => {
+    expect(getFeedback(29, 100).titulo).toBe('Por mejorar');
+    expect(getFeedback(0, 100).titulo).toBe('Por mejorar');
+  });
+
+  /* Regresion: con umbrales absolutos (150/120/90/50) el maximo de Diseno
+   * Industrial N1 y N2 era 100, asi que una evaluacion perfecta seguia
+   * cayendo en "Por mejorar" y "¡Excelente!" era inalcanzable. */
+  it('un puntaje perfecto da Excelente en las 6 evaluaciones reales', () => {
+    Object.values(MAXIMOS).forEach(max => {
+      expect(getFeedback(max, max).titulo).toBe('¡Excelente!');
+    });
+  });
+
+  it('la mitad del maximo da el mismo mensaje en las 6 evaluaciones reales', () => {
+    Object.values(MAXIMOS).forEach(max => {
+      expect(getFeedback(max / 2, max).titulo).toBe('Buen avance');
+    });
+  });
+
+  it('sin maximo conocido no revienta y cae en Por mejorar', () => {
+    expect(getFeedback(0, 0).titulo).toBe('Por mejorar');
   });
 });
 

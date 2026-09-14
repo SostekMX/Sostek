@@ -43,7 +43,7 @@ const FinalScoreEvaluation: React.FC = () => {
     }, []);
 
     const { name } = useParams<Params>();
-    const { titulo, mensaje } = getFeedback(score);
+    const { titulo, mensaje } = getFeedback(score, maxScore);
     const totalCategories = Number(sessionStorage.getItem("totalCategories"));
 
     return (

@@ -5,20 +5,25 @@ export interface Feedback {
 
 export type AnswerMap = Map<string, { category: string; value: number }>;
 
-export function getFeedback(score: number): Feedback {
-  if (score >= 150) return {
+/* El feedback va por porcentaje del maximo alcanzable, no por puntaje absoluto:
+ * cada evaluacion tiene su propia escala (de 86 a 100 puntos segun la carrera y el
+ * nivel), asi que un corte fijo premiaba o castigaba segun la evaluacion elegida. */
+export function getFeedback(score: number, maxScore: number): Feedback {
+  const pct = maxScore > 0 ? score / maxScore : 0;
+
+  if (pct >= 0.85) return {
     titulo: "¡Excelente!",
     mensaje: "Tu proyecto demuestra un alto compromiso con la sostenibilidad en todas sus dimensiones. ¡Sigue así!"
   };
-  if (score >= 120) return {
+  if (pct >= 0.70) return {
     titulo: "Muy bien",
     mensaje: "Tu proyecto tiene una base sólida de sostenibilidad. Hay algunas áreas que puedes seguir fortaleciendo para alcanzar el nivel óptimo."
   };
-  if (score >= 90) return {
+  if (pct >= 0.50) return {
     titulo: "Buen avance",
     mensaje: "Tu proyecto va por buen camino, pero aún hay aspectos de sostenibilidad que requieren mayor atención y desarrollo."
   };
-  if (score >= 50) return {
+  if (pct >= 0.30) return {
     titulo: "En desarrollo",
     mensaje: "Tu proyecto tiene potencial, pero necesita trabajar más en varias de sus dimensiones de sostenibilidad para cumplir con los estándares requeridos."
   };
