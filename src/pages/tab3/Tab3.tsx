@@ -19,6 +19,7 @@ const Tab3: React.FC = () => {
   const [currentOption, setCurrentOption] = useState<string>(TODOS);
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     const cached = localStorage.getItem("evaluations");
@@ -32,9 +33,11 @@ const Tab3: React.FC = () => {
         if (data.success) {
           setEvaluations(data.evaluations);
           localStorage.setItem("evaluations", JSON.stringify(data.evaluations));
+        } else {
+          setFailed(true);
         }
       })
-      .catch(err => console.error(err))
+      .catch(err => { console.error(err); setFailed(true); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -93,8 +96,14 @@ const Tab3: React.FC = () => {
           </div>
         )}
 
+        {/* Un fallo de red no es un filtro sin resultados: si la peticion fallo y no
+            hubo cache que mostrar, el mensaje tiene que decir eso y no culpar al filtro. */}
         {!loading && filtered.length === 0 && (
-          <p className='tab3-empty'>No hay evaluaciones para este filtro.</p>
+          <p className='tab3-empty'>
+            {failed && evaluations.length === 0
+              ? 'No pudimos cargar las evaluaciones. Revisa tu conexión e intenta de nuevo.'
+              : 'No hay evaluaciones para este filtro.'}
+          </p>
         )}
       </IonContent>
     </IonPage>
