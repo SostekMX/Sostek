@@ -514,3 +514,100 @@ completo, y el cuestionario y el resultado siguen sin tope. Está documentado en
 `INVESTIGACION_EVALUETE.md` §9. Con las descripciones ya visibles se nota además que las
 tarjetas de una misma fila terminan a distintas alturas — el `margin-top: auto` que se le
 puso a las cartas de JUEGA resolvería eso, pero es trabajo del rediseño.
+
+---
+
+## 2026-09-14 · Rediseño visual de EVALÚATE
+
+Las dos pantallas que la tanda de arreglos anterior dejó fuera de alcance a propósito
+(`INVESTIGACION_EVALUETE.md` §9). Un commit por pantalla.
+
+### `a58f1c3` — la lista se agrupa por carrera y nivel
+
+Las seis tarjetas caían en un grid plano capado a 720px mientras la fila de filtros iba a
+ancho completo: dos alineaciones distintas en la misma pantalla. Ahora hay una sección por
+carrera con los tres niveles en orden, y **la barra de acento que la tarjeta ya tenía** se
+llena a un tercio, dos tercios o completa según el nivel. Ese es todo el indicador de
+progresión: no se agregó marcado, se le puso un degradado con corte duro al div que ya
+estaba ahí.
+
+Se sumó un encabezado de página — título y bajada que explican qué son estas evaluaciones y
+que al final se recomiendan artículos para el eje más débil.
+
+**Tres decisiones que conviene tener anotadas:**
+
+- **Los filtros se eliminaron.** Con el agrupado por carrera hacían exactamente el mismo
+  trabajo, y ambas cosas se derivan de los mismos datos. Esto retira el arreglo de
+  `ecc332e` (pills derivadas en vez de una lista fija) — no se rompió, quedó de más.
+- **El nivel se parsea del nombre** (`/nivel\s*(\d+)/i`) en vez de agregar un campo al
+  modelo: el dato ya estaba en el nombre de las seis evaluaciones, y migrar el esquema, el
+  seed y la base por algo que ya está ahí no se pagaba solo.
+- **No se inventaron etiquetas de dificultad.** "Básico/Intermedio/Avanzado" habría dicho
+  algo falso: los tres niveles son etapas del proyecto —N1 analiza el sitio, N2 el diseño,
+  N3 la operación a largo plazo— no grados de dificultad. La progresión la comunican el
+  orden y la barra.
+
+También salió la carrera de la tarjeta, porque la repetía el encabezado del grupo justo
+arriba; ese lugar lo ocupa ahora el número de preguntas.
+
+**Se cerró la deuda de las alturas dispares** que quedó anotada la vez pasada: la
+descripción se acota a tres renglones y reserva esa altura desde 480px. Se resolvió por CSS
+y no con `margin-top: auto` como en JUEGA porque el contenido de `ion-card` vive detrás de
+su shadow root — `ion-card` no expone `part="native"`, así que el flex del host no llega al
+`<a>` interno que envuelve los hijos.
+
+### `dbeaf45` — el cuestionario con progreso y panel de preguntas
+
+Eran 23 preguntas de corrido a 1393px de ancho, sin referencia de avance y con un solo
+botón de enviar al final. Ahora:
+
+- **Barra de progreso pegada arriba**, con `transition: width 300ms`. Un div y dos reglas
+  de CSS: no hay ningún `IonProgressBar` ni keyframe reutilizable en el proyecto, y traer
+  el componente para re-estilizarlo salía más caro.
+- **Panel de preguntas** con un chip por pregunta, relleno cuando ya tiene al menos una
+  opción marcada, que salta a ella al hacer clic. En desktop es la columna derecha y se
+  queda fijo; en mobile se pliega detrás de un botón que **además muestra el avance**, para
+  que plegado siga diciendo algo.
+- **Botón de enviar en los dos lugares**, panel y final de las preguntas. Es el mismo
+  elemento de React pintado dos veces — un elemento es un descriptor inmutable, no hacía
+  falta un componente.
+- **Tope de 720px** a las preguntas, también abajo de 1024px, que era el problema visible
+  del screenshot.
+
+Qué cuenta como contestada se **deriva del mapa de respuestas que ya existía**: la clave es
+`${índicePregunta}:${índiceOpción}` desde `2cf6fe6`, así que basta quedarse con la primera
+mitad. Sin estado nuevo, y una pregunta cuenta una sola vez por más opciones que se marquen.
+
+**El detalle que costó medir:** el salto usa `scrollIntoView` con `scroll-margin-top` en la
+tarjeta —nativo, sin refs ni cálculo de desplazamientos— pero el margen no es la altura de
+la barra. El `IonContent` es `fullscreen`, así que su scrollport arranca **detrás** del
+toolbar de 56px; hay que librar el toolbar *y* la barra. Con 54px la pregunta aterrizaba
+tapada. Son 102px, medidos en el navegador.
+
+El nav va antes que las preguntas en el DOM para que en mobile quede arriba; en desktop la
+colocación explícita del grid lo manda a la derecha. Es el mismo recurso de `.juega-top`.
+
+### Verificación
+
+- **29/29 tests** y `tsc --noEmit` sin errores nuevos — este trabajo no toca lógica de
+  puntaje, así que la suite debía quedar intacta y quedó.
+- **El progreso cuenta preguntas, no casillas.** Marcando tres opciones de la *misma*
+  pregunta el contador se queda en 1; una opción de otra lo sube a 2; vaciando la primera
+  vuelve a 1.
+- **El salto ya no queda tapado.** Chips 17, 23 y 4: la tarjeta aterriza a 102px con la
+  barra terminando en 92.
+- **Los dos botones de enviar dan lo mismo.** Con las mismas 5 opciones, ambos llevan a
+  `/score` con `finalScore` 1 y `maxScore` 96 — y ese 1 coincide con la suma calculada a
+  mano contra la API (`[1,0,0,0,0]`).
+- **El aislamiento sigue en pie.** Tres casillas en Arquitectura N1 (3 de 23), salir a la
+  lista y entrar a N3 sin recargar: 0 de 21, barra vacía, ningún chip verde, ninguna casilla
+  marcada.
+- **Mobile a 390px** en ambas pantallas: sin scroll horizontal, panel plegado por defecto,
+  siete chips por fila, y se cierra solo al saltar.
+
+### Fuera de alcance, a propósito
+
+La pantalla de resultado `/score/:name` sigue sin tope de ancho — no era una de las dos
+pantallas pedidas. Con ella quedan abiertos los otros puntos de §9: el indicador de "ya
+contestaste esta" (necesita que `score_test` referencie la evaluación), el desglose por
+categoría en el resultado, y que esa pantalla tenga una sola salida y hacia otra pestaña.

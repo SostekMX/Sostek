@@ -398,6 +398,14 @@ muestra el mensaje de vacío.
 
 ## 9 · Observaciones de layout para el rediseño
 
+> **Resuelto en `a58f1c3` y `dbeaf45`, salvo `/score`.** `/tab3` se agrupa por carrera con
+> encabezado propio y los tres niveles en fila con la barra de acento creciente; el
+> cuestionario tiene barra de progreso, panel de preguntas y tope de 720px. Siguen
+> abiertos, por estar fuera de las dos pantallas pedidas: el ancho de `/score/:name`, el
+> indicador de "ya contestaste esta" (necesita que `score_test` referencie la evaluación),
+> el desglose por categoría en el resultado y la salida única de esa pantalla.
+
+
 Las tres pantallas fueron diseñadas para móvil y ninguna tiene una escalera de breakpoints
 como la que se construyó para JUEGA. A 1440px:
 
