@@ -1,8 +1,65 @@
+/* Mobile es el caso base y las media queries solo ensanchan, igual que .juega-page */
+.evalua-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 8px 16px 40px;
+}
+
+.evalua-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.evalua-header__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    letter-spacing: 0.6px;
+}
+
+.evalua-header__subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.55);
+    max-width: 62ch;
+}
+
+.evalua-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.evalua-group__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #80b259;
+}
+
+/* La linea ocupa lo que sobra del renglon del titulo y separa un grupo del siguiente
+   sin agregar un elemento al marcado. */
+.evalua-group__title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .evaluation-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
-    padding: 8px 16px 32px;
 }
 
 /* Skeleton EvaluationCard */
@@ -58,14 +115,38 @@
 
 @media (min-width: 480px) {
     .evaluation-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
+@media (min-width: 640px) {
+    .evalua-page {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+}
+
+/* Tres niveles, tres columnas: el grupo se lee como una progresion de izquierda a
+   derecha. A diferencia de JUEGA la pagina no se va a ancho completo — con seis
+   tarjetas, soltar el tope solo las estira. */
 @media (min-width: 768px) {
     .evaluation-grid {
-        grid-template-columns: repeat(3, 1fr);
-        max-width: 720px;
-        margin: 0 auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .evalua-page {
+        max-width: 1100px;
+        padding: 16px 40px 48px;
+        gap: 32px;
+    }
+
+    .evalua-header__title {
+        font-size: 1.85rem;
+    }
+
+    .evaluation-grid {
+        gap: 14px;
     }
 }

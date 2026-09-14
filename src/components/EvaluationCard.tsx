@@ -6,7 +6,7 @@ import './EvaluationCard.css';
 interface EvaluationCardProps {
     name: string;
     id: string;
-    career: string;
+    level?: number;
     description?: string;
     questionCount?: number;
 }
@@ -45,7 +45,7 @@ function getEvaluationMeta(name: string) {
     };
 }
 
-const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, career, description, questionCount }) => {
+const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, level, description, questionCount }) => {
     const meta = getEvaluationMeta(name);
     /* `||` y no `??`: el backend manda description: '' por defecto del esquema, y la
        cadena vacia no es nullish, asi que con ?? ganaba '' y la tarjeta salia sin texto. */
@@ -58,20 +58,26 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, career, descr
             routerDirection='forward'
             href={`/Evaluation/${name}/${id}`}
         >
-            <div className='evaluation-card__accent' />
+            {/* La misma barra de siempre, ahora llena 1/3, 2/3 o el total segun el nivel:
+                es el indicador de progresion, sin marcado nuevo. */}
+            <div
+                className='evaluation-card__accent'
+                style={{ '--accent-fill': level ? `${(level / 3) * 100}%` : '100%' } as any}
+            />
             <div className='evaluation-card__body'>
                 <div className='evaluation-card__header'>
                     <IonIcon icon={meta.icon} className='evaluation-card__icon' />
-                    <span className='evaluation-card__badge'>{career}</span>
+                    {questionCount !== undefined && (
+                        <span className='evaluation-card__badge'>
+                            <IonIcon icon={helpCircleOutline} />
+                            {questionCount} preguntas
+                        </span>
+                    )}
                 </div>
-                <p className='evaluation__title'>{name}</p>
+                {/* La carrera ya esta en el encabezado del grupo, asi que la tarjeta
+                    solo necesita decir de que nivel es. */}
+                <p className='evaluation__title'>{level ? `Nivel ${level}` : name}</p>
                 <p className='evaluation-card__desc'>{displayDescription}</p>
-                {questionCount !== undefined && (
-                    <p className='evaluation-card__meta'>
-                        <IonIcon icon={helpCircleOutline} />
-                        {questionCount} preguntas
-                    </p>
-                )}
             </div>
         </IonCard>
     );

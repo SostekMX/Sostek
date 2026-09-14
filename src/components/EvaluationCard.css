@@ -12,9 +12,15 @@
     background: rgba(255, 255, 255, 0.12) !important;
 }
 
+/* Un solo elemento hace de riel y de relleno: el corte duro del degradado marca hasta
+   donde llega el nivel. --accent-fill lo pone la tarjeta. */
 .evaluation-card__accent {
     height: 3px;
-    background: #80b259;
+    background: linear-gradient(
+        90deg,
+        #80b259 var(--accent-fill, 100%),
+        rgba(255, 255, 255, 0.09) var(--accent-fill, 100%)
+    );
 }
 
 .evaluation-card__body {
@@ -45,29 +51,43 @@
 }
 
 .evaluation-card__badge {
-    font-size: 0.64rem;
-    font-weight: 700;
-    color: #80b259;
-    text-transform: uppercase;
-    letter-spacing: 0.7px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
 }
 
+.evaluation-card__badge ion-icon {
+    font-size: 14px;
+}
+
+/* Tres renglones fijos: el titulo ya es de una linea, asi que reservar la altura de la
+   descripcion deja las tarjetas de una fila terminando parejas sin tener que estirar el
+   contenido a traves del shadow DOM de ion-card. */
 .evaluation-card__desc {
     font-size: 0.78rem;
     color: rgba(255, 255, 255, 0.5);
     line-height: 1.45;
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.evaluation-card__meta {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.74rem;
-    color: rgba(255, 255, 255, 0.4);
-    margin: 2px 0 0;
+/* Solo hace falta reservar la altura cuando hay mas de una tarjeta por fila: en una
+   sola columna el hueco de relleno se veria y no empareja nada. */
+@media (min-width: 480px) {
+    .evaluation-card__desc {
+        min-height: calc(1.45em * 3);
+    }
 }
 
-.evaluation-card__meta ion-icon {
-    font-size: 14px;
+@media (hover: hover) and (pointer: fine) {
+    .evaluation__card:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(128, 178, 89, 0.45) !important;
+    }
 }
