@@ -1,5 +1,5 @@
 import { IonContent, IonPage } from '@ionic/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getEvaluations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
@@ -13,17 +13,10 @@ interface EvaluationItem {
   question_count?: number;
 }
 
-const FILTERS = [
-  { value: 'all', label: 'Todos' },
-  { value: 'architect', label: 'Arquitectura' },
-  { value: 'design', label: 'Diseño' },
-  { value: 'others', label: 'Otros' },
-] as const;
-
-type FilterValue = typeof FILTERS[number]['value'];
+const TODOS = 'all';
 
 const Tab3: React.FC = () => {
-  const [currentOption, setCurrentOption] = useState<FilterValue>('all');
+  const [currentOption, setCurrentOption] = useState<string>(TODOS);
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,27 +38,33 @@ const Tab3: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  /* Las carreras salen de los datos, no de una lista fija: antes habia una pill "Otros"
+     que nunca tuvo nada detras, porque ninguna evaluacion usa esa carrera. */
+  const careers = useMemo(
+    () => Array.from(new Set(evaluations.map(ev => ev.career))).sort((a, b) => a.localeCompare(b)),
+    [evaluations]
+  );
+
+  /* Si la carrera activa desaparece en un refetch, la lista quedaria vacia sin
+     explicacion. */
+  const activeOption = currentOption === TODOS || careers.includes(currentOption) ? currentOption : TODOS;
+
   const filtered = [...evaluations]
     .sort((a, b) => a.name.localeCompare(b.name))
-    .filter(ev => {
-      if (currentOption === 'architect') return ev.career === 'Arquitectura';
-      if (currentOption === 'design') return ev.career === 'Diseño Industrial';
-      if (currentOption === 'others') return ev.career !== 'Arquitectura' && ev.career !== 'Diseño Industrial';
-      return true;
-    });
+    .filter(ev => activeOption === TODOS || ev.career === activeOption);
 
   return (
     <IonPage>
       <AppBarPopOver />
       <IonContent fullscreen class='app-dark-bg'>
         <div className='filter-pills'>
-          {FILTERS.map(f => (
+          {[TODOS, ...careers].map(option => (
             <button
-              key={f.value}
-              className={`filter-pill ${currentOption === f.value ? 'filter-pill--active' : ''}`}
-              onClick={() => setCurrentOption(f.value)}
+              key={option}
+              className={`filter-pill ${activeOption === option ? 'filter-pill--active' : ''}`}
+              onClick={() => setCurrentOption(option)}
             >
-              {f.label}
+              {option === TODOS ? 'Todos' : option}
             </button>
           ))}
         </div>
