@@ -61,12 +61,12 @@ const Evaluation: React.FC = () => {
       }
     });
 
-    sessionStorage.setItem("totalCategories", arrayOfCategories.length.toLocaleString());
+    sessionStorage.setItem("totalCategories", String(arrayOfCategories.length));
     for (let i = 0; i < arrayOfCategories.length; i++) {
       sessionStorage.setItem(`category${i}`, arrayOfCategories[i]);
-      sessionStorage.setItem(`categoryScore${i}`, arrayOfScore[i].toLocaleString());
+      sessionStorage.setItem(`categoryScore${i}`, String(arrayOfScore[i]));
     }
-    sessionStorage.setItem("finalScore", score.toLocaleString());
+    sessionStorage.setItem("finalScore", String(score));
     sessionStorage.setItem("maxScore", String(computeMaxScore(evaluation?.questions ?? [])));
   }
 
