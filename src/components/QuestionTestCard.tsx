@@ -8,6 +8,7 @@ export interface Option {
 }
 
 interface props {
+    id: string;
     number: number;
     questionIndex: number;
     question: string | undefined;
@@ -24,9 +25,9 @@ interface props {
  * Las casillas son controladas: lo que se ve marcado sale del mismo mapa del que sale el
  * puntaje, asi que no pueden decir cosas distintas.
  */
-const QuestionTestCard: React.FC<props> = ({ number, questionIndex, question, category, comments, options, answers, onToggle }) => {
+const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question, category, comments, options, answers, onToggle }) => {
     return (
-        <IonCard className="eval-card" style={{'--color': '#f0f0f0'} as any}>
+        <IonCard id={id} className="eval-card" style={{'--color': '#f0f0f0'} as any}>
             <IonCardHeader>
                 <IonCardTitle><span className="eval-card__number">{number}.</span> {question}</IonCardTitle>
             </IonCardHeader>

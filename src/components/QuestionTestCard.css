@@ -3,8 +3,14 @@
     --color: #f0f0f0;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
-    margin: 10px 16px;
+    /* La columna ya viene acotada por .evaluation__questions; el margen lateral aqui
+       encogeria la tarjeta una segunda vez. */
+    margin: 10px 0;
     box-shadow: none;
+    /* Al saltar desde el panel hay que librar dos cosas: el ion-content es `fullscreen`,
+       asi que su scrollport arranca detras del toolbar de 56px, y encima queda la barra
+       de progreso de 36px. Medido: la tarjeta aterriza exactamente a este valor. */
+    scroll-margin-top: 102px;
 }
 
 .eval-card ion-card-header ion-card-title {

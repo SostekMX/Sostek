@@ -3,17 +3,74 @@
     text-align: center;
     font-size: 1.15rem;
     font-weight: 700;
-    padding: 20px 20px 8px;
+    padding: 20px 20px 12px;
     font-family: 'Kiona-Regular', 'Raleway', sans-serif;
     letter-spacing: 0.4px;
 }
 
+/* AppBarPopOver es un ion-toolbar suelto ANTES del ion-content, asi que el contenedor de
+   scroll ya empieza debajo de la barra: el sticky va a top 0, no a 56px. */
+.eval-progress {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: #0d1a0d;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.eval-progress__bar {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.eval-progress__fill {
+    height: 100%;
+    border-radius: 3px;
+    background: #80b259;
+    transition: width 300ms ease-out;
+}
+
+.eval-progress__count {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.55);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.evaluation__layout {
+    padding: 14px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* El tope existe tambien abajo de 1024: el problema del screenshot era el texto de las
+   preguntas cruzando la ventana entera. */
 .evaluation__questions {
-    padding-bottom: 8px;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .evaluation__submit {
-    padding: 12px 20px 40px;
+    padding: 16px 0 0;
+}
+
+.evaluation__submit ion-button {
+    --border-radius: 100px;
+    width: 100%;
+    max-width: 340px;
+    height: 50px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
 }
 
 .evaluation__skeleton {
@@ -21,6 +78,8 @@
     flex-direction: column;
     gap: 12px;
     padding: 16px 16px 8px;
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .eval-question-skeleton {
@@ -47,11 +106,36 @@
     width: 45%;
 }
 
-.evaluation__submit ion-button {
-    --border-radius: 100px;
-    width: 100%;
-    max-width: 340px;
-    height: 50px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
+@media (min-width: 1024px) {
+    /* Colocacion explicita: el nav esta antes en el DOM por mobile, pero aqui va a la
+       derecha. Es el mismo recurso que usa .juega-top. */
+    .evaluation__layout {
+        display: grid;
+        grid-template-columns: minmax(0, 720px) 300px;
+        gap: 28px;
+        justify-content: center;
+        align-items: start;
+        padding: 20px 40px 48px;
+    }
+
+    /* Que el contador no quede pegado al borde de la ventana. */
+    .eval-progress {
+        padding-inline: 40px;
+    }
+
+    .evaluation__questions {
+        grid-column: 1;
+        grid-row: 1;
+        max-width: none;
+    }
+
+    .qnav {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .header__title {
+        font-size: 1.4rem;
+        padding-top: 28px;
+    }
 }
