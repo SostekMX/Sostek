@@ -361,3 +361,156 @@ sobrevivió al `taskkill` del host, con 5 días de uptime intactos— y el backe
 Sostek quedó levantado de nuevo y respondiendo. Para la próxima: usar
 `--host-resolver-rules` de Chrome, que redirige solo dentro de esa instancia y no
 toca ningún puerto del sistema.
+
+---
+
+## Sesión del 2026-09-14
+
+| # | Tema | Commits |
+| --- | --- | --- |
+| 1 | Levantar de nuevo el stack local | ninguno — configuración de máquina |
+| 2 | Investigación de la pestaña EVALÚATE | ninguno — solo lectura |
+| 3 | Arreglo de los 8 defectos encontrados | `f29d65b` … `10b66ec` |
+
+### 1 · El stack local, otra vez
+
+SearXNG (`odysseus-searxng-1`) tiene tomado el **8080**, así que el backend quedó en
+**8081** y `Sostek/.env` (gitignoreado) apunta ahí. Para volver a 8080 cuando el puerto
+esté libre: revertir esa línea y quitar `PORT=8081` del arranque.
+
+Dos trampas que costaron un rato y conviene no repetir:
+
+- **`VAR=valor npx ionic serve` no sirve desde bash en Windows.** El nombre llega en
+  minúsculas a `react-scripts`, cuyo filtro es case-insensitive, y lo inyecta en el bundle
+  como `react_app_backend_url`. Ese objeto sí distingue mayúsculas, así que
+  `process.env.REACT_APP_BACKEND_URL` sale `undefined` y cae al fallback `:8080`. Ahí
+  contesta SearXNG sin cabeceras CORS y la pestaña JUEGA se queda sin cartas. La URL del
+  backend va en `.env`, no en un prefijo de shell.
+- **Cortar el proceso de `ionic` no mata a `react-scripts`.** El hijo sobrevive con el
+  puerto 3000 tomado y el servidor nuevo se muda al **3001 sin fallar** — donde además el
+  backend rechaza el CORS, porque solo permite `:3000`. Al reiniciar el frontend hay que
+  matar el `node` que quedó escuchando, o al menos revisar en qué puerto terminó.
+
+### 2 · Investigación de EVALÚATE
+
+Levantamiento completo de la sección de evaluaciones (frontend, backend, modelo, flujo,
+puntajes, caché y contextos) en **`INVESTIGACION_EVALUETE.md`**, como insumo para el
+rediseño. No se tocó una línea de código.
+
+Los hallazgos que más pesan, todos verificados contra el stack corriendo:
+
+- **El puntaje suma el índice de la opción, no su valor** (`QuestionTestCard.tsx:37` pasa
+  `index` donde va el puntaje). Marcando dos opciones que valen 1 y 1, la app guardó 3.
+- **El máximo mostrado está en otra escala que el puntaje**, así que "3/96" mezcla dos
+  unidades; en Arquitectura el puntaje puede superar su propio máximo.
+- **Los umbrales de `getFeedback` (150/120/90/50) no son alcanzables** en Diseño Industrial
+  N1 y N2, cuyo techo real es 22: siempre dan "Por mejorar".
+- **Las 6 descripciones de las tarjetas nunca se muestran**: el backend manda
+  `description: ''` y `??` no cae al respaldo con cadena vacía.
+- **El puntaje se acumula entre evaluaciones**: el contexto no tiene reset.
+- El CTA "Artículos recomendados" mapea categorías que ya no existen en los datos.
+- La lista está capada a 720px mientras los filtros van a ancho completo — el mismo
+  problema de ancho que se arregló en JUEGA, más la desalineación entre ambos.
+
+El detalle, con líneas de archivo y los números medidos, está en el documento.
+
+### 3 · Los 8 arreglos de EVALÚATE
+
+Un commit por defecto, en el orden en que se aplicaron. Todo sigue en
+`feat/juega-layout-desktop`, nada pusheado.
+
+| Commit | Qué arregla |
+| --- | --- |
+| `f29d65b` | El puntaje sumaba el índice de la opción, no su valor |
+| `3ee36a3` | Los puntajes se guardaban con separador de miles |
+| `b3bbe29` | El feedback se calcula por porcentaje del máximo |
+| `62c1852` | Las descripciones de las tarjetas nunca se mostraban |
+| `2cf6fe6` | El puntaje se arrastraba entre evaluaciones |
+| `78fcde8` | El CTA de artículos recomendados no encontraba nada |
+| `ecc332e` | El filtro "Otros" siempre salía vacío |
+| `10b66ec` | Un fallo de red se mostraba como filtro sin resultados |
+
+**Dos decisiones tuyas antes de empezar**, porque cambiaban el diseño de los arreglos:
+
+- **El máximo de una evaluación es la suma de todas las opciones positivas.** Las
+  preguntas siguen siendo de selección múltiple; no se cambiaron a radio. Los máximos
+  reales quedan entre 86 y 100 según carrera y nivel.
+- **Los artículos recomendados se buscan contra `tags` además de `category` y `title`.**
+  Hizo falta porque `seedArticles.js:43-56` nunca llena `category`: mapea título, cuerpo,
+  autor, imágenes y `tags` (desde la columna `keywords` del CSV), pero no la categoría. Sin
+  eso, corregir las llaves del mapa no habría servido de nada.
+
+---
+
+#### El arreglo de fondo
+
+Los tres primeros defectos eran el mismo problema visto desde tres lados.
+`QuestionTestCard` pasaba `index` como tercer argumento de `addScore`, que es donde van los
+puntos, así que **la calificación la decidía el orden en que la Google Sheet lista las
+respuestas**. El valor correcto ya estaba ahí al lado, en `points[index]`, usado solo como
+atributo del checkbox que nadie lee.
+
+De ahí salían los otros dos: el `/96` de la pantalla de resultados mezclaba dos unidades
+(índices arriba, valores reales abajo), y los umbrales fijos de `getFeedback`
+(150/120/90/50) no correspondían a ninguna escala real. El caso más claro era Diseño
+Industrial N1 y N2, con techo 22: contestarlas perfecto seguía dando *"Por mejorar — Tu
+proyecto necesita replantear su enfoque de sostenibilidad"*.
+
+Hoy, con el valor correcto y los cortes en 85/70/50/30 % del máximo, esa misma evaluación
+contestada perfecto da **100/100 → "¡Excelente!"**.
+
+#### Por qué el aislamiento entre evaluaciones fue más que un reset
+
+El puntaje vivía en el provider raíz, que nunca se desmonta. Lo obvio era agregar un
+`reset()`, pero no alcanzaba: **el outlet de Ionic deja la página anterior montada al
+navegar** — verificado, al salir a `/tab3` y volver la casilla seguía marcada. Reiniciar el
+puntaje con casillas no controladas habría dejado casillas marcadas con puntaje 0, que es
+peor que el problema original.
+
+La salida fue que haya una sola fuente de verdad: las respuestas pasan a estado local de
+`Evaluation` y se vacían al cambiar de `id`, el puntaje se **deriva** del mapa en vez de
+llevarse en paralelo, y las casillas se vuelven controladas desde ese mismo mapa. Era esa
+doble contabilidad la que podía separarse.
+
+Un detalle que casi muerde: `ionChange` de Ionic también se emite cuando `checked` cambia
+desde React. Sin guardia, vaciar el mapa habría vuelto a marcar todas las casillas. El
+handler solo actúa si el evento pide algo distinto de lo que ya hay.
+
+De paso salieron tres deudas: `setFinalScore` reimplementaba a mano `computeCategoryScores`,
+que ya existía probada y sin usar; `QuestionTestCard` recibía textos y puntos en dos
+arreglos paralelos, que es el acoplamiento por índice que causó el error original; y
+`score`, `currentAnswersAndScores` y `addScore` salieron de `AppContext` por quedar sin uso.
+
+#### Verificación
+
+- **29/29 tests** (antes 23). Los de umbrales pasan a pares (puntaje, máximo) y se agregan
+  casos con los 6 máximos reales; los de `applyAnswer` se reescriben para `toggleAnswer` +
+  `totalScore`, con una regresión de marcar y desmarcar.
+- `npx tsc --noEmit` sin errores nuevos — siguen los dos preexistentes de `client.ts:9` y
+  `tsconfig.json`.
+- **El puntaje contra un cálculo a mano**, que es la que importa: marcando 5 opciones de
+  valor conocido en Arquitectura N1 el resultado es 5 (con el bug daba 10), desmarcarlas
+  vuelve a 0, y `maxScore` coincide con la suma calculada aparte desde la API.
+- **El aislamiento, ahora sí end-to-end.** En la investigación había quedado pendiente
+  porque el headless no navegaba entre tarjetas. El motivo: **el ancla de `ion-card` está
+  en su shadow root**, no en el documento. Clickeándola ahí la navegación ocurre. Marcando
+  3 casillas en Arquitectura N1 y entrando a N3 sin recargar, la segunda abre en 0, sin
+  casillas marcadas y con su propio `maxScore` (86).
+- **El estado de error**, en los tres casos: sin caché muestra el mensaje de red, con caché
+  muestra los datos y ningún mensaje, y con red sana las 6 tarjetas. Se bloqueó
+  `*/evaluations*` por CDP — **sin tocar ningún puerto del sistema**, que era la lección
+  pendiente de la sesión anterior con SearXNG.
+
+#### Lo que quedó sin verificar
+
+El CTA de artículos recomendados. La colección está vacía en local porque `articles.csv` no
+está versionado, así que el arreglo está verificado por código y no por ejecución. Cuando
+haya artículos sembrados hay que confirmar que el eje débil de una evaluación trae algo.
+
+#### Fuera de alcance, a propósito
+
+El rediseño de layout: la lista sigue capada a 720px mientras los filtros van a ancho
+completo, y el cuestionario y el resultado siguen sin tope. Está documentado en
+`INVESTIGACION_EVALUETE.md` §9. Con las descripciones ya visibles se nota además que las
+tarjetas de una misma fila terminan a distintas alturas — el `margin-top: auto` que se le
+puso a las cartas de JUEGA resolvería eso, pero es trabajo del rediseño.
