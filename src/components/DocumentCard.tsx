@@ -24,7 +24,7 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
             className='document-card'
             button
             routerDirection='forward'
-            routerLink={type === 'article' ? `/Documents/${id}` : `/presentation/${id}`}
+            routerLink={type === 'presentation' ? `/presentation/${id}` : `/Documents/${id}`}
         >
             <div className='document-card__image-wrapper'>
                 {imgLoading && !imgError && <div className='document-card__skeleton' />}
