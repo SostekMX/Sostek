@@ -2,6 +2,39 @@
 
 Log de trabajo. Cada entrada dice qué se tocó, qué se decidió y por qué.
 
+## Estado actual (2026-09-28)
+
+**Todo es local.** La rama `feat/juega-layout-desktop` lleva **28 commits** sobre
+`main` (`70de48f`, sin tocar) y **ninguno está pusheado** a `origin`
+(`github.com/SostekMX/Sostek`). Este resumen se commiteó junto con el conteo: es el
+commit 28.
+
+| Fecha | Commits | Qué |
+| --- | --- | --- |
+| 2026-09-07 | 11 | JUEGA (Tab2): layout de escritorio, poster del video, estado de carga y error |
+| 2026-09-14 | 12 | EVALÚATE (Tab3): 8 arreglos de puntaje y datos, rediseño de la lista y del cuestionario |
+| 2026-09-28 | 5 | APRENDE (Tab1): rediseño contra la base real de Atlas, más este resumen |
+
+| Pestaña | Estado |
+| --- | --- |
+| APRENDE (Tab1) | Rediseñada: presentaciones arriba, artículos en grid por tema |
+| JUEGA (Tab2) | Rediseñada: columnas en desktop, 48 cartas en grid |
+| EVALÚATE (Tab3) | Arreglada y rediseñada: lista por carrera y nivel, cuestionario con progreso |
+
+**Configuración de la máquina** (fuera de git): el backend corre contra **Atlas**,
+base `SostekDB`, con el connection string no-SRV (ver la sesión del 28). Lo que se haga
+en localhost **escribe en la base de producción**.
+
+**Pendiente:**
+- `Sostek/.env` dice `REACT_APP_BACKEND_URL=http://localhost:8081`, pero el backend
+  corre en 8080. Hoy funciona porque el frontend se levantó con la variable forzada; al
+  reiniciarlo con `npm start` hay que cambiar esa línea a 8080.
+- Rotar la contraseña del usuario de Atlas, que llegó a pasar por el chat, y quitarla de
+  `Sostek/.env` si quedó ahí (las `REACT_APP_*` terminan dentro del bundle del cliente).
+- La pantalla de resultado `/score/:name` sigue sin tope de ancho (ver 2026-09-14).
+- Confirmar en Chrome normal el ahorro de `preload="metadata"` del video de JUEGA.
+- Push y PR a `main`, cuando se decida.
+
 ## Sesión del 2026-09-07
 
 | # | Tema | Commits |
