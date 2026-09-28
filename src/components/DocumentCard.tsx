@@ -11,12 +11,14 @@ interface DocumentProps {
     type: string;
     imgAuthor: string | undefined;
     imgPage: string | undefined;
+    category?: string;
+    meta?: string;
     isFavorite?: boolean;
     isLoggedIn?: boolean;
     onToggleFavorite?: () => void;
 }
 
-const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type, isFavorite, isLoggedIn, onToggleFavorite }) => {
+const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type, category, meta, isFavorite, isLoggedIn, onToggleFavorite }) => {
     const [imgLoading, setImgLoading] = useState(true);
     const [imgError, setImgError] = useState(false);
     return (
@@ -50,12 +52,13 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
             </div>
             <div className='document-card__content'>
                 <span className='document-card__type-badge'>
-                    {type === 'presentation' ? 'Presentación' : 'Artículo'}
+                    {category || (type === 'presentation' ? 'Presentación' : 'Artículo')}
                 </span>
                 <p className='document-card__title'>{name}</p>
                 {description && (
                     <p className='document-card__description'>{description}</p>
                 )}
+                {meta && <p className='document-card__meta'>{meta}</p>}
             </div>
         </IonCard>
     );
