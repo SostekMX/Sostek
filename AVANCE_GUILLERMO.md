@@ -611,3 +611,76 @@ La pantalla de resultado `/score/:name` sigue sin tope de ancho — no era una d
 pantallas pedidas. Con ella quedan abiertos los otros puntos de §9: el indicador de "ya
 contestaste esta" (necesita que `score_test` referencie la evaluación), el desglose por
 categoría en el resultado, y que esa pantalla tenga una sola salida y hacia otra pestaña.
+
+---
+
+## 2026-09-28 · Base real y rediseño de APRENDE
+
+### El stack contra Atlas
+
+`Sostek-backend/.env` ahora apunta a **Atlas, base `SostekDB`**: 25 artículos, 2
+presentaciones, 6 evaluaciones y el tutorial. Dos cosas que conviene saber:
+
+- **El connection string es el largo (no-SRV).** `mongodb+srv://` fallaba con
+  `querySrv ECONNREFUSED`: Node en esta máquina resuelve DNS contra `127.0.0.1`, que
+  rechaza consultas SRV (Windows sí las resuelve). El formato estándar lista los tres
+  hosts del cluster y no necesita esa consulta. Mismo usuario y contraseña.
+- **Local ahora escribe en producción.** Registrarse o guardar favoritos en localhost
+  cambia datos reales. La línea del Mongo de Docker quedó comentada en el `.env`.
+
+### El problema
+
+Con datos reales, APRENDE era una sola columna estirada a 1900px: imagen de 180px,
+badge genérico "ARTÍCULO" y dos renglones del `body`. Las 2 presentaciones quedaban al
+final, después de 25 artículos, y no había nada que dijera qué era la página.
+
+La base traía información que la página ignoraba: `category` sí viene llena (17
+Ambiental, 4 Económico, 4 Social), `subtitle` es un resumen de 14-91 caracteres, y
+`author` está en los 25.
+
+### Commits
+
+| Commit | Qué hace |
+| --- | --- |
+| `9f5e4e7` | Dos artículos traen `type: "artículo"` con acento y abrían `/presentation/:id`. La ruta ahora pregunta por `presentation` y todo lo demás va a `/Documents` |
+| `b8b147d` | Tarjeta: categoría como badge, subtítulo en vez del cuerpo, autor al pie, alturas reservadas |
+| `9d8a9ef` | Página: encabezado, sección de presentaciones, artículos en grid con pills por tema |
+
+### Decisiones
+
+- **Mismo patrón que EVALÚATE**: encabezado de página, títulos de sección con la línea
+  de acento, tope de 1200px. Las pills "Ambos / Artículos / Presentaciones" salieron:
+  con una sección por tipo hacían el mismo trabajo.
+- **Las pills de tema salen de los datos**, ordenadas por cantidad y con su conteo. Una
+  categoría nueva en la base aparece sola. Si una búsqueda deja fuera el tema elegido,
+  se vuelve a "Todos" en vez de dejar la página en blanco.
+- **Grid `auto-fill, minmax(260px, 1fr)`**: 1 columna en mobile, 2 en tablet, 4 a 1440.
+- **En mobile las presentaciones van en fila con scroll lateral** (78% de ancho, snap).
+  Apiladas llenaban la primera pantalla entera y escondían los artículos; la tarjeta
+  que asoma a la derecha avisa que hay más.
+- **Alturas por CSS, no por flex**: título y descripción reservan dos renglones. Mismo
+  motivo que en EVALÚATE: el contenido de `ion-card` vive detrás de su shadow root.
+- **Se quitó `.ion-content-scroll-host { transition: opacity 600ms ease-in }`**: era una
+  regla global, con ease-in, que no animaba nada útil.
+- Pulido: `scale(0.97)` al presionar pills y `0.98` en tarjetas, hover tras
+  `(hover: hover) and (pointer: fine)`, imagen en `200ms ease-out` (era `0.8s ease-in`),
+  `:focus-visible` en las pills (tenían `outline: none` sin reemplazo) y
+  `prefers-reduced-motion`.
+- Sin stagger ni animaciones de entrada: las pills se cambian seguido.
+
+### Verificación
+
+- 29/29 tests, `tsc` sin errores nuevos.
+- Capturas por CDP a 1920, 1440, 1024, 768 y 390px. Sin scroll horizontal de página (lo
+  único que sale del borde a 390 es la última pill, dentro de su fila scrolleable).
+- Pills: Todos 25, Ambiental 17, Económico 4, Social 4, y cada una muestra ese número de
+  tarjetas.
+- "El impacto del cine…" (`type: "artículo"`) enlaza a `/Documents/:id`; las
+  presentaciones a `/presentation/:id`.
+- **El CTA de artículos recomendados, pendiente desde el 14**: con la búsqueda
+  `ECOSISTEMA` que pone la pantalla de resultado, APRENDE muestra los 17 artículos
+  ambientales.
+
+**Lección de medición:** Chrome headless ignora `--window-size` por debajo de ~500px de
+ancho, así que las capturas "de 390" salían cortadas. Para mobile hay que usar
+`Emulation.setDeviceMetricsOverride` por CDP (con `ws`, que ya está en `node_modules`).
