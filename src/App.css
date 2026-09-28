@@ -290,10 +290,26 @@ ion-popover ion-item {
     font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, transform 160ms ease-out;
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
     outline: none;
+}
+
+.filter-pill:active {
+    transform: scale(0.97);
+}
+
+/* outline: none de arriba dejaba sin foco visible a quien navega con teclado */
+.filter-pill:focus-visible {
+    outline: 2px solid #80b259;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filter-pill:active {
+        transform: none;
+    }
 }
 
 .filter-pill--active {

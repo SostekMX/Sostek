@@ -1,8 +1,85 @@
-.carrousel-list {
-    padding: 4px 16px 32px;
+/* Mobile es el caso base y las media queries solo ensanchan, igual que .evalua-page */
+.aprende-page {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 8px 16px 40px;
+}
+
+.aprende-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.aprende-header__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+    letter-spacing: 0.6px;
+}
+
+.aprende-header__subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.55);
+    max-width: 62ch;
+}
+
+.aprende-section {
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+.aprende-section__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #80b259;
+}
+
+.aprende-section__title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* .filter-pills trae padding lateral de 16px pensado para ir pegado al borde de la
+   pantalla; aqui ya lo pone .aprende-page. */
+.aprende-pills {
+    padding: 0;
+}
+
+.aprende-pill__count {
+    margin-left: 4px;
+    opacity: 0.6;
+    font-weight: 500;
+}
+
+/* auto-fill se adapta solo a cualquier ancho: 1 columna en mobile, 2 en tablet y 3-4
+   en desktop, sin un numero fijo por breakpoint. */
+.aprende-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.aprende-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.88rem;
+    padding: 40px 24px;
+    margin: 0;
 }
 
 /* Skeleton DocumentCard */
@@ -14,7 +91,7 @@
 }
 
 .doc-card-skeleton__image {
-    height: 180px;
+    height: 160px;
     border-radius: 0;
 }
 
@@ -41,6 +118,49 @@
     width: 60%;
 }
 
-.ion-content-scroll-host {
-    transition: opacity 600ms ease-in;
+/* En mobile las presentaciones apiladas llenaban la primera pantalla y escondian los
+   articulos. En fila con scroll lateral ocupan una sola tarjeta de alto y la que asoma
+   a la derecha avisa que hay mas. */
+@media (max-width: 639px) {
+    .aprende-grid--row {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: 78%;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        margin: 0 -16px;
+        padding: 0 16px;
+        scroll-padding: 0 16px;
+    }
+
+    .aprende-grid--row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .aprende-grid--row > * {
+        scroll-snap-align: start;
+    }
+}
+
+@media (min-width: 640px) {
+    .aprende-page {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .aprende-page {
+        padding: 16px 40px 48px;
+        gap: 36px;
+    }
+
+    .aprende-header__title {
+        font-size: 1.85rem;
+    }
+
+    .aprende-grid {
+        gap: 16px;
+    }
 }
