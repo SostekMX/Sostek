@@ -56,7 +56,10 @@ const SignUp: React.FC = () => {
                 setShowAlert(true);
             }
         }).catch(function (error) {
+            // Sin esto un backend caido o el limite de intentos (429) no decia nada.
             console.error(error);
+            setMessage(error.response?.data?.error ?? 'No pudimos conectar con el servidor. Intenta de nuevo.');
+            setShowAlert(true);
         });
     }
 
