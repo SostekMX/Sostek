@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { login } from '../../api/auth';
 import { getProfile } from '../../api/user';
+import { clearSession } from '../../utils/session';
 import '../../App.css';
 import './LogIn.css';
 
@@ -20,6 +21,7 @@ const LogIn: React.FC = () => {
     function loginUser() {
         login(email, password ?? '').then(function (data) {
             if (data.success) {
+                clearSession();
                 sessionStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email);
                 sessionStorage.setItem('token', data.token);

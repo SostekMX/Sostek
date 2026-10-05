@@ -11,6 +11,7 @@ import '../../App.css';
 import './SignUp.css';
 import { useEffect, useRef, useState } from 'react';
 import { signup } from '../../api/auth';
+import { clearSession } from '../../utils/session';
 
 const SignUp: React.FC = () => {
     const [email, setEmail] = useState<string | null>('');
@@ -47,6 +48,7 @@ const SignUp: React.FC = () => {
             birth_date: birthDate, occupation, gender
         }).then(function (data) {
             if (data.success) {
+                clearSession();
                 sessionStorage.setItem('login', 'true');
                 localStorage.setItem('user_email', email as string);
                 sessionStorage.setItem('token', data.token);

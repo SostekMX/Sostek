@@ -4,6 +4,7 @@ import { menuOutline, heart, personCircle, logOut } from 'ionicons/icons';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { getArticle } from '../../api/content';
+import { clearSession } from '../../utils/session';
 import './Documents.css';
 
 interface Article {
@@ -43,8 +44,7 @@ const Documents: React.FC = () => {
   }, [id]);
 
   function logOutUser() {
-    sessionStorage.setItem('login', 'false');
-    sessionStorage.removeItem('token');
+    clearSession();
     history.replace('/');
   }
 

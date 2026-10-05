@@ -4,6 +4,7 @@ import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLab
 import { personCircle, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
 import { useHistory, useLocation } from "react-router-dom";
 import AppContext from '../../context/AppContext';
+import { clearSession } from '../../utils/session';
 
 export const AppBarPopOver: React.FC = () => {
     const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
@@ -63,8 +64,7 @@ export const AppBarPopOver: React.FC = () => {
     }
 
     function logOutUser() {
-        sessionStorage.setItem("login", 'false');
-        sessionStorage.removeItem("token");
+        clearSession();
         history.replace('/');
     }
 

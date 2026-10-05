@@ -6,6 +6,7 @@ import { menuOutline, heart, personCircle, logOut } from 'ionicons/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Lazy } from 'swiper';
 import { getPresentations } from '../../api/content';
+import { clearSession } from '../../utils/session';
 import './Presentation.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -38,8 +39,7 @@ const Presentation: React.FC = () => {
   }, [driveId]);
 
   function logOutUser() {
-    sessionStorage.setItem('login', 'false');
-    sessionStorage.removeItem('token');
+    clearSession();
     history.replace('/');
   }
 

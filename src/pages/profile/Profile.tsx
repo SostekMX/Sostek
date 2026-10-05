@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { getProfile, editProfile, uploadAvatar, deleteAccount } from '../../api/user';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
+import { clearSession } from '../../utils/session';
 import './Profile.css';
 
 const Profile: React.FC = () => {
@@ -108,7 +109,10 @@ const Profile: React.FC = () => {
 
     function deleteUser() {
         deleteAccount().then(() => {
+            // localStorage.clear() sola dejaba login y token en sessionStorage: la cuenta
+            // borrada seguia "con sesion" (tab bar, corazones, peticiones con su token).
             localStorage.clear();
+            clearSession();
             history.replace('/');
         }).catch(err => console.error(err));
     }
