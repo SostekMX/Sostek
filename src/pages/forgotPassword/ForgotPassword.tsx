@@ -50,7 +50,7 @@ const ForgotPassword: React.FC = () => {
                             <p className='login-subtitle'>
                                 {sent
                                     ? 'Revisa tu bandeja de entrada y sigue el link que te enviamos.'
-                                    : 'Ingresa tu correo y te enviaremos un link para restablecer tu contrase&#241;a.'}
+                                    : 'Ingresa tu correo y te enviaremos un link para restablecer tu contraseña.'}
                             </p>
                             {!sent && (
                                 <>
@@ -68,7 +68,7 @@ const ForgotPassword: React.FC = () => {
                                         </div>
                                     </div>
                                     <IonButton expand='block' color='primary' onClick={sendResetToken} disabled={loading} className='login-btn-main'>
-                                        {loading ? 'Enviando...' : 'Enviar link de recuperaci&#243;n'}
+                                        {loading ? 'Enviando...' : 'Enviar link de recuperación'}
                                     </IonButton>
                                 </>
                             )}

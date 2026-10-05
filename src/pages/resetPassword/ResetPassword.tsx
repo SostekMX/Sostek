@@ -102,9 +102,9 @@ const ResetPassword: React.FC = () => {
                     isOpen={showAlert && success}
                     onDidDismiss={() => { setShowAlert(false); history.replace('/'); }}
                     cssClass="dark-alert"
-                    header="Contrasena actualizada"
-                    message="Ya puedes iniciar sesion con tu nueva contrasena."
-                    buttons={[{ text: 'Iniciar sesion', handler: () => history.replace('/') }]}
+                    header="Contraseña actualizada"
+                    message="Ya puedes iniciar sesión con tu nueva contraseña."
+                    buttons={[{ text: 'Iniciar sesión', handler: () => history.replace('/') }]}
                 />
             </IonContent>
         </IonPage>
