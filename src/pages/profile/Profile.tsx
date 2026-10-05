@@ -91,9 +91,15 @@ const Profile: React.FC = () => {
                 setAvatar(url);
                 localStorage.setItem('avatar', url);
                 localStorage.setItem('avatar_position', JSON.stringify(cropPos));
+            } else {
+                // "La imagen no debe superar 5MB", "Formato no valido"...: antes se perdian.
+                setMessage(data.error);
+                setShowAlert(true);
             }
         } catch (err) {
             console.error(err);
+            setMessage('No se pudo subir la foto. Intenta de nuevo.');
+            setShowAlert(true);
         } finally {
             setAvatarUploading(false);
             setCropMode(false);
@@ -125,7 +131,8 @@ const Profile: React.FC = () => {
             if (data.success) {
                 history.replace('/tab1');
             } else {
-                setMessage(data.message);
+                // Los validadores responden con `error`; solo el fallo de la base usa `message`.
+                setMessage(data.error ?? data.message);
                 setShowAlert(true);
             }
         }).catch(err => console.error(err));
