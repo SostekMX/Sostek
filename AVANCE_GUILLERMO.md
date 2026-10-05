@@ -2,37 +2,38 @@
 
 Log de trabajo. Cada entrada dice qué se tocó, qué se decidió y por qué.
 
-## Estado actual (2026-09-28)
+## Estado actual (2026-10-05)
 
-**Todo es local.** La rama `feat/juega-layout-desktop` lleva **28 commits** sobre
+**Todo es local.** La rama `feat/juega-layout-desktop` lleva **40 commits** sobre
 `main` (`70de48f`, sin tocar) y **ninguno está pusheado** a `origin`
 (`github.com/SostekMX/Sostek`). Este resumen se commiteó junto con el conteo: es el
-commit 28.
+commit 40.
 
 | Fecha | Commits | Qué |
 | --- | --- | --- |
 | 2026-09-07 | 11 | JUEGA (Tab2): layout de escritorio, poster del video, estado de carga y error |
 | 2026-09-14 | 12 | EVALÚATE (Tab3): 8 arreglos de puntaje y datos, rediseño de la lista y del cuestionario |
 | 2026-09-28 | 5 | APRENDE (Tab1): rediseño contra la base real de Atlas, más este resumen |
+| 2026-10-05 | 12 | Auditoría general: 11 arreglos (puntaje, sesión, favoritos, textos, estados de error) y este log |
 
 | Pestaña | Estado |
 | --- | --- |
 | APRENDE (Tab1) | Rediseñada: presentaciones arriba, artículos en grid por tema |
 | JUEGA (Tab2) | Rediseñada: columnas en desktop, 48 cartas en grid |
-| EVALÚATE (Tab3) | Arreglada y rediseñada: lista por carrera y nivel, cuestionario con progreso |
+| EVALÚATE (Tab3) | Arreglada y rediseñada: lista por carrera y nivel, cuestionario con progreso, resultado acotado |
 
 **Configuración de la máquina** (fuera de git): el backend corre contra **Atlas**,
 base `SostekDB`, con el connection string no-SRV (ver la sesión del 28). Lo que se haga
 en localhost **escribe en la base de producción**.
 
 **Pendiente:**
-- `Sostek/.env` dice `REACT_APP_BACKEND_URL=http://localhost:8081`, pero el backend
-  corre en 8080. Hoy funciona porque el frontend se levantó con la variable forzada; al
-  reiniciarlo con `npm start` hay que cambiar esa línea a 8080.
-- Rotar la contraseña del usuario de Atlas, que llegó a pasar por el chat, y quitarla de
-  `Sostek/.env` si quedó ahí (las `REACT_APP_*` terminan dentro del bundle del cliente).
-- La pantalla de resultado `/score/:name` sigue sin tope de ancho (ver 2026-09-14).
+- Rotar la contraseña del usuario de Atlas, que llegó a pasar por el chat. Revisado el
+  2026-10-05: **no está en `Sostek/.env`** (solo tiene la URL del backend); vive en
+  `Sostek-backend/.env`, que no se versiona.
 - Confirmar en Chrome normal el ahorro de `preload="metadata"` del video de JUEGA.
+- Probar con una cuenta de prueba (no la de nadie real, porque es producción) los
+  arreglos que escriben: guardar puntaje una sola vez, favoritos, cerrar sesión y
+  eliminar cuenta. Están verificados por código y prueba unitaria, no en el navegador.
 - Push y PR a `main`, cuando se decida.
 
 ## Sesión del 2026-09-07
@@ -717,3 +718,85 @@ Ambiental, 4 Económico, 4 Social), `subtitle` es un resumen de 14-91 caracteres
 **Lección de medición:** Chrome headless ignora `--window-size` por debajo de ~500px de
 ancho, así que las capturas "de 390" salían cortadas. Para mobile hay que usar
 `Emulation.setDeviceMetricsOverride` por CDP (con `ws`, que ya está en `node_modules`).
+
+---
+
+## 2026-10-05 · Auditoría general y arreglo de bugs
+
+Se leyó todo `src/` (≈6,500 líneas) y los handlers del backend que usa el frontend, y se
+corrió todo contra Atlas. Salieron 11 defectos; se arreglaron todos, un commit cada uno.
+
+### Antes de empezar: el stack
+
+- **El 8080 sigue siendo de SearXNG** y el **3000 lo ocupa otro proyecto** de la máquina
+  (una app Next con Supabase). `Sostek/.env` apuntando a **8081 es correcto**: el
+  pendiente anterior que pedía volver a 8080 estaba mal y se quitó.
+- Para levantar todo sin chocar: backend con `PORT=8081 CORS_ORIGIN=http://localhost:3100`
+  y frontend con `PORT=3100 npx react-scripts start`. **Ojo: el backend lee
+  `CORS_ORIGIN`, no `FRONTEND_URL`**. Con la segunda, el navegador recibe todo bloqueado
+  por CORS y cada pantalla cae en su estado de error. Costó una corrida de verificación.
+
+### El hallazgo que más pesa: los ejes en Atlas no son los del seed local
+
+En Atlas las evaluaciones tienen dos ejes, **"Ambiental"** y **"Económico y Social"**, y
+sus máximos no son parejos:
+
+| Evaluación | Ambiental (preg. / máx) | Económico y Social (preg. / máx) |
+| --- | --- | --- |
+| Arquitectura N1 | 12 / 52 | 11 / 44 |
+| Arquitectura N2 | 13 / 49 | 11 / 43 |
+| Arquitectura N3 | 12 / 49 | 9 / 37 |
+| Diseño Industrial N1 | 8 / 36 | 14 / 64 |
+| Diseño Industrial N2 | 9 / 40 | 13 / 60 |
+| Diseño Industrial N3 | 10 / 38 | 15 / 54 |
+
+De ahí salen los dos primeros arreglos. El CTA de artículos recomendados se había
+verificado el 28 con la búsqueda `ECOSISTEMA`, que es el nombre del **seed local**; con el
+nombre real del segundo eje la página quedaba vacía.
+
+### Commits
+
+| Commit | Qué arregla |
+| --- | --- |
+| `5bf1415` | El eje más débil se elegía comparando **sumas** entre ejes de máximos distintos (en DI N1, 36 contra 64), y un eje sin ninguna casilla marcada ni siquiera competía. Ahora va por porcentaje del máximo de cada eje, y los ejes salen de las preguntas, no de las respuestas |
+| `ee065ad` | El CTA con "Económico y Social" llevaba a APRENDE con **0 artículos**; ahora trae 8 |
+| `e8de95c` | **La pantalla de resultado pisaba el puntaje guardado con 0.** `score_test` es un solo número que el backend sobrescribe, y se guardaba en cada visita: al volver con "atrás" tras el CTA (que limpia la sesión) mandaba 0. Ahora se guarda una vez por envío, y sin resultado la página lo dice |
+| `3335024` | Tope de 560px a la pantalla de resultado (pendiente desde el 14) |
+| `ec403ec` | "Olvidé mi contraseña" mostraba `contrase&#241;a` y `recuperaci&#243;n` tal cual: entidades HTML dentro de strings de JS. Más acentos faltantes en la alerta de restablecer |
+| `f242fb8` | Login y registro no decían nada si el backend estaba caído o si saltaba el límite de 10 intentos (429) |
+| `052f44b` | **Eliminar cuenta dejaba la sesión viva** (token y `login` en sessionStorage). El logout, copiado en 3 lugares, no borraba el avatar: quien se registraba después en el mismo navegador veía la foto del anterior. Se juntó todo en `utils/session.ts` |
+| `29cee22` | El corazón de favoritos se llenaba aunque el backend respondiera `success: false` (token vencido). Los favoritos no se recargaban al cambiar de cuenta (Ionic deja la página montada). Favoritos ignoraba la portada de las presentaciones |
+| `09b758e` | Perfil: el toast de error salía vacío (leía `message`, los validadores mandan `error`) y una foto de más de 5MB fallaba en silencio |
+| `f08b013` | Artículo, presentación y evaluación quedaban en blanco si fallaba la petición o el id no existía; además, al cambiar de id un fallo dejaba visible el contenido anterior |
+| `5fcd9d6` | El error de TypeScript preexistente de `client.ts:9` |
+
+### Decisiones
+
+- **El `ignoreDeprecations` de `tsconfig.json` se dejó.** `tsc` 4.8 (el instalado) lo marca
+  como opción desconocida, pero lo más probable es que lo haya puesto alguien con el
+  TypeScript 6 del editor, que sin él se queja de `moduleResolution: node`. No rompe el
+  build. Es la única línea que queda en `npx tsc --noEmit`.
+- **No se tocó el backend.** Responde 200 con `success: false` para casi todo; lo
+  correcto sería usar códigos HTTP, pero eso es otro repo y otra decisión. El frontend
+  ahora revisa `success` donde no lo hacía.
+- **Lo que se verificó en navegador no escribe en la base.** Todo fue sin login: con Atlas
+  como base local, iniciar sesión y guardar habría escrito en producción.
+
+### Verificación
+
+- **32/32 tests** (antes 29). Nuevos: `weakestCategory` con el caso real de DI N1 y el
+  del eje sin respuestas, y `finalScore.test.tsx`, que monta la pantalla de resultado y
+  comprueba que guarda una sola vez y que sin sesión no guarda. **Las dos pruebas nuevas
+  de resultado fallan con el código anterior** (se corrieron contra él).
+- `npx tsc --noEmit`: solo queda el aviso de `ignoreDeprecations`.
+- `CI=true npx react-scripts build` (como lo corre Vercel): compila sin warnings.
+- **10 escenarios en Chrome headless por CDP**, todos OK: textos de recuperar contraseña,
+  resultado sin sesión, resultado a 1920px (tarjeta de 520px), CTA "Económico y Social"
+  con 8 tarjetas, los tres estados de error, y el flujo completo de Arquitectura N1
+  marcando todas las opciones positivas de Ambiental: **52/96, "Buen avance", eje más
+  débil "Económico y Social"**. Con el código anterior ese mismo flujo recomendaba
+  "Ambiental", el único eje con casillas marcadas.
+
+**Lección de medición:** `click()` sobre el host de `ion-button` con `href` no navega:
+el ancla está en su shadow root, igual que en `ion-card` (sesión del 14). Hay que
+clickear `shadowRoot.querySelector('a')`.
