@@ -54,29 +54,39 @@ export function totalScore(answers: AnswerMap): number {
   return total;
 }
 
-export function computeCategoryScores(answers: AnswerMap): { categories: string[]; scores: number[] } {
-  const categories: string[] = [];
-  const scores: number[] = [];
-  answers.forEach(({ category, value }) => {
-    const idx = categories.indexOf(category);
-    if (idx !== -1) {
-      scores[idx] += value;
-    } else {
-      categories.push(category);
-      scores[categories.length - 1] = value;
+/* El eje mas debil se compara por porcentaje del maximo de cada eje, no por puntos: en
+ * Diseno Industrial N1 "Ambiental" vale 36 y "Economico y Social" 64, asi que comparando
+ * sumas el primero salia como el mas debil casi siempre. Los ejes salen de las preguntas
+ * y no de las respuestas, para que un eje sin ninguna casilla marcada cuente con 0%. */
+export function weakestCategory(
+  answers: AnswerMap,
+  questions: { category: string; options: { value: number }[] }[]
+): string {
+  const maxByCategory = new Map<string, number>();
+  questions.forEach(q =>
+    maxByCategory.set(q.category, (maxByCategory.get(q.category) ?? 0) + computeMaxScore([q]))
+  );
+  const scoreByCategory = new Map<string, number>();
+  answers.forEach(({ category, value }) =>
+    scoreByCategory.set(category, (scoreByCategory.get(category) ?? 0) + value)
+  );
+
+  let weakest = '';
+  let lowest = Infinity;
+  maxByCategory.forEach((max, category) => {
+    const pct = max > 0 ? (scoreByCategory.get(category) ?? 0) / max : 1;
+    if (pct < lowest) {
+      lowest = pct;
+      weakest = category;
     }
   });
-  return { categories, scores };
+  return weakest;
 }
 
-export function clearScoreSession(totalCategories: number) {
-  for (let i = 0; i < totalCategories; i++) {
-    sessionStorage.removeItem(`categoryScore${i}`);
-    sessionStorage.removeItem(`category${i}`);
-  }
+export function clearScoreSession() {
   sessionStorage.removeItem("finalScore");
-  sessionStorage.removeItem("totalCategories");
   sessionStorage.removeItem("maxScore");
+  sessionStorage.removeItem("weakestCategory");
 }
 
 export function computeMaxScore(questions: { options: { value: number }[] }[]): number {

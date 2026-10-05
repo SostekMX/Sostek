@@ -1,4 +1,4 @@
-import { getFeedback, toggleAnswer, totalScore, computeCategoryScores, clearScoreSession } from '../utils/scoring';
+import { getFeedback, toggleAnswer, totalScore, weakestCategory, clearScoreSession } from '../utils/scoring';
 
 /* Maximos reales de las 6 evaluaciones sembradas, medidos con computeMaxScore
  * contra los datos que devuelve GET /evaluations/:id. Los umbrales tienen que
@@ -106,43 +106,46 @@ describe('totalScore', () => {
   });
 });
 
-describe('computeCategoryScores', () => {
-  it('agrupa respuestas por categoria y suma sus valores', () => {
+/* Dos ejes con el mismo tamano que Diseno Industrial N1: Ambiental vale 36 y
+ * Economico y Social 64 (una pregunta por eje para no inflar el fixture). */
+const PREGUNTAS = [
+  { category: 'Ambiental', options: [{ value: 36 }, { value: 0 }] },
+  { category: 'Económico y Social', options: [{ value: 64 }, { value: -2 }] },
+];
+
+describe('weakestCategory', () => {
+  /* Regresion: se comparaban sumas, asi que 20 de 36 (56%) salia mas debil que
+   * 30 de 64 (47%) solo porque el eje Ambiental tiene menos puntos en juego. */
+  it('compara por porcentaje del maximo de cada eje, no por puntos', () => {
     const answers = new Map([
-      ['A', { category: 'Ambiental', value: 10 }],
-      ['B', { category: 'Social', value: 20 }],
-      ['C', { category: 'Ambiental', value: 15 }],
+      ['0:0', { category: 'Ambiental', value: 20 }],
+      ['1:0', { category: 'Económico y Social', value: 30 }],
     ]);
-    const { categories, scores } = computeCategoryScores(answers);
-    const ambIdx = categories.indexOf('Ambiental');
-    const socIdx = categories.indexOf('Social');
-    expect(scores[ambIdx]).toBe(25);
-    expect(scores[socIdx]).toBe(20);
+    expect(weakestCategory(answers, PREGUNTAS)).toBe('Económico y Social');
   });
 
-  it('devuelve arreglos vacios para un mapa vacio', () => {
-    const { categories, scores } = computeCategoryScores(new Map());
-    expect(categories).toHaveLength(0);
-    expect(scores).toHaveLength(0);
+  /* Regresion: los ejes salian de las respuestas, asi que uno sin ninguna casilla
+   * marcada ni siquiera competia y nunca se recomendaba. */
+  it('un eje sin respuestas cuenta con 0% y es el mas debil', () => {
+    const answers = new Map([['1:0', { category: 'Económico y Social', value: 1 }]]);
+    expect(weakestCategory(answers, PREGUNTAS)).toBe('Ambiental');
+  });
+
+  it('sin preguntas devuelve cadena vacia', () => {
+    expect(weakestCategory(new Map(), [])).toBe('');
   });
 });
 
 describe('clearScoreSession', () => {
   it('elimina las claves de sessionStorage de la evaluacion', () => {
     sessionStorage.setItem('finalScore', '100');
-    sessionStorage.setItem('totalCategories', '2');
-    sessionStorage.setItem('category0', 'Ambiental');
-    sessionStorage.setItem('categoryScore0', '60');
-    sessionStorage.setItem('category1', 'Social');
-    sessionStorage.setItem('categoryScore1', '40');
+    sessionStorage.setItem('maxScore', '96');
+    sessionStorage.setItem('weakestCategory', 'Ambiental');
 
-    clearScoreSession(2);
+    clearScoreSession();
 
     expect(sessionStorage.getItem('finalScore')).toBeNull();
-    expect(sessionStorage.getItem('totalCategories')).toBeNull();
-    expect(sessionStorage.getItem('category0')).toBeNull();
-    expect(sessionStorage.getItem('categoryScore0')).toBeNull();
-    expect(sessionStorage.getItem('category1')).toBeNull();
-    expect(sessionStorage.getItem('categoryScore1')).toBeNull();
+    expect(sessionStorage.getItem('maxScore')).toBeNull();
+    expect(sessionStorage.getItem('weakestCategory')).toBeNull();
   });
 });

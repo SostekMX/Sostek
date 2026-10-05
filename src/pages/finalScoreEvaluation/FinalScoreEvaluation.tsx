@@ -21,18 +21,7 @@ const FinalScoreEvaluation: React.FC = () => {
         const finalScore = Number(sessionStorage.getItem("finalScore"));
         setScore(finalScore);
         setMaxScore(Number(sessionStorage.getItem("maxScore")));
-
-        const totalCategories = Number(sessionStorage.getItem("totalCategories"));
-        let lowPunctuation = Infinity;
-        let lowCategory = "";
-        for (let i = 0; i < totalCategories; i++) {
-            const categoryScore = Number(sessionStorage.getItem(`categoryScore${i}`));
-            if (categoryScore < lowPunctuation) {
-                lowPunctuation = categoryScore;
-                lowCategory = sessionStorage.getItem(`category${i}`) ?? "";
-            }
-        }
-        setWeakestCategory(lowCategory);
+        setWeakestCategory(sessionStorage.getItem("weakestCategory") ?? "");
 
         const token = sessionStorage.getItem('token');
         if (token) {
@@ -44,7 +33,6 @@ const FinalScoreEvaluation: React.FC = () => {
 
     const { name } = useParams<Params>();
     const { titulo, mensaje } = getFeedback(score, maxScore);
-    const totalCategories = Number(sessionStorage.getItem("totalCategories"));
 
     return (
         <IonPage>
@@ -79,7 +67,7 @@ const FinalScoreEvaluation: React.FC = () => {
                                     className="finalScoreEvaluation__button"
                                     onClick={() => {
                                         changeSearch!(weakestCategory);
-                                        clearScoreSession(totalCategories);
+                                        clearScoreSession();
                                     }}
                                 >
                                     Art&iacute;culos recomendados

@@ -10,7 +10,7 @@ import { getEvaluation } from '../../api/content';
 import AppBarPopOver from "../../components/layout/AppBarPopOver";
 import QuestionNav from "../../components/QuestionNav";
 import QuestionTestCard, { Option } from "../../components/QuestionTestCard";
-import { AnswerMap, computeCategoryScores, computeMaxScore, toggleAnswer, totalScore } from "../../utils/scoring";
+import { AnswerMap, computeMaxScore, toggleAnswer, totalScore, weakestCategory } from "../../utils/scoring";
 import "./Evaluation.css";
 
 interface Question {
@@ -74,15 +74,10 @@ const Evaluation: React.FC = () => {
   }
 
   function setFinalScore() {
-    const { categories, scores } = computeCategoryScores(answers);
-
-    sessionStorage.setItem("totalCategories", String(categories.length));
-    categories.forEach((category, i) => {
-      sessionStorage.setItem(`category${i}`, category);
-      sessionStorage.setItem(`categoryScore${i}`, String(scores[i]));
-    });
+    const questions = evaluation?.questions ?? [];
     sessionStorage.setItem("finalScore", String(score));
-    sessionStorage.setItem("maxScore", String(computeMaxScore(evaluation?.questions ?? [])));
+    sessionStorage.setItem("maxScore", String(computeMaxScore(questions)));
+    sessionStorage.setItem("weakestCategory", weakestCategory(answers, questions));
   }
 
   /* El mismo elemento se renderiza en el panel y al final de las preguntas: un elemento
