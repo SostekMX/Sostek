@@ -35,6 +35,9 @@ const Documents: React.FC = () => {
   const isUserLogged = sessionStorage.getItem('login') === 'true';
 
   useEffect(() => {
+    // Ionic reusa la pagina entre ids: sin este reinicio un fallo dejaba el articulo anterior.
+    setArticle(null);
+    setLoadingData(true);
     getArticle(id)
       .then(data => {
         if (data.success) setArticle(data.article);
@@ -87,6 +90,12 @@ const Documents: React.FC = () => {
               <div className="doc-skeleton__line doc-skeleton__line--mid shimmer" />
             </div>
           </div>
+        )}
+
+        {!loadingData && !article && (
+          <p className="page-message">
+            No pudimos cargar este art&iacute;culo. Puede que ya no est&eacute; publicado o que no haya conexi&oacute;n.
+          </p>
         )}
 
         {!loadingData && article && (

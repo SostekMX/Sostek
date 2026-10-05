@@ -41,6 +41,7 @@ const Evaluation: React.FC = () => {
        desmonta la pagina al navegar, asi que sin este borron las respuestas de la
        evaluacion anterior seguirian contando en la siguiente. */
     setAnswers(new Map());
+    setEvaluation(null);
     setLoading(true);
 
     getEvaluation(id)
@@ -110,7 +111,12 @@ const Evaluation: React.FC = () => {
             ))}
           </div>
         )}
-        {!loading && (
+        {!loading && !evaluation && (
+          <p className="page-message">
+            No pudimos cargar esta evaluaci&oacute;n. Revisa tu conexi&oacute;n e intenta de nuevo.
+          </p>
+        )}
+        {!loading && evaluation && (
           <>
             <h1 className="header__title">{name}</h1>
 

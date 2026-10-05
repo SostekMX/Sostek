@@ -27,6 +27,8 @@ const Presentation: React.FC = () => {
   const isUserLogged = sessionStorage.getItem('login') === 'true';
 
   useEffect(() => {
+    setSlides([]);
+    setLoading(true);
     getPresentations()
       .then(data => {
         if (data.success) {
@@ -66,7 +68,12 @@ const Presentation: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen class='bg-img'>
-        {!loading && (
+        {!loading && slides.length === 0 && (
+          <p className="page-message">
+            No pudimos cargar esta presentaci&oacute;n. Puede que ya no est&eacute; publicada o que no haya conexi&oacute;n.
+          </p>
+        )}
+        {!loading && slides.length > 0 && (
           <Swiper
             key={driveId}
             className='mySwiper'

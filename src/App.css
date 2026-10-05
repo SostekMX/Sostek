@@ -235,6 +235,17 @@ ion-popover ion-item {
     100% { background-position: -200% 0; }
 }
 
+/* Mensaje de pagina cuando una peticion falla o el contenido no existe: mismo tono que
+   los vacios de APRENDE y EVALUATE. */
+.page-message {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 48px 24px;
+    margin: 0;
+}
+
 .shimmer {
     background: linear-gradient(
         90deg,
