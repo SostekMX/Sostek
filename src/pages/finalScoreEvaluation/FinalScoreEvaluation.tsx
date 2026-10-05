@@ -12,26 +12,57 @@ interface Params {
 }
 
 const FinalScoreEvaluation: React.FC = () => {
-    const [score, setScore] = useState<number>(0);
-    const [maxScore, setMaxScore] = useState<number>(0);
-    const [weakestCategory, setWeakestCategory] = useState<string>("");
+    /* Se lee de sessionStorage en el primer render y no en un efecto, para no pintar un
+       "0 puntos / Por mejorar" falso mientras tanto. null = no hay resultado que mostrar. */
+    const [result] = useState(() => {
+        const stored = sessionStorage.getItem("finalScore");
+        if (stored === null) return null;
+        return {
+            score: Number(stored),
+            maxScore: Number(sessionStorage.getItem("maxScore")),
+            weakestCategory: sessionStorage.getItem("weakestCategory") ?? "",
+        };
+    });
     const { changeSearch } = useContext(AppContext);
 
     useEffect(() => {
-        const finalScore = Number(sessionStorage.getItem("finalScore"));
-        setScore(finalScore);
-        setMaxScore(Number(sessionStorage.getItem("maxScore")));
-        setWeakestCategory(sessionStorage.getItem("weakestCategory") ?? "");
-
-        const token = sessionStorage.getItem('token');
-        if (token) {
-            saveScore(finalScore).catch((error) => {
+        /* score_test es un solo numero que se sobrescribe. Guardar en cada visita pisaba el
+           resultado real con un 0 al volver con "atras" despues del CTA (que limpia la
+           sesion) y lo repetia en cada recarga. Se guarda una vez por envio. */
+        const pending = sessionStorage.getItem("scorePending");
+        sessionStorage.removeItem("scorePending");
+        if (result && pending && sessionStorage.getItem('token')) {
+            saveScore(result.score).catch((error) => {
                 console.error('Error al guardar puntaje:', error);
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { name } = useParams<Params>();
+
+    if (!result) {
+        return (
+            <IonPage>
+                <AppBarPopOver />
+                <IonContent fullscreen class="app-dark-bg">
+                    <div className="score-page">
+                        <div className="score-card">
+                            <p className="score-card__titulo">No hay un resultado que mostrar</p>
+                            <p className="score-card__mensaje">
+                                Contesta una evaluaci&oacute;n para ver aqu&iacute; tu puntaje.
+                            </p>
+                            <IonButton href="/tab3" color="primary" className="finalScoreEvaluation__button">
+                                Ir a Eval&uacute;ate
+                            </IonButton>
+                        </div>
+                    </div>
+                </IonContent>
+            </IonPage>
+        );
+    }
+
+    const { score, maxScore, weakestCategory } = result;
     const { titulo, mensaje } = getFeedback(score, maxScore);
 
     return (

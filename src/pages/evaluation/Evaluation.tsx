@@ -78,6 +78,7 @@ const Evaluation: React.FC = () => {
     sessionStorage.setItem("finalScore", String(score));
     sessionStorage.setItem("maxScore", String(computeMaxScore(questions)));
     sessionStorage.setItem("weakestCategory", weakestCategory(answers, questions));
+    sessionStorage.setItem("scorePending", "1");
   }
 
   /* El mismo elemento se renderiza en el panel y al final de las preguntas: un elemento
