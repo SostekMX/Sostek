@@ -45,7 +45,7 @@ const Favorites: React.FC = () => {
       if (art) return { id: art._id, type: 'article', name: art.title, image: art.image, description: art.subtitle };
     } else {
       const pres = allPresentations.find(p => p._id === fav.content_id);
-      if (pres) return { id: pres._id, type: 'presentation', name: pres.name, image: pres.slides[0] ?? '', description: '' };
+      if (pres) return { id: pres._id, type: 'presentation', name: pres.name, image: pres.cover || pres.slides?.[0] || '', description: '' };
     }
     return null;
   }).filter((item): item is FavoriteItem => item !== null);
