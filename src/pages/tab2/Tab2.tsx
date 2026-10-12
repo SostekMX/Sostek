@@ -26,10 +26,24 @@ const Tab2: React.FC = () => {
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
   const [loading, setLoading] = useState(true);
   const [cardFilter, setCardFilter] = useState<CardFilter>('scenario');
+  const [rulesOpen, setRulesOpen] = useState(false);
 
+  /* Mismo cache que APRENDE y EVALUATE: sin el, un backend dormido (Render tarda en
+     despertar) o caido dejaba las reglas en blanco aunque ya se hubieran visto antes. */
   useEffect(() => {
+    const cached = localStorage.getItem("tutorial");
+    if (cached) {
+      setTutorial(JSON.parse(cached));
+      setLoading(false);
+    }
+
     getTutorial()
-      .then(data => { if (data.success) setTutorial(data.tutorial); })
+      .then(data => {
+        if (data.success) {
+          setTutorial(data.tutorial);
+          localStorage.setItem("tutorial", JSON.stringify(data.tutorial));
+        }
+      })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, []);
@@ -144,7 +158,14 @@ const Tab2: React.FC = () => {
                   ))}
                 </div>
               ) : tutorial ? (
-                <p className='juega-rules__text'>{tutorial.rules}</p>
+                <>
+                  <p className={`juega-rules__text ${rulesOpen ? '' : 'juega-rules__text--clamped'}`}>
+                    {tutorial.rules}
+                  </p>
+                  <button className='juega-rules__toggle' onClick={() => setRulesOpen(o => !o)}>
+                    {rulesOpen ? 'Ver menos' : 'Ver todas las reglas'}
+                  </button>
+                </>
               ) : (
                 <p className='juega-empty'>
                   No pudimos cargar el instructivo. Revisa tu conexión e intenta de nuevo.

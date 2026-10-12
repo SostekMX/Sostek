@@ -224,6 +224,26 @@
     white-space: pre-line;
 }
 
+/* En celular las reglas completas eran varias pantallas de texto antes de llegar a las
+   cartas. Se muestran las primeras lineas y el boton abre el resto. */
+.juega-rules__text--clamped {
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.juega-rules__toggle {
+    margin-top: 10px;
+    padding: 8px 0;
+    background: none;
+    border: none;
+    color: #80b259;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* Skeletons de carga. La animacion viene de .shimmer (App.css), que ya
    usan Tab1 y Tab3; aqui solo se definen las formas. */
 .juega-rules__skeleton {
@@ -437,6 +457,16 @@
     .juega-rules__text {
         column-width: 24rem;
         column-gap: 40px;
+    }
+
+    /* En multicolumna las reglas ya caben en poco alto: se muestran completas. */
+    .juega-rules__text--clamped {
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+    }
+    .juega-rules__toggle {
+        display: none;
     }
 
     /* Sin flex:1 cada pill se estiraria a media pantalla. */
