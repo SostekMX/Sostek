@@ -147,7 +147,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
           </div>
         )}
 
-        <div className='aprende-grid'>
+        <div className='aprende-grid aprende-grid--list'>
           {loadingData && skeletons}
           {!loadingData && visibleArticles.map(article => (
             <DocumentCard

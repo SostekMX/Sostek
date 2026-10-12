@@ -141,6 +141,83 @@
     .aprende-grid--row > * {
         scroll-snap-align: start;
     }
+
+    /* Con la imagen de 160px arriba cabian dos articulos por pantalla. Como fila con
+       miniatura a la izquierda caben cinco y la lista se puede recorrer con el pulgar.
+       El flex va en ::part(native) porque el contenido de ion-card vive en su shadow root. */
+    .aprende-grid--list {
+        gap: 10px;
+    }
+
+    .aprende-grid--list .document-card::part(native) {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .aprende-grid--list .document-card__image-wrapper {
+        flex: 0 0 104px;
+        height: auto;
+        min-height: 104px;
+    }
+
+    .aprende-grid--list .document-card-image {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+    }
+
+    .aprende-grid--list .document-card__content {
+        flex: 1;
+        min-width: 0;
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .aprende-grid--list .document-card__type-badge {
+        align-self: flex-start;
+        margin-bottom: 6px;
+    }
+
+    .aprende-grid--list .document-card__title {
+        font-size: 0.92rem;
+        min-height: 0;
+        margin: 0;
+    }
+
+    /* Titulo, tema y autor bastan para decidir si abrirlo; el resumen ya esta adentro. */
+    .aprende-grid--list .document-card__description {
+        display: none;
+    }
+
+    .aprende-grid--list .document-card__meta {
+        margin-top: 6px;
+    }
+
+    .aprende-grid--list .document-card__fav-btn {
+        top: 6px;
+        right: auto;
+        left: 6px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    /* El skeleton imita la fila para que la lista no salte al llegar los datos. */
+    .aprende-grid--list .doc-card-skeleton {
+        display: flex;
+    }
+
+    .aprende-grid--list .doc-card-skeleton__image {
+        flex: 0 0 104px;
+        height: 104px;
+    }
+
+    .aprende-grid--list .doc-card-skeleton__body {
+        flex: 1;
+        justify-content: center;
+    }
 }
 
 @media (min-width: 640px) {
