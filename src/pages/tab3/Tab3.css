@@ -59,7 +59,19 @@
 .evaluation-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 8px;
+}
+
+/* En celular el parrafo completo empujaba la primera carrera bajo el pliegue. */
+@media (max-width: 479px) {
+    .evalua-page {
+        gap: 20px;
+    }
+
+    .evalua-header__subtitle {
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
 }
 
 /* Skeleton EvaluationCard */

@@ -77,6 +77,53 @@
     overflow: hidden;
 }
 
+/* En una columna la tarjeta pasa a fila: el icono en su cuadro a la izquierda y el texto
+   a la derecha, como una lista nativa. El header se disuelve (display: contents) para
+   que icono y badge entren directo al grid sin cambiar el marcado. */
+@media (max-width: 479px) {
+    .evaluation-card__body {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        grid-template-areas:
+            'icon title'
+            'icon desc'
+            'icon badge';
+        column-gap: 12px;
+        row-gap: 4px;
+        align-items: start;
+        padding: 14px;
+    }
+
+    .evaluation-card__header {
+        display: contents;
+    }
+
+    .evaluation-card__icon {
+        grid-area: icon;
+        /* ion-icon fuerza content-box: 22px de glifo + 11px de aire por lado = 44px */
+        width: 22px;
+        height: 22px;
+        padding: 11px;
+        border-radius: 12px;
+        background: rgba(128, 178, 89, 0.14);
+    }
+
+    .evaluation__title {
+        grid-area: title;
+        font-size: 0.95rem;
+    }
+
+    .evaluation-card__desc {
+        grid-area: desc;
+        -webkit-line-clamp: 2;
+    }
+
+    .evaluation-card__badge {
+        grid-area: badge;
+        margin-top: 2px;
+    }
+}
+
 /* Solo hace falta reservar la altura cuando hay mas de una tarjeta por fila: en una
    sola columna el hueco de relleno se veria y no empareja nada. */
 @media (min-width: 480px) {
