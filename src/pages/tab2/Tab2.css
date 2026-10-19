@@ -492,3 +492,340 @@
         padding-right: 48px;
     }
 }
+
+/* Tipo de carta y medidor de recursos: solo existen en escritorio. */
+.juega-game-card__kind,
+.juega-game-card__meter {
+    display: none;
+}
+
+/* ==========================================================
+   Escritorio (>= 768px). Sin barra superior la pagina pone su aire arriba; las etiquetas
+   en mayusculas pasan a texto normal y las cartas se ven como cartas: proporcion de naipe,
+   marco interior y, en las de solucion, los tres recursos como barras con el color de
+   cada eje.
+   ========================================================== */
+@media (min-width: 768px) {
+    .juega-page {
+        padding-top: 40px;
+        gap: 28px;
+    }
+
+    .juega-hero {
+        padding: 0 0 4px;
+    }
+
+    /* "VIDEOJUEGO EDUCATIVO" se lee como frase, no como sello. */
+    .juega-hero__label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        text-transform: lowercase;
+        color: var(--d-text-3);
+        margin-bottom: 10px;
+    }
+
+    .juega-hero__label::first-letter,
+    .juega-rules > .juega-section-label::first-letter {
+        text-transform: uppercase;
+    }
+
+    .juega-hero__title {
+        font-size: 3.4rem;
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: 1px;
+        color: var(--d-text);
+        margin-bottom: 12px;
+    }
+
+    .juega-hero__subtitle {
+        font-size: 1.02rem;
+        color: var(--d-text-2);
+    }
+
+    /* El titulo de cada seccion ya dice que es: la etiqueta de arriba sobra. */
+    .juega-section-header .juega-section-label {
+        display: none;
+    }
+
+    .juega-section-title {
+        font-size: 1.5rem;
+        font-weight: 400;
+        letter-spacing: 0.4px;
+        color: var(--d-text);
+    }
+
+    .juega-stat {
+        background: var(--d-surface);
+        border-color: var(--d-line);
+        padding: 16px 10px;
+    }
+
+    .juega-stat__value {
+        font-family: var(--d-display);
+        font-size: 1.7rem;
+        font-weight: 400;
+        color: var(--d-text);
+    }
+
+    .juega-stat__label {
+        font-size: 0.78rem;
+        color: var(--d-text-3);
+    }
+
+    /* Los tipos de solucion usan los colores de los ejes, igual que el resto de la app. */
+    .juega-card-type--ambiental { background: rgba(128, 178, 89, 0.08);  border-color: rgba(128, 178, 89, 0.35); }
+    .juega-card-type--economico { background: rgba(236, 175, 128, 0.08); border-color: rgba(236, 175, 128, 0.35); }
+    .juega-card-type--social    { background: rgba(125, 184, 186, 0.08); border-color: rgba(125, 184, 186, 0.35); }
+
+    .juega-card-type__name {
+        font-size: 0.9rem;
+    }
+
+    .juega-card-type__desc {
+        font-size: 0.78rem;
+        color: var(--d-text-3);
+    }
+
+    /* Reglas: completas desde que hay barra lateral, en columnas de ~60 caracteres. */
+    .juega-rules {
+        background: var(--d-surface);
+        border-color: var(--d-line);
+        padding: 26px 28px;
+    }
+
+    .juega-rules > .juega-section-label {
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: lowercase;
+        color: var(--d-text);
+        margin-bottom: 6px;
+    }
+
+    .juega-rules__text {
+        font-size: 0.92rem;
+        line-height: 1.75;
+        color: var(--d-text-2);
+        column-width: 24rem;
+        column-gap: 48px;
+        column-rule: 1px solid var(--d-line);
+    }
+
+    .juega-rules__text--clamped {
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+    }
+
+    .juega-rules__toggle {
+        display: none;
+    }
+
+    .juega-filter-pills {
+        justify-content: flex-start;
+    }
+
+    .juega-filter-pill {
+        flex: 0 0 auto;
+        min-width: 150px;
+    }
+
+    /* --- Cartas --- */
+    .juega-cards-list {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    .juega-game-card {
+        --card-color: rgba(224, 82, 96, 0.7);
+        position: relative;
+        aspect-ratio: 5 / 7;
+        padding: 22px 20px 18px;
+        border-radius: 16px;
+        background: var(--d-surface);
+        border: 1.5px solid var(--card-color);
+    }
+
+    /* Marco interior, como el filo de una carta impresa. */
+    .juega-game-card::after {
+        content: '';
+        position: absolute;
+        inset: 6px;
+        border-radius: 11px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        pointer-events: none;
+    }
+
+    .juega-game-card--scenario {
+        background:
+            linear-gradient(180deg, rgba(224, 82, 96, 0.12), transparent 45%),
+            var(--d-surface);
+        border-color: var(--card-color);
+    }
+
+    /* La de solucion toma el color del eje que mas suma (clase axis-* desde Tab2.tsx). */
+    .juega-game-card--solution {
+        --card-color: var(--axis, var(--axis-ambiental));
+        background:
+            linear-gradient(180deg, color-mix(in srgb, var(--card-color) 14%, transparent), transparent 45%),
+            var(--d-surface);
+        border-color: color-mix(in srgb, var(--card-color) 70%, transparent);
+    }
+
+    .juega-game-card__kind {
+        display: block;
+        margin: 0 0 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--card-color);
+    }
+
+    .juega-game-card--scenario .juega-game-card__kind {
+        color: #e88a94;
+    }
+
+    .juega-game-card__name {
+        font-family: var(--d-display);
+        font-size: 1.12rem;
+        font-weight: 400;
+        line-height: 1.2;
+        letter-spacing: 0.4px;
+        color: var(--d-text);
+        margin-bottom: 12px;
+    }
+
+    .juega-game-card__desc {
+        font-size: 0.84rem;
+        line-height: 1.6;
+        color: var(--d-text-2);
+    }
+
+    .juega-game-card__resources {
+        display: none;
+    }
+
+    /* --- Medidor de recursos ---
+       Pista con el cero al centro: suma a la derecha, resta a la izquierda. */
+    .juega-game-card__meter {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin: auto 0 0;
+        padding-top: 14px;
+        border-top: 1px solid var(--d-line);
+    }
+
+    .juega-meter__row {
+        display: grid;
+        grid-template-columns: 74px minmax(0, 1fr) 26px;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .juega-meter__label {
+        font-size: 0.74rem;
+        font-weight: 600;
+        color: var(--d-text-3);
+    }
+
+    .juega-meter__track {
+        position: relative;
+        height: 6px;
+        margin: 0;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* El cero */
+    .juega-meter__track::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: -3px;
+        bottom: -3px;
+        width: 1px;
+        background: var(--d-line-strong);
+    }
+
+    .juega-meter__bar {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        border-radius: 0 3px 3px 0;
+        background: var(--axis);
+    }
+
+    .juega-meter__bar--neg {
+        left: auto;
+        right: 50%;
+        border-radius: 3px 0 0 3px;
+        opacity: 0.55;
+    }
+
+    .juega-meter__value {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        color: var(--d-text);
+    }
+}
+
+@media (min-width: 1024px) {
+    .juega-page {
+        max-width: var(--d-content-max);
+        margin: 0 auto;
+        padding: 44px var(--d-gutter) 64px;
+        gap: 32px;
+    }
+
+    .juega-hero__title {
+        font-size: 3.8rem;
+    }
+
+    .juega-cards-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 22px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .juega-page {
+        padding-left: var(--d-gutter);
+        padding-right: var(--d-gutter);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .juega-game-card--scenario:hover,
+    .juega-game-card--solution:hover {
+        border-color: var(--card-color);
+        background-color: var(--d-surface-2);
+    }
+}
+
+/* Bloque superior en escritorio: el video con su proporcion real y, debajo, descarga y
+   aviso; el instructivo ocupa la columna derecha completa. Estirado al alto de la columna
+   derecha el video quedaba con franjas negras de ~110px arriba y abajo. */
+@media (min-width: 1024px) {
+    .juega-top {
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        gap: 18px 36px;
+    }
+
+    .juega-video-wrapper { grid-column: 1; grid-row: 1; align-self: start; display: block; }
+    .juega-download-card { grid-column: 1; grid-row: 2; }
+    .juega-wip           { grid-column: 1; grid-row: 3; }
+    .juega-top__howto    { grid-column: 2; grid-row: 1 / 4; }
+
+    .juega-video {
+        max-height: none;
+        aspect-ratio: 16 / 9;
+        object-fit: contain;
+        background: #000;
+    }
+}

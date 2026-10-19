@@ -22,6 +22,22 @@ type CardFilter = 'scenario' | 'solution';
 
 const formatResource = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 
+type ResourceKey = keyof GameCard['resources'];
+
+const AXES: { key: ResourceKey; label: string }[] = [
+  { key: 'ambiental', label: 'Ambiental' },
+  { key: 'economico', label: 'Económico' },
+  { key: 'social', label: 'Social' },
+];
+
+/* Casi todas las cartas mueven entre -3 y +3; con la escala en el maximo real (10) esas
+   barras serian rayitas. Lo que pasa de 5 llena media pista y el numero dice el resto. */
+const METER_SCALE = 5;
+
+/* El eje que mas suma una carta de solucion pinta su borde en escritorio. */
+const dominantAxis = (r: GameCard['resources']): ResourceKey =>
+  AXES.reduce((best, { key }) => (r[key] > r[best] ? key : best), 'ambiental' as ResourceKey);
+
 const Tab2: React.FC = () => {
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
   const [loading, setLoading] = useState(true);
@@ -225,7 +241,12 @@ const Tab2: React.FC = () => {
 
               <div className='juega-cards-list'>
                 {filteredCards.map((card, i) => (
-                  <div key={i} className={`juega-game-card juega-game-card--${card.type}`}>
+                  <div
+                    key={i}
+                    className={`juega-game-card juega-game-card--${card.type}${card.type === 'solution' ? ` axis-${dominantAxis(card.resources)}` : ''}`}
+                  >
+                    {/* Solo escritorio: el tipo de carta como en la carta impresa. */}
+                    <p className='juega-game-card__kind'>{card.type === 'scenario' ? 'Escenario' : 'Solución'}</p>
                     <p className='juega-game-card__name'>{card.name}</p>
                     <p className='juega-game-card__desc'>{card.description}</p>
                     {card.type === 'solution' && (
@@ -234,6 +255,29 @@ const Tab2: React.FC = () => {
                         <span>💰 {formatResource(card.resources.economico)}</span>
                         <span>👥 {formatResource(card.resources.social)}</span>
                       </div>
+                    )}
+                    {/* Solo escritorio: los mismos recursos como barras que salen del cero
+                        hacia la derecha (suma) o la izquierda (resta), cada una con el color
+                        de su eje. */}
+                    {card.type === 'solution' && (
+                      <dl className='juega-game-card__meter'>
+                        {AXES.map(({ key, label }) => {
+                          const value = card.resources[key];
+                          const width = Math.min(Math.abs(value), METER_SCALE) / METER_SCALE * 50;
+                          return (
+                            <div key={key} className={`juega-meter__row axis-${key}`}>
+                              <dt className='juega-meter__label'>{label}</dt>
+                              <dd className='juega-meter__track'>
+                                <span
+                                  className={`juega-meter__bar${value < 0 ? ' juega-meter__bar--neg' : ''}`}
+                                  style={{ width: `${width}%` }}
+                                />
+                              </dd>
+                              <dd className='juega-meter__value'>{formatResource(value)}</dd>
+                            </div>
+                          );
+                        })}
+                      </dl>
                     )}
                   </div>
                 ))}
