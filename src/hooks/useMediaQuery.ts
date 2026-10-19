@@ -10,8 +10,13 @@ export default function useMediaQuery(query: string): boolean {
     const mql = window.matchMedia(query);
     const onChange = () => setMatches(mql.matches);
     onChange();
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
+    // Safari < 14 (y el matchMedia simulado de los tests) solo tienen la API vieja addListener.
+    if (mql.addEventListener) {
+      mql.addEventListener('change', onChange);
+      return () => mql.removeEventListener('change', onChange);
+    }
+    mql.addListener(onChange);
+    return () => mql.removeListener(onChange);
   }, [query]);
 
   return matches;
