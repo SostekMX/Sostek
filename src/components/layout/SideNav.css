@@ -3,38 +3,54 @@ ion-split-pane {
     --side-width: 84px;
     --side-min-width: 84px;
     --side-max-width: 84px;
-    --border: 1px solid rgba(255, 255, 255, 0.08);
+    --border: 1px solid var(--d-line);
 }
 
-/* El borde del split pane es translucido: sin fondo propio deja ver el fondo claro de Ionic. */
+/* El borde del split pane es translucido: sin fondo propio deja ver el fondo claro de Ionic.
+   Un tono mas hondo que el del contenido para que el panel se lea como marco. */
 .sidenav {
-    --background: #0d1a0d;
-    background: #0d1a0d;
+    --background: #0b160d;
+    background: #0b160d;
 }
 
 .sidenav__content {
-    --background: #0d1a0d;
+    --background: #0b160d;
 }
 
 .sidenav__inner {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     min-height: 100%;
-    padding: 16px 10px;
+    padding: 18px 10px 14px;
     box-sizing: border-box;
 }
 
 .sidenav__logo {
     display: flex;
     justify-content: center;
-    padding: 6px 0 18px;
+    padding: 6px 0 10px;
     border-radius: 10px;
 }
 
 .sidenav__logo img {
     height: 26px;
     width: auto;
+}
+
+/* Firma: los tres ejes como una franja de tres tramos bajo el logo. */
+.sidenav__axes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    width: 36px;
+    margin: 0 auto 22px;
+}
+
+.sidenav__axes span {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--axis);
 }
 
 .sidenav__group {
@@ -44,24 +60,25 @@ ion-split-pane {
 }
 
 .sidenav__group--divided {
-    margin-top: 10px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--d-line);
 }
 
 /* Riel: icono arriba y etiqueta corta debajo, igual que el tab bar pero de pie. */
 .sidenav__link,
 .sidenav__user {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     width: 100%;
     padding: 10px 4px;
     border: none;
     border-radius: 14px;
     background: transparent;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--d-text-3);
     font: inherit;
     text-decoration: none;
     cursor: pointer;
@@ -74,6 +91,13 @@ ion-split-pane {
     flex-shrink: 0;
 }
 
+.sidenav__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
 .sidenav__label {
     font-size: 0.6rem;
     font-weight: 700;
@@ -83,8 +107,13 @@ ion-split-pane {
     text-align: center;
 }
 
+/* En el riel no hay lugar para la descripcion: la da el atributo title. */
+.sidenav__hint {
+    display: none;
+}
+
 .sidenav__link--active {
-    background: rgba(128, 178, 89, 0.15);
+    background: rgba(128, 178, 89, 0.14);
     color: #80b259;
 }
 
@@ -98,8 +127,8 @@ ion-split-pane {
 @media (hover: hover) and (pointer: fine) {
     .sidenav__link:hover,
     .sidenav__user:hover {
-        background: rgba(255, 255, 255, 0.06);
-        color: #f0f0f0;
+        background: rgba(222, 235, 215, 0.06);
+        color: var(--d-text);
     }
 
     .sidenav__link--active:hover {
@@ -113,8 +142,8 @@ ion-split-pane {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 14px;
+    border-top: 1px solid var(--d-line);
 }
 
 .sidenav__avatar {
@@ -138,9 +167,9 @@ ion-split-pane {
 }
 
 .sidenav__user-title {
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.2px;
     text-transform: uppercase;
 }
 
@@ -153,25 +182,31 @@ ion-split-pane {
     color: #80b259;
 }
 
-/* Barra completa: icono y texto en fila, con el correo bajo "Perfil". */
+/* Barra completa: icono y texto en fila, cada seccion con una linea que dice que hay adentro
+   y el correo bajo "Perfil". */
 @media (min-width: 1200px) {
     ion-split-pane {
-        --side-width: 248px;
-        --side-min-width: 248px;
-        --side-max-width: 248px;
+        --side-width: 260px;
+        --side-min-width: 260px;
+        --side-max-width: 260px;
     }
 
     .sidenav__inner {
-        padding: 22px 14px;
+        padding: 26px 16px 18px;
     }
 
     .sidenav__logo {
         justify-content: flex-start;
-        padding: 4px 12px 26px;
+        padding: 0 12px 14px;
     }
 
     .sidenav__logo img {
         height: 40px;
+    }
+
+    .sidenav__axes {
+        width: 64px;
+        margin: 0 12px 34px;
     }
 
     .sidenav__link,
@@ -180,39 +215,104 @@ ion-split-pane {
         gap: 14px;
         padding: 11px 14px;
         border-radius: 12px;
+        text-align: left;
+    }
+
+    .sidenav__text {
+        align-items: flex-start;
+        gap: 1px;
     }
 
     .sidenav__label {
-        font-size: 0.92rem;
+        font-size: 0.95rem;
         font-weight: 600;
-        letter-spacing: 0.2px;
+        letter-spacing: 0.1px;
         text-transform: none;
         text-align: left;
         white-space: nowrap;
     }
 
+    .sidenav__hint {
+        display: block;
+        font-size: 0.74rem;
+        color: var(--d-text-3);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
+    .sidenav__link--active {
+        color: var(--d-text);
+    }
+
+    .sidenav__link--active ion-icon {
+        color: #80b259;
+    }
+
+    /* Marca de la seccion activa pegada al borde del boton. */
+    .sidenav__link--active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 12px;
+        bottom: 12px;
+        width: 3px;
+        border-radius: 0 3px 3px 0;
+        background: #80b259;
+    }
+
+    .sidenav__link--active .sidenav__hint {
+        color: var(--d-text-2);
+    }
+
+    .sidenav__user {
+        background: var(--d-surface);
+        padding: 10px 12px;
+    }
+
+    .sidenav__user.sidenav__link--active {
+        background: rgba(128, 178, 89, 0.14);
+    }
+
     .sidenav__user-title {
         font-size: 0.92rem;
         font-weight: 600;
-        letter-spacing: 0.2px;
+        letter-spacing: 0.1px;
         text-transform: none;
-        color: #f0f0f0;
+        color: var(--d-text);
     }
 
     .sidenav__user-email {
         display: block;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.74rem;
+        color: var(--d-text-3);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
+    /* Blanco sobre el verde de marca no llega al contraste minimo: va texto oscuro. */
     .sidenav__link--cta {
         justify-content: center;
         background: #80b259;
-        color: #ffffff;
+        color: #0f1d12;
         border-radius: 100px;
+    }
+
+    .sidenav__link--cta .sidenav__label {
+        font-weight: 700;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1200px) {
+    .sidenav__user:hover {
+        background: var(--d-surface-2);
+    }
+
+    .sidenav__link--cta:hover {
+        background: #9dc974;
+        color: #0f1d12;
     }
 }
 

@@ -13,9 +13,9 @@ interface Props {
 }
 
 const SECTIONS = [
-  { tab: 'tab1', href: '/tab1', label: 'Aprende', icon: bookOutline },
-  { tab: 'tab2', href: '/tab2', label: 'Juega', icon: gameControllerOutline },
-  { tab: 'tab3', href: '/tab3', label: 'Evalúate', icon: clipboardOutline },
+  { tab: 'tab1', href: '/tab1', label: 'Aprende', hint: 'Artículos y presentaciones', icon: bookOutline },
+  { tab: 'tab2', href: '/tab2', label: 'Juega', hint: 'Survivor, el juego de cartas', icon: gameControllerOutline },
+  { tab: 'tab3', href: '/tab3', label: 'Evalúate', hint: 'Diagnostica tu proyecto', icon: clipboardOutline },
 ] as const;
 
 /* Navegacion de escritorio: los mismos destinos que el tab bar mas las opciones del popover
@@ -29,7 +29,7 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
 
   /* Un <a> real para que funcionen el clic central y "abrir en otra pestana"; el clic normal
      navega con el router de Ionic y sin animacion, como cambiar de tab. */
-  const link = (href: string, label: string, icon: string, active: boolean, extra = '') => (
+  const link = (href: string, label: string, icon: string, active: boolean, extra = '', hint = '') => (
     <a
       href={href}
       className={`sidenav__link ${active ? 'sidenav__link--active' : ''} ${extra}`}
@@ -38,7 +38,10 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
       onClick={e => { e.preventDefault(); router.push(href, 'none'); }}
     >
       <IonIcon icon={icon} aria-hidden='true' />
-      <span className='sidenav__label'>{label}</span>
+      <span className='sidenav__text'>
+        <span className='sidenav__label'>{label}</span>
+        {hint && <span className='sidenav__hint'>{hint}</span>}
+      </span>
     </a>
   );
 
@@ -49,9 +52,15 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
           <a href='/MainMenu' className='sidenav__logo' onClick={e => { e.preventDefault(); router.push('/MainMenu', 'none'); }}>
             <img src='/assets/sostek-logo.png' alt='SOSTEK' />
           </a>
+          {/* Firma de la marca: los tres ejes que recorren toda la app. */}
+          <div className='sidenav__axes' aria-hidden='true'>
+            <span className='axis-ambiental' />
+            <span className='axis-economico' />
+            <span className='axis-social' />
+          </div>
 
           <div className='sidenav__group'>
-            {SECTIONS.map(s => link(s.href, s.label, s.icon, activeTab === s.tab))}
+            {SECTIONS.map(s => link(s.href, s.label, s.icon, activeTab === s.tab, '', s.hint))}
           </div>
 
           {isUserLogged && (
