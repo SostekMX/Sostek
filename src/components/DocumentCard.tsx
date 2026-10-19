@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './DocumentCard.css';
 import { IonCard, IonIcon, IonImg } from '@ionic/react';
 import { heart, heartOutline } from 'ionicons/icons';
+import { axisOf } from '../utils/axis';
 
 interface DocumentProps {
     name: string;
@@ -21,9 +22,11 @@ interface DocumentProps {
 const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type, category, meta, isFavorite, isLoggedIn, onToggleFavorite }) => {
     const [imgLoading, setImgLoading] = useState(true);
     const [imgError, setImgError] = useState(false);
+    // El color del eje solo se pinta en escritorio (DocumentCard.css, >= 768px).
+    const axis = axisOf(category);
     return (
         <IonCard
-            className='document-card'
+            className={`document-card${axis ? ` axis-${axis}` : ''}`}
             button
             routerDirection='forward'
             routerLink={type === 'presentation' ? `/presentation/${id}` : `/Documents/${id}`}
@@ -40,6 +43,8 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
                 {isLoggedIn && (
                     <button
                         className={`document-card__fav-btn ${isFavorite ? 'document-card__fav-btn--active' : ''}`}
+                        aria-label={isFavorite ? 'Quitar de favoritos' : 'Guardar en favoritos'}
+                        aria-pressed={!!isFavorite}
                         onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
