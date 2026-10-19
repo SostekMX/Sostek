@@ -55,6 +55,13 @@ ion-toolbar.transparent {
     --min-height: 56px;
 }
 
+/* Sus opciones ya estan en la barra lateral de escritorio; el boton de regreso se queda. */
+@media (min-width: 768px) {
+    .dark-toolbar__menu-btn {
+        display: none;
+    }
+}
+
 /* === TAB BAR === */
 
 ion-tab-bar {
@@ -107,6 +114,14 @@ ion-tab-button.tab-bar__btn--active {
 
 .tab-bar--visible {
     opacity: 1;
+}
+
+/* En escritorio navega la barra lateral (SideNav). El tab bar sigue en el DOM porque
+   IonTabs no funciona sin el. */
+@media (min-width: 768px) {
+    ion-tab-bar.tab-bar--visible {
+        display: none;
+    }
 }
 
 

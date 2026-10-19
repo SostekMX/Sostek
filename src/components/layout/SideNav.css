@@ -1,0 +1,225 @@
+/* Ancho del panel: riel de iconos en tablet y laptop chica, barra completa desde 1200px. */
+ion-split-pane {
+    --side-width: 84px;
+    --side-min-width: 84px;
+    --side-max-width: 84px;
+    --border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* El borde del split pane es translucido: sin fondo propio deja ver el fondo claro de Ionic. */
+.sidenav {
+    --background: #0d1a0d;
+    background: #0d1a0d;
+}
+
+.sidenav__content {
+    --background: #0d1a0d;
+}
+
+.sidenav__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 100%;
+    padding: 16px 10px;
+    box-sizing: border-box;
+}
+
+.sidenav__logo {
+    display: flex;
+    justify-content: center;
+    padding: 6px 0 18px;
+    border-radius: 10px;
+}
+
+.sidenav__logo img {
+    height: 26px;
+    width: auto;
+}
+
+.sidenav__group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidenav__group--divided {
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Riel: icono arriba y etiqueta corta debajo, igual que el tab bar pero de pie. */
+.sidenav__link,
+.sidenav__user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 10px 4px;
+    border: none;
+    border-radius: 14px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.55);
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    box-sizing: border-box;
+}
+
+.sidenav__link ion-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.sidenav__label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    /* "Iniciar sesion" y "Cerrar sesion" se parten en dos lineas en el riel; las palabras no. */
+    text-align: center;
+}
+
+.sidenav__link--active {
+    background: rgba(128, 178, 89, 0.15);
+    color: #80b259;
+}
+
+.sidenav__link:focus-visible,
+.sidenav__user:focus-visible,
+.sidenav__logo:focus-visible {
+    outline: 2px solid #80b259;
+    outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .sidenav__link:hover,
+    .sidenav__user:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #f0f0f0;
+    }
+
+    .sidenav__link--active:hover {
+        background: rgba(128, 178, 89, 0.2);
+        color: #80b259;
+    }
+}
+
+.sidenav__account {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidenav__avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #80b259;
+    flex-shrink: 0;
+}
+
+.sidenav__avatar--icon {
+    border: none;
+    font-size: 34px;
+}
+
+.sidenav__user-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sidenav__user-title {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+/* En el riel no cabe el correo. */
+.sidenav__user-email {
+    display: none;
+}
+
+.sidenav__link--cta {
+    color: #80b259;
+}
+
+/* Barra completa: icono y texto en fila, con el correo bajo "Perfil". */
+@media (min-width: 1200px) {
+    ion-split-pane {
+        --side-width: 248px;
+        --side-min-width: 248px;
+        --side-max-width: 248px;
+    }
+
+    .sidenav__inner {
+        padding: 22px 14px;
+    }
+
+    .sidenav__logo {
+        justify-content: flex-start;
+        padding: 4px 12px 26px;
+    }
+
+    .sidenav__logo img {
+        height: 40px;
+    }
+
+    .sidenav__link,
+    .sidenav__user {
+        flex-direction: row;
+        gap: 14px;
+        padding: 11px 14px;
+        border-radius: 12px;
+    }
+
+    .sidenav__label {
+        font-size: 0.92rem;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        text-transform: none;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .sidenav__user-title {
+        font-size: 0.92rem;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        text-transform: none;
+        color: #f0f0f0;
+    }
+
+    .sidenav__user-email {
+        display: block;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.45);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .sidenav__link--cta {
+        justify-content: center;
+        background: #80b259;
+        color: #ffffff;
+        border-radius: 100px;
+    }
+}
+
+/* Contenedor de IonTabs dentro del split pane. Ionic solo lo estira cuando el panel lateral
+   esta visible; en mobile hay que estirarlo a mano o queda con ancho 0. */
+.main-pane {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}

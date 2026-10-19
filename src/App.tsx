@@ -6,6 +6,7 @@ import {
   IonIcon,
   IonLabel,
   IonRouterOutlet,
+  IonSplitPane,
   IonTabBar,
   IonTabButton,
   IonTabs,
@@ -48,6 +49,8 @@ import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluat
 import ForgotPassword from './pages/forgotPassword/ForgotPassword';
 import ResetPassword from './pages/resetPassword/ResetPassword';
 import Favorites from './pages/favorites/Favorites';
+import SideNav from './components/layout/SideNav';
+import { DESKTOP_QUERY } from './hooks/useMediaQuery';
 
 setupIonicReact();
 
@@ -74,40 +77,47 @@ const MainTabs: React.FC = () => {
   const location = useLocation();
   const hidden = HIDE_TABBAR_PATHS.includes(location.pathname);
   const activeTab = getActiveTab(location.pathname);
+  /* Desde 768px el tab bar se esconde por CSS y navega la barra lateral del split pane. En
+     login y registro el panel se apaga y esas pantallas siguen a pantalla completa. */
   return (
-    <IonTabs>
-      <IonRouterOutlet>
-        <Route exact path="/MainMenu"><Tab1 /></Route>
-        <Route exact path="/"><LogIn /></Route>
-        <Route exact path="/SignUp"><SignUp /></Route>
-        <Route exact path="/tab1"><Tab1 /></Route>
-        <Route exact path="/tab2"><Tab2 /></Route>
-        <Route path="/tab3"><Tab3 /></Route>
-        <PrivateRoute path="/Profile"><Profile /></PrivateRoute>
-        <Route exact path='/Documents/:id'><Documents /></Route>
-        <Route exact path="/presentation/:driveId"><Presentation /></Route>
-        <Route exact path="/Evaluation/:name/:id"><Evaluation /></Route>
-        <Route path="/score/:name"><FinalScoreEvaluation /></Route>
-        <Route exact path="/ForgotPassword"><ForgotPassword /></Route>
-        <Route exact path="/ResetPassword"><ResetPassword /></Route>
-        <PrivateRoute exact path="/Favorites"><Favorites /></PrivateRoute>
-      </IonRouterOutlet>
+    <IonSplitPane contentId="main" when={DESKTOP_QUERY} disabled={hidden}>
+      <SideNav activeTab={activeTab} pathname={location.pathname} />
+      <div id="main" className="main-pane">
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route exact path="/MainMenu"><Tab1 /></Route>
+            <Route exact path="/"><LogIn /></Route>
+            <Route exact path="/SignUp"><SignUp /></Route>
+            <Route exact path="/tab1"><Tab1 /></Route>
+            <Route exact path="/tab2"><Tab2 /></Route>
+            <Route path="/tab3"><Tab3 /></Route>
+            <PrivateRoute path="/Profile"><Profile /></PrivateRoute>
+            <Route exact path='/Documents/:id'><Documents /></Route>
+            <Route exact path="/presentation/:driveId"><Presentation /></Route>
+            <Route exact path="/Evaluation/:name/:id"><Evaluation /></Route>
+            <Route path="/score/:name"><FinalScoreEvaluation /></Route>
+            <Route exact path="/ForgotPassword"><ForgotPassword /></Route>
+            <Route exact path="/ResetPassword"><ResetPassword /></Route>
+            <PrivateRoute exact path="/Favorites"><Favorites /></PrivateRoute>
+          </IonRouterOutlet>
 
-      <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
-        <IonTabButton tab="tab1" href="/tab1" className={activeTab === 'tab1' ? 'tab-bar__btn--active' : undefined}>
-          <IonIcon icon={bookOutline} />
-          <IonLabel className='tab-bar__label'>APRENDE</IonLabel>
-        </IonTabButton>
-        <IonTabButton tab="tab2" href="/tab2" className={activeTab === 'tab2' ? 'tab-bar__btn--active' : undefined}>
-          <IonIcon icon={gameControllerOutline} />
-          <IonLabel className='tab-bar__label'>JUEGA</IonLabel>
-        </IonTabButton>
-        <IonTabButton tab="tab3" href="/tab3" className={activeTab === 'tab3' ? 'tab-bar__btn--active' : undefined}>
-          <IonIcon icon={clipboardOutline} />
-          <IonLabel className='tab-bar__label'>EVALÚATE</IonLabel>
-        </IonTabButton>
-      </IonTabBar>
-    </IonTabs>
+          <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
+            <IonTabButton tab="tab1" href="/tab1" className={activeTab === 'tab1' ? 'tab-bar__btn--active' : undefined}>
+              <IonIcon icon={bookOutline} />
+              <IonLabel className='tab-bar__label'>APRENDE</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab2" href="/tab2" className={activeTab === 'tab2' ? 'tab-bar__btn--active' : undefined}>
+              <IonIcon icon={gameControllerOutline} />
+              <IonLabel className='tab-bar__label'>JUEGA</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab3" href="/tab3" className={activeTab === 'tab3' ? 'tab-bar__btn--active' : undefined}>
+              <IonIcon icon={clipboardOutline} />
+              <IonLabel className='tab-bar__label'>EVALÚATE</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </div>
+    </IonSplitPane>
   );
 };
 
