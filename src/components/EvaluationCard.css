@@ -30,6 +30,12 @@
     gap: 8px;
 }
 
+/* Numero de nivel, semestre y pie de la tarjeta: solo en escritorio. */
+.evaluation-card__level,
+.evaluation-card__start {
+    display: none;
+}
+
 .evaluation-card__header {
     display: flex;
     align-items: center;
@@ -136,5 +142,133 @@
     .evaluation__card:hover {
         background: rgba(255, 255, 255, 0.1) !important;
         border-color: rgba(128, 178, 89, 0.45) !important;
+    }
+}
+
+/* ==========================================================
+   Escritorio (>= 768px): la tarjeta es una parada de la ruta de niveles (ver Tab3.css).
+   El numero va en un nodo circular sobre el trayecto; el icono de la carrera sobra porque
+   el titulo de la franja ya dice de que carrera es.
+   ========================================================== */
+@media (min-width: 768px) {
+    /* Fondo opaco para que el trayecto solo asome entre tarjeta y tarjeta. */
+    .evaluation__card {
+        position: relative;
+        z-index: 1;
+        background: var(--d-surface) !important;
+        border: 1px solid var(--d-line) !important;
+        border-radius: 18px !important;
+    }
+
+    .evaluation-card__body {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr);
+        grid-template-areas:
+            'level title'
+            'level semester'
+            'desc desc'
+            'foot foot';
+        column-gap: 14px;
+        row-gap: 2px;
+        align-items: center;
+        padding: 22px 22px 20px;
+    }
+
+    .evaluation-card__header {
+        display: contents;
+    }
+
+    .evaluation-card__icon {
+        display: none;
+    }
+
+    /* El bloque de nivel se disuelve: el numero y el semestre entran directo al grid. */
+    .evaluation-card__level {
+        display: contents;
+    }
+
+    .evaluation-card__level-number {
+        grid-area: level;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        box-sizing: border-box;
+        display: grid;
+        place-items: center;
+        background: var(--d-surface);
+        border: 2px solid var(--axis-ambiental);
+        color: var(--axis-ambiental);
+        font-family: var(--d-display);
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+
+    .evaluation__title {
+        grid-area: title;
+        align-self: end;
+        font-size: 1.05rem;
+        color: var(--d-text);
+    }
+
+    .evaluation-card__semester {
+        grid-area: semester;
+        align-self: start;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--d-text-3);
+    }
+
+    .evaluation-card__desc-semester {
+        display: none;
+    }
+
+    .evaluation-card__desc {
+        grid-area: desc;
+        margin-top: 16px;
+        font-size: 0.86rem;
+        line-height: 1.55;
+        color: var(--d-text-2);
+        min-height: calc(1.55em * 3);
+    }
+
+    /* Preguntas a la izquierda y "Empezar" a la derecha, compartiendo la fila del pie. */
+    .evaluation-card__badge {
+        grid-area: foot;
+        justify-self: start;
+        white-space: nowrap;
+        margin-top: 18px;
+        color: var(--d-text-3);
+        font-size: 0.78rem;
+    }
+
+    .evaluation-card__start {
+        display: block;
+        grid-area: foot;
+        white-space: nowrap;
+        justify-self: end;
+        margin: 18px 0 0;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--axis-ambiental);
+    }
+}
+
+/* El nivel 3 lleva el nodo relleno: es el final de la ruta. */
+@media (min-width: 768px) {
+    .evaluation-grid > .evaluation__card:last-child .evaluation-card__level-number {
+        background: var(--axis-ambiental);
+        color: var(--d-bg);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .evaluation__card:hover {
+        background: var(--d-surface-2) !important;
+        border-color: rgba(128, 178, 89, 0.5) !important;
+    }
+
+    .evaluation__card:hover .evaluation-card__start {
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
 }

@@ -71,14 +71,34 @@ const Tab3: React.FC = () => {
       <AppBarPopOver />
       <IonContent fullscreen class='app-dark-bg'>
         <div className='evalua-page'>
-          <header className='evalua-header'>
-            <h1 className='evalua-header__title'>Eval&uacute;ate</h1>
-            <p className='evalua-header__subtitle'>
-              Autodiagn&oacute;sticos de sostenibilidad para tu proyecto. Elige el nivel que
-              corresponde a la etapa en la que vas: al terminar te decimos cu&aacute;l fue tu
-              eje m&aacute;s d&eacute;bil y con qu&eacute; art&iacute;culos reforzarlo.
-            </p>
-          </header>
+          {/* display: contents en mobile, asi que el header queda donde siempre; en
+              escritorio arma la fila de titulo + "Como funciona". */}
+          <div className='evalua-intro'>
+            <header className='evalua-header'>
+              <h1 className='evalua-header__title'>Eval&uacute;ate</h1>
+              <p className='evalua-header__subtitle'>
+                Autodiagn&oacute;sticos de sostenibilidad para tu proyecto. Elige el nivel que
+                corresponde a la etapa en la que vas: al terminar te decimos cu&aacute;l fue tu
+                eje m&aacute;s d&eacute;bil y con qu&eacute; art&iacute;culos reforzarlo.
+              </p>
+            </header>
+
+            {/* Solo escritorio: en mobile el subtitulo ya lo cuenta en una linea. */}
+            <aside className='evalua-howto' aria-label='Cómo funciona'>
+              <p className='evalua-howto__title'>C&oacute;mo funciona</p>
+              <ol className='evalua-howto__steps'>
+                <li>
+                  <span><strong>Elige tu nivel.</strong> Cada carrera tiene tres, seg&uacute;n el semestre en que vas.</span>
+                </li>
+                <li>
+                  <span><strong>Contesta sobre tu proyecto.</strong> Marca todo lo que ya hayas considerado.</span>
+                </li>
+                <li>
+                  <span><strong>Revisa tu resultado.</strong> Te damos tu puntaje, tu eje m&aacute;s d&eacute;bil y art&iacute;culos para reforzarlo.</span>
+                </li>
+              </ol>
+            </aside>
+          </div>
 
           {loading && (
             <div className='evaluation-grid'>
@@ -98,7 +118,10 @@ const Tab3: React.FC = () => {
 
           {!loading && groups.map(group => (
             <section className='evalua-group' key={group.career}>
-              <h2 className='evalua-group__title'>{group.career}</h2>
+              <h2 className='evalua-group__title'>
+                {group.career}
+                <span className='evalua-group__count'>{group.items.length} {group.items.length === 1 ? 'nivel' : 'niveles'}</span>
+              </h2>
               <div className='evaluation-grid'>
                 {group.items.map(ev => (
                   <EvaluationCard

@@ -56,6 +56,16 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* Piezas que solo existen en escritorio: en mobile no ocupan lugar. */
+.evalua-intro {
+    display: contents;
+}
+
+.evalua-howto,
+.evalua-group__count {
+    display: none;
+}
+
 .evaluation-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -160,5 +170,161 @@
 
     .evaluation-grid {
         gap: 14px;
+    }
+}
+
+/* ==========================================================
+   Escritorio (>= 768px): la barra superior no existe aqui (ver AppBarPopOver), asi que
+   la pagina pone su propio aire arriba. Cada carrera es una franja con sus niveles como
+   una ruta: un trayecto une los numeros de nivel de izquierda a derecha.
+   ========================================================== */
+@media (min-width: 768px) {
+    .evalua-page {
+        max-width: var(--d-content-max);
+        padding: 40px 32px 56px;
+        gap: 40px;
+    }
+
+    .evalua-header__title {
+        font-family: var(--d-display);
+        font-size: 2.4rem;
+        line-height: 1.05;
+        letter-spacing: 0.5px;
+        color: var(--d-text);
+    }
+
+    .evalua-header__subtitle {
+        font-size: 0.98rem;
+        line-height: 1.65;
+        color: var(--d-text-2);
+    }
+
+    .evalua-group {
+        gap: 18px;
+    }
+
+    /* El nombre de la carrera pasa de etiqueta chica a titulo de franja. */
+    .evalua-group__title {
+        font-family: var(--d-display);
+        font-size: 1.25rem;
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0.4px;
+        color: var(--d-text);
+        gap: 16px;
+    }
+
+    .evalua-group__title::after {
+        order: 1;
+        background: var(--d-line);
+    }
+
+    .evalua-group__count {
+        display: inline;
+        order: 2;
+        font-family: 'Raleway', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        color: var(--d-text-3);
+    }
+
+    /* El trayecto: una linea detras de las tarjetas a la altura de los numeros. Solo se ve
+       en los huecos entre tarjetas, porque estas tienen fondo opaco. Va de verde tenue a
+       verde pleno: del nivel 1 al 3. */
+    .evaluation-grid {
+        position: relative;
+        gap: 28px;
+    }
+
+    .evaluation-grid::before {
+        content: '';
+        position: absolute;
+        left: 48px;
+        right: 48px;
+        /* 3px de la barra de acento + 22px de padding + la mitad del nodo de 48px */
+        top: 49px;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(128, 178, 89, 0.25), var(--axis-ambiental));
+        z-index: 0;
+    }
+}
+
+@media (min-width: 1024px) {
+    .evalua-page {
+        max-width: var(--d-content-max);
+        padding: 44px var(--d-gutter) 64px;
+        gap: 48px;
+    }
+
+    /* Titulo y "Como funciona" en una fila: el recuadro llena el lado derecho que el
+       subtitulo deja libre. */
+    .evalua-intro {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+        gap: 48px;
+        align-items: center;
+    }
+
+    .evalua-header__title {
+        font-size: 2.8rem;
+    }
+
+    .evalua-howto {
+        display: block;
+        padding: 22px 24px;
+        border-radius: 18px;
+        background: var(--d-surface);
+        border: 1px solid var(--d-line);
+    }
+
+    .evalua-howto__title {
+        margin: 0 0 14px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--d-text);
+    }
+
+    /* Son pasos de verdad, en orden: aqui si va numeracion. */
+    .evalua-howto__steps {
+        list-style: none;
+        counter-reset: paso;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .evalua-howto__steps li {
+        counter-increment: paso;
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 12px;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        color: var(--d-text-2);
+    }
+
+    .evalua-howto__steps li::before {
+        content: counter(paso);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: rgba(128, 178, 89, 0.16);
+        color: var(--axis-ambiental);
+        font-family: var(--d-display);
+        font-size: 0.9rem;
+    }
+
+    .evalua-howto__steps strong {
+        color: var(--d-text);
+        font-weight: 700;
+    }
+
+    .evaluation-grid {
+        gap: 36px;
     }
 }

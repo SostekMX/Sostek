@@ -50,6 +50,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, level, descri
     /* `||` y no `??`: el backend manda description: '' por defecto del esquema, y la
        cadena vacia no es nullish, asi que con ?? ganaba '' y la tarjeta salia sin texto. */
     const displayDescription = description || meta.description;
+    /* El semestre viene al inicio de la descripcion: "(3°-4° semestre) Mide...". En mobile
+       el texto se lee igual que siempre; en escritorio el parentesis se esconde y el
+       semestre sale como etiqueta propia junto al numero de nivel. */
+    const semesterMatch = /^\s*\(([^)]+)\)\s*/.exec(displayDescription);
+    const semester = semesterMatch?.[1];
+    const descriptionRest = semesterMatch ? displayDescription.slice(semesterMatch[0].length) : displayDescription;
 
     return (
         <IonCard
@@ -76,8 +82,19 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, level, descri
                 </div>
                 {/* La carrera ya esta en el encabezado del grupo, asi que la tarjeta
                     solo necesita decir de que nivel es. */}
+                {level !== undefined && (
+                    <div className='evaluation-card__level' aria-hidden='true'>
+                        <span className='evaluation-card__level-number'>{level}</span>
+                        {semester && <span className='evaluation-card__semester'>{semester}</span>}
+                    </div>
+                )}
                 <p className='evaluation__title'>{level ? `Nivel ${level}` : name}</p>
-                <p className='evaluation-card__desc'>{displayDescription}</p>
+                <p className='evaluation-card__desc'>
+                    {semesterMatch
+                        ? <><span className='evaluation-card__desc-semester'>{semesterMatch[0]}</span>{descriptionRest}</>
+                        : displayDescription}
+                </p>
+                <p className='evaluation-card__start'>Empezar evaluación</p>
             </div>
         </IonCard>
     );
