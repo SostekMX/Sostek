@@ -1,15 +1,38 @@
-import { IonPage, IonContent, IonHeader, IonButton } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonButton, useIonRouter } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { saveScore } from '../../api/user';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import AppContext from '../../context/AppContext';
 import { getFeedback, clearScoreSession } from '../../utils/scoring';
+import { normalize, CATEGORY_RECOMMENDATIONS } from '../../utils/search';
+import { axisOf } from '../../utils/axis';
+import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
+import { Article } from '../../components/ArticleCarrousel';
 import './FinalScoreEvaluation.css';
 
 interface Params {
     name: string;
 }
+
+/* Los primeros articulos que refuerzan el eje: misma busqueda que hace APRENDE al llegar
+   con el eje como termino (categoria, titulo y tags), sobre el cache de articulos. Sin
+   cache no hay vista previa y queda solo el boton a la lista completa. */
+function recommendedArticles(weakest: string, limit: number): Article[] {
+    let articles: Article[] = [];
+    try { articles = JSON.parse(localStorage.getItem('articles') ?? '[]'); } catch { return []; }
+    const searchNorm = normalize(weakest);
+    const terms = CATEGORY_RECOMMENDATIONS[searchNorm] ?? [searchNorm];
+    return articles.filter(a => {
+        const fields = [a.category, a.title, ...(a.tags ?? [])].map(c => normalize(c ?? ''));
+        return terms.some(t => fields.some(f => f.includes(t)));
+    }).slice(0, limit);
+}
+
+/* Anillo del puntaje: el trazo cubre la fraccion score/max. La animacion de llenado es el
+   unico movimiento de la pantalla y se apaga con prefers-reduced-motion (ver el CSS). */
+const RING_R = 88;
+const RING_C = 2 * Math.PI * RING_R;
 
 const FinalScoreEvaluation: React.FC = () => {
     /* Se lee de sessionStorage en el primer render y no en un efecto, para no pintar un
@@ -24,6 +47,8 @@ const FinalScoreEvaluation: React.FC = () => {
         };
     });
     const { changeSearch } = useContext(AppContext);
+    const isDesktop = useMediaQuery(DESKTOP_QUERY);
+    const router = useIonRouter();
 
     useEffect(() => {
         /* score_test es un solo numero que se sobrescribe. Guardar en cada visita pisaba el
@@ -65,6 +90,106 @@ const FinalScoreEvaluation: React.FC = () => {
     const { score, maxScore, weakestCategory } = result;
     const { titulo, mensaje } = getFeedback(score, maxScore);
 
+    function goToRecommended() {
+        changeSearch!(weakestCategory);
+        clearScoreSession();
+    }
+
+    /* Escritorio: otra composicion (dos columnas, anillo y vista previa de articulos), por
+       eso es un render aparte; el de mobile de abajo queda tal cual. */
+    if (isDesktop) {
+        const pct = maxScore > 0 ? Math.min(score / maxScore, 1) : 0;
+        const axis = axisOf(weakestCategory);
+        const weakNorm = normalize(weakestCategory);
+        const mixedAxis = weakNorm.includes('econom') && weakNorm.includes('social');
+        const recommended = weakestCategory ? recommendedArticles(weakestCategory, 3) : [];
+
+        return (
+            <IonPage>
+                <AppBarPopOver />
+                <IonContent fullscreen class="app-dark-bg">
+                    <div className="score-desk">
+                        <header className="score-desk__header">
+                            <p className="score-desk__kicker">Resultado de tu autodiagn&oacute;stico</p>
+                            <h1 className="score-desk__title">{name}</h1>
+                        </header>
+
+                        <div className={`score-desk__grid${weakestCategory ? '' : ' score-desk__grid--single'}`}>
+                            <section className="score-desk__result" aria-label="Puntaje">
+                                <div className="score-ring" style={{ '--ring-c': RING_C, '--ring-offset': RING_C * (1 - pct) } as any}>
+                                    <svg viewBox="0 0 200 200" aria-hidden="true">
+                                        <circle className="score-ring__track" cx="100" cy="100" r={RING_R} />
+                                        <circle className="score-ring__fill" cx="100" cy="100" r={RING_R} />
+                                    </svg>
+                                    <div className="score-ring__label">
+                                        <span className="score-ring__score">{score}</span>
+                                        {maxScore > 0 && <span className="score-ring__max">de {maxScore} puntos</span>}
+                                    </div>
+                                </div>
+                                <h2 className="score-desk__feedback-title">{titulo}</h2>
+                                <p className="score-desk__feedback">{mensaje}</p>
+                                <a
+                                    href="/tab3"
+                                    className="score-desk__secondary"
+                                    onClick={e => { e.preventDefault(); router.push('/tab3', 'back'); }}
+                                >
+                                    Hacer otra evaluaci&oacute;n
+                                </a>
+                            </section>
+
+                            {weakestCategory && (
+                                <section
+                                    className={`score-desk__weak${axis ? ` axis-${axis}` : ''}${mixedAxis ? ' score-desk__weak--mixed' : ''}`}
+                                    aria-label="Eje a reforzar"
+                                >
+                                    <p className="score-desk__weak-label">Tu eje m&aacute;s d&eacute;bil</p>
+                                    <p className="score-desk__weak-axis">{weakestCategory}</p>
+                                    <p className="score-desk__weak-note">
+                                        Es el &aacute;rea donde tu proyecto sum&oacute; menos en proporci&oacute;n a lo
+                                        que pod&iacute;a obtener. Estas lecturas te ayudan a reforzarla.
+                                    </p>
+
+                                    {recommended.length > 0 && (
+                                        <ul className="score-desk__articles">
+                                            {recommended.map(a => {
+                                                const aAxis = axisOf(a.category);
+                                                return (
+                                                    <li key={a._id}>
+                                                        <a
+                                                            href={`/Documents/${a._id}`}
+                                                            className="score-article"
+                                                            onClick={e => { e.preventDefault(); router.push(`/Documents/${a._id}`, 'forward'); }}
+                                                        >
+                                                            <img src={a.image} alt="" className="score-article__img" loading="lazy" />
+                                                            <span className="score-article__text">
+                                                                <span className={`score-article__category${aAxis ? ` axis-${aAxis}` : ''}`}>{a.category}</span>
+                                                                <span className="score-article__title">{a.title}</span>
+                                                                {a.author && <span className="score-article__author">{a.author}</span>}
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    )}
+
+                                    <IonButton
+                                        href="/MainMenu"
+                                        color="primary"
+                                        className="score-desk__cta"
+                                        onClick={goToRecommended}
+                                    >
+                                        Ver todos los art&iacute;culos recomendados
+                                    </IonButton>
+                                </section>
+                            )}
+                        </div>
+                    </div>
+                </IonContent>
+            </IonPage>
+        );
+    }
+
     return (
         <IonPage>
             <AppBarPopOver />
@@ -96,10 +221,7 @@ const FinalScoreEvaluation: React.FC = () => {
                                     href="/MainMenu"
                                     color="primary"
                                     className="finalScoreEvaluation__button"
-                                    onClick={() => {
-                                        changeSearch!(weakestCategory);
-                                        clearScoreSession();
-                                    }}
+                                    onClick={goToRecommended}
                                 >
                                     Art&iacute;culos recomendados
                                 </IonButton>
