@@ -4,7 +4,8 @@ import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLab
 import { personCircle, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
 import { useHistory, useLocation } from "react-router-dom";
 import AppContext from '../../context/AppContext';
-import { clearSession } from '../../utils/session';
+import { clearSession, readAvatar } from '../../utils/session';
+import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 
 export const AppBarPopOver: React.FC = () => {
     const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
@@ -17,11 +18,12 @@ export const AppBarPopOver: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
+    const isDesktop = useMediaQuery(DESKTOP_QUERY);
     const showSearch = location.pathname === '/tab1' || location.pathname === '/MainMenu';
+    // En escritorio el buscador de APRENDE esta siempre abierto: hay lugar y ahorra un clic.
+    const searchOpen = isSearching || isDesktop;
     const isUserLogged = sessionStorage.getItem('login') === 'true';
-    const avatarUrl = localStorage.getItem('avatar') || '';
-    const rawPos = localStorage.getItem('avatar_position');
-    const avatarPos = (() => { try { return rawPos ? JSON.parse(rawPos) : null; } catch { return null; } })() ?? { x: 50, y: 50 };
+    const { url: avatarUrl, pos: avatarPos } = readAvatar();
 
     useEffect(() => {
         if (sessionStorage.getItem("search")) {
@@ -55,7 +57,7 @@ export const AppBarPopOver: React.FC = () => {
     }
 
     function closeSearch() {
-        if (isClosing) return;
+        if (isClosing || isDesktop) return;
         setIsClosing(true);
         setTimeout(() => {
             setIsSearching(false);
@@ -69,7 +71,9 @@ export const AppBarPopOver: React.FC = () => {
     }
 
     return <>
-        <IonToolbar className={transparentToolbar ? 'appbar appbar--transparent' : 'appbar'}>
+        {/* appbar--bare: en escritorio, fuera de APRENDE, la barra no tiene nada que mostrar
+            (logo y menu viven en la barra lateral) y se esconde por CSS. */}
+        <IonToolbar className={`appbar${transparentToolbar ? ' appbar--transparent' : ''}${showSearch ? '' : ' appbar--bare'}`}>
 
             {/* Logo — siempre visible */}
             <IonButtons slot='start'>
@@ -79,7 +83,7 @@ export const AppBarPopOver: React.FC = () => {
             </IonButtons>
 
             {/* Searchbar en slot central — ocupa solo el espacio disponible entre logo y botones */}
-            {showSearch && isSearching && (
+            {showSearch && searchOpen && (
                 <IonSearchbar
                     ref={searchbarRef}
                     className={`appbar__searchbar${isClosing ? ' appbar__searchbar--out' : ''}`}
@@ -88,13 +92,13 @@ export const AppBarPopOver: React.FC = () => {
                     onIonBlur={() => setTimeout(closeSearch, 120)}
                     showClearButton="always"
                     value={search}
-                    placeholder="Búsqueda..."
+                    placeholder={isDesktop ? 'Buscar artículos, temas…' : 'Búsqueda...'}
                 />
             )}
 
             {/* Botones derecha — lupa + menú/avatar siempre juntos */}
             <div slot="end" className="appbar__end">
-                {showSearch && !isSearching && (
+                {showSearch && !searchOpen && (
                     <IonButton fill="clear" onClick={openSearch}>
                         <IonIcon slot="icon-only" icon={iconSearch} />
                     </IonButton>

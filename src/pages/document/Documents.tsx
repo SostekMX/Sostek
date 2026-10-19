@@ -59,7 +59,7 @@ const Documents: React.FC = () => {
             <IonBackButton defaultHref="/tab1" text="" />
           </IonButtons>
           <IonButtons slot="end">
-            <IonButton id={popoverId}>
+            <IonButton id={popoverId} className="dark-toolbar__menu-btn">
               <IonIcon slot="icon-only" icon={menuOutline} />
             </IonButton>
             <IonPopover trigger={popoverId} triggerAction="click">
