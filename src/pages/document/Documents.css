@@ -147,3 +147,403 @@
 .doc-bibliography__entry:last-child {
   margin-bottom: 0;
 }
+
+/* ─── Escritorio: lectura de revista ───
+   Las clases docd-* solo existen en el render de escritorio (ArticleDesktop). La portada y
+   el texto comparten el mismo grid para que el titulo arranque en el mismo borde que el
+   primer parrafo. */
+@media (min-width: 768px) {
+  ion-content.docd-content {
+    --background: var(--d-bg);
+  }
+
+  .docd-toolbar-title {
+    opacity: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--d-text-2);
+    transition: opacity 0.2s ease-out;
+  }
+
+  .docd-toolbar-title--visible {
+    opacity: 1;
+  }
+
+  .docd-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 11; /* ion-toolbar trae z-index 10 */
+    height: 3px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .docd-progress__fill {
+    height: 100%;
+    background: var(--axis, var(--axis-ambiental));
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* ch se mide con el tamano de letra del texto: el grid de la portada usa el mismo para
+     que las columnas coincidan. */
+  .docd-layout,
+  .docd-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 68ch);
+    justify-content: center;
+    column-gap: clamp(40px, 5vw, 80px);
+    font-size: 1.08rem;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--d-content-max);
+    margin: 0 auto;
+    padding: 0 var(--d-gutter);
+  }
+
+  /* Portada */
+  .docd-hero {
+    position: relative;
+    height: min(58vh, 540px);
+    min-height: 380px;
+    overflow: hidden;
+    background: var(--d-surface);
+  }
+
+  .docd-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Dos degradados: hacia abajo funde la foto con la pagina, hacia la izquierda le da
+     contraste al titulo sin oscurecer toda la imagen. */
+  .docd-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(15, 29, 18, 0.1) 0%, rgba(15, 29, 18, 0.45) 50%, var(--d-bg) 100%),
+      linear-gradient(to right, rgba(15, 29, 18, 0.6) 0%, rgba(15, 29, 18, 0) 70%);
+  }
+
+  .docd-hero__inner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    padding-bottom: 36px;
+  }
+
+  .docd-hero__text {
+    grid-column: 1 / -1;
+    max-width: 920px;
+  }
+
+  .docd-chip {
+    display: inline-block;
+    padding: 5px 13px;
+    border-radius: 100px;
+    background: var(--axis, var(--axis-ambiental));
+    color: #0f1d12;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .docd-title {
+    margin: 16px 0 14px;
+    font-family: var(--d-display);
+    font-size: clamp(1.9rem, 3vw, 2.75rem);
+    font-weight: normal;
+    line-height: 1.12;
+    letter-spacing: 0.4px;
+    color: var(--d-text);
+    text-wrap: balance;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .docd-subtitle {
+    margin: 0;
+    max-width: 60ch;
+    font-size: 1.08rem;
+    line-height: 1.55;
+    color: rgba(238, 243, 232, 0.82);
+    text-wrap: balance;
+  }
+
+  /* Texto */
+  .docd-body {
+    padding: 48px 0 120px;
+  }
+
+  .docd-body > p {
+    margin: 0 0 1.3em;
+    font-size: 1em;
+    line-height: 1.8;
+    color: rgba(238, 243, 232, 0.84);
+    text-wrap: pretty;
+  }
+
+  .docd-body > p:first-child::first-letter {
+    float: left;
+    /* Kiona trae mucho aire a la derecha de la letra: el margen negativo la acerca a la palabra. */
+    margin: 0.06em -0.03em 0 -0.06em;
+    font-family: var(--d-display);
+    font-size: 5.6em;
+    line-height: 0.78;
+    color: var(--axis, var(--axis-ambiental));
+  }
+
+  .docd-biblio {
+    margin-top: 64px;
+    padding-top: 28px;
+    border-top: 1px solid var(--d-line);
+  }
+
+  .docd-biblio__title {
+    margin: 0 0 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--d-text);
+  }
+
+  .docd-biblio__list {
+    margin: 0;
+    padding-left: 1.5em;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--d-text-3);
+  }
+
+  .docd-biblio__list li {
+    margin-bottom: 0.7em;
+    padding-left: 0.3em;
+    overflow-wrap: anywhere;
+  }
+
+  .docd-biblio__list li::marker {
+    color: var(--axis, var(--axis-ambiental));
+    font-weight: 700;
+  }
+
+  /* Columna lateral. Entre 768 y 1023 va arriba del texto como una fila. */
+  .docd-aside {
+    order: -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    margin-top: 36px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--d-line);
+  }
+
+  .docd-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 32px;
+    margin: 0;
+  }
+
+  .docd-fact dt {
+    font-size: 0.76rem;
+    color: var(--d-text-3);
+  }
+
+  .docd-fact dd {
+    margin: 3px 0 0;
+    font-size: 0.92rem;
+    color: var(--d-text);
+  }
+
+  .docd-fact__author {
+    font-weight: 600;
+  }
+
+  .docd-fact--credit dd {
+    max-width: 32ch;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--d-text-2);
+    overflow-wrap: anywhere;
+  }
+
+  .docd-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .docd-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border: 1px solid var(--d-line-strong);
+    border-radius: 100px;
+    background: transparent;
+    color: var(--d-text);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 160ms ease-out;
+  }
+
+  .docd-button ion-icon {
+    font-size: 18px;
+  }
+
+  .docd-button:active {
+    transform: scale(0.97);
+  }
+
+  .docd-button:focus-visible {
+    outline: 2px solid var(--axis, var(--axis-ambiental));
+    outline-offset: 3px;
+  }
+
+  .docd-button--fav {
+    border-color: transparent;
+    background: var(--axis, var(--axis-ambiental));
+    color: #0f1d12;
+  }
+
+  .docd-button--saved {
+    border-color: var(--axis, var(--axis-ambiental));
+    background: transparent;
+    color: var(--axis, var(--axis-ambiental));
+  }
+
+  .docd-button--quiet {
+    border-color: transparent;
+    color: var(--d-text-2);
+  }
+
+  /* Carga y error */
+  .docd-hero--skeleton {
+    border-radius: 0;
+  }
+
+  .docd-hero--skeleton::after {
+    display: none;
+  }
+
+  .docd-skeleton__line {
+    height: 15px;
+    margin-bottom: 18px;
+  }
+
+  .docd-skeleton__line--short {
+    width: 62%;
+    margin-bottom: 36px;
+  }
+
+  .docd-skeleton__aside {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .docd-error {
+    max-width: 520px;
+    margin: 16vh auto 0;
+    padding: 0 var(--d-gutter);
+  }
+
+  .docd-error__title {
+    margin: 0 0 12px;
+    font-family: var(--d-display);
+    font-size: 1.5rem;
+    color: var(--d-text);
+  }
+
+  .docd-error__text {
+    margin: 0 0 28px;
+    line-height: 1.6;
+    color: var(--d-text-2);
+  }
+}
+
+/* Desde 1024 la columna lateral se separa del texto y acompana la lectura. */
+@media (min-width: 1024px) {
+  .docd-layout,
+  .docd-hero__inner {
+    grid-template-columns: minmax(0, 68ch) 240px;
+  }
+
+  .docd-aside {
+    order: 0;
+    position: sticky;
+    top: 28px;
+    align-self: start;
+    display: block;
+    margin-top: 48px;
+    padding: 20px 0 0;
+    border-top: 2px solid var(--axis, var(--axis-ambiental));
+    border-bottom: 0;
+  }
+
+  .docd-facts {
+    display: grid;
+    gap: 18px;
+  }
+
+  .docd-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 28px;
+  }
+
+  .docd-button--quiet {
+    padding-left: 0;
+  }
+
+  .docd-skeleton__aside {
+    height: 220px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .docd-layout,
+  .docd-hero__inner {
+    grid-template-columns: minmax(0, 68ch) 272px;
+  }
+}
+
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  .docd-button:hover {
+    border-color: rgba(238, 243, 232, 0.36);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .docd-button--fav:hover {
+    border-color: transparent;
+    background: var(--axis, var(--axis-ambiental));
+    filter: brightness(1.08);
+  }
+
+  .docd-button--quiet:hover {
+    border-color: transparent;
+    color: var(--d-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docd-toolbar-title,
+  .docd-button {
+    transition: none;
+  }
+
+  .docd-button:active {
+    transform: none;
+  }
+}
