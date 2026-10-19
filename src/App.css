@@ -467,3 +467,9 @@ ion-popover ion-item {
 .space {
     height: 1.5em;
 }
+
+/* === EJES (ver src/utils/axis.ts) ===
+   Solo fijan --axis; cada componente decide en sus reglas de escritorio donde usarlo. */
+.axis-ambiental { --axis: var(--axis-ambiental); }
+.axis-economico { --axis: var(--axis-economico); }
+.axis-social { --axis: var(--axis-social); }

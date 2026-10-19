@@ -116,6 +116,24 @@
   --sos-shadow-md: 0 4px 16px rgba(26, 46, 26, 0.12);
   --sos-shadow-lg: 0 8px 28px rgba(26, 46, 26, 0.18);
 
+  /* ESCRITORIO (>= 768px). Solo los usan reglas dentro de media queries de escritorio. */
+  --d-bg: #0f1d12;
+  --d-surface: #15261a;
+  --d-surface-2: #1c3122;
+  --d-line: rgba(222, 235, 215, 0.1);
+  --d-line-strong: rgba(222, 235, 215, 0.18);
+  --d-text: #eef3e8;
+  --d-text-2: rgba(238, 243, 232, 0.68);
+  --d-text-3: rgba(238, 243, 232, 0.44);
+  --d-display: 'Kiona-Regular', 'Raleway', sans-serif;
+  --d-content-max: 1240px;
+  --d-gutter: 40px;
+
+  /* Los tres ejes (ver src/utils/axis.ts) */
+  --axis-ambiental: #80b259;
+  --axis-economico: #ecaf80;
+  --axis-social: #7db8ba;
+
   --ion-background-color: var(--sos-bg);
   --ion-item-background: var(--sos-surface);
 }
