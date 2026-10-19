@@ -33,6 +33,11 @@
     display: flex;
 }
 
+/* Avance dentro del panel: solo en escritorio (ver el bloque de 1024). */
+.qnav__progress {
+    display: none;
+}
+
 .qnav__title {
     margin: 0;
     font-size: 0.7rem;
@@ -123,5 +128,77 @@
 
     .qnav__panel {
         display: flex;
+    }
+}
+
+/* Escritorio: el panel lleva el avance arriba (la barra pegada de Evaluation.css se
+   esconde) y, sin esa barra encima, el sticky puede subir hasta el borde. */
+@media (min-width: 1024px) {
+    .qnav {
+        top: 28px;
+        max-height: calc(100vh - 56px);
+    }
+
+    .qnav__panel {
+        gap: 18px;
+        padding: 22px;
+        border-radius: 18px;
+        background: var(--d-surface);
+        border-color: var(--d-line);
+    }
+
+    .qnav__progress {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--d-line);
+    }
+
+    .qnav__progress-count {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--d-text-2);
+    }
+
+    .qnav__progress-count strong {
+        font-family: var(--d-display);
+        font-size: 1.9rem;
+        font-weight: 400;
+        color: var(--d-text);
+        margin-right: 4px;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .qnav__progress-bar {
+        height: 6px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+    }
+
+    .qnav__progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        background: var(--axis-ambiental);
+        transition: width 300ms ease-out;
+    }
+
+    .qnav__title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: none;
+        letter-spacing: 0;
+        color: var(--d-text);
+    }
+
+    .qnav__grid {
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .qnav__progress-fill {
+        transition: none;
     }
 }

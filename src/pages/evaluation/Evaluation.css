@@ -1,3 +1,12 @@
+/* Envoltorio y texto de apoyo: solo cuentan en escritorio. */
+.evaluation__header {
+    display: contents;
+}
+
+.evaluation__intro {
+    display: none;
+}
+
 .header__title {
     color: #f0f0f0;
     text-align: center;
@@ -137,5 +146,66 @@
     .header__title {
         font-size: 1.4rem;
         padding-top: 28px;
+    }
+}
+
+/* ==========================================================
+   Escritorio (>= 768px). La barra superior no existe aqui, asi que el titulo pone su
+   propio aire y se alinea a la izquierda con la columna de preguntas (720 + 28 + 300).
+   ========================================================== */
+@media (min-width: 768px) {
+    .evaluation__header {
+        display: block;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 40px 32px 20px;
+    }
+
+    .header__title {
+        text-align: left;
+        padding: 0;
+        margin: 0 0 10px;
+        font-family: var(--d-display);
+        font-size: 2rem;
+        font-weight: 400;
+        line-height: 1.1;
+        color: var(--d-text);
+    }
+
+    .evaluation__intro {
+        display: block;
+        margin: 0;
+        max-width: 60ch;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--d-text-2);
+    }
+
+    .eval-progress {
+        background: var(--d-bg);
+        border-bottom-color: var(--d-line);
+    }
+}
+
+@media (min-width: 1024px) {
+    .evaluation__header {
+        max-width: calc(720px + 28px + 300px);
+        padding: 44px var(--d-gutter) 8px;
+        box-sizing: content-box;
+    }
+
+    .header__title {
+        font-size: 2.3rem;
+        padding: 0;
+    }
+
+    /* El avance pasa al panel de la derecha (QuestionNav). */
+    .eval-progress {
+        display: none;
+    }
+
+    .evaluation__layout {
+        padding-top: 24px;
+        gap: 36px;
     }
 }

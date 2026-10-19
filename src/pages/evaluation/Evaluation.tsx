@@ -118,7 +118,15 @@ const Evaluation: React.FC = () => {
         )}
         {!loading && evaluation && (
           <>
-            <h1 className="header__title">{name}</h1>
+            {/* display: contents en mobile; en escritorio alinea titulo e indicacion con
+                la columna de preguntas. */}
+            <div className="evaluation__header">
+              <h1 className="header__title">{name}</h1>
+              <p className="evaluation__intro">
+                {total} preguntas sobre tu proyecto. Marca todas las opciones que ya hayas
+                considerado; puedes saltar entre preguntas desde el panel.
+              </p>
+            </div>
 
             <div className="eval-progress">
               <div className="eval-progress__bar">

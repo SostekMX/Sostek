@@ -27,6 +27,16 @@ const QuestionNav: React.FC<Props> = ({ total, answered, onJump, submit }) => {
             </button>
 
             <div className='qnav__panel'>
+                {/* Solo desde 1024: ahi el panel es columna fija y el avance vive en el, en
+                    vez de en la barra pegada arriba de las preguntas. */}
+                <div className='qnav__progress'>
+                    <p className='qnav__progress-count'>
+                        <strong>{answered.size}</strong> de {total} contestadas
+                    </p>
+                    <div className='qnav__progress-bar'>
+                        <div className='qnav__progress-fill' style={{ width: `${total > 0 ? (answered.size / total) * 100 : 0}%` }} />
+                    </div>
+                </div>
                 <p className='qnav__title'>Preguntas</p>
                 <div className='qnav__grid'>
                     {Array.from({ length: total }, (_, i) => (
