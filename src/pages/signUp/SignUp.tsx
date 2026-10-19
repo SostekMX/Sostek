@@ -8,7 +8,9 @@ import {
 } from '@ionic/react';
 import { useHistory } from "react-router-dom";
 import '../../App.css';
+import '../logIn/LogIn.css';
 import './SignUp.css';
+import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import { useEffect, useRef, useState } from 'react';
 import { signup } from '../../api/auth';
 import { clearSession } from '../../utils/session';
@@ -25,6 +27,7 @@ const SignUp: React.FC = () => {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [genderOpen, setGenderOpen] = useState(false);
     const genderRef = useRef<HTMLDivElement>(null);
+    const isDesktop = useMediaQuery(DESKTOP_QUERY);
     const history = useHistory();
 
     useEffect(() => {
@@ -68,6 +71,20 @@ const SignUp: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
+                {/* En mobile .signup-split es un div sin estilos; en escritorio pone la marca
+                    a la izquierda y el formulario a la derecha. */}
+                <div className='signup-split'>
+                {/* Panel de marca: el mismo de LogIn, solo en escritorio. */}
+                {isDesktop && (
+                    <aside className='login-brand auth-brand'>
+                        <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
+                        <div className='login-brand__content'>
+                            <p className='login-brand__headline'>Guarda lo<br />que aprendes.</p>
+                            <p className='login-brand__desc'>Con tu cuenta guardas art&iacute;culos y presentaciones en Favoritos, y el puntaje de tus evaluaciones queda registrado.</p>
+                        </div>
+                        <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
+                    </aside>
+                )}
                 <div className='signup-page'>
 
                     {/* Header */}
@@ -190,6 +207,7 @@ const SignUp: React.FC = () => {
                         </div>
                     </div>
 
+                </div>
                 </div>
                 <IonToast
                     isOpen={showAlert}

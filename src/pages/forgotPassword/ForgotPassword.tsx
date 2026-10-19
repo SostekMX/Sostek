@@ -2,6 +2,7 @@ import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage } from '@io
 import { useState } from 'react';
 import { forgotPassword } from '../../api/auth';
 import '../logIn/LogIn.css';
+import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 
 const ForgotPassword: React.FC = () => {
     const [email, setEmail] = useState<string>('');
@@ -10,6 +11,7 @@ const ForgotPassword: React.FC = () => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [sent, setSent] = useState<boolean>(false);
+    const isDesktop = useMediaQuery(DESKTOP_QUERY);
 
     async function sendResetToken() {
         setLoading(true);
@@ -38,6 +40,17 @@ const ForgotPassword: React.FC = () => {
         <IonPage>
             <IonContent fullscreen>
                 <div className='login-split'>
+                    {/* Panel de marca: el mismo de LogIn, solo en escritorio. */}
+                    {isDesktop && (
+                        <aside className='login-brand auth-brand'>
+                            <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
+                            <div className='login-brand__content'>
+                                <p className='login-brand__headline'>Recupera<br />tu acceso.</p>
+                                <p className='login-brand__desc'>Te mandamos un link a tu correo para que elijas una contrase&ntilde;a nueva. Si no lo ves en unos minutos, revisa la carpeta de spam.</p>
+                            </div>
+                            <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
+                        </aside>
+                    )}
                     <div className='login-form-panel'>
                         <div className='login-form-inner'>
                             <img src="/assets/sostek-logo.png" className='login-logo-mobile' alt='Sostek' />
