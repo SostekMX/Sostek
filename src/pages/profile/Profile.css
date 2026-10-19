@@ -198,3 +198,295 @@
     font-weight: 700;
     letter-spacing: 0.4px;
 }
+
+/* El envoltorio del dialogo no existe para el layout en mobile: los hijos siguen siendo
+   hijos directos de .crop-overlay. */
+.crop-dialog {
+    display: contents;
+}
+
+/* === ESCRITORIO === */
+@media (min-width: 768px) {
+    /* Tarjeta de identidad a la izquierda, formulario y zona de peligro a la derecha. */
+    .profile-container {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        grid-template-areas:
+            'header header'
+            'identity form'
+            'identity danger';
+        align-items: start;
+        gap: 24px 32px;
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 40px var(--d-gutter) 64px;
+        box-sizing: border-box;
+    }
+
+    .profile-page-header {
+        grid-area: header;
+        margin-bottom: 8px;
+    }
+
+    .profile-page-header__title {
+        margin: 0 0 8px;
+        font-family: var(--d-display);
+        font-size: 2.1rem;
+        font-weight: 400;
+        color: var(--d-text);
+    }
+
+    .profile-page-header__text {
+        margin: 0;
+        color: var(--d-text-2);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        max-width: 72ch;
+    }
+
+    .profile-avatar {
+        grid-area: identity;
+        position: sticky;
+        top: 24px;
+        padding: 32px 24px 28px;
+        gap: 0;
+        background: var(--d-surface);
+        border: 1px solid var(--d-line);
+        border-radius: 24px;
+        text-align: center;
+    }
+
+    .profile-avatar__img,
+    .profile-avatar__icon {
+        width: 128px;
+        height: 128px;
+        font-size: 128px;
+        margin-bottom: 18px;
+    }
+
+    .profile-avatar__img {
+        border-width: 3px;
+        /* Anillo de separacion para que la foto no se pegue al borde verde. */
+        box-shadow: 0 0 0 6px var(--d-surface), 0 0 0 7px var(--d-line-strong);
+    }
+
+    .profile-identity {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+        margin-bottom: 22px;
+        min-width: 0;
+    }
+
+    .profile-identity__name {
+        margin: 0;
+        color: var(--d-text);
+        font-size: 1.2rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .profile-identity__email {
+        margin: 0;
+        color: var(--d-text-3);
+        font-size: 0.85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .profile-identity__occupation {
+        align-self: center;
+        margin: 10px 0 0;
+        padding: 4px 12px;
+        border-radius: 100px;
+        background: rgba(128, 178, 89, 0.14);
+        color: var(--axis-ambiental);
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .profile-avatar__change-btn {
+        padding: 9px 20px;
+    }
+
+    /* Formulario: dos campos por fila; titulo y botones de ancho completo. */
+    .profile-card {
+        grid-area: form;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 20px;
+        padding: 32px;
+        background: var(--d-surface);
+        border-color: var(--d-line);
+        border-radius: 24px;
+    }
+
+    .profile-title {
+        grid-column: 1 / -1;
+        margin: 0 0 6px;
+        text-align: left;
+        font-family: 'Raleway', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0;
+    }
+
+    .profile-label {
+        text-transform: none;
+        letter-spacing: 0.2px;
+        font-size: 0.82rem !important;
+    }
+
+    .profile-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        gap: 12px;
+        margin-top: 8px;
+        padding-top: 22px;
+        border-top: 1px solid var(--d-line);
+    }
+
+    .profile-actions ion-button {
+        margin: 0;
+        height: 46px;
+        text-transform: none;
+        letter-spacing: 0.2px;
+    }
+
+    .profile-actions ion-button:first-child {
+        --padding-start: 28px;
+        --padding-end: 28px;
+    }
+
+    /* Eliminar vive en su propia seccion en escritorio. */
+    .profile-delete-inline {
+        display: none;
+    }
+
+    .profile-danger {
+        grid-area: danger;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 22px 32px;
+        border: 1px solid rgba(224, 85, 85, 0.28);
+        border-radius: 20px;
+        background: rgba(224, 85, 85, 0.05);
+    }
+
+    .profile-danger__title {
+        margin: 0 0 4px;
+        color: #f0b4b4;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .profile-danger__text {
+        margin: 0;
+        color: var(--d-text-2);
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+
+    .profile-danger__btn {
+        flex-shrink: 0;
+        margin: 0;
+        --border-radius: 100px;
+        height: 42px;
+        text-transform: none;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+    }
+
+    /* Recorte como dialogo centrado sobre la pagina atenuada. */
+    .crop-overlay {
+        background: rgba(6, 14, 8, 0.72);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        padding: 32px;
+    }
+
+    .crop-dialog {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        width: 100%;
+        max-width: 380px;
+        padding: 32px 36px 28px;
+        background: var(--d-surface-2);
+        border: 1px solid var(--d-line-strong);
+        border-radius: 24px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+        box-sizing: border-box;
+    }
+
+    .crop-title {
+        font-family: var(--d-display);
+        font-weight: 400;
+        font-size: 1.3rem;
+    }
+
+    /* La sombra gigante de mobile pintaria de negro toda la tarjeta. */
+    .crop-circle-preview {
+        box-shadow: 0 0 0 6px rgba(128, 178, 89, 0.12);
+    }
+
+    .crop-actions {
+        flex-direction: row-reverse;
+        max-width: none;
+    }
+
+    .crop-btn {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+    .profile-avatar__change-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .crop-btn--cancel:hover {
+        color: var(--d-text);
+        border-color: var(--d-line-strong);
+    }
+}
+
+/* Entre 768 y 1023 la columna derecha queda angosta: el formulario vuelve a un campo por fila. */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .profile-container {
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 20px 24px;
+        padding-inline: 28px;
+    }
+
+    .profile-card {
+        grid-template-columns: 1fr;
+        padding: 24px;
+    }
+
+    .profile-avatar__img,
+    .profile-avatar__icon {
+        width: 104px;
+        height: 104px;
+        font-size: 104px;
+    }
+
+    .profile-danger {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px 24px;
+    }
+}
+
+.profile-avatar__change-btn:focus-visible,
+.crop-btn:focus-visible {
+    outline: 2px solid #80b259;
+    outline-offset: 2px;
+}

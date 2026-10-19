@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import { getProfile, editProfile, uploadAvatar, deleteAccount } from '../../api/user';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import { clearSession } from '../../utils/session';
+import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import './Profile.css';
 
 const Profile: React.FC = () => {
@@ -25,6 +26,9 @@ const Profile: React.FC = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dragRef = useRef({ isDragging: false, startX: 0, startY: 0, startCropX: 50, startCropY: 50 });
     const history = useHistory();
+    const isDesktop = useMediaQuery(DESKTOP_QUERY);
+    const email = localStorage.getItem('user_email') || '';
+    const fullName = [name, surname].filter(Boolean).join(' ');
 
     useEffect(() => {
         const savedPos = localStorage.getItem('avatar_position');
@@ -107,6 +111,15 @@ const Profile: React.FC = () => {
         }
     }
 
+    /* En escritorio el recorte es un dialogo: Esc lo cierra como cualquier otro. */
+    useEffect(() => {
+        if (!cropMode) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !avatarUploading) cancelCrop(); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cropMode, avatarUploading]);
+
     function cancelCrop() {
         setCropMode(false);
         URL.revokeObjectURL(previewUrl);
@@ -146,7 +159,10 @@ const Profile: React.FC = () => {
 
             {cropMode && (
                 <div className='crop-overlay'>
-                    <p className='crop-title'>Ajusta tu foto</p>
+                    {/* En mobile .crop-dialog es display: contents y no cambia nada; en
+                        escritorio es la tarjeta del dialogo. */}
+                    <div className='crop-dialog' role='dialog' aria-modal='true' aria-labelledby='crop-title'>
+                    <p className='crop-title' id='crop-title'>Ajusta tu foto</p>
                     <div
                         className='crop-circle-preview'
                         onPointerDown={onCropPointerDown}
@@ -175,16 +191,32 @@ const Profile: React.FC = () => {
                             Cancelar
                         </button>
                     </div>
+                    </div>
                 </div>
             )}
 
             <IonContent fullscreen class='app-dark-bg'>
                 <div className='profile-container'>
+                    {isDesktop && (
+                        <header className='profile-page-header'>
+                            <h1 className='profile-page-header__title'>Tu perfil</h1>
+                            <p className='profile-page-header__text'>
+                                Mant&eacute;n tus datos al d&iacute;a. El correo con el que entras no se puede cambiar desde aqu&iacute;.
+                            </p>
+                        </header>
+                    )}
                     <div className='profile-avatar'>
                         {avatar
                             ? <img src={avatar} alt='avatar' className='profile-avatar__img' style={avatarStyle} />
                             : <IonIcon icon={personCircleOutline} className='profile-avatar__icon' />
                         }
+                        {isDesktop && (
+                            <div className='profile-identity'>
+                                <p className='profile-identity__name'>{fullName || 'Sin nombre'}</p>
+                                {email && <p className='profile-identity__email'>{email}</p>}
+                                {occupation && <p className='profile-identity__occupation'>{occupation}</p>}
+                            </div>
+                        )}
                         <input
                             ref={fileInputRef}
                             type='file'
@@ -202,7 +234,7 @@ const Profile: React.FC = () => {
                     </div>
 
                     <div className='profile-card'>
-                        <h2 className='profile-title'>Modificar Perfil</h2>
+                        <h2 className='profile-title'>{isDesktop ? 'Datos personales' : 'Modificar Perfil'}</h2>
                         <IonItem className='profile-input-item' lines='none'>
                             <IonLabel position='stacked' className='profile-label'>Nombre</IonLabel>
                             <IonInput value={name} onIonChange={(e) => setName(e.target.value as string)} type='text' />
@@ -233,7 +265,7 @@ const Profile: React.FC = () => {
                             <IonButton expand='block' fill='outline' color='primary' href="/MainMenu">
                                 Regresar
                             </IonButton>
-                            <IonButton expand='block' fill='clear' color='danger' onClick={() => setShowDeleteConfirm(true)}>
+                            <IonButton expand='block' fill='clear' color='danger' className='profile-delete-inline' onClick={() => setShowDeleteConfirm(true)}>
                                 Eliminar cuenta
                             </IonButton>
                         </div>
@@ -257,6 +289,21 @@ const Profile: React.FC = () => {
                             ]}
                         />
                     </div>
+                    {/* En escritorio eliminar la cuenta sale de los botones del formulario: separado
+                        y explicado, para que no quede junto a "Guardar cambios". */}
+                    {isDesktop && (
+                        <section className='profile-danger' aria-labelledby='profile-danger-title'>
+                            <div>
+                                <h2 className='profile-danger__title' id='profile-danger-title'>Eliminar cuenta</h2>
+                                <p className='profile-danger__text'>
+                                    Se borran tu perfil, tus favoritos y tus puntajes. No se puede deshacer.
+                                </p>
+                            </div>
+                            <IonButton fill='outline' color='danger' className='profile-danger__btn' onClick={() => setShowDeleteConfirm(true)}>
+                                Eliminar cuenta
+                            </IonButton>
+                        </section>
+                    )}
                 </div>
             </IonContent>
         </IonPage>
