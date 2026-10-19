@@ -173,6 +173,13 @@
         border-color: var(--d-line) !important;
         border-radius: 18px !important;
         height: 100%;
+        --background: transparent;
+    }
+
+    /* El contenido vive en el shadow root de ion-card: sin esto, en una fila con tarjetas
+       mas altas su fondo no llega hasta abajo. */
+    .document-card::part(native) {
+        height: 100%;
     }
 
     .document-card__image-wrapper {
