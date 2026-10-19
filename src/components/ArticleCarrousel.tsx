@@ -3,7 +3,7 @@ import DocumentCard from './DocumentCard';
 import './ArticleCarrousel.css';
 import AppContext from '../context/AppContext';
 import useFavorites from '../hooks/useFavorites';
-import { normalize } from '../utils/search';
+import { normalize, CATEGORY_RECOMMENDATIONS } from '../utils/search';
 
 export interface Article {
   _id: string;
@@ -33,19 +33,6 @@ interface Props {
 }
 
 const ALL = 'Todos';
-
-// Traduce el eje más débil de una evaluación a los términos con que se buscan los
-// artículos que la refuerzan. Las llaves son las categorías tal como vienen sembradas
-// desde las Google Sheets de las evaluaciones — el segundo eje no está normalizado y
-// aparece con las dos palabras en ambos órdenes, así que van los dos. En Atlas los ejes se
-// llaman "Ambiental" y "Económico y Social": el primero ya calza solo contra la categoría,
-// el segundo no calza con ninguna tal cual y dejaba la página vacía.
-const CATEGORY_RECOMMENDATIONS: Record<string, string[]> = {
-  [normalize('ECOSISTEMA')]: [normalize('ambiental'), normalize('ecosistema'), normalize('medio ambiente')],
-  [normalize('Economía y sociedad')]: [normalize('economico'), normalize('social')],
-  [normalize('Sociedad y Economía')]: [normalize('economico'), normalize('social')],
-  [normalize('Económico y Social')]: [normalize('economico'), normalize('social')],
-};
 
 const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations }) => {
   const [topic, setTopic] = useState(ALL);
