@@ -7,6 +7,7 @@ import DocumentCard from '../../components/DocumentCard';
 import useFavorites from '../../hooks/useFavorites';
 import { Article, Presentation } from '../../components/ArticleCarrousel';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
+import { readCache } from '../../utils/cache';
 import './Favorites.css';
 
 interface FavoriteItem {
@@ -28,9 +29,10 @@ const FILTERS: { value: TypeFilter; label: string }[] = [
 
 const Favorites: React.FC = () => {
   const { favorites, loading: favLoading, isLoggedIn, isFavorite, removeFavorite, addFavorite } = useFavorites();
-  const [allArticles, setAllArticles] = useState<Article[]>([]);
-  const [allPresentations, setAllPresentations] = useState<Presentation[]>([]);
-  const [contentLoading, setContentLoading] = useState(true);
+  // Arranca con la cache que llena APRENDE; la peticion de abajo la pone al dia.
+  const [allArticles, setAllArticles] = useState<Article[]>(() => readCache<Article[]>('articles') ?? []);
+  const [allPresentations, setAllPresentations] = useState<Presentation[]>(() => readCache<Presentation[]>('presentations') ?? []);
+  const [contentLoading, setContentLoading] = useState(() => readCache('articles') === null);
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
 

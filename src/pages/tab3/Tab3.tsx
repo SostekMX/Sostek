@@ -4,6 +4,7 @@ import { getEvaluations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
+import { readCache } from '../../utils/cache';
 
 interface EvaluationItem {
   _id: string;
@@ -27,9 +28,9 @@ const Tab3: React.FC = () => {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    const cached = localStorage.getItem("evaluations");
+    const cached = readCache<EvaluationItem[]>("evaluations");
     if (cached) {
-      setEvaluations(JSON.parse(cached));
+      setEvaluations(cached);
       setLoading(false);
     }
 

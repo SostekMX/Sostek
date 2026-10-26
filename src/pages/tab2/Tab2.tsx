@@ -3,6 +3,7 @@ import { IonContent, IonIcon, IonPage } from '@ionic/react';
 import { downloadOutline } from 'ionicons/icons';
 import { getTutorial } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
+import { readCache } from '../../utils/cache';
 import './Tab2.css';
 
 interface GameCard {
@@ -47,9 +48,9 @@ const Tab2: React.FC = () => {
   /* Mismo cache que APRENDE y EVALUATE: sin el, un backend dormido (Render tarda en
      despertar) o caido dejaba las reglas en blanco aunque ya se hubieran visto antes. */
   useEffect(() => {
-    const cached = localStorage.getItem("tutorial");
+    const cached = readCache<Tutorial>("tutorial");
     if (cached) {
-      setTutorial(JSON.parse(cached));
+      setTutorial(cached);
       setLoading(false);
     }
 
