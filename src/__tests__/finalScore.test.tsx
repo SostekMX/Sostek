@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import FinalScoreEvaluation from '../pages/finalScoreEvaluation/FinalScoreEvaluation';
 import { saveScore } from '../api/user';
@@ -35,8 +35,8 @@ describe('guardado del puntaje en /score', () => {
 
   /* Regresion: tras el CTA, que limpia la sesion, "atras" guardaba un 0. */
   it('sin resultado en la sesion no guarda nada y lo dice', () => {
-    const { getByText } = renderScore();
+    renderScore();
     expect(saveScore).not.toHaveBeenCalled();
-    expect(getByText('No hay un resultado que mostrar')).toBeTruthy();
+    expect(screen.getByText('No hay un resultado que mostrar')).toBeTruthy();
   });
 });
