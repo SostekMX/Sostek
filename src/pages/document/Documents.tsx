@@ -4,7 +4,7 @@ import { menuOutline, heart, heartOutline, personCircle, logOut, arrowBackOutlin
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { getArticle } from '../../api/content';
-import { clearSession } from '../../utils/session';
+import { clearSession, isLoggedIn } from '../../utils/session';
 import { axisOf } from '../../utils/axis';
 import useFavorites from '../../hooks/useFavorites';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
@@ -39,7 +39,7 @@ const Documents: React.FC = () => {
   const progressRef = useRef<HTMLDivElement>(null);
   const toolbarTitleRef = useRef<HTMLIonTitleElement>(null);
 
-  const isUserLogged = sessionStorage.getItem('login') === 'true';
+  const isUserLogged = isLoggedIn();
 
   useEffect(() => {
     // Ionic reusa la pagina entre ids: sin este reinicio un fallo dejaba el articulo anterior.

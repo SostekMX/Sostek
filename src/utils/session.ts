@@ -1,3 +1,19 @@
+export function isLoggedIn() {
+  return sessionStorage.getItem('login') === 'true';
+}
+
+export function readEmail() {
+  return localStorage.getItem('user_email') || '';
+}
+
+/* Arranca de cero: lo que quedara de una cuenta anterior no se mezcla con la nueva. */
+export function startSession(email: string, token: string) {
+  clearSession();
+  sessionStorage.setItem('login', 'true');
+  localStorage.setItem('user_email', email);
+  sessionStorage.setItem('token', token);
+}
+
 /* Foto y encuadre que se pintan en el header y en la barra lateral. */
 export function readAvatar(): { url: string; pos: { x: number; y: number } } {
   const url = localStorage.getItem('avatar') || '';

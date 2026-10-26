@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Keyboard } from 'swiper';
 import type { Swiper as SwiperInstance } from 'swiper';
 import { getPresentations } from '../../api/content';
-import { clearSession } from '../../utils/session';
+import { clearSession, isLoggedIn } from '../../utils/session';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import './Presentation.css';
 import 'swiper/css';
@@ -27,7 +27,7 @@ const Presentation: React.FC = () => {
   const { current: popoverId } = useRef(`pres-menu-${Math.random().toString(36).substr(2, 6)}`);
   const history = useHistory();
 
-  const isUserLogged = sessionStorage.getItem('login') === 'true';
+  const isUserLogged = isLoggedIn();
 
   useEffect(() => {
     setSlides([]);

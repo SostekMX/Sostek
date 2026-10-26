@@ -4,7 +4,7 @@ import {
   bookOutline, gameControllerOutline, clipboardOutline, heartOutline,
   personCircleOutline, logOutOutline, logInOutline,
 } from 'ionicons/icons';
-import { clearSession, readAvatar } from '../../utils/session';
+import { clearSession, isLoggedIn, readAvatar, readEmail } from '../../utils/session';
 import './SideNav.css';
 
 interface Props {
@@ -23,8 +23,8 @@ const SECTIONS = [
    mobile el menu queda cerrado y sin gesto para abrirlo. */
 const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
   const router = useIonRouter();
-  const isUserLogged = sessionStorage.getItem('login') === 'true';
-  const email = localStorage.getItem('user_email') || '';
+  const isUserLogged = isLoggedIn();
+  const email = readEmail();
   const avatar = readAvatar();
 
   /* Un <a> real para que funcionen el clic central y "abrir en otra pestana"; el clic normal

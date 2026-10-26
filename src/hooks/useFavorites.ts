@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getFavorites, addFavorite as addFavoriteRequest, removeFavorite as removeFavoriteRequest } from '../api/user';
+import { isLoggedIn as isUserLoggedIn } from '../utils/session';
 
 export interface Favorite {
   content_id: string;
@@ -9,7 +10,7 @@ export interface Favorite {
 const useFavorites = () => {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(false);
-  const isLoggedIn = sessionStorage.getItem('login') === 'true';
+  const isLoggedIn = isUserLoggedIn();
   const token = isLoggedIn ? sessionStorage.getItem('token') : null;
 
   /* Depende del token y no solo del montaje: Ionic deja montadas las paginas, asi que

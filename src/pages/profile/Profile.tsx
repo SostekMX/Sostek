@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { getProfile, editProfile, uploadAvatar, deleteAccount } from '../../api/user';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
-import { clearSession } from '../../utils/session';
+import { clearSession, readAvatar, readEmail } from '../../utils/session';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import './Profile.css';
 
@@ -27,12 +27,11 @@ const Profile: React.FC = () => {
     const dragRef = useRef({ isDragging: false, startX: 0, startY: 0, startCropX: 50, startCropY: 50 });
     const history = useHistory();
     const isDesktop = useMediaQuery(DESKTOP_QUERY);
-    const email = localStorage.getItem('user_email') || '';
+    const email = readEmail();
     const fullName = [name, surname].filter(Boolean).join(' ');
 
     useEffect(() => {
-        const savedPos = localStorage.getItem('avatar_position');
-        try { if (savedPos) setCropPos(JSON.parse(savedPos)); } catch { /* valor corrupto, usar default */ }
+        setCropPos(readAvatar().pos);
 
         getProfile().then(data => {
             if (data.success) {

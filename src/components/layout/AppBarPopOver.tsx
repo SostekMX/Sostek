@@ -4,7 +4,7 @@ import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLab
 import { personCircle, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
 import { useHistory, useLocation } from "react-router-dom";
 import AppContext from '../../context/AppContext';
-import { clearSession, readAvatar } from '../../utils/session';
+import { clearSession, isLoggedIn, readAvatar } from '../../utils/session';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 
 const AppBarPopOver: React.FC = () => {
@@ -21,7 +21,7 @@ const AppBarPopOver: React.FC = () => {
     const showSearch = location.pathname === '/tab1' || location.pathname === '/MainMenu';
     // En escritorio el buscador de APRENDE esta siempre abierto: hay lugar y ahorra un clic.
     const searchOpen = isSearching || isDesktop;
-    const isUserLogged = sessionStorage.getItem('login') === 'true';
+    const isUserLogged = isLoggedIn();
     const { url: avatarUrl, pos: avatarPos } = readAvatar();
 
     useEffect(() => {
