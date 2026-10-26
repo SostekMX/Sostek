@@ -2,7 +2,12 @@
 
 Log de trabajo. Cada entrada dice qué se tocó, qué se decidió y por qué.
 
-## Estado actual (2026-10-05)
+## Estado actual (2026-10-26)
+
+La rama de trabajo es ahora **`feat/escritorio-editorial`** (contiene a
+`feat/juega-layout-desktop`): **78 commits** sobre `main` (`70de48f`), contando el que trae este resumen. El 2026-10-26 se hizo
+una limpieza general (13 commits, ver `../Sostek-bitacora/NOTAS_SESION_2026-10-26.md`) y se
+subió la rama con un PR a `main`, sin merge. Lo de abajo es el estado al 2026-10-05.
 
 **Todo es local.** La rama `feat/juega-layout-desktop` lleva **40 commits** sobre
 `main` (`70de48f`, sin tocar) y **ninguno está pusheado** a `origin`

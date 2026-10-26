@@ -293,8 +293,8 @@ dde5fd6 feat(tab2): cartas tipo naipe con recursos por eje y reglas completas en
 
 ### Cosas del proyecto que salieron en la sesión
 
-- **`npm test` no funciona en Windows.** El script del `package.json` cita mal las comillas y la
-  terminal de Windows lo rompe. Ya pasaba antes de esta sesión. Mientras se arregla, se corre así:
+- ~~**`npm test` no funciona en Windows.**~~ Resuelto el 2026-10-26 (`60301a0`). El script del `package.json` citaba mal las comillas y la
+  terminal de Windows lo rompía. Ya pasaba antes de esta sesión. Mientras se arregla, se corre así:
   ```bash
   CI=true npx react-scripts test --watchAll=false --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'
   ```
@@ -307,7 +307,6 @@ dde5fd6 feat(tab2): cartas tipo naipe con recursos por eje y reglas completas en
 
 ### Posibles siguientes pasos
 
-- Unificar los menús de Documents y Presentation con `AppBarPopOver`. Hoy cada uno tiene su propia
-  copia del popover del móvil.
-- Decidir qué hacer con `ArticleCardModal.tsx`, que sigue sin usarse (ver `ARQUITECTURA.md`, §9).
+- ~~Unificar los menús de Documents y Presentation con `AppBarPopOver`.~~ Hecho el 2026-10-26 (`3b02662`).
+- ~~Decidir qué hacer con `ArticleCardModal.tsx`.~~ Se borró el 2026-10-26 (`2970d3b`).
 - Actualizar `ARQUITECTURA.md` para mencionar el split pane y el sistema de ejes.
