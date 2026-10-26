@@ -127,9 +127,8 @@ const Profile: React.FC = () => {
 
     function deleteUser() {
         deleteAccount().then(() => {
-            // localStorage.clear() sola dejaba login y token en sessionStorage: la cuenta
-            // borrada seguia "con sesion" (tab bar, corazones, peticiones con su token).
-            localStorage.clear();
+            // clearSession() borra todo lo de la cuenta; la cache de contenido (articulos,
+            // evaluaciones, instructivo) no es de nadie y se queda.
             clearSession();
             history.replace('/');
         }).catch(err => console.error(err));
