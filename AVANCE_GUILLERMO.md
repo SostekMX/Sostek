@@ -4,10 +4,12 @@ Log de trabajo. Cada entrada dice qué se tocó, qué se decidió y por qué.
 
 ## Estado actual (2026-10-26)
 
-La rama de trabajo es ahora **`feat/escritorio-editorial`** (contiene a
-`feat/juega-layout-desktop`): **78 commits** sobre `main` (`70de48f`), contando el que trae este resumen. El 2026-10-26 se hizo
-una limpieza general (13 commits, ver `../Sostek-bitacora/NOTAS_SESION_2026-10-26.md`) y se
-subió la rama con un PR a `main`, sin merge. Lo de abajo es el estado al 2026-10-05.
+**Publicado en producción** (`https://sostek.vercel.app`). El 2026-10-26 se hizo una limpieza
+general (13 commits, ver `../Sostek-bitacora/NOTAS_SESION_2026-10-26.md`) y la rama
+`feat/escritorio-editorial` (78 commits, que incluye a `feat/juega-layout-desktop`) entró a `main`
+con el PR #42, como merge commit `76a2936`. Para revertir: *Instant Rollback* en Vercel, o
+`git revert -m 1 76a2936`. La etiqueta `pre-escritorio-editorial` marca el `main` anterior
+(`70de48f`). Lo de abajo es el estado al 2026-10-05.
 
 **Todo es local.** La rama `feat/juega-layout-desktop` lleva **40 commits** sobre
 `main` (`70de48f`, sin tocar) y **ninguno está pusheado** a `origin`
@@ -39,7 +41,7 @@ en localhost **escribe en la base de producción**.
 - Probar con una cuenta de prueba (no la de nadie real, porque es producción) los
   arreglos que escriben: guardar puntaje una sola vez, favoritos, cerrar sesión y
   eliminar cuenta. Están verificados por código y prueba unitaria, no en el navegador.
-- Push y PR a `main`, cuando se decida.
+- ~~Push y PR a `main`, cuando se decida.~~ Hecho el 2026-10-26 (PR #42).
 
 ## Sesión del 2026-09-07
 
