@@ -31,6 +31,7 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
      navega con el router de Ionic y sin animacion, como cambiar de tab. */
   const link = (href: string, label: string, icon: string, active: boolean, extra = '', hint = '') => (
     <a
+      key={href}
       href={href}
       className={`sidenav__link ${active ? 'sidenav__link--active' : ''} ${extra}`}
       aria-current={active ? 'page' : undefined}
