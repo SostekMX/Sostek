@@ -1,4 +1,4 @@
-import { normalize } from '../utils/search';
+import { normalize, matchesSearch } from '../utils/search';
 
 describe('normalize', () => {
   it('convierte a minusculas', () => {
@@ -24,5 +24,19 @@ describe('normalize', () => {
 
   it('maneja texto sin caracteres especiales sin cambios de contenido', () => {
     expect(normalize('sostenibilidad')).toBe('sostenibilidad');
+  });
+});
+
+describe('matchesSearch', () => {
+  const article = { category: 'Social', title: 'Agua limpia', tags: ['comunidad'] };
+
+  it('busca en categoria, titulo y tags sin importar tildes', () => {
+    expect(matchesSearch(article, 'AGUA')).toBe(true);
+    expect(matchesSearch(article, 'comunidad')).toBe(true);
+    expect(matchesSearch(article, 'energía')).toBe(false);
+  });
+
+  it('traduce el eje de la evaluacion a sus categorias', () => {
+    expect(matchesSearch(article, 'Económico y Social')).toBe(true);
   });
 });

@@ -6,7 +6,7 @@ import DocumentCard from './DocumentCard';
 import './ArticleCarrousel.css';
 import AppContext from '../context/AppContext';
 import useFavorites from '../hooks/useFavorites';
-import { normalize, CATEGORY_RECOMMENDATIONS } from '../utils/search';
+import { normalize, matchesSearch } from '../utils/search';
 import { axisOf } from '../utils/axis';
 import useMediaQuery, { DESKTOP_QUERY } from '../hooks/useMediaQuery';
 
@@ -57,16 +57,11 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
   const [presOverflow, setPresOverflow] = useState(false);
 
   const searchNorm = normalize(search);
-  const recommendedCategories = CATEGORY_RECOMMENDATIONS[searchNorm];
 
-  const matchingArticles = useMemo(() => (articlesData ?? []).filter(article => {
-    /* Se busca contra categoría, título y tags: el seed de artículos llena `tags`
-       (desde la columna keywords del CSV), así que mirar solo la categoría dejaría fuera
-       artículos cuyo tema solo aparece ahí. */
-    const campos = [article.category, article.title, ...(article.tags ?? [])].map(c => normalize(c ?? ''));
-    const terminos = recommendedCategories ?? [searchNorm];
-    return terminos.some(termino => campos.some(campo => campo.includes(termino)));
-  }), [articlesData, recommendedCategories, searchNorm]);
+  const matchingArticles = useMemo(
+    () => (articlesData ?? []).filter(article => matchesSearch(article, search)),
+    [articlesData, search]
+  );
 
   /* Los temas salen de los datos, ordenados por cuántos artículos tienen: si mañana se
      siembra una categoría nueva aparece sola. Los conteos siguen a la búsqueda activa. */

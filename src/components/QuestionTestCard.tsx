@@ -1,8 +1,7 @@
 import './QuestionTestCard.css';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonLabel, IonCheckbox } from '@ionic/react';
 import { AnswerMap } from '../utils/scoring';
-import { axisOf } from '../utils/axis';
-import { normalize } from '../utils/search';
+import { axisOf, isMixedAxis } from '../utils/axis';
 
 export interface Option {
     text: string;
@@ -29,7 +28,7 @@ const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question
     /* Escritorio: el eje de la pregunta va como etiqueta con su color. "Economico y Social"
        es un eje doble y lleva los dos colores. */
     const axis = axisOf(category);
-    const mixedAxis = /econom/.test(normalize(category ?? '')) && /social/.test(normalize(category ?? ''));
+    const mixedAxis = isMixedAxis(category);
     /* Dos columnas solo si todas las opciones son cortas: una oracion larga partida en una
        columna angosta se lee peor que en una sola. */
     const optionsInGrid = options.length >= 4 && options.every(o => o.text.length <= 60);

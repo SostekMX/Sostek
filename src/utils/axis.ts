@@ -12,3 +12,9 @@ export function axisOf(category: string | undefined | null): Axis | null {
   if (c.includes('social') || c.includes('sociedad')) return 'social';
   return null;
 }
+
+/* "Economico y Social" es un eje doble y se pinta con los dos colores. */
+export function isMixedAxis(category: string | undefined | null): boolean {
+  const c = normalize(category ?? '');
+  return c.includes('econom') && c.includes('social');
+}

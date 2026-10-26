@@ -5,8 +5,9 @@ import { saveScore } from '../../api/user';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import AppContext from '../../context/AppContext';
 import { getFeedback, clearScoreSession } from '../../utils/scoring';
-import { normalize, CATEGORY_RECOMMENDATIONS } from '../../utils/search';
-import { axisOf } from '../../utils/axis';
+import { matchesSearch } from '../../utils/search';
+import { axisOf, isMixedAxis } from '../../utils/axis';
+import { readCache } from '../../utils/cache';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import { Article } from '../../components/ArticleCarrousel';
 import './FinalScoreEvaluation.css';
@@ -19,14 +20,7 @@ interface Params {
    con el eje como termino (categoria, titulo y tags), sobre el cache de articulos. Sin
    cache no hay vista previa y queda solo el boton a la lista completa. */
 function recommendedArticles(weakest: string, limit: number): Article[] {
-    let articles: Article[] = [];
-    try { articles = JSON.parse(localStorage.getItem('articles') ?? '[]'); } catch { return []; }
-    const searchNorm = normalize(weakest);
-    const terms = CATEGORY_RECOMMENDATIONS[searchNorm] ?? [searchNorm];
-    return articles.filter(a => {
-        const fields = [a.category, a.title, ...(a.tags ?? [])].map(c => normalize(c ?? ''));
-        return terms.some(t => fields.some(f => f.includes(t)));
-    }).slice(0, limit);
+    return (readCache<Article[]>('articles') ?? []).filter(a => matchesSearch(a, weakest)).slice(0, limit);
 }
 
 /* Anillo del puntaje: el trazo cubre la fraccion score/max. La animacion de llenado es el
@@ -100,8 +94,7 @@ const FinalScoreEvaluation: React.FC = () => {
     if (isDesktop) {
         const pct = maxScore > 0 ? Math.min(score / maxScore, 1) : 0;
         const axis = axisOf(weakestCategory);
-        const weakNorm = normalize(weakestCategory);
-        const mixedAxis = weakNorm.includes('econom') && weakNorm.includes('social');
+        const mixedAxis = isMixedAxis(weakestCategory);
         const recommended = weakestCategory ? recommendedArticles(weakestCategory, 3) : [];
 
         return (

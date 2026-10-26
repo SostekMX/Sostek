@@ -15,3 +15,12 @@ export const CATEGORY_RECOMMENDATIONS: Record<string, string[]> = {
   [normalize('Económico y Social')]: [normalize('economico'), normalize('social')],
 };
 
+/* Se busca contra categoria, titulo y tags: el seed de articulos llena `tags` (desde la
+   columna keywords del CSV), asi que mirar solo la categoria dejaria fuera articulos cuyo
+   tema solo aparece ahi. Si el termino es un eje de evaluacion, se buscan sus equivalentes. */
+export function matchesSearch(article: { category?: string; title?: string; tags?: string[] }, search: string): boolean {
+  const searchNorm = normalize(search);
+  const terms = CATEGORY_RECOMMENDATIONS[searchNorm] ?? [searchNorm];
+  const fields = [article.category, article.title, ...(article.tags ?? [])].map(c => normalize(c ?? ''));
+  return terms.some(t => fields.some(f => f.includes(t)));
+}

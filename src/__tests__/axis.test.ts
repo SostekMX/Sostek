@@ -1,4 +1,4 @@
-import { axisOf } from '../utils/axis';
+import { axisOf, isMixedAxis } from '../utils/axis';
 
 describe('axisOf', () => {
   it('reconoce las categorias de los articulos', () => {
@@ -17,5 +17,14 @@ describe('axisOf', () => {
     expect(axisOf(undefined)).toBeNull();
     expect(axisOf('')).toBeNull();
     expect(axisOf('Presentación')).toBeNull();
+  });
+});
+
+describe('isMixedAxis', () => {
+  it('solo marca el eje doble', () => {
+    expect(isMixedAxis('Económico y Social')).toBe(true);
+    expect(isMixedAxis('Sociedad y Economía')).toBe(false);
+    expect(isMixedAxis('Ambiental')).toBe(false);
+    expect(isMixedAxis(undefined)).toBe(false);
   });
 });
