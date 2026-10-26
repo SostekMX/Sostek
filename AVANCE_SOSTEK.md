@@ -177,10 +177,10 @@ src/
 | ~~3~~ | ~~Llamadas a gapi/Google Drive con 403 en consola~~ | ✅ Resuelto — tutorial migrado a `GET /tutorial` | ~~Alta~~ |
 | ~~4~~ | ~~Presentaciones se ven de lado~~ | ✅ Resuelto — quitado `rotate(90deg)` del CSS | ~~Alta~~ |
 | ~~5~~ | ~~Guardar cambios en Perfil no redirige a APRENDE~~ | ✅ Resuelto — `history.replace('/tab1')` tras éxito | ~~Media~~ |
-| 6 | aria-hidden sobre elemento con focus en página de presentación | `Presentation.tsx` — warning de accesibilidad de Ionic | Baja |
+| ~~6~~ | ~~aria-hidden sobre elemento con focus en página de presentación~~ | ✅ Resuelto (2026-10-26) — el menú compartido `AppMenu` suelta el foco del botón al abrir (`3b02662`) | ~~Baja~~ |
 | ~~7~~ | ~~Meta tag deprecated~~ | ✅ Resuelto — agregado `mobile-web-app-capable` + quitado script gapi | ~~Baja~~ |
 | 8 | `Failed to mount content script UI: could not find anchor element` en consola | Error de extensión del navegador (all.js), **no es un bug de la app** — ignorar | Ninguna |
-| 9 | `ArticleCardModal.tsx` existe pero no se importa en ningún lado — la sección "implementado" de este doc decía "Modal del artículo más reciente al entrar" a Tab1, pero `Tab1.tsx` no tiene ningún rastro de esa lógica. **Pendiente de decisión**: ¿se reactiva (parece una regresión de algún refactor anterior) o se borra como código muerto? | `components/ArticleCardModal.tsx`, `pages/tab1/Tab1.tsx` | Media |
+| ~~9~~ | ~~`ArticleCardModal.tsx` existe pero no se importa en ningún lado~~ | ✅ Resuelto (2026-10-26) — se borró como código muerto; en escritorio la portada de APRENDE cumple ese papel (`2970d3b`) | ~~Media~~ |
 
 ---
 
@@ -286,7 +286,7 @@ src/
 | R3 | 23+ `console.log` sueltos en catches de axios — debug residual y falta de consistencia | 14 archivos | ✅ Resuelto — se eliminó 1 línea de debug comentada (`Evaluation.tsx`) y se estandarizaron los catches reales a `console.error` |
 | R4 | 15 archivos llamaban `axios` directo con `BACKEND_URL` y repetían el header `Authorization` en cada endpoint protegido — sin capa central de API | Todas las páginas + `useFavorites.ts` | ✅ Resuelto — nueva capa `src/api/` (`client.ts`, `auth.ts`, `user.ts`, `content.ts`) con interceptor que agrega el token automáticamente |
 | R5 | Inconsistencia de nombre `evaluation.css` (minúscula) vs `Evaluation.tsx` | `pages/evaluation/` | ✅ Resuelto — renombrado a `Evaluation.css` |
-| R6 | `ArticleCardModal.tsx` huérfano pero documentado como funcionalidad activa | `components/ArticleCardModal.tsx` | ⚠️ No se tocó — ver bug #9, pendiente de decisión |
+| R6 | `ArticleCardModal.tsx` huérfano pero documentado como funcionalidad activa | `components/ArticleCardModal.tsx` | ✅ Borrado el 2026-10-26 (ver bug #9) |
 
 ---
 

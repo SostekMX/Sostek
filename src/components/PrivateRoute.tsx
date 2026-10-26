@@ -1,10 +1,10 @@
 import { Route, Redirect, RouteProps } from 'react-router-dom';
+import { isLoggedIn } from '../utils/session';
 
 const PrivateRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
-  const isLoggedIn = sessionStorage.getItem('login') === 'true';
   return (
     <Route {...rest}>
-      {isLoggedIn ? children : <Redirect to="/" />}
+      {isLoggedIn() ? children : <Redirect to="/" />}
     </Route>
   );
 };

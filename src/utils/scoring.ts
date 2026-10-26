@@ -5,20 +5,25 @@ export interface Feedback {
 
 export type AnswerMap = Map<string, { category: string; value: number }>;
 
-export function getFeedback(score: number): Feedback {
-  if (score >= 150) return {
+/* El feedback va por porcentaje del maximo alcanzable, no por puntaje absoluto:
+ * cada evaluacion tiene su propia escala (de 86 a 100 puntos segun la carrera y el
+ * nivel), asi que un corte fijo premiaba o castigaba segun la evaluacion elegida. */
+export function getFeedback(score: number, maxScore: number): Feedback {
+  const pct = maxScore > 0 ? score / maxScore : 0;
+
+  if (pct >= 0.85) return {
     titulo: "¡Excelente!",
     mensaje: "Tu proyecto demuestra un alto compromiso con la sostenibilidad en todas sus dimensiones. ¡Sigue así!"
   };
-  if (score >= 120) return {
+  if (pct >= 0.70) return {
     titulo: "Muy bien",
     mensaje: "Tu proyecto tiene una base sólida de sostenibilidad. Hay algunas áreas que puedes seguir fortaleciendo para alcanzar el nivel óptimo."
   };
-  if (score >= 90) return {
+  if (pct >= 0.50) return {
     titulo: "Buen avance",
     mensaje: "Tu proyecto va por buen camino, pero aún hay aspectos de sostenibilidad que requieren mayor atención y desarrollo."
   };
-  if (score >= 50) return {
+  if (pct >= 0.30) return {
     titulo: "En desarrollo",
     mensaje: "Tu proyecto tiene potencial, pero necesita trabajar más en varias de sus dimensiones de sostenibilidad para cumplir con los estándares requeridos."
   };
@@ -28,46 +33,60 @@ export function getFeedback(score: number): Feedback {
   };
 }
 
-export function applyAnswer(
+/* El mapa de respuestas es la unica fuente de verdad: el puntaje se deriva de el con
+ * totalScore(), en vez de llevarse aparte. Antes se mantenian los dos en paralelo y
+ * podian desincronizarse. */
+export function toggleAnswer(
   map: AnswerMap,
-  score: number,
+  key: string,
   category: string,
-  answer: string,
   value: number
-): { score: number; map: AnswerMap } {
-  const newMap = new Map(map);
-  if (newMap.has(answer)) {
-    const prev = newMap.get(answer)!.value;
-    newMap.delete(answer);
-    return { score: score - prev, map: newMap };
-  }
-  newMap.set(answer, { category, value });
-  return { score: score + value, map: newMap };
+): AnswerMap {
+  const next = new Map(map);
+  if (next.has(key)) next.delete(key);
+  else next.set(key, { category, value });
+  return next;
 }
 
-export function computeCategoryScores(answers: AnswerMap): { categories: string[]; scores: number[] } {
-  const categories: string[] = [];
-  const scores: number[] = [];
-  answers.forEach(({ category, value }) => {
-    const idx = categories.indexOf(category);
-    if (idx !== -1) {
-      scores[idx] += value;
-    } else {
-      categories.push(category);
-      scores[categories.length - 1] = value;
+export function totalScore(answers: AnswerMap): number {
+  let total = 0;
+  answers.forEach(({ value }) => { total += value; });
+  return total;
+}
+
+/* El eje mas debil se compara por porcentaje del maximo de cada eje, no por puntos: en
+ * Diseno Industrial N1 "Ambiental" vale 36 y "Economico y Social" 64, asi que comparando
+ * sumas el primero salia como el mas debil casi siempre. Los ejes salen de las preguntas
+ * y no de las respuestas, para que un eje sin ninguna casilla marcada cuente con 0%. */
+export function weakestCategory(
+  answers: AnswerMap,
+  questions: { category: string; options: { value: number }[] }[]
+): string {
+  const maxByCategory = new Map<string, number>();
+  questions.forEach(q =>
+    maxByCategory.set(q.category, (maxByCategory.get(q.category) ?? 0) + computeMaxScore([q]))
+  );
+  const scoreByCategory = new Map<string, number>();
+  answers.forEach(({ category, value }) =>
+    scoreByCategory.set(category, (scoreByCategory.get(category) ?? 0) + value)
+  );
+
+  let weakest = '';
+  let lowest = Infinity;
+  maxByCategory.forEach((max, category) => {
+    const pct = max > 0 ? (scoreByCategory.get(category) ?? 0) / max : 1;
+    if (pct < lowest) {
+      lowest = pct;
+      weakest = category;
     }
   });
-  return { categories, scores };
+  return weakest;
 }
 
-export function clearScoreSession(totalCategories: number) {
-  for (let i = 0; i < totalCategories; i++) {
-    sessionStorage.removeItem(`categoryScore${i}`);
-    sessionStorage.removeItem(`category${i}`);
-  }
+export function clearScoreSession() {
   sessionStorage.removeItem("finalScore");
-  sessionStorage.removeItem("totalCategories");
   sessionStorage.removeItem("maxScore");
+  sessionStorage.removeItem("weakestCategory");
 }
 
 export function computeMaxScore(questions: { options: { value: number }[] }[]): number {

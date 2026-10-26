@@ -55,6 +55,13 @@ ion-toolbar.transparent {
     --min-height: 56px;
 }
 
+/* Sus opciones ya estan en la barra lateral de escritorio; el boton de regreso se queda. */
+@media (min-width: 768px) {
+    .dark-toolbar__menu-btn {
+        display: none;
+    }
+}
+
 /* === TAB BAR === */
 
 ion-tab-bar {
@@ -107,6 +114,14 @@ ion-tab-button.tab-bar__btn--active {
 
 .tab-bar--visible {
     opacity: 1;
+}
+
+/* En escritorio navega la barra lateral (SideNav). El tab bar sigue en el DOM porque
+   IonTabs no funciona sin el. */
+@media (min-width: 768px) {
+    ion-tab-bar.tab-bar--visible {
+        display: none;
+    }
 }
 
 
@@ -235,6 +250,17 @@ ion-popover ion-item {
     100% { background-position: -200% 0; }
 }
 
+/* Mensaje de pagina cuando una peticion falla o el contenido no existe: mismo tono que
+   los vacios de APRENDE y EVALUATE. */
+.page-message {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 48px 24px;
+    margin: 0;
+}
+
 .shimmer {
     background: linear-gradient(
         90deg,
@@ -255,14 +281,6 @@ ion-popover ion-item {
 
 .visible {
     opacity: 1;
-}
-
-.article-modal__link {
-    text-decoration: none;
-}
-
-.article-modal__title {
-    color: var(--sos-text-primary, #1a2e1a);
 }
 
 /* === FILTER PILLS === */
@@ -290,127 +308,32 @@ ion-popover ion-item {
     font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, transform 160ms ease-out;
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
     outline: none;
+}
+
+.filter-pill:active {
+    transform: scale(0.97);
+}
+
+/* outline: none de arriba dejaba sin foco visible a quien navega con teclado */
+.filter-pill:focus-visible {
+    outline: 2px solid #80b259;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filter-pill:active {
+        transform: none;
+    }
 }
 
 .filter-pill--active {
     background: #80b259;
     border-color: #80b259;
     color: #ffffff;
-}
-
-/* === SHARED: Section messages === */
-
-.under_construction-container {
-    width: 100%;
-    padding: 20px 20px 32px;
-}
-
-.under_construction_text {
-    color: #ffffff;
-    text-align: center;
-    margin-bottom: 8px;
-    line-height: 1.5;
-}
-
-.under_construction_link {
-    text-align: center;
-}
-
-.under_construction_link a {
-    color: #deebd7;
-    font-weight: 600;
-    text-decoration: underline;
-}
-
-/* === AUTH PAGES (LogIn + SignUp) === */
-
-.auth-overlay {
-    min-height: 100vh;
-    background: linear-gradient(160deg, #0d1f0d 0%, #1c3e1c 55%, #2f6b22 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    box-sizing: border-box;
-}
-
-.auth-wrapper {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.auth-logo {
-    height: 72px;
-    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
-}
-
-.auth-card {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 20px;
-    padding: 28px 22px 22px;
-    box-shadow: 0 12px 40px rgba(10, 26, 10, 0.28);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.auth-title {
-    text-align: center;
-    color: #1a2e1a;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin: 0 0 4px;
-    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
-    letter-spacing: 0.5px;
-}
-
-.auth-input-item {
-    --background: #f2f7ee;
-    --border-radius: 10px;
-    --padding-start: 14px;
-    --padding-end: 14px;
-    --inner-padding-end: 0;
-    --highlight-color-focused: #80b259;
-    border-radius: 10px;
-}
-
-.auth-label {
-    color: #3d5e40 !important;
-    font-size: 0.82rem !important;
-    font-weight: 700 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 2px;
-}
-
-.auth-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 6px;
-}
-
-.auth-actions ion-button {
-    --border-radius: 100px;
-    height: 48px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-}
-
-.auth-guest-btn {
-    --color: rgba(255, 255, 255, 0.92) !important;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
 }
 
 /* === SHARED FORM (Profile) === */
@@ -422,6 +345,8 @@ ion-popover ion-item {
     justify-items: center;
 }
 
-.space {
-    height: 1.5em;
-}
+/* === EJES (ver src/utils/axis.ts) ===
+   Solo fijan --axis; cada componente decide en sus reglas de escritorio donde usarlo. */
+.axis-ambiental { --axis: var(--axis-ambiental); }
+.axis-economico { --axis: var(--axis-economico); }
+.axis-social { --axis: var(--axis-social); }

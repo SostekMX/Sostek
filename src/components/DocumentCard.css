@@ -5,17 +5,32 @@
     margin: 0 0 2px 0 !important;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.11) !important;
-    transition: background 0.18s !important;
+    transition: background 0.18s, border-color 0.18s, transform 160ms ease-out !important;
 }
 
 .document-card:active {
     background: rgba(255, 255, 255, 0.12) !important;
+    transform: scale(0.98);
+}
+
+/* El gate evita que en tactil el hover se quede pegado despues del tap */
+@media (hover: hover) and (pointer: fine) {
+    .document-card:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(128, 178, 89, 0.45) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .document-card:active {
+        transform: none;
+    }
 }
 
 /* Image wrapper keeps a fixed height so the spinner is centered */
 .document-card__image-wrapper {
     position: relative;
-    height: 180px;
+    height: 160px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.04);
 }
@@ -60,10 +75,10 @@
 
 .document-card-image {
     width: 100%;
-    height: 180px;
+    height: 160px;
     object-fit: cover;
     display: block;
-    transition: opacity 0.8s ease-in;
+    transition: opacity 200ms ease-out;
 }
 
 /* Content */
@@ -90,6 +105,14 @@
     color: #ffffff;
     margin: 0 0 6px;
     line-height: 1.35;
+    /* Dos renglones fijos: en el grid las tarjetas de una fila quedan alineadas aunque
+       el titulo sea de una linea. No se usa margin-top: auto porque el contenido de
+       ion-card vive detras de su shadow root y el flex no llega. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.7em;
 }
 
 .document-card__description {
@@ -100,7 +123,17 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1.5;
+    min-height: 3em;
     margin: 0;
+}
+
+.document-card__meta {
+    margin: 10px 0 0;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .document-card__fav-btn {
@@ -125,4 +158,94 @@
 .document-card__fav-btn--active {
     color: #e05260;
     background: rgba(224, 82, 96, 0.18);
+}
+
+.document-card__fav-btn:focus-visible {
+    outline: 2px solid #80b259;
+    outline-offset: 2px;
+}
+
+/* === ESCRITORIO === La tarjeta toma el color de su eje (--axis, ver utils/axis.ts) en la
+   etiqueta y en el borde al pasar el mouse. Sin eje (presentaciones) queda el verde. */
+@media (min-width: 768px) {
+    .document-card {
+        background: var(--d-surface) !important;
+        border-color: var(--d-line) !important;
+        border-radius: 18px !important;
+        height: 100%;
+        --background: transparent;
+    }
+
+    /* El contenido vive en el shadow root de ion-card: sin esto, en una fila con tarjetas
+       mas altas su fondo no llega hasta abajo. */
+    .document-card::part(native) {
+        height: 100%;
+    }
+
+    .document-card__image-wrapper {
+        height: auto;
+        aspect-ratio: 16 / 10;
+    }
+
+    .document-card-image {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        transition: opacity 200ms ease-out, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    .document-card__content {
+        padding: 16px 18px 20px;
+    }
+
+    .document-card__type-badge {
+        font-size: 0.74rem;
+        text-transform: none;
+        letter-spacing: 0.2px;
+        padding: 4px 11px;
+        margin-bottom: 10px;
+        color: var(--axis, #80b259);
+        background: color-mix(in srgb, var(--axis, #80b259) 16%, transparent);
+    }
+
+    .document-card__title {
+        font-size: 1.06rem;
+        line-height: 1.34;
+        color: var(--d-text);
+        margin-bottom: 8px;
+    }
+
+    .document-card__description {
+        font-size: 0.88rem;
+        line-height: 1.55;
+        color: var(--d-text-2);
+    }
+
+    .document-card__meta {
+        margin-top: 14px;
+        font-size: 0.78rem;
+        color: var(--d-text-3);
+    }
+
+    .document-card:focus-visible {
+        outline: 2px solid var(--axis, #80b259);
+        outline-offset: 3px;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .document-card:hover {
+        background: var(--d-surface-2) !important;
+        border-color: color-mix(in srgb, var(--axis, #80b259) 55%, transparent) !important;
+    }
+
+    .document-card:hover .document-card-image {
+        transform: scale(1.04);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .document-card-image {
+        transition: opacity 200ms ease-out;
+    }
 }

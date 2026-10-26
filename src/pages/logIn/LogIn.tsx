@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { login } from '../../api/auth';
 import { getProfile } from '../../api/user';
+import { clearSession, startSession } from '../../utils/session';
 import '../../App.css';
 import './LogIn.css';
 
@@ -13,23 +14,25 @@ const LogIn: React.FC = () => {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const history = useHistory();
 
+    // Entrar al login cierra la sesion completa; antes quedaba el token y se seguia mandando.
     useEffect(() => {
-        sessionStorage.setItem('login', 'false');
+        clearSession();
     }, [])
 
     function loginUser() {
         login(email, password ?? '').then(function (data) {
             if (data.success) {
-                sessionStorage.setItem('login', 'true');
-                localStorage.setItem('user_email', email);
-                sessionStorage.setItem('token', data.token);
+                startSession(email, data.token);
                 fetchAvatar().finally(() => history.push("/tab1"));
             } else {
                 setMessage(data.error);
                 setShowAlert(true);
             }
         }).catch(function (error) {
+            // Sin esto un backend caido o el limite de intentos (429) no decia nada.
             console.error(error);
+            setMessage(error.response?.data?.error ?? 'No pudimos conectar con el servidor. Intenta de nuevo.');
+            setShowAlert(true);
         });
     }
 

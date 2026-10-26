@@ -6,6 +6,7 @@ const apiClient = axios.create({ baseURL: BACKEND_URL });
 apiClient.interceptors.request.use((config) => {
   const token = sessionStorage.getItem('token');
   if (token) {
+    config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

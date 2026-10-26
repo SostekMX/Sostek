@@ -4,19 +4,15 @@ import {
   IonPage,
   IonRow,
 } from "@ionic/react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { getEvaluation } from '../../api/content';
 import AppBarPopOver from "../../components/layout/AppBarPopOver";
-import QuestionTestCard from "../../components/QuestionTestCard";
-import AppContext from "../../context/AppContext";
-import { computeMaxScore } from "../../utils/scoring";
+import QuestionNav from "../../components/QuestionNav";
+import QuestionTestCard, { Option } from "../../components/QuestionTestCard";
+import { AnswerMap, computeMaxScore, toggleAnswer, totalScore, weakestCategory } from "../../utils/scoring";
 import "./Evaluation.css";
 
-interface Option {
-  text: string;
-  value: number;
-}
 interface Question {
   category: string;
   text: string;
@@ -38,9 +34,16 @@ const Evaluation: React.FC = () => {
   const { name, id } = useParams<RouteParams>();
   const [evaluation, setEvaluation] = useState<EvaluationData | null>(null);
   const [loading, setLoading] = useState(true);
-  const { score, currentAnswersAndScores } = useContext(AppContext);
+  const [answers, setAnswers] = useState<AnswerMap>(new Map());
 
   useEffect(() => {
+    /* Las respuestas arrancan en blanco en cada evaluacion. El outlet de Ionic no
+       desmonta la pagina al navegar, asi que sin este borron las respuestas de la
+       evaluacion anterior seguirian contando en la siguiente. */
+    setAnswers(new Map());
+    setEvaluation(null);
+    setLoading(true);
+
     getEvaluation(id)
       .then(data => {
         if (data.success) setEvaluation(data.evaluation);
@@ -49,26 +52,48 @@ const Evaluation: React.FC = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  function setFinalScore() {
-    let arrayOfCategories: string[] = [];
-    let arrayOfScore: number[] = [];
-    currentAnswersAndScores.forEach((value, key) => {
-      if (arrayOfCategories.includes(value.category)) {
-        arrayOfScore[arrayOfCategories.indexOf(value.category)] += value.value;
-      } else {
-        arrayOfCategories.push(value.category);
-        arrayOfScore[arrayOfCategories.indexOf(value.category)] = value.value;
-      }
-    });
+  const score = useMemo(() => totalScore(answers), [answers]);
 
-    sessionStorage.setItem("totalCategories", arrayOfCategories.length.toLocaleString());
-    for (let i = 0; i < arrayOfCategories.length; i++) {
-      sessionStorage.setItem(`category${i}`, arrayOfCategories[i]);
-      sessionStorage.setItem(`categoryScore${i}`, arrayOfScore[i].toLocaleString());
-    }
-    sessionStorage.setItem("finalScore", score.toLocaleString());
-    sessionStorage.setItem("maxScore", String(computeMaxScore(evaluation?.questions ?? [])));
+  /* Que preguntas estan contestadas sale del mismo mapa: la clave es
+     `${indicePregunta}:${indiceOpcion}`, asi que basta con quedarse con la primera mitad.
+     Una pregunta cuenta una sola vez por mas opciones que se marquen. */
+  const answered = useMemo(
+    () => new Set(Array.from(answers.keys()).map(key => Number(key.split(':')[0]))),
+    [answers]
+  );
+
+  const total = evaluation?.questions.length ?? 0;
+
+  /* scroll-margin-top en la tarjeta evita que la barra sticky tape la pregunta, asi que
+     no hay que calcular desplazamientos a mano. */
+  function jumpTo(index: number) {
+    document.getElementById(`q-${index}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  function handleToggle(key: string, category: string, value: number) {
+    setAnswers(prev => toggleAnswer(prev, key, category, value));
+  }
+
+  function setFinalScore() {
+    const questions = evaluation?.questions ?? [];
+    sessionStorage.setItem("finalScore", String(score));
+    sessionStorage.setItem("maxScore", String(computeMaxScore(questions)));
+    sessionStorage.setItem("weakestCategory", weakestCategory(answers, questions));
+    sessionStorage.setItem("scorePending", "1");
+  }
+
+  /* El mismo elemento se renderiza en el panel y al final de las preguntas: un elemento
+     de React es un descriptor inmutable, no hace falta un componente para reusarlo. */
+  const submitButton = (
+    <IonButton
+      onClick={setFinalScore}
+      color="primary"
+      href={`/score/${name}`}
+      expand="block"
+    >
+      Obtener resultados
+    </IonButton>
+  );
 
   return (
     <IonPage>
@@ -86,32 +111,53 @@ const Evaluation: React.FC = () => {
             ))}
           </div>
         )}
-        {!loading && (
+        {!loading && !evaluation && (
+          <p className="page-message">
+            No pudimos cargar esta evaluaci&oacute;n. Revisa tu conexi&oacute;n e intenta de nuevo.
+          </p>
+        )}
+        {!loading && evaluation && (
           <>
-            <h1 className="header__title">{name}</h1>
-            <div className="evaluation__questions">
-              {evaluation?.questions.map((question, index) => (
-                <QuestionTestCard
-                  key={index}
-                  number={index + 1}
-                  question={question.text}
-                  category={question.category}
-                  comments={undefined}
-                  options={question.options.map(o => o.text)}
-                  points={question.options.map(o => String(o.value))}
-                />
-              ))}
+            {/* display: contents en mobile; en escritorio alinea titulo e indicacion con
+                la columna de preguntas. */}
+            <div className="evaluation__header">
+              <h1 className="header__title">{name}</h1>
+              <p className="evaluation__intro">
+                {total} preguntas sobre tu proyecto. Marca todas las opciones que ya hayas
+                considerado; puedes saltar entre preguntas desde el panel.
+              </p>
             </div>
-            <IonRow className="align-center evaluation__submit">
-              <IonButton
-                onClick={setFinalScore}
-                color="primary"
-                href={`/score/${name}`}
-                expand="block"
-              >
-                Obtener resultados
-              </IonButton>
-            </IonRow>
+
+            <div className="eval-progress">
+              <div className="eval-progress__bar">
+                <div className="eval-progress__fill" style={{ width: `${total > 0 ? (answered.size / total) * 100 : 0}%` }} />
+              </div>
+              <span className="eval-progress__count">{answered.size} de {total}</span>
+            </div>
+
+            {/* El nav va antes que las preguntas en el DOM para que en mobile el
+                desplegable quede arriba; en desktop la colocacion explicita del grid lo
+                manda a la columna derecha. */}
+            <div className="evaluation__layout">
+              <QuestionNav total={total} answered={answered} onJump={jumpTo} submit={submitButton} />
+
+              <div className="evaluation__questions">
+                {evaluation?.questions.map((question, index) => (
+                  <QuestionTestCard
+                    key={index}
+                    id={`q-${index}`}
+                    number={index + 1}
+                    questionIndex={index}
+                    question={question.text}
+                    category={question.category}
+                    options={question.options}
+                    answers={answers}
+                    onToggle={handleToggle}
+                  />
+                ))}
+                <IonRow className="align-center evaluation__submit">{submitButton}</IonRow>
+              </div>
+            </div>
           </>
         )}
       </IonContent>

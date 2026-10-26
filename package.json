@@ -6,8 +6,13 @@
   "scripts": {
     "start": "ionic serve --external -p=3000",
     "build": "ionic build",
-    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)"
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -76,10 +81,6 @@
   },
   "devDependencies": {
     "@capacitor/assets": "^2.0.4",
-    "@capacitor/cli": "4.3.0",
-    "@types/gapi": "^0.0.43",
-    "@types/gapi.client": "^1.0.5",
-    "@types/gapi.client.docs": "^1.0.1",
-    "@types/gapi.client.drive": "^3.0.14"
+    "@capacitor/cli": "4.3.0"
   }
 }

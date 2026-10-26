@@ -28,3 +28,116 @@
     font-size: 0.95rem;
     line-height: 1.6;
 }
+
+/* === ESCRITORIO === */
+@media (min-width: 768px) {
+    .favorites-container {
+        max-width: var(--d-content-max);
+        margin: 0 auto;
+        padding: 40px var(--d-gutter) 64px;
+        box-sizing: border-box;
+    }
+
+    /* Titulo y contador en una linea: el numero responde "cuanto tengo" antes de leer nada. */
+    .favorites-header {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .favorites-title {
+        margin: 0;
+        font-family: var(--d-display);
+        font-size: 2.1rem;
+        font-weight: 400;
+        color: var(--d-text);
+    }
+
+    .favorites-count {
+        margin: 0;
+        color: var(--d-text-3);
+        font-size: 0.95rem;
+    }
+
+    /* .filter-pills trae padding pensado para ir pegado al borde de la pantalla. */
+    .favorites-pills {
+        padding: 0 0 24px;
+    }
+
+    .favorites-pill__count {
+        margin-left: 4px;
+        opacity: 0.6;
+        font-weight: 500;
+    }
+
+    .favorites-grid,
+    .favorites-skeleton-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    /* El ion-card trae margen propio; en la cuadricula el espacio lo da el gap. */
+    .favorites-grid .document-card {
+        margin: 0;
+    }
+
+    /* Vacio: una invitacion a explorar, no un aviso. */
+    .favorites-empty-desk {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        max-width: 520px;
+        margin-top: 24px;
+        padding: 40px 44px;
+        border: 1px dashed var(--d-line-strong);
+        border-radius: 24px;
+        background: var(--d-surface);
+    }
+
+    .favorites-empty-desk__icon {
+        display: grid;
+        place-items: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(128, 178, 89, 0.14);
+        color: var(--axis-ambiental);
+        font-size: 26px;
+        margin-bottom: 20px;
+    }
+
+    .favorites-empty-desk__title {
+        margin: 0 0 10px;
+        color: var(--d-text);
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .favorites-empty-desk__text {
+        margin: 0 0 24px;
+        color: var(--d-text-2);
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+    .favorites-empty-desk__btn {
+        --border-radius: 100px;
+        --padding-start: 24px;
+        --padding-end: 24px;
+        height: 44px;
+        margin: 0;
+        font-weight: 700;
+        text-transform: none;
+        letter-spacing: 0.2px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .favorites-grid,
+    .favorites-skeleton-list {
+        gap: 20px;
+    }
+}

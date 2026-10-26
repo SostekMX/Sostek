@@ -3,8 +3,14 @@
     --color: #f0f0f0;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
-    margin: 10px 16px;
+    /* La columna ya viene acotada por .evaluation__questions; el margen lateral aqui
+       encogeria la tarjeta una segunda vez. */
+    margin: 10px 0;
     box-shadow: none;
+    /* Al saltar desde el panel hay que librar dos cosas: el ion-content es `fullscreen`,
+       asi que su scrollport arranca detras del toolbar de 56px, y encima queda la barra
+       de progreso de 36px. Medido: la tarjeta aterriza exactamente a este valor. */
+    scroll-margin-top: 102px;
 }
 
 .eval-card ion-card-header ion-card-title {
@@ -51,4 +57,91 @@ ion-checkbox {
     --checkmark-color: #ffffff;
     --border-radius: 5px;
     margin-inline-end: 10px;
+}
+
+/* Etiqueta del eje: solo en escritorio. */
+.eval-card__axis {
+    display: none;
+}
+
+/* ==========================================================
+   Escritorio (>= 768px): tarjeta opaca de la paleta de escritorio, el eje de la pregunta
+   con su color y, si las opciones son cortas, en dos columnas.
+   ========================================================== */
+@media (min-width: 768px) {
+    .eval-card {
+        --background: var(--d-surface);
+        border-color: var(--d-line);
+        border-radius: 18px;
+        margin: 0 0 16px;
+        /* Sin toolbar arriba solo queda librar la barra de progreso de 38px */
+        scroll-margin-top: 54px;
+    }
+
+    .eval-card ion-card-header {
+        padding: 0 24px 4px;
+    }
+
+    .eval-card ion-card-content {
+        padding: 0 24px 16px;
+    }
+
+    .eval-card__axis {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 22px 24px 10px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--axis, var(--d-text-2));
+    }
+
+    .eval-card__axis::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--axis, var(--d-text-3));
+    }
+
+    /* Eje doble: el punto lleva mitad economico, mitad social. */
+    .eval-card__axis--mixed {
+        color: var(--d-text);
+    }
+
+    .eval-card__axis--mixed::before {
+        width: 16px;
+        border-radius: 4px;
+        background: linear-gradient(90deg, var(--axis-economico) 50%, var(--axis-social) 50%);
+    }
+
+    .eval-card ion-card-header ion-card-title {
+        font-size: 1.08rem;
+        line-height: 1.45;
+        color: var(--d-text) !important;
+    }
+
+    .eval-card ion-card-content ion-label {
+        font-size: 0.92rem !important;
+        color: var(--d-text-2) !important;
+    }
+
+    .eval-card ion-checkbox {
+        --background: transparent;
+        --border-color: var(--d-line-strong);
+        --border-width: 1.5px;
+    }
+
+    .eval-card__options--grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 24px;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* Ni toolbar ni barra de progreso: la tarjeta aterriza con un poco de aire. */
+    .eval-card {
+        scroll-margin-top: 24px;
+    }
 }

@@ -1,9 +1,9 @@
 import { IonContent, IonHeader, IonPage } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { getArticles, getPresentations } from '../../api/content';
-import './Tab1.css';
 import ArticleCarrousel, { Article, Presentation } from '../../components/ArticleCarrousel';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
+import { readCache } from '../../utils/cache';
 
 const Tab1: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -11,11 +11,11 @@ const Tab1: React.FC = () => {
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
-    const cachedArticles = localStorage.getItem("articles");
-    const cachedPresentations = localStorage.getItem("presentations");
+    const cachedArticles = readCache<Article[]>("articles");
+    const cachedPresentations = readCache<Presentation[]>("presentations");
 
-    if (cachedArticles) setArticles(JSON.parse(cachedArticles));
-    if (cachedPresentations) setPresentations(JSON.parse(cachedPresentations));
+    if (cachedArticles) setArticles(cachedArticles);
+    if (cachedPresentations) setPresentations(cachedPresentations);
     if (cachedArticles) setLoadingData(false);
 
     Promise.all([

@@ -7,11 +7,6 @@
     --min-height: 56px;
 }
 
-.appbar--transparent {
-    --background: transparent;
-    --border-color: transparent;
-}
-
 .appbar__logo-btn {
     display: flex;
     align-items: center;
@@ -74,4 +69,37 @@
     object-fit: cover;
     border: 1.5px solid #80b259;
     display: block;
+}
+
+/* Escritorio: logo y menu viven en la barra lateral. Fuera de APRENDE la barra queda vacia
+   y se quita; en APRENDE solo lleva el buscador, abierto y alineado con el contenido. */
+@media (min-width: 768px) {
+    .appbar__logo-btn,
+    .appbar__menu-btn {
+        display: none;
+    }
+
+    .appbar--bare {
+        display: none;
+    }
+
+    .appbar {
+        --min-height: 64px;
+        --padding-start: 24px;
+        --padding-end: 24px;
+    }
+
+    .appbar__searchbar {
+        max-width: 520px;
+        height: 42px;
+        padding: 0;
+        animation: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .appbar {
+        --padding-start: 40px;
+        --padding-end: 40px;
+    }
 }
