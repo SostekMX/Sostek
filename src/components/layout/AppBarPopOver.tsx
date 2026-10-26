@@ -7,14 +7,13 @@ import AppContext from '../../context/AppContext';
 import { clearSession, readAvatar } from '../../utils/session';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 
-export const AppBarPopOver: React.FC = () => {
+const AppBarPopOver: React.FC = () => {
     const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
-    const popoverRef = useRef<HTMLIonPopoverElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
-    const { search, changeSearch, transparentToolbar } = useContext(AppContext);
+    const { search, changeSearch } = useContext(AppContext);
     const history = useHistory();
     const location = useLocation();
 
@@ -73,7 +72,7 @@ export const AppBarPopOver: React.FC = () => {
     return <>
         {/* appbar--bare: en escritorio, fuera de APRENDE, la barra no tiene nada que mostrar
             (logo y menu viven en la barra lateral) y se esconde por CSS. */}
-        <IonToolbar className={`appbar${transparentToolbar ? ' appbar--transparent' : ''}${showSearch ? '' : ' appbar--bare'}`}>
+        <IonToolbar className={`appbar${showSearch ? '' : ' appbar--bare'}`}>
 
             {/* Logo — siempre visible */}
             <IonButtons slot='start'>
@@ -116,7 +115,7 @@ export const AppBarPopOver: React.FC = () => {
                     }
                 </IonButton>
 
-                <IonPopover ref={popoverRef} trigger={popoverId} triggerAction="click">
+                <IonPopover trigger={popoverId} triggerAction="click">
                     <IonContent>
                         <IonList>
                             {isUserLogged &&

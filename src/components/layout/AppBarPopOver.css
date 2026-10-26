@@ -7,11 +7,6 @@
     --min-height: 56px;
 }
 
-.appbar--transparent {
-    --background: transparent;
-    --border-color: transparent;
-}
-
 .appbar__logo-btn {
     display: flex;
     align-items: center;

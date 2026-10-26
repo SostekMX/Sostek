@@ -194,8 +194,6 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
                 id={pres._id}
                 type="presentation"
                 meta={`${pres.slides?.length ?? 0} diapositivas`}
-                imgAuthor={undefined}
-                imgPage={undefined}
                 isLoggedIn={isLoggedIn}
                 isFavorite={isFavorite(pres._id)}
                 onToggleFavorite={() =>
@@ -236,8 +234,6 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
               type={article.type}
               category={article.category}
               meta={article.author}
-              imgAuthor={article.author_image || undefined}
-              imgPage={article.page_image || undefined}
               isLoggedIn={isLoggedIn}
               isFavorite={isFavorite(article._id)}
               onToggleFavorite={() =>

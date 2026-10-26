@@ -70,15 +70,6 @@
     flex-shrink: 0;
 }
 
-.signup-card__step {
-    color: #ecaf80;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin: 0 0 4px;
-}
-
 .signup-card__section-title {
     color: #ffffff;
     font-size: 1rem;

@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonItem, IonLabel, IonPopover, IonTitle } from '@ionic/react';
 import { menuOutline, heart, personCircle, logOut, chevronBackOutline, chevronForwardOutline, expandOutline, contractOutline } from 'ionicons/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Lazy, Keyboard } from 'swiper';
+import { Pagination, Keyboard } from 'swiper';
 import type { Swiper as SwiperInstance } from 'swiper';
 import { getPresentations } from '../../api/content';
 import { clearSession } from '../../utils/session';
@@ -12,7 +12,6 @@ import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import './Presentation.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import 'swiper/css/lazy';
 import '@ionic/react/css/ionic-swiper.css';
 
 interface RouteParams {
@@ -93,9 +92,8 @@ const Presentation: React.FC = () => {
             key={driveId}
             className='mySwiper'
             direction={"horizontal"}
-            modules={[Pagination, Lazy]}
+            modules={[Pagination]}
             pagination={true}
-            lazy={true}
             initialSlide={0}
           >
             {slides.map((url, index) => (

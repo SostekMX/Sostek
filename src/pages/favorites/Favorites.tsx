@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IonButton, IonContent, IonIcon, IonPage, IonText } from '@ionic/react';
 import { heartOutline } from 'ionicons/icons';
-import { useHistory } from 'react-router';
 import { getArticles, getPresentations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import DocumentCard from '../../components/DocumentCard';
@@ -28,7 +27,6 @@ const FILTERS: { value: TypeFilter; label: string }[] = [
 ];
 
 const Favorites: React.FC = () => {
-  const history = useHistory();
   const { favorites, loading: favLoading, isLoggedIn, isFavorite, removeFavorite, addFavorite } = useFavorites();
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [allPresentations, setAllPresentations] = useState<Presentation[]>([]);
@@ -37,10 +35,6 @@ const Favorites: React.FC = () => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      history.replace('/');
-      return;
-    }
     Promise.all([
       getArticles(),
       getPresentations(),
@@ -146,8 +140,6 @@ const Favorites: React.FC = () => {
                   id={item.id}
                   type={item.type}
                   category={isDesktop ? item.category : undefined}
-                  imgAuthor={undefined}
-                  imgPage={undefined}
                   isLoggedIn={isLoggedIn}
                   isFavorite={isFavorite(item.id)}
                   onToggleFavorite={() =>

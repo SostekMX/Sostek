@@ -1,7 +1,6 @@
 import { IonContent, IonHeader, IonPage } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { getArticles, getPresentations } from '../../api/content';
-import './Tab1.css';
 import ArticleCarrousel, { Article, Presentation } from '../../components/ArticleCarrousel';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 

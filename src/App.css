@@ -283,14 +283,6 @@ ion-popover ion-item {
     opacity: 1;
 }
 
-.article-modal__link {
-    text-decoration: none;
-}
-
-.article-modal__title {
-    color: var(--sos-text-primary, #1a2e1a);
-}
-
 /* === FILTER PILLS === */
 
 .filter-pills {
@@ -344,117 +336,6 @@ ion-popover ion-item {
     color: #ffffff;
 }
 
-/* === SHARED: Section messages === */
-
-.under_construction-container {
-    width: 100%;
-    padding: 20px 20px 32px;
-}
-
-.under_construction_text {
-    color: #ffffff;
-    text-align: center;
-    margin-bottom: 8px;
-    line-height: 1.5;
-}
-
-.under_construction_link {
-    text-align: center;
-}
-
-.under_construction_link a {
-    color: #deebd7;
-    font-weight: 600;
-    text-decoration: underline;
-}
-
-/* === AUTH PAGES (LogIn + SignUp) === */
-
-.auth-overlay {
-    min-height: 100vh;
-    background: linear-gradient(160deg, #0d1f0d 0%, #1c3e1c 55%, #2f6b22 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    box-sizing: border-box;
-}
-
-.auth-wrapper {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.auth-logo {
-    height: 72px;
-    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
-}
-
-.auth-card {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 20px;
-    padding: 28px 22px 22px;
-    box-shadow: 0 12px 40px rgba(10, 26, 10, 0.28);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.auth-title {
-    text-align: center;
-    color: #1a2e1a;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin: 0 0 4px;
-    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
-    letter-spacing: 0.5px;
-}
-
-.auth-input-item {
-    --background: #f2f7ee;
-    --border-radius: 10px;
-    --padding-start: 14px;
-    --padding-end: 14px;
-    --inner-padding-end: 0;
-    --highlight-color-focused: #80b259;
-    border-radius: 10px;
-}
-
-.auth-label {
-    color: #3d5e40 !important;
-    font-size: 0.82rem !important;
-    font-weight: 700 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 2px;
-}
-
-.auth-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 6px;
-}
-
-.auth-actions ion-button {
-    --border-radius: 100px;
-    height: 48px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-}
-
-.auth-guest-btn {
-    --color: rgba(255, 255, 255, 0.92) !important;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-}
-
 /* === SHARED FORM (Profile) === */
 
 .align-center {
@@ -462,10 +343,6 @@ ion-popover ion-item {
     align-content: center;
     justify-content: center;
     justify-items: center;
-}
-
-.space {
-    height: 1.5em;
 }
 
 /* === EJES (ver src/utils/axis.ts) ===

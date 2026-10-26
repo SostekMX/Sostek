@@ -10,8 +10,6 @@ interface DocumentProps {
     img_url: string;
     id: string;
     type: string;
-    imgAuthor: string | undefined;
-    imgPage: string | undefined;
     category?: string;
     meta?: string;
     isFavorite?: boolean;

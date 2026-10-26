@@ -150,7 +150,6 @@ const Evaluation: React.FC = () => {
                     questionIndex={index}
                     question={question.text}
                     category={question.category}
-                    comments={undefined}
                     options={question.options}
                     answers={answers}
                     onToggle={handleToggle}

@@ -1,5 +1,5 @@
 import './QuestionTestCard.css';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonListHeader, IonLabel, IonCheckbox } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonLabel, IonCheckbox } from '@ionic/react';
 import { AnswerMap } from '../utils/scoring';
 import { axisOf } from '../utils/axis';
 import { normalize } from '../utils/search';
@@ -15,19 +15,17 @@ interface props {
     questionIndex: number;
     question: string | undefined;
     category: string | undefined;
-    comments: string | undefined;
     options: Option[];
     answers: AnswerMap;
     onToggle: (key: string, category: string, value: number) => void;
 }
 
-/* Question card component that requires a question, comments (could be specific instructions for particular questions),
- * options (an array of all the options, doesn't matter the size).
+/* Tarjeta de pregunta: el texto, su eje y las opciones (cualquier cantidad).
  *
  * Las casillas son controladas: lo que se ve marcado sale del mismo mapa del que sale el
  * puntaje, asi que no pueden decir cosas distintas.
  */
-const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question, category, comments, options, answers, onToggle }) => {
+const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question, category, options, answers, onToggle }) => {
     /* Escritorio: el eje de la pregunta va como etiqueta con su color. "Economico y Social"
        es un eje doble y lleva los dos colores. */
     const axis = axisOf(category);
@@ -51,11 +49,6 @@ const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question
 
             <IonCardContent>
                 <IonList className={optionsInGrid ? 'eval-card__options--grid' : undefined}>
-                    {comments &&
-                        <IonListHeader>
-                            <IonLabel>{comments}</IonLabel>
-                        </IonListHeader>
-                    }
                     {options.map((option, index) => {
                         const key = `${questionIndex}:${index}`;
                         const checked = answers.has(key);
