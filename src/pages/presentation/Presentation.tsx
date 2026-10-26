@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
-import { useHistory } from 'react-router-dom';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonItem, IonLabel, IonPopover, IonTitle } from '@ionic/react';
-import { menuOutline, heart, personCircle, logOut, chevronBackOutline, chevronForwardOutline, expandOutline, contractOutline } from 'ionicons/icons';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonIcon, IonTitle } from '@ionic/react';
+import { menuOutline, chevronBackOutline, chevronForwardOutline, expandOutline, contractOutline } from 'ionicons/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Keyboard } from 'swiper';
 import type { Swiper as SwiperInstance } from 'swiper';
 import { getPresentations } from '../../api/content';
-import { clearSession, isLoggedIn } from '../../utils/session';
+import { AppMenu } from '../../components/layout/AppBarPopOver';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import './Presentation.css';
 import 'swiper/css';
@@ -24,10 +23,6 @@ const Presentation: React.FC = () => {
   const [title, setTitle] = useState('');
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [loading, setLoading] = useState(true);
-  const { current: popoverId } = useRef(`pres-menu-${Math.random().toString(36).substr(2, 6)}`);
-  const history = useHistory();
-
-  const isUserLogged = isLoggedIn();
 
   useEffect(() => {
     setSlides([]);
@@ -46,11 +41,6 @@ const Presentation: React.FC = () => {
       .finally(() => setLoading(false));
   }, [driveId]);
 
-  function logOutUser() {
-    clearSession();
-    history.replace('/');
-  }
-
   return (
     <IonPage>
       <IonHeader>
@@ -60,17 +50,9 @@ const Presentation: React.FC = () => {
           </IonButtons>
           {isDesktop && title && <IonTitle className="presd-toolbar-title">{title}</IonTitle>}
           <IonButtons slot="end">
-            <IonButton id={popoverId} className="dark-toolbar__menu-btn">
+            <AppMenu buttonClass="dark-toolbar__menu-btn">
               <IonIcon slot="icon-only" icon={menuOutline} />
-            </IonButton>
-            <IonPopover trigger={popoverId} triggerAction="click">
-              <IonList>
-                {isUserLogged && <IonItem href="/Favorites"><IonIcon icon={heart} color="secondary" />&nbsp;<IonLabel>Favoritos</IonLabel></IonItem>}
-                {isUserLogged && <IonItem href="/Profile"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Perfil</IonLabel></IonItem>}
-                {!isUserLogged && <IonItem href="/"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Iniciar Sesión</IonLabel></IonItem>}
-                {isUserLogged && <IonItem onClick={logOutUser}><IonIcon icon={logOut} color="secondary" />&nbsp;<IonLabel>Log Out</IonLabel></IonItem>}
-              </IonList>
-            </IonPopover>
+            </AppMenu>
           </IonButtons>
         </IonToolbar>
       </IonHeader>

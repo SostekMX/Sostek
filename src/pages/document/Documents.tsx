@@ -1,28 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonItem, IonLabel, IonPopover, IonTitle, ScrollDetail, useIonRouter } from '@ionic/react';
-import { menuOutline, heart, heartOutline, personCircle, logOut, arrowBackOutline } from 'ionicons/icons';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonIcon, IonTitle, ScrollDetail, useIonRouter } from '@ionic/react';
+import { menuOutline, heart, heartOutline, arrowBackOutline } from 'ionicons/icons';
 import { useParams } from 'react-router';
-import { useHistory } from 'react-router-dom';
 import { getArticle } from '../../api/content';
-import { clearSession, isLoggedIn } from '../../utils/session';
+import { Article } from '../../components/ArticleCarrousel';
+import { AppMenu } from '../../components/layout/AppBarPopOver';
 import { axisOf } from '../../utils/axis';
 import useFavorites from '../../hooks/useFavorites';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import './Documents.css';
-
-interface Article {
-  _id: string;
-  title: string;
-  subtitle: string;
-  type: string;
-  body: string;
-  image: string;
-  author: string;
-  author_image: string;
-  page_image: string;
-  category: string;
-  bibliography?: string;
-}
 
 interface RouteParams {
   id: string;
@@ -32,14 +18,10 @@ const Documents: React.FC = () => {
   const { id } = useParams<RouteParams>();
   const [article, setArticle] = useState<Article | null>(null);
   const [loadingData, setLoadingData] = useState(true);
-  const { current: popoverId } = useRef(`doc-menu-${Math.random().toString(36).substr(2, 6)}`);
-  const history = useHistory();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const scrollElRef = useRef<HTMLElement | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const toolbarTitleRef = useRef<HTMLIonTitleElement>(null);
-
-  const isUserLogged = isLoggedIn();
 
   useEffect(() => {
     // Ionic reusa la pagina entre ids: sin este reinicio un fallo dejaba el articulo anterior.
@@ -66,11 +48,6 @@ const Documents: React.FC = () => {
     toolbarTitleRef.current?.classList.toggle('docd-toolbar-title--visible', e.detail.scrollTop > 340);
   }
 
-  function logOutUser() {
-    clearSession();
-    history.replace('/');
-  }
-
   return (
     <IonPage>
       <IonHeader>
@@ -83,17 +60,9 @@ const Documents: React.FC = () => {
             <IonTitle ref={toolbarTitleRef} className="docd-toolbar-title">{article.title}</IonTitle>
           )}
           <IonButtons slot="end">
-            <IonButton id={popoverId} className="dark-toolbar__menu-btn">
+            <AppMenu buttonClass="dark-toolbar__menu-btn">
               <IonIcon slot="icon-only" icon={menuOutline} />
-            </IonButton>
-            <IonPopover trigger={popoverId} triggerAction="click">
-              <IonList>
-                {isUserLogged && <IonItem href="/Favorites"><IonIcon icon={heart} color="secondary" />&nbsp;<IonLabel>Favoritos</IonLabel></IonItem>}
-                {isUserLogged && <IonItem href="/Profile"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Perfil</IonLabel></IonItem>}
-                {!isUserLogged && <IonItem href="/"><IonIcon icon={personCircle} color="secondary" />&nbsp;<IonLabel>Iniciar Sesión</IonLabel></IonItem>}
-                {isUserLogged && <IonItem onClick={logOutUser}><IonIcon icon={logOut} color="secondary" />&nbsp;<IonLabel>Log Out</IonLabel></IonItem>}
-              </IonList>
-            </IonPopover>
+            </AppMenu>
           </IonButtons>
         </IonToolbar>
         {isDesktop && article && (

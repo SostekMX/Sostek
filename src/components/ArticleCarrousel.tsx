@@ -22,6 +22,7 @@ export interface Article {
   page_image: string;
   category: string;
   tags: string[];
+  bibliography?: string;
 }
 
 export interface Presentation {

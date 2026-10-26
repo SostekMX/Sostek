@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useContext, useEffect, useId, useRef, useState } from 'react';
 import './AppBarPopOver.css';
 import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
 import { personCircle, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
@@ -7,14 +7,70 @@ import AppContext from '../../context/AppContext';
 import { clearSession, isLoggedIn, readAvatar } from '../../utils/session';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 
+/* Ionic pone aria-hidden en la pagina en cuanto el popover empieza a abrir, y el boton que
+ * lo abrio sigue con el foco: Chrome avisa de un elemento enfocado dentro de aria-hidden.
+ * Soltar el foco al hacer clic lo evita. El foco real vive en el shadow root de ion-button. */
+function releaseFocus() {
+    const active = document.activeElement;
+    ((active?.shadowRoot?.activeElement ?? active) as HTMLElement | null)?.blur();
+}
+
+/* Menu del movil (favoritos, perfil, sesion). Lo comparten la barra de APRENDE/JUEGA/EVALUATE
+ * y las barras de articulo y presentacion; cada una pone su propio boton. */
+export const AppMenu: React.FC<{ buttonClass: string; fill?: 'clear'; children: ReactNode }> = ({ buttonClass, fill, children }) => {
+    const popoverId = useId();
+    const history = useHistory();
+    const isUserLogged = isLoggedIn();
+
+    function logOutUser() {
+        clearSession();
+        history.replace('/');
+    }
+
+    return <>
+        <IonButton fill={fill} id={popoverId} className={buttonClass} onClick={releaseFocus}>
+            {children}
+        </IonButton>
+
+        <IonPopover trigger={popoverId} triggerAction="click">
+            <IonContent>
+                <IonList>
+                    {isUserLogged &&
+                        <IonItem href='/Favorites'>
+                            <IonIcon icon={heart} color='secondary' /> &nbsp;
+                            <IonLabel>Favoritos</IonLabel>
+                        </IonItem>
+                    }
+                    {isUserLogged &&
+                        <IonItem href='/Profile'>
+                            <IonIcon icon={personCircle} color='secondary' /> &nbsp;
+                            <IonLabel>Perfil</IonLabel>
+                        </IonItem>
+                    }
+                    {!isUserLogged &&
+                        <IonItem href='/'>
+                            <IonIcon icon={personCircle} color='secondary' /> &nbsp;
+                            <IonLabel>Iniciar Sesión</IonLabel>
+                        </IonItem>
+                    }
+                    {isUserLogged &&
+                        <IonItem onClick={logOutUser}>
+                            <IonIcon icon={logOut} color='secondary' /> &nbsp;
+                            <IonLabel>Log Out</IonLabel>
+                        </IonItem>
+                    }
+                </IonList>
+            </IonContent>
+        </IonPopover>
+    </>;
+};
+
 const AppBarPopOver: React.FC = () => {
-    const { current: popoverId } = useRef(`menu-${Math.random().toString(36).substr(2, 6)}`);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     const { search, changeSearch } = useContext(AppContext);
-    const history = useHistory();
     const location = useLocation();
 
     const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -64,11 +120,6 @@ const AppBarPopOver: React.FC = () => {
         }, 180);
     }
 
-    function logOutUser() {
-        clearSession();
-        history.replace('/');
-    }
-
     return <>
         {/* appbar--bare: en escritorio, fuera de APRENDE, la barra no tiene nada que mostrar
             (logo y menu viven en la barra lateral) y se esconde por CSS. */}
@@ -103,7 +154,7 @@ const AppBarPopOver: React.FC = () => {
                     </IonButton>
                 )}
 
-                <IonButton fill="clear" id={popoverId} className='appbar__menu-btn'>
+                <AppMenu fill="clear" buttonClass='appbar__menu-btn'>
                     {isUserLogged && avatarUrl
                         ? <img
                             src={avatarUrl}
@@ -113,38 +164,7 @@ const AppBarPopOver: React.FC = () => {
                           />
                         : <IonIcon slot="icon-only" icon={isUserLogged ? personCircle : menuOutline} />
                     }
-                </IonButton>
-
-                <IonPopover trigger={popoverId} triggerAction="click">
-                    <IonContent>
-                        <IonList>
-                            {isUserLogged &&
-                                <IonItem href='/Favorites'>
-                                    <IonIcon icon={heart} color='secondary' /> &nbsp;
-                                    <IonLabel>Favoritos</IonLabel>
-                                </IonItem>
-                            }
-                            {isUserLogged &&
-                                <IonItem href='/Profile'>
-                                    <IonIcon icon={personCircle} color='secondary' /> &nbsp;
-                                    <IonLabel>Perfil</IonLabel>
-                                </IonItem>
-                            }
-                            {!isUserLogged &&
-                                <IonItem href='/'>
-                                    <IonIcon icon={personCircle} color='secondary' /> &nbsp;
-                                    <IonLabel>Iniciar Sesión</IonLabel>
-                                </IonItem>
-                            }
-                            {isUserLogged &&
-                                <IonItem onClick={logOutUser}>
-                                    <IonIcon icon={logOut} color='secondary' /> &nbsp;
-                                    <IonLabel>Log Out</IonLabel>
-                                </IonItem>
-                            }
-                        </IonList>
-                    </IonContent>
-                </IonPopover>
+                </AppMenu>
             </div>
 
         </IonToolbar>
