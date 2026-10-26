@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { login } from '../../api/auth';
 import { getProfile } from '../../api/user';
-import { startSession } from '../../utils/session';
+import { clearSession, startSession } from '../../utils/session';
 import '../../App.css';
 import './LogIn.css';
 
@@ -14,8 +14,9 @@ const LogIn: React.FC = () => {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const history = useHistory();
 
+    // Entrar al login cierra la sesion completa; antes quedaba el token y se seguia mandando.
     useEffect(() => {
-        sessionStorage.setItem('login', 'false');
+        clearSession();
     }, [])
 
     function loginUser() {
