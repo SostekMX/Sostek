@@ -77,7 +77,7 @@ const Tab2: React.FC = () => {
           <div className='juega-hero'>
             <p className='juega-hero__label'>VIDEOJUEGO EDUCATIVO</p>
             <h1 className='juega-hero__title'>Survivor</h1>
-            <p className='juega-hero__subtitle'>Aprende sobre sostenibilidad mientras juegas</p>
+            <p className='juega-hero__subtitle'>Mira el video, descarga las cartas y revisa las reglas para organizar una partida de 4 a 6 personas.</p>
           </div>
 
           {/* Bloque superior. En mobile es una columna en el orden del DOM;

@@ -28,7 +28,8 @@ export const AppMenu: React.FC<{ buttonClass: string; fill?: 'clear'; children: 
     }
 
     return <>
-        <IonButton fill={fill} id={popoverId} className={buttonClass} onClick={releaseFocus}>
+        <IonButton fill={fill} id={popoverId} className={buttonClass} onClick={releaseFocus}
+          aria-label={isUserLogged ? 'Abrir menú de cuenta' : 'Abrir menú de navegación'}>
             {children}
         </IonButton>
 
@@ -56,7 +57,7 @@ export const AppMenu: React.FC<{ buttonClass: string; fill?: 'clear'; children: 
                     {isUserLogged &&
                         <IonItem onClick={logOutUser}>
                             <IonIcon icon={logOut} color='secondary' /> &nbsp;
-                            <IonLabel>Log Out</IonLabel>
+                            <IonLabel>Cerrar sesión</IonLabel>
                         </IonItem>
                     }
                 </IonList>
@@ -127,7 +128,7 @@ const AppBarPopOver: React.FC = () => {
 
             {/* Logo — siempre visible */}
             <IonButtons slot='start'>
-                <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn">
+                <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn" aria-label="Ir a Aprende">
                     <img src="/assets/sostek-logo.png" className="appbar__logo" alt="SOSTEK" />
                 </a>
             </IonButtons>
@@ -149,7 +150,7 @@ const AppBarPopOver: React.FC = () => {
             {/* Botones derecha — lupa + menú/avatar siempre juntos */}
             <div slot="end" className="appbar__end">
                 {showSearch && !searchOpen && (
-                    <IonButton fill="clear" onClick={openSearch}>
+                    <IonButton fill="clear" onClick={openSearch} aria-label="Abrir búsqueda">
                         <IonIcon slot="icon-only" icon={iconSearch} />
                     </IonButton>
                 )}

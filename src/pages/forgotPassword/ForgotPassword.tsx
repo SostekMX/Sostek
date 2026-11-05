@@ -46,7 +46,7 @@ const ForgotPassword: React.FC = () => {
                             <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
                             <div className='login-brand__content'>
                                 <p className='login-brand__headline'>Recupera<br />tu acceso.</p>
-                                <p className='login-brand__desc'>Te mandamos un link a tu correo para que elijas una contrase&ntilde;a nueva. Si no lo ves en unos minutos, revisa la carpeta de spam.</p>
+                                <p className='login-brand__desc'>Te enviamos un enlace a tu correo para que elijas una contrase&ntilde;a nueva. Si no lo ves en unos minutos, revisa la carpeta de spam.</p>
                             </div>
                             <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
                         </aside>
@@ -62,8 +62,8 @@ const ForgotPassword: React.FC = () => {
                             <h2 className='login-title'>&#191;Olvidaste tu contrase&#241;a?</h2>
                             <p className='login-subtitle'>
                                 {sent
-                                    ? 'Revisa tu bandeja de entrada y sigue el link que te enviamos.'
-                                    : 'Ingresa tu correo y te enviaremos un link para restablecer tu contraseña.'}
+                                    ? 'Revisa tu bandeja de entrada y sigue el enlace que te enviamos.'
+                                    : 'Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.'}
                             </p>
                             {!sent && (
                                 <>
@@ -81,7 +81,7 @@ const ForgotPassword: React.FC = () => {
                                         </div>
                                     </div>
                                     <IonButton expand='block' color='primary' onClick={sendResetToken} disabled={loading} className='login-btn-main'>
-                                        {loading ? 'Enviando...' : 'Enviar link de recuperación'}
+                                        {loading ? 'Enviando...' : 'Enviar enlace de recuperación'}
                                     </IonButton>
                                 </>
                             )}

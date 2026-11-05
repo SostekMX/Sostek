@@ -1,5 +1,5 @@
 import { IonContent, IonPage } from '@ionic/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getEvaluations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
@@ -26,26 +26,35 @@ const Tab3: React.FC = () => {
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const loadEvaluations = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await getEvaluations();
+      if (!response?.success || !Array.isArray(response.evaluations)) {
+        throw new Error('Respuesta de evaluaciones inválida');
+      }
+      setEvaluations(response.evaluations);
+      localStorage.setItem('evaluations', JSON.stringify(response.evaluations));
+      setFailed(false);
+    } catch (error) {
+      console.error('Error loading evaluations:', error);
+      setFailed(true);
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const cached = readCache<EvaluationItem[]>("evaluations");
-    if (cached) {
+    const cached = readCache<EvaluationItem[]>('evaluations');
+    if (Array.isArray(cached)) {
       setEvaluations(cached);
       setLoading(false);
     }
-
-    getEvaluations()
-      .then(data => {
-        if (data.success) {
-          setEvaluations(data.evaluations);
-          localStorage.setItem("evaluations", JSON.stringify(data.evaluations));
-        } else {
-          setFailed(true);
-        }
-      })
-      .catch(err => { console.error(err); setFailed(true); })
-      .finally(() => setLoading(false));
-  }, []);
+    void loadEvaluations();
+  }, [loadEvaluations]);
 
   /* Agrupar por carrera reemplaza a las pills de filtro: con los tres niveles en fila
      bajo el nombre de la carrera, filtrar y agrupar hacian el mismo trabajo. */
@@ -101,6 +110,25 @@ const Tab3: React.FC = () => {
             </aside>
           </div>
 
+          {!loading && failed && (
+            <div className='content-load-error' role='alert'>
+              <h2 className='content-load-error__title'>No pudimos actualizar las evaluaciones</h2>
+              <p className='content-load-error__description'>
+                {evaluations.length > 0
+                  ? 'Puedes consultar las evaluaciones guardadas mientras recuperamos la conexión.'
+                  : 'Revisa tu conexión e inténtalo nuevamente.'}
+              </p>
+              <button
+                type='button'
+                className='content-load-error__button'
+                disabled={isRefreshing}
+                onClick={() => void loadEvaluations()}
+              >
+                {isRefreshing ? 'Reintentando...' : 'Reintentar'}
+              </button>
+            </div>
+          )}
+
           {loading && (
             <div className='evaluation-grid'>
               {Array.from({ length: 3 }).map((_, i) => (
@@ -138,14 +166,9 @@ const Tab3: React.FC = () => {
             </section>
           ))}
 
-          {/* Un fallo de red no es una lista vacia: si la peticion fallo y no hubo cache
-              que mostrar, el mensaje tiene que decir eso. */}
-          {!loading && evaluations.length === 0 && (
-            <p className='tab3-empty'>
-              {failed
-                ? 'No pudimos cargar las evaluaciones. Revisa tu conexión e intenta de nuevo.'
-                : 'Todavía no hay evaluaciones disponibles.'}
-            </p>
+          {/* No confundir una respuesta vacía con una petición fallida. */}
+          {!loading && !failed && evaluations.length === 0 && (
+            <p className='tab3-empty'>Todavía no hay evaluaciones disponibles.</p>
           )}
         </div>
       </IonContent>

@@ -103,3 +103,8 @@
         --padding-end: 40px;
     }
 }
+
+
+/* Indicadores de foco para navegación por teclado. */
+.appbar__logo-btn:focus-visible { outline: 2px solid #c7e7a6; outline-offset: 2px; }
+.appbar__end ion-button:focus-visible { outline: 2px solid #c7e7a6; outline-offset: 2px; border-radius: 8px; }

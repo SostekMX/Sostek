@@ -36,6 +36,7 @@ interface Props {
   articlesData: Article[] | null | undefined;
   loadingData: boolean;
   presentations: Presentation[] | null | undefined;
+  loadError?: boolean;
 }
 
 const ALL = 'Todos';
@@ -48,9 +49,9 @@ const axisClass = (category?: string) => {
   return axis ? `axis-${axis}` : '';
 };
 
-const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations }) => {
+const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations, loadError = false }) => {
   const [topic, setTopic] = useState(ALL);
-  const { search } = useContext(AppContext);
+  const { search, changeSearch } = useContext(AppContext);
   const { isLoggedIn, isFavorite, addFavorite, removeFavorite } = useFavorites();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const presRowRef = useRef<HTMLDivElement>(null);
@@ -205,10 +206,12 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
         <h2 className='aprende-section__title'>{showFeature ? 'Más artículos' : 'Artículos'}</h2>
 
         {!loadingData && topics.length > 1 && (
-          <div className='filter-pills aprende-pills'>
+          <div className='filter-pills aprende-pills' role='group' aria-label='Filtrar artículos por tema'>
             {[[ALL, matchingArticles.length] as [string, number], ...topics].map(([name, count]) => (
               <button
                 key={name}
+                type='button'
+                aria-pressed={activeTopic === name}
                 className={`filter-pill ${activeTopic === name ? 'filter-pill--active' : ''} ${axisClass(name)}`}
                 onClick={() => setTopic(name)}
               >
@@ -239,10 +242,25 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
           ))}
         </div>
 
-        {!loadingData && visibleArticles.length === 0 && (
-          <p className='aprende-empty'>
-            {search ? `No hay artículos que coincidan con “${search}”.` : 'Todavía no hay artículos publicados.'}
-          </p>
+        {!loadingData && !loadError && visibleArticles.length === 0 && (
+          <div className='aprende-empty' role='status'>
+            <p>
+              {searchNorm && visiblePresentations.length === 0
+                ? `No encontramos resultados para “${search}”.`
+                : searchNorm
+                  ? 'No hay artículos que coincidan con la búsqueda.'
+                  : 'Todavía no hay artículos publicados.'}
+            </p>
+            {searchNorm && visiblePresentations.length === 0 && (
+              <button
+                type='button'
+                className='content-load-error__button'
+                onClick={() => { setTopic(ALL); changeSearch?.(''); }}
+              >
+                Ver todo el contenido
+              </button>
+            )}
+          </div>
         )}
       </section>
     </div>

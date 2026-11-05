@@ -652,3 +652,7 @@
         padding-bottom: 0;
     }
 }
+
+
+.aprende-empty p { margin: 0 0 16px; }
+.aprende-empty .content-load-error__button { margin: 0 auto; }

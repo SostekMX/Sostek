@@ -350,3 +350,41 @@ ion-popover ion-item {
 .axis-ambiental { --axis: var(--axis-ambiental); }
 .axis-economico { --axis: var(--axis-economico); }
 .axis-social { --axis: var(--axis-social); }
+
+
+/* === ERRORES DE CARGA Y REINTENTOS === */
+.content-load-error {
+    margin: 14px 16px 12px;
+    padding: 16px;
+    border: 1px solid rgba(240, 174, 99, 0.35);
+    border-radius: 14px;
+    background: rgba(161, 104, 36, 0.12);
+}
+.content-load-error__title { margin: 0 0 8px; color: #f4d0a5; font-size: 0.95rem; font-weight: 700; }
+.content-load-error__description { margin: 0 0 14px; color: rgba(255, 255, 255, 0.84); font-size: 0.85rem; line-height: 1.5; }
+.content-load-error__button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 100px;
+    background: #80b259;
+    color: #0d1a0d;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.content-load-error__button:disabled { opacity: 0.6; cursor: not-allowed; }
+.content-load-error__button:focus-visible { outline: 2px solid #c7e7a6; outline-offset: 3px; }
+
+/* === MOSTRAR / OCULTAR CONTRASEÑA === */
+.password-visibility-toggle {
+    --color: rgba(255, 255, 255, 0.75);
+    --padding-start: 8px;
+    --padding-end: 8px;
+    margin: 0;
+    align-self: center;
+    min-width: 40px;
+    min-height: 40px;
+}
+.password-visibility-toggle:hover { --color: #80b259; }
+.password-visibility-toggle:focus-visible { outline: 2px solid #c7e7a6; outline-offset: 2px; border-radius: 8px; }
+.password-visibility-toggle ion-icon { font-size: 21px; }

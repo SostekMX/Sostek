@@ -5,7 +5,9 @@ import {
     IonToast,
     IonPage,
     IonButton,
+    IonIcon,
 } from '@ionic/react';
+import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { useHistory } from "react-router-dom";
 import '../../App.css';
 import '../logIn/LogIn.css';
@@ -18,6 +20,7 @@ import { startSession } from '../../utils/session';
 const SignUp: React.FC = () => {
     const [email, setEmail] = useState<string | null>('');
     const [password, setPassword] = useState<string | null>('');
+    const [showPassword, setShowPassword] = useState(false);
     const [name, setName] = useState<string | null>('');
     const [surname, setSurname] = useState<string | null>('');
     const [birthDate, setBirthDate] = useState<string | null>('');
@@ -141,11 +144,22 @@ const SignUp: React.FC = () => {
                                 <label className='signup-field__label'>Contrase&ntilde;a</label>
                                 <IonItem className='signup-field__item' lines='none'>
                                     <IonInput
-                                        type='password'
+                                        type={showPassword ? 'text' : 'password'}
                                         placeholder='Mínimo 8 caracteres'
                                         value={password}
                                         onIonChange={(e) => setPassword(e.target.value as string)}
                                     />
+                                    <IonButton
+                                        slot='end'
+                                        type='button'
+                                        fill='clear'
+                                        className='password-visibility-toggle'
+                                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                                        aria-pressed={showPassword}
+                                        onClick={() => setShowPassword(prev => !prev)}
+                                    >
+                                        <IonIcon slot='icon-only' icon={showPassword ? eyeOffOutline : eyeOutline} />
+                                    </IonButton>
                                 </IonItem>
                             </div>
                             <div className='signup-field'>

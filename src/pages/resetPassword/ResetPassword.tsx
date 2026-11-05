@@ -1,4 +1,5 @@
-import { IonButton, IonToast, IonAlert, IonContent, IonInput, IonItem, IonPage } from '@ionic/react';
+import { IonButton, IonToast, IonAlert, IonContent, IonInput, IonItem, IonPage, IonIcon } from '@ionic/react';
+import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { resetPassword as resetPasswordRequest } from '../../api/auth';
@@ -10,6 +11,7 @@ const ResetPassword: React.FC = () => {
     const tokenFromUrl = new URLSearchParams(location.search).get('token') ?? '';
     const [token, setToken] = useState<string>(tokenFromUrl);
     const [newPassword, setNewPassword] = useState<string>('');
+    const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
@@ -86,11 +88,22 @@ const ResetPassword: React.FC = () => {
                                     <label className='login-field__label'>Nueva contrase&ntilde;a</label>
                                     <IonItem className='login-field__item' lines='none'>
                                         <IonInput
-                                            type='password'
+                                            type={showPassword ? 'text' : 'password'}
                                             placeholder='Mínimo 8 caracteres'
                                             value={newPassword}
                                             onIonChange={(e) => setNewPassword(e.target.value as string)}
                                         />
+                                        <IonButton
+                                            slot='end'
+                                            type='button'
+                                            fill='clear'
+                                            className='password-visibility-toggle'
+                                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                                            aria-pressed={showPassword}
+                                            onClick={() => setShowPassword(prev => !prev)}
+                                        >
+                                            <IonIcon slot='icon-only' icon={showPassword ? eyeOffOutline : eyeOutline} />
+                                        </IonButton>
                                     </IonItem>
                                 </div>
                             </div>

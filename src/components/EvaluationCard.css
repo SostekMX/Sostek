@@ -62,7 +62,7 @@
     gap: 4px;
     font-size: 0.7rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.72);
 }
 
 .evaluation-card__badge ion-icon {
@@ -74,7 +74,7 @@
    contenido a traves del shadow DOM de ion-card. */
 .evaluation-card__desc {
     font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.82);
     line-height: 1.45;
     margin: 0;
     display: -webkit-box;
@@ -237,7 +237,7 @@
         justify-self: start;
         white-space: nowrap;
         margin-top: 18px;
-        color: var(--d-text-3);
+        color: var(--d-text-2);
         font-size: 0.78rem;
     }
 

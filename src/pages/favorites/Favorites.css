@@ -141,3 +141,14 @@
         gap: 20px;
     }
 }
+
+
+/* Invitación a explorar también desde favoritos sin contenido en móvil. */
+.favorites-empty__btn {
+    --border-radius: 100px;
+    --padding-start: 24px;
+    --padding-end: 24px;
+    margin-top: 12px;
+    font-weight: 700;
+    text-transform: none;
+}
