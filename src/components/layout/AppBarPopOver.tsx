@@ -43,9 +43,10 @@ export const AppMenu: React.FC = () => {
    escritorio logo y menu viven en la barra lateral y esto se esconde por CSS. */
 const AppBarPopOver: React.FC = () => {
     const { changeSearch } = useContext(AppContext);
+    const { t } = useI18n();
     return (
         <header className='appbar'>
-            <a onClick={() => changeSearch!('')} href='/MainMenu' className='appbar__logo'>
+            <a onClick={() => changeSearch!('')} href='/MainMenu' className='appbar__logo' aria-label={t('appbar.home')}>
                 <span className='logo' role='img' aria-label='SOSTEK' />
             </a>
             <div className='appbar__end'>

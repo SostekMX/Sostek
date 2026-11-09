@@ -12,11 +12,12 @@ const es = {
   'nav.login': 'Iniciar sesión',
   'nav.loginShort': 'Entrar',
   'nav.logout': 'Cerrar sesión',
-  'nav.menu': 'Menú',
+  'nav.menu': 'Abrir menú de cuenta',
 
   'appbar.search': 'Buscar artículos',
   'appbar.clearSearch': 'Borrar búsqueda',
   'appbar.openSearch': 'Buscar',
+  'appbar.home': 'Ir a Aprende',
 
   'common.cancel': 'Cancelar',
   'common.delete': 'Eliminar',
@@ -75,12 +76,12 @@ const es = {
   'form.female': 'Femenino',
 
   'forgot.headline': 'Recupera\ntu acceso.',
-  'forgot.brandDesc': 'Te mandamos un link a tu correo para que elijas una contraseña nueva. Si no lo ves en unos minutos, revisa la carpeta de spam.',
+  'forgot.brandDesc': 'Te enviamos un enlace a tu correo para que elijas una contraseña nueva. Si no lo ves en unos minutos, revisa la carpeta de spam.',
   'forgot.title': '¿Olvidaste tu contraseña?',
-  'forgot.sent': 'Revisa tu bandeja de entrada y sigue el link que te enviamos.',
-  'forgot.prompt': 'Ingresa tu correo y te enviaremos un link para restablecer tu contraseña.',
+  'forgot.sent': 'Revisa tu bandeja de entrada y sigue el enlace que te enviamos.',
+  'forgot.prompt': 'Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.',
   'forgot.sending': 'Enviando...',
-  'forgot.submit': 'Enviar link de recuperación',
+  'forgot.submit': 'Enviar enlace de recuperación',
 
   'reset.headline': 'Una contraseña\nnueva.',
   'reset.brandDesc': 'Usa el código que te llegó por correo. La contraseña necesita al menos 8 caracteres.',
@@ -109,6 +110,7 @@ const es = {
   'learn.noResults': 'No encontramos resultados para “{q}”.',
   'learn.noMatchArticles': 'No hay artículos que coincidan con la búsqueda.',
   'learn.showAll': 'Ver todo el contenido',
+  'learn.filterTopics': 'Filtrar artículos por tema',
   'learn.loadFail': 'No pudimos cargar todo el contenido',
   'learn.loadFailPartial': 'Puedes seguir consultando los recursos disponibles. Intenta actualizar nuevamente.',
   'learn.loadFailEmpty': 'Revisa tu conexión e intenta cargar el contenido otra vez.',
@@ -142,7 +144,7 @@ const es = {
   'pres.exitFullKey': 'Salir de pantalla completa (F)',
   'pres.enterFullKey': 'Pantalla completa (F)',
 
-  'play.subtitle': 'Aprende sobre sostenibilidad mientras juegas',
+  'play.subtitle': 'Mira el video, descarga las cartas y revisa las reglas para organizar una partida de 4 a 6 personas.',
   'play.printTitle': 'Versión física',
   'play.printDesc': 'Imprime las cartas y juega con tus amigos',
   'play.wip1': 'La versión online está en construcción',

@@ -12,11 +12,12 @@ const en: typeof es = {
   'nav.login': 'Log in',
   'nav.loginShort': 'Log in',
   'nav.logout': 'Log out',
-  'nav.menu': 'Menu',
+  'nav.menu': 'Open account menu',
 
   'appbar.search': 'Search articles',
   'appbar.clearSearch': 'Clear search',
   'appbar.openSearch': 'Search',
+  'appbar.home': 'Go to Learn',
 
   'common.cancel': 'Cancel',
   'common.delete': 'Delete',
@@ -109,6 +110,7 @@ const en: typeof es = {
   'learn.noResults': 'No results for “{q}”.',
   'learn.noMatchArticles': 'No articles match your search.',
   'learn.showAll': 'See all content',
+  'learn.filterTopics': 'Filter articles by topic',
   'learn.loadFail': "We couldn't load all the content",
   'learn.loadFailPartial': 'You can keep browsing what is available. Try updating again.',
   'learn.loadFailEmpty': 'Check your connection and try loading the content again.',
@@ -142,7 +144,7 @@ const en: typeof es = {
   'pres.exitFullKey': 'Exit full screen (F)',
   'pres.enterFullKey': 'Full screen (F)',
 
-  'play.subtitle': 'Learn about sustainability while you play',
+  'play.subtitle': 'Watch the video, download the cards and check the rules to set up a game for 4 to 6 players.',
   'play.printTitle': 'Print version',
   'play.printDesc': 'Print the cards and play with your friends',
   'play.wip1': 'The online version is under construction',

@@ -40,7 +40,7 @@
 .level__semester {
   font-size: var(--t-xs);
   font-weight: 400;
-  color: var(--ivory-3);
+  color: var(--ivory-2);
 }
 
 .level__desc {
@@ -61,7 +61,7 @@
   margin-top: auto;
   padding-top: var(--s-2);
   font-size: var(--t-xs);
-  color: var(--ivory-3);
+  color: var(--ivory-2);
 }
 
 .level__start {

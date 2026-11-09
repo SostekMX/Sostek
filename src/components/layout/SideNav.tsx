@@ -77,7 +77,7 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
               />
             )}
 
-            <a href='/MainMenu' className='sidenav__logo' onClick={e => { e.preventDefault(); router.push('/MainMenu', 'none'); }}>
+            <a href='/MainMenu' className='sidenav__logo' aria-label={t('appbar.home')} onClick={e => { e.preventDefault(); router.push('/MainMenu', 'none'); }}>
               <span className='logo' role='img' aria-label='SOSTEK' />
             </a>
 

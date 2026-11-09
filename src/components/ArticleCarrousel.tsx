@@ -237,7 +237,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
             <h2 className='section-title'>{showCover ? t('learn.moreArticles') : t('learn.articles')}</h2>
 
             {!loadingData && topics.length > 1 && (
-              <div className='topic-tabs'>
+              <div className='topic-tabs' role='group' aria-label={t('learn.filterTopics')}>
                 {[[ALL, matchingArticles.length] as [string, number], ...topics].map(([name, count]) => (
                   <button
                     key={name}
