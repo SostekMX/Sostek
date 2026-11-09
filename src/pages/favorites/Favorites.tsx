@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { IonButton, IonContent, IonIcon, IonPage, IonText } from '@ionic/react';
+import { IonContent, IonIcon, IonPage, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { Button, SegmentedControl } from 'glisse';
 import { heartOutline } from 'ionicons/icons';
 import { getArticles, getPresentations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import DocumentCard from '../../components/DocumentCard';
 import useFavorites from '../../hooks/useFavorites';
 import { Article, Presentation } from '../../components/ArticleCarrousel';
-import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import { readCache } from '../../utils/cache';
 import { TKey, useI18n } from '../../i18n/LanguageContext';
 import './Favorites.css';
@@ -30,13 +30,16 @@ const FILTERS: { value: TypeFilter; label: TKey }[] = [
 
 const Favorites: React.FC = () => {
   const { t, localizeArticle } = useI18n();
-  const { favorites, loading: favLoading, isLoggedIn, isFavorite, removeFavorite, addFavorite } = useFavorites();
+  const { favorites, loading: favLoading, isLoggedIn, isFavorite, removeFavorite, addFavorite, refresh } = useFavorites();
+  const router = useIonRouter();
   // Arranca con la cache que llena APRENDE; la peticion de abajo la pone al dia.
   const [allArticles, setAllArticles] = useState<Article[]>(() => readCache<Article[]>('articles') ?? []);
   const [allPresentations, setAllPresentations] = useState<Presentation[]>(() => readCache<Presentation[]>('presentations') ?? []);
   const [contentLoading, setContentLoading] = useState(() => readCache('articles') === null);
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
-  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+
+  /* Ionic deja la pagina montada: al volver hay que traer lo que se guardo en otra pantalla. */
+  useIonViewWillEnter(refresh, [refresh]);
 
   useEffect(() => {
     Promise.all([
@@ -54,7 +57,7 @@ const Favorites: React.FC = () => {
     if (fav.type === 'article') {
       const found = allArticles.find(a => a._id === fav.content_id);
       const art = found && localizeArticle(found);
-      if (art) return { id: art._id, type: 'article', name: art.title, image: art.image, description: art.subtitle, category: art.category };
+      if (art && found) return { id: art._id, type: 'article', name: art.title, image: art.image, description: art.subtitle, category: found.category };
     } else {
       const pres = allPresentations.find(p => p._id === fav.content_id);
       if (pres) return { id: pres._id, type: 'presentation', name: pres.name, image: pres.cover || pres.slides?.[0] || '', description: '' };
@@ -64,41 +67,36 @@ const Favorites: React.FC = () => {
 
   const isLoading = favLoading || contentLoading;
 
-  /* El filtro solo existe en escritorio: en mobile la lista sigue completa, como siempre. */
-  const activeFilter = isDesktop ? typeFilter : 'all';
-  const visibleItems = activeFilter === 'all' ? resolvedItems : resolvedItems.filter(i => i.type === activeFilter);
+  const visibleItems = typeFilter === 'all' ? resolvedItems : resolvedItems.filter(i => i.type === typeFilter);
   const countOf = (value: TypeFilter) => value === 'all' ? resolvedItems.length : resolvedItems.filter(i => i.type === value).length;
 
   return (
     <IonPage>
       <AppBarPopOver />
-      <IonContent fullscreen class='app-dark-bg'>
-        <div className='favorites-container'>
-          <header className='favorites-header'>
-            <h2 className='favorites-title'>{t('fav.title')}</h2>
-            {isDesktop && !isLoading && resolvedItems.length > 0 && (
-              <p className='favorites-count'>
+      <IonContent fullscreen>
+        <div className='page favorites'>
+          <header className='page-head'>
+            <h1 className='page-head__title'>{t('fav.title')}</h1>
+            {!isLoading && resolvedItems.length > 0 && (
+              <p className='page-head__lead'>
                 {t(resolvedItems.length === 1 ? 'fav.savedOne' : 'fav.savedMany', { n: resolvedItems.length })}
               </p>
             )}
           </header>
 
-          {isDesktop && !isLoading && resolvedItems.length > 0 && (
-            <div className='filter-pills favorites-pills'>
-              {FILTERS.filter(f => f.value === 'all' || countOf(f.value) > 0).map(f => (
-                <button
-                  key={f.value}
-                  className={`filter-pill ${typeFilter === f.value ? 'filter-pill--active' : ''}`}
-                  onClick={() => setTypeFilter(f.value)}
-                >
-                  {t(f.label)} <span className='favorites-pill__count'>{countOf(f.value)}</span>
-                </button>
-              ))}
+          {!isLoading && resolvedItems.length > 0 && countOf('article') > 0 && countOf('presentation') > 0 && (
+            <div className='segmented-wide favorites__filter'>
+              <SegmentedControl
+                aria-label={t('fav.title')}
+                items={FILTERS.map(f => ({ value: f.value, label: `${t(f.label)} ${countOf(f.value)}` }))}
+                value={typeFilter}
+                onValueChange={v => setTypeFilter(v as TypeFilter)}
+              />
             </div>
           )}
 
           {isLoading && (
-            <div className='favorites-skeleton-list'>
+            <div className='favorites__grid'>
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className='doc-card-skeleton'>
                   <div className='doc-card-skeleton__image shimmer' />
@@ -112,30 +110,17 @@ const Favorites: React.FC = () => {
             </div>
           )}
 
-          {!isLoading && resolvedItems.length === 0 && (isDesktop ? (
-            <div className='favorites-empty-desk'>
-              <div className='favorites-empty-desk__icon'><IonIcon icon={heartOutline} aria-hidden='true' /></div>
-              <h3 className='favorites-empty-desk__title'>{t('fav.emptyTitle')}</h3>
-              <p className='favorites-empty-desk__text'>
-                {t('fav.emptyText')}
-              </p>
-              <IonButton routerLink='/tab1' routerDirection='none' className='favorites-empty-desk__btn'>
-                {t('fav.explore')}
-              </IonButton>
+          {!isLoading && resolvedItems.length === 0 && (
+            <div className='favorites__empty'>
+              <IonIcon icon={heartOutline} aria-hidden='true' />
+              <h2 className='favorites__empty-title'>{t('fav.emptyTitle')}</h2>
+              <p>{t('fav.emptyText')}</p>
+              <Button variant='filled' className='btn-lg' onClick={() => router.push('/tab1', 'none')}>{t('fav.explore')}</Button>
             </div>
-          ) : (
-            <div className='favorites-empty'>
-              <IonText>
-                <p>{t('fav.empty1')}</p>
-                <p>{t('fav.empty2')}</p>
-              </IonText>
-            </div>
-          ))}
+          )}
 
-          {/* Contenedor neutro en mobile (las tarjetas se apilan igual que antes); en
-              escritorio es la cuadricula. */}
           {!isLoading && visibleItems.length > 0 && (
-            <div className='favorites-grid'>
+            <div className='favorites__grid'>
               {visibleItems.map(item => (
                 <DocumentCard
                   key={item.id}
@@ -144,7 +129,7 @@ const Favorites: React.FC = () => {
                   img_url={item.image}
                   id={item.id}
                   type={item.type}
-                  category={isDesktop ? item.category : undefined}
+                  category={item.category}
                   isLoggedIn={isLoggedIn}
                   isFavorite={isFavorite(item.id)}
                   onToggleFavorite={() =>
