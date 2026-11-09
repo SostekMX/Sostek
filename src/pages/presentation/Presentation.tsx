@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonIcon, IonTitle } from '@ionic/react';
-import { menuOutline, chevronBackOutline, chevronForwardOutline, expandOutline, contractOutline } from 'ionicons/icons';
+import { IonContent, IonIcon, IonPage, useIonRouter } from '@ionic/react';
+import { Button } from 'glisse';
+import { arrowBackOutline, chevronBackOutline, chevronForwardOutline, contractOutline, expandOutline } from 'ionicons/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Keyboard } from 'swiper';
 import type { Swiper as SwiperInstance } from 'swiper';
 import { getPresentations } from '../../api/content';
-import { AppMenu } from '../../components/layout/AppBarPopOver';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import { useI18n } from '../../i18n/LanguageContext';
 import './Presentation.css';
@@ -21,6 +21,7 @@ interface RouteParams {
 const Presentation: React.FC = () => {
   const { driveId } = useParams<RouteParams>();
   const { t } = useI18n();
+  const router = useIonRouter();
   const [slides, setSlides] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -43,57 +44,41 @@ const Presentation: React.FC = () => {
       .finally(() => setLoading(false));
   }, [driveId]);
 
+  const goBack = () => (router.canGoBack() ? router.goBack() : router.push('/tab1', 'back'));
+
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar className="dark-toolbar">
-          <IonButtons slot="start">
-            <IonBackButton defaultHref="/tab1" text={isDesktop ? t('nav.learn') : ''} />
-          </IonButtons>
-          {isDesktop && title && <IonTitle className="presd-toolbar-title">{title}</IonTitle>}
-          <IonButtons slot="end">
-            <AppMenu buttonClass="dark-toolbar__menu-btn">
-              <IonIcon slot="icon-only" icon={menuOutline} />
-            </AppMenu>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen class={isDesktop ? 'presd-content' : 'bg-img'}>
-        {isDesktop && loading && (
-          <div className="presd" aria-busy="true">
-            <div className="presd__skeleton shimmer" />
-            <div className="presd__skeleton-strip shimmer" />
-          </div>
-        )}
-        {isDesktop && !loading && slides.length > 0 && <SlideStage key={driveId} slides={slides} />}
-        {!loading && slides.length === 0 && (
-          <p className="page-message">
-            {t('pres.fail')}
-          </p>
-        )}
-        {!isDesktop && !loading && slides.length > 0 && (
-          <Swiper
-            key={driveId}
-            className='mySwiper'
-            direction={"horizontal"}
-            modules={[Pagination]}
-            pagination={true}
-            initialSlide={0}
-          >
-            {slides.map((url, index) => (
-              <SwiperSlide key={index}>
-                <img src={url} alt={t('pres.slideAlt', { i: index + 1, n: slides.length })} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        )}
+      <div className='float-bar float-bar--start'>
+        <Button icon={<IonIcon icon={arrowBackOutline} aria-hidden='true' />} aria-label={t('doc.backToLearn')} onClick={goBack} />
+      </div>
+
+      <IonContent fullscreen scrollY={false}>
+        <div className='pres'>
+          {title && <h1 className='pres__title'>{title}</h1>}
+
+          {loading && <div className='pres__skeleton shimmer' aria-busy='true' />}
+
+          {!loading && slides.length === 0 && <p className='page-message'>{t('pres.fail')}</p>}
+
+          {isDesktop && !loading && slides.length > 0 && <SlideStage key={driveId} slides={slides} />}
+
+          {!isDesktop && !loading && slides.length > 0 && (
+            <Swiper key={driveId} className='pres__swiper' direction='horizontal' modules={[Pagination]} pagination initialSlide={0}>
+              {slides.map((url, index) => (
+                <SwiperSlide key={index}>
+                  <img src={url} alt={t('pres.slideAlt', { i: index + 1, n: slides.length })} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
+        </div>
       </IonContent>
     </IonPage>
   );
 };
 
-/* Escritorio: la diapositiva al tamano maximo que quepa, flechas a los lados, teclado, tira
-   de miniaturas y pantalla completa. Mobile sigue con el carrusel de puntos de arriba. */
+/* Escritorio: la diapositiva al tamano maximo que quepa, flechas de vidrio sobre ella,
+   teclado, tira de miniaturas y pantalla completa. */
 const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
   const { t } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -141,20 +126,10 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
   const last = slides.length - 1;
 
   return (
-    <div className="presd" ref={stageRef}>
-      <div className="presd__stage">
-        <button
-          className="presd__nav"
-          onClick={() => swiper?.slidePrev()}
-          disabled={index === 0}
-          aria-label={t('pres.prev')}
-          aria-keyshortcuts="ArrowLeft"
-        >
-          <IonIcon icon={chevronBackOutline} aria-hidden="true" />
-        </button>
-
+    <div className='stage' ref={stageRef}>
+      <div className='stage__view'>
         <Swiper
-          className="presd__swiper"
+          className='stage__swiper'
           modules={[Keyboard]}
           keyboard={{ enabled: true }}
           spaceBetween={48}
@@ -168,48 +143,54 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
           ))}
         </Swiper>
 
-        <button
-          className="presd__nav"
+        <Button
+          className='stage__nav stage__nav--prev'
+          icon={<IonIcon icon={chevronBackOutline} aria-hidden='true' />}
+          onClick={() => swiper?.slidePrev()}
+          disabled={index === 0}
+          aria-label={t('pres.prev')}
+          aria-keyshortcuts='ArrowLeft'
+        />
+        <Button
+          className='stage__nav stage__nav--next'
+          icon={<IonIcon icon={chevronForwardOutline} aria-hidden='true' />}
           onClick={() => swiper?.slideNext()}
           disabled={index === last}
           aria-label={t('pres.next')}
-          aria-keyshortcuts="ArrowRight"
-        >
-          <IonIcon icon={chevronForwardOutline} aria-hidden="true" />
-        </button>
+          aria-keyshortcuts='ArrowRight'
+        />
       </div>
 
-      <div className="presd__footer">
-        <div className="presd__count">
-          <p className="presd__count-value" aria-live="polite">
-            <span className="presd__count-current">{index + 1}</span> {t('pres.ofTotal', { n: slides.length })}
+      <div className='stage__footer'>
+        <div>
+          <p className='stage__count' aria-live='polite'>
+            <span className='stage__current'>{index + 1}</span> {t('pres.ofTotal', { n: slides.length })}
           </p>
-          <p className="presd__hint">{t('pres.hint')}</p>
+          <p className='stage__hint'>{t('pres.hint')}</p>
         </div>
 
-        <div className="presd__strip" ref={stripRef}>
+        <div className='stage__strip' ref={stripRef}>
           {slides.map((url, i) => (
             <button
               key={i}
-              className="presd__thumb"
+              type='button'
+              className='stage__thumb'
               onClick={() => swiper?.slideTo(i)}
               aria-label={t('pres.goTo', { i: i + 1 })}
               aria-current={i === index ? 'true' : undefined}
             >
-              <img src={url} alt="" loading="lazy" />
+              <img src={url} alt='' loading='lazy' />
             </button>
           ))}
         </div>
 
-        <button
-          className="presd__icon-btn"
+        <Button
+          icon={<IonIcon icon={isFull ? contractOutline : expandOutline} aria-hidden='true' />}
           onClick={toggleFullscreen}
           aria-label={isFull ? t('pres.exitFull') : t('pres.enterFull')}
           title={isFull ? t('pres.exitFullKey') : t('pres.enterFullKey')}
-          aria-keyshortcuts="F"
-        >
-          <IonIcon icon={isFull ? contractOutline : expandOutline} aria-hidden="true" />
-        </button>
+          aria-keyshortcuts='F'
+        />
       </div>
     </div>
   );

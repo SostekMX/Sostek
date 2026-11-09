@@ -1,105 +1,59 @@
+/* El encabezado del movil flota: el contenido pasa por debajo y se funde en el borde, sin
+   barra opaca ni linea divisoria. */
 .appbar {
-    --background: #0d1a0d;
-    --color: #ffffff;
-    --border-width: 0 0 1px 0;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-style: solid;
-    --min-height: 56px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: content-box;
+  height: var(--appbar-height);
+  padding: env(safe-area-inset-top, 0px) calc(var(--lang-toggle-space) + var(--s-1)) 0 var(--s-5);
+  pointer-events: none;
 }
 
-.appbar__logo-btn {
-    display: flex;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 8px;
-    transition: opacity 0.15s;
-    -webkit-tap-highlight-color: transparent;
+.appbar::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -1.25rem;
+  background: linear-gradient(180deg, rgb(7 21 16 / 0.86), rgb(7 21 16 / 0));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(180deg, #000 42%, transparent);
+  mask-image: linear-gradient(180deg, #000 42%, transparent);
+  pointer-events: none;
 }
 
-.appbar__logo-btn:active {
-    opacity: 0.7;
+.appbar__logo,
+.appbar__end {
+  position: relative;
+  pointer-events: auto;
 }
 
 .appbar__logo {
-    height: 32px;
-    width: auto;
+  display: block;
+  width: 5.25rem;
+  color: var(--ivory);
 }
 
-/* Searchbar en slot central de Ionic — se ajusta al espacio libre */
-.appbar__searchbar {
-    --background: rgba(255, 255, 255, 0.1);
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.45);
-    --icon-color: rgba(255, 255, 255, 0.6);
-    --clear-button-color: rgba(255, 255, 255, 0.6);
-    --box-shadow: none;
-    --border-radius: 20px;
-    height: 38px;
-    padding: 0 4px;
-    transform-origin: right center;
-    animation: searchbar-in 0.2s ease-out;
-}
-
-.appbar__searchbar--out {
-    animation: searchbar-out 0.18s ease-in forwards;
-}
-
-@keyframes searchbar-in {
-    from { opacity: 0; transform: scaleX(0.6); }
-    to   { opacity: 1; transform: scaleX(1); }
-}
-
-@keyframes searchbar-out {
-    from { opacity: 1; transform: scaleX(1); }
-    to   { opacity: 0; transform: scaleX(0.6); }
-}
-
-/* Botones derecha — siempre juntos */
 .appbar__end {
-    display: flex;
-    align-items: center;
-    padding-right: 4px;
+  display: flex;
+  align-items: center;
 }
 
-/* Avatar circular en el header */
-.appbar__avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1.5px solid #80b259;
-    display: block;
+.app-menu__avatar {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-/* Escritorio: logo y menu viven en la barra lateral. Fuera de APRENDE la barra queda vacia
-   y se quita; en APRENDE solo lleva el buscador, abierto y alineado con el contenido. */
 @media (min-width: 768px) {
-    .appbar__logo-btn,
-    .appbar__menu-btn {
-        display: none;
-    }
-
-    .appbar--bare {
-        display: none;
-    }
-
-    .appbar {
-        --min-height: 64px;
-        --padding-start: 24px;
-        --padding-end: 24px;
-    }
-
-    .appbar__searchbar {
-        max-width: 520px;
-        height: 42px;
-        padding: 0;
-        animation: none;
-    }
-}
-
-@media (min-width: 1024px) {
-    .appbar {
-        --padding-start: 40px;
-        --padding-end: 40px;
-    }
+  .appbar {
+    display: none;
+  }
 }

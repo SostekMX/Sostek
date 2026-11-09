@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getFavorites, addFavorite as addFavoriteRequest, removeFavorite as removeFavoriteRequest } from '../api/user';
 import { isLoggedIn as isUserLoggedIn } from '../utils/session';
 
@@ -15,7 +15,7 @@ const useFavorites = () => {
 
   /* Depende del token y no solo del montaje: Ionic deja montadas las paginas, asi que
      tras salir y entrar con otra cuenta APRENDE seguia con los favoritos del anterior. */
-  useEffect(() => {
+  const refresh = useCallback(() => {
     if (!token) {
       setFavorites([]);
       return;
@@ -26,6 +26,8 @@ const useFavorites = () => {
     }).catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, [token]);
+
+  useEffect(refresh, [refresh]);
 
   const isFavorite = (id: string) => favorites.some(f => f.content_id === id);
 
@@ -49,7 +51,7 @@ const useFavorites = () => {
     }
   };
 
-  return { favorites, loading, isLoggedIn, isFavorite, addFavorite, removeFavorite };
+  return { favorites, loading, isLoggedIn, isFavorite, addFavorite, removeFavorite, refresh };
 };
 
 export default useFavorites;

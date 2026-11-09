@@ -1,177 +1,58 @@
-import React, { ReactNode, useContext, useEffect, useId, useRef, useState } from 'react';
+import React, { useContext } from 'react';
 import './AppBarPopOver.css';
-import { IonToolbar, IonButtons, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonList, IonPopover, IonSearchbar } from '@ionic/react';
-import { personCircle, logOut, heart, menuOutline, search as iconSearch } from 'ionicons/icons';
-import { useHistory, useLocation } from "react-router-dom";
+import { IonIcon } from '@ionic/react';
+import { Menu } from 'glisse';
+import { heartOutline, logOutOutline, personCircleOutline } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';
 import AppContext from '../../context/AppContext';
 import { clearSession, isLoggedIn, readAvatar } from '../../utils/session';
-import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import { useI18n } from '../../i18n/LanguageContext';
 
-/* Ionic pone aria-hidden en la pagina en cuanto el popover empieza a abrir, y el boton que
- * lo abrio sigue con el foco: Chrome avisa de un elemento enfocado dentro de aria-hidden.
- * Soltar el foco al hacer clic lo evita. El foco real vive en el shadow root de ion-button. */
-function releaseFocus() {
-    const active = document.activeElement;
-    ((active?.shadowRoot?.activeElement ?? active) as HTMLElement | null)?.blur();
-}
-
-/* Menu del movil (favoritos, perfil, sesion). Lo comparten la barra de APRENDE/JUEGA/EVALUATE
- * y las barras de articulo y presentacion; cada una pone su propio boton. */
-export const AppMenu: React.FC<{ buttonClass: string; fill?: 'clear'; children: ReactNode }> = ({ buttonClass, fill, children }) => {
-    const popoverId = useId();
-    const { t } = useI18n();
+/* Menu de cuenta (favoritos, perfil, salir) en el movil. Sin sesion no hay nada que ofrecer:
+   la barra inferior ya lleva a iniciar sesion. */
+export const AppMenu: React.FC = () => {
     const history = useHistory();
-    const isUserLogged = isLoggedIn();
+    const { t } = useI18n();
+    if (!isLoggedIn()) return null;
 
-    function logOutUser() {
-        clearSession();
-        history.replace('/');
-    }
+    const { url, pos } = readAvatar();
 
-    return <>
-        <IonButton fill={fill} id={popoverId} className={buttonClass} onClick={releaseFocus}>
-            {children}
-        </IonButton>
-
-        <IonPopover trigger={popoverId} triggerAction="click">
-            <IonContent>
-                <IonList>
-                    {isUserLogged &&
-                        <IonItem href='/Favorites'>
-                            <IonIcon icon={heart} color='secondary' /> &nbsp;
-                            <IonLabel>{t('nav.favorites')}</IonLabel>
-                        </IonItem>
-                    }
-                    {isUserLogged &&
-                        <IonItem href='/Profile'>
-                            <IonIcon icon={personCircle} color='secondary' /> &nbsp;
-                            <IonLabel>{t('nav.profile')}</IonLabel>
-                        </IonItem>
-                    }
-                    {!isUserLogged &&
-                        <IonItem href='/'>
-                            <IonIcon icon={personCircle} color='secondary' /> &nbsp;
-                            <IonLabel>{t('nav.login')}</IonLabel>
-                        </IonItem>
-                    }
-                    {isUserLogged &&
-                        <IonItem onClick={logOutUser}>
-                            <IonIcon icon={logOut} color='secondary' /> &nbsp;
-                            <IonLabel>{t('nav.logout')}</IonLabel>
-                        </IonItem>
-                    }
-                </IonList>
-            </IonContent>
-        </IonPopover>
-    </>;
+    return (
+        <Menu
+            aria-label={t('nav.menu')}
+            className='app-menu'
+            icon={url
+                ? <img src={url} alt='' className='app-menu__avatar' style={{ objectPosition: `${pos.x}% ${pos.y}%` }} />
+                : undefined}
+            items={[
+                { label: t('nav.favorites'), icon: <IonIcon icon={heartOutline} aria-hidden='true' />, onSelect: () => history.push('/Favorites') },
+                { label: t('nav.profile'), icon: <IonIcon icon={personCircleOutline} aria-hidden='true' />, onSelect: () => history.push('/Profile') },
+                'separator',
+                {
+                    label: t('nav.logout'),
+                    icon: <IonIcon icon={logOutOutline} aria-hidden='true' />,
+                    destructive: true,
+                    onSelect: () => { clearSession(); history.replace('/'); },
+                },
+            ]}
+        />
+    );
 };
 
+/* Encabezado del movil: logo a la izquierda y menu de cuenta junto al boton de idioma. En
+   escritorio logo y menu viven en la barra lateral y esto se esconde por CSS. */
 const AppBarPopOver: React.FC = () => {
-    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
-    const [isSearching, setIsSearching] = useState(false);
-    const [isClosing, setIsClosing] = useState(false);
-    const { search, changeSearch } = useContext(AppContext);
-    const { t } = useI18n();
-    const location = useLocation();
-
-    const isDesktop = useMediaQuery(DESKTOP_QUERY);
-    const showSearch = location.pathname === '/tab1' || location.pathname === '/MainMenu';
-    // En escritorio el buscador de APRENDE esta siempre abierto: hay lugar y ahorra un clic.
-    const searchOpen = isSearching || isDesktop;
-    const isUserLogged = isLoggedIn();
-    const { url: avatarUrl, pos: avatarPos } = readAvatar();
-
-    useEffect(() => {
-        if (sessionStorage.getItem("search")) {
-            changeSearch!(sessionStorage.getItem("search")!);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // Al navegar, abre el buscador solo si ya hay un término activo guardado
-    useEffect(() => {
-        const hasSearch = !!sessionStorage.getItem('search');
-        setIsSearching(showSearch && hasSearch);
-        setIsClosing(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname]);
-
-    useEffect(() => {
-        if (isSearching) {
-            setTimeout(() => searchbarRef.current?.setFocus(), 80);
-        }
-    }, [isSearching]);
-
-    function handleSearch(value: string) {
-        if (debounceRef.current) clearTimeout(debounceRef.current);
-        debounceRef.current = setTimeout(() => changeSearch!(value), 300);
-    }
-
-    function openSearch() {
-        setIsClosing(false);
-        setIsSearching(true);
-    }
-
-    function closeSearch() {
-        if (isClosing || isDesktop) return;
-        setIsClosing(true);
-        setTimeout(() => {
-            setIsSearching(false);
-            setIsClosing(false);
-        }, 180);
-    }
-
-    return <>
-        {/* appbar--bare: en escritorio, fuera de APRENDE, la barra no tiene nada que mostrar
-            (logo y menu viven en la barra lateral) y se esconde por CSS. */}
-        <IonToolbar className={`appbar${showSearch ? '' : ' appbar--bare'}`}>
-
-            {/* Logo — siempre visible */}
-            <IonButtons slot='start'>
-                <a onClick={() => changeSearch!("")} href="/MainMenu" className="appbar__logo-btn">
-                    <img src="/assets/sostek-logo.png" className="appbar__logo" alt="SOSTEK" />
-                </a>
-            </IonButtons>
-
-            {/* Searchbar en slot central — ocupa solo el espacio disponible entre logo y botones */}
-            {showSearch && searchOpen && (
-                <IonSearchbar
-                    ref={searchbarRef}
-                    className={`appbar__searchbar${isClosing ? ' appbar__searchbar--out' : ''}`}
-                    onIonInput={(e) => handleSearch(e.target.value ?? '')}
-                    onIonClear={() => { changeSearch!(''); closeSearch(); }}
-                    onIonBlur={() => setTimeout(closeSearch, 120)}
-                    showClearButton="always"
-                    value={search}
-                    placeholder={isDesktop ? t('appbar.searchDesktop') : t('appbar.search')}
-                />
-            )}
-
-            {/* Botones derecha — lupa + menú/avatar siempre juntos */}
-            <div slot="end" className="appbar__end">
-                {showSearch && !searchOpen && (
-                    <IonButton fill="clear" onClick={openSearch}>
-                        <IonIcon slot="icon-only" icon={iconSearch} />
-                    </IonButton>
-                )}
-
-                <AppMenu fill="clear" buttonClass='appbar__menu-btn'>
-                    {isUserLogged && avatarUrl
-                        ? <img
-                            src={avatarUrl}
-                            alt={t('appbar.avatarAlt')}
-                            className='appbar__avatar'
-                            style={{ objectPosition: `${avatarPos.x}% ${avatarPos.y}%` }}
-                          />
-                        : <IonIcon slot="icon-only" icon={isUserLogged ? personCircle : menuOutline} />
-                    }
-                </AppMenu>
+    const { changeSearch } = useContext(AppContext);
+    return (
+        <header className='appbar'>
+            <a onClick={() => changeSearch!('')} href='/MainMenu' className='appbar__logo'>
+                <span className='logo' role='img' aria-label='SOSTEK' />
+            </a>
+            <div className='appbar__end'>
+                <AppMenu />
             </div>
-
-        </IonToolbar>
-    </>;
+        </header>
+    );
 };
 
 export default AppBarPopOver;

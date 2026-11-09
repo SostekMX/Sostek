@@ -1,0 +1,55 @@
+.tabbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--s-3));
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* El borde inferior se funde: el contenido se apaga antes de llegar a la barra. */
+.tabbar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc((env(safe-area-inset-bottom, 0px) + var(--s-3)) * -1);
+  height: 8.5rem;
+  background: linear-gradient(180deg, rgb(7 21 16 / 0), rgb(7 21 16 / 0.92) 62%);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 55%);
+  mask-image: linear-gradient(180deg, transparent, #000 55%);
+}
+
+.tabbar .lg-tab-bar[data-icons] {
+  --lg-tab-width: clamp(68px, 21.5vw, 88px);
+  --lg-tab-height: 54px;
+  pointer-events: auto;
+  filter: drop-shadow(0 0.75rem 1.75rem rgb(0 0 0 / 0.42));
+}
+
+.tabbar .lg-tab-bar-glass {
+  --lg-blur: 24px;
+  --lg-glass: rgb(11 31 20 / 0.62);
+}
+
+.tabbar .lg-tab-bar[data-icons] :is(.lg-tab, .lg-tab-copy) {
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.tabbar .lg-tab-icon ion-icon {
+  display: block;
+  font-size: 23px;
+}
+
+@media (min-width: 768px) {
+  .tabbar {
+    display: none;
+  }
+}
