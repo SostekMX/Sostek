@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getFavorites, addFavorite as addFavoriteRequest, removeFavorite as removeFavoriteRequest } from '../api/user';
 import { isLoggedIn as isUserLoggedIn } from '../utils/session';
 
@@ -10,24 +10,44 @@ export interface Favorite {
 const useFavorites = () => {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const requestId = useRef(0);
   const isLoggedIn = isUserLoggedIn();
   const token = isLoggedIn ? sessionStorage.getItem('token') : null;
 
-  /* Depende del token y no solo del montaje: Ionic deja montadas las paginas, asi que
-     tras salir y entrar con otra cuenta APRENDE seguia con los favoritos del anterior. */
-  const refresh = useCallback(() => {
+  /* Depende del token porque Ionic deja montadas las paginas. Ignorar respuestas atrasadas
+     evita mostrar favoritos de la cuenta anterior si la peticion termina despues del logout. */
+  const refreshFavorites = useCallback(async () => {
+    const currentRequest = ++requestId.current;
     if (!token) {
       setFavorites([]);
+      setLoadError(false);
+      setLoading(false);
       return;
     }
+
     setLoading(true);
-    getFavorites().then(data => {
-      if (data.success) setFavorites(data.favorites);
-    }).catch(err => console.error(err))
-      .finally(() => setLoading(false));
+    try {
+      const response = await getFavorites();
+      if (!response?.success || !Array.isArray(response.favorites)) {
+        throw new Error('Respuesta de favoritos invalida');
+      }
+      if (currentRequest !== requestId.current) return;
+      setFavorites(response.favorites);
+      setLoadError(false);
+    } catch (error) {
+      if (currentRequest !== requestId.current) return;
+      console.error('Error loading favorites:', error);
+      setLoadError(true);
+    } finally {
+      if (currentRequest === requestId.current) setLoading(false);
+    }
   }, [token]);
 
-  useEffect(refresh, [refresh]);
+  useEffect(() => {
+    void refreshFavorites();
+    return () => { requestId.current += 1; };
+  }, [refreshFavorites]);
 
   const isFavorite = (id: string) => favorites.some(f => f.content_id === id);
 
@@ -51,7 +71,7 @@ const useFavorites = () => {
     }
   };
 
-  return { favorites, loading, isLoggedIn, isFavorite, addFavorite, removeFavorite, refresh };
+  return { favorites, loading, loadError, isLoggedIn, isFavorite, addFavorite, removeFavorite, refreshFavorites };
 };
 
 export default useFavorites;

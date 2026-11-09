@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IonContent, IonIcon, IonPage, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import { Button, SegmentedControl } from 'glisse';
 import { heartOutline } from 'ionicons/icons';
 import { getArticles, getPresentations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import DocumentCard from '../../components/DocumentCard';
+import LoadError from '../../components/ui/LoadError';
 import useFavorites from '../../hooks/useFavorites';
 import { Article, Presentation } from '../../components/ArticleCarrousel';
 import { readCache } from '../../utils/cache';
@@ -30,28 +31,47 @@ const FILTERS: { value: TypeFilter; label: TKey }[] = [
 
 const Favorites: React.FC = () => {
   const { t, localizeArticle } = useI18n();
-  const { favorites, loading: favLoading, isLoggedIn, isFavorite, removeFavorite, addFavorite, refresh } = useFavorites();
+  const {
+    favorites, loading: favLoading, loadError: favError, isLoggedIn,
+    isFavorite, removeFavorite, addFavorite, refreshFavorites,
+  } = useFavorites();
   const router = useIonRouter();
   // Arranca con la cache que llena APRENDE; la peticion de abajo la pone al dia.
   const [allArticles, setAllArticles] = useState<Article[]>(() => readCache<Article[]>('articles') ?? []);
   const [allPresentations, setAllPresentations] = useState<Presentation[]>(() => readCache<Presentation[]>('presentations') ?? []);
   const [contentLoading, setContentLoading] = useState(() => readCache('articles') === null);
+  const [contentError, setContentError] = useState(false);
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
 
   /* Ionic deja la pagina montada: al volver hay que traer lo que se guardo en otra pantalla. */
-  useIonViewWillEnter(refresh, [refresh]);
+  useIonViewWillEnter(() => { void refreshFavorites(); }, [refreshFavorites]);
 
-  useEffect(() => {
-    Promise.all([
-      getArticles(),
-      getPresentations(),
-    ]).then(([articlesData, presentationsData]) => {
-      if (articlesData.success) setAllArticles(articlesData.articles);
-      if (presentationsData.success) setAllPresentations(presentationsData.presentations);
-    }).catch(err => console.error(err))
-      .finally(() => setContentLoading(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const loadContent = useCallback(async () => {
+    setContentLoading(true);
+    try {
+      const [articlesResult, presentationsResult] = await Promise.allSettled([
+        getArticles(),
+        getPresentations(),
+      ]);
+      const articlesOk = articlesResult.status === 'fulfilled'
+        && articlesResult.value?.success === true
+        && Array.isArray(articlesResult.value.articles);
+      const presentationsOk = presentationsResult.status === 'fulfilled'
+        && presentationsResult.value?.success === true
+        && Array.isArray(presentationsResult.value.presentations);
+
+      if (articlesOk && articlesResult.status === 'fulfilled') setAllArticles(articlesResult.value.articles);
+      if (presentationsOk && presentationsResult.status === 'fulfilled') setAllPresentations(presentationsResult.value.presentations);
+      setContentError(!articlesOk || !presentationsOk);
+    } catch (error) {
+      console.error('Error loading favorite content:', error);
+      setContentError(true);
+    } finally {
+      setContentLoading(false);
+    }
   }, []);
+
+  useEffect(() => { void loadContent(); }, [loadContent]);
 
   const resolvedItems: FavoriteItem[] = favorites.map(fav => {
     if (fav.type === 'article') {
@@ -65,7 +85,13 @@ const Favorites: React.FC = () => {
     return null;
   }).filter((item): item is FavoriteItem => item !== null);
 
-  const isLoading = favLoading || contentLoading;
+  const isLoading = (favLoading && favorites.length === 0)
+    || (contentLoading && allArticles.length === 0 && allPresentations.length === 0);
+  const hasError = favError || (contentError && favorites.length > 0);
+  const retry = () => {
+    if (favError) void refreshFavorites();
+    if (contentError) void loadContent();
+  };
 
   const visibleItems = typeFilter === 'all' ? resolvedItems : resolvedItems.filter(i => i.type === typeFilter);
   const countOf = (value: TypeFilter) => value === 'all' ? resolvedItems.length : resolvedItems.filter(i => i.type === value).length;
@@ -110,7 +136,16 @@ const Favorites: React.FC = () => {
             </div>
           )}
 
-          {!isLoading && resolvedItems.length === 0 && (
+          {!isLoading && hasError && (
+            <LoadError
+              title={t(favError ? 'fav.loadFail' : 'fav.loadPartial')}
+              text={t('fav.loadFailText')}
+              retrying={favLoading || contentLoading}
+              onRetry={retry}
+            />
+          )}
+
+          {!isLoading && !hasError && resolvedItems.length === 0 && (
             <div className='favorites__empty'>
               <IonIcon icon={heartOutline} aria-hidden='true' />
               <h2 className='favorites__empty-title'>{t('fav.emptyTitle')}</h2>

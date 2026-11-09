@@ -22,6 +22,9 @@ const en: typeof es = {
   'common.delete': 'Delete',
   'common.of': '{a} of {b}',
 
+  'load.retry': 'Try again',
+  'load.retrying': 'Trying again...',
+
   'axis.environmental': 'Environmental',
   'axis.economic': 'Economic',
   'axis.social': 'Social',
@@ -103,7 +106,12 @@ const en: typeof es = {
   'learn.moreArticles': 'More articles',
   'learn.articles': 'Articles',
   'learn.all': 'All',
-  'learn.noMatch': 'No articles match “{q}”.',
+  'learn.noResults': 'No results for “{q}”.',
+  'learn.noMatchArticles': 'No articles match your search.',
+  'learn.showAll': 'See all content',
+  'learn.loadFail': "We couldn't load all the content",
+  'learn.loadFailPartial': 'You can keep browsing what is available. Try updating again.',
+  'learn.loadFailEmpty': 'Check your connection and try loading the content again.',
   'learn.noArticles': 'No articles have been published yet.',
 
   'card.presentation': 'Presentation',
@@ -164,7 +172,9 @@ const en: typeof es = {
   'assess.step2': "Check everything you've already considered.",
   'assess.step3Title': 'Review your result.',
   'assess.step3': "You'll get your score, your weakest axis and articles to strengthen it.",
-  'assess.fail': "We couldn't load the assessments. Check your connection and try again.",
+  'assess.updateFail': "We couldn't update the assessments",
+  'assess.updateFailCached': 'You can view the saved assessments while we reconnect.',
+  'assess.updateFailEmpty': 'Check your connection and try again.',
   'assess.empty': 'No assessments are available yet.',
 
   'evalCard.questions': '{n} questions',
@@ -201,6 +211,9 @@ const en: typeof es = {
   'fav.emptyTitle': "You haven't saved anything yet",
   'fav.emptyText': "Tap the heart on any article or presentation and it will stay here, ready for when you need it.",
   'fav.explore': 'Explore Learn',
+  'fav.loadFail': "We couldn't load your favorites",
+  'fav.loadPartial': "We couldn't load some items",
+  'fav.loadFailText': 'You can keep browsing what is available. Check your connection and try again.',
 
   'profile.cropTitle': 'Adjust your photo',
   'profile.cropHint': 'Drag to adjust the position',

@@ -22,6 +22,9 @@ const es = {
   'common.delete': 'Eliminar',
   'common.of': '{a} de {b}',
 
+  'load.retry': 'Reintentar',
+  'load.retrying': 'Reintentando...',
+
   'axis.environmental': 'Ambiental',
   'axis.economic': 'Económico',
   'axis.social': 'Social',
@@ -103,7 +106,12 @@ const es = {
   'learn.moreArticles': 'Más artículos',
   'learn.articles': 'Artículos',
   'learn.all': 'Todos',
-  'learn.noMatch': 'No hay artículos que coincidan con “{q}”.',
+  'learn.noResults': 'No encontramos resultados para “{q}”.',
+  'learn.noMatchArticles': 'No hay artículos que coincidan con la búsqueda.',
+  'learn.showAll': 'Ver todo el contenido',
+  'learn.loadFail': 'No pudimos cargar todo el contenido',
+  'learn.loadFailPartial': 'Puedes seguir consultando los recursos disponibles. Intenta actualizar nuevamente.',
+  'learn.loadFailEmpty': 'Revisa tu conexión e intenta cargar el contenido otra vez.',
   'learn.noArticles': 'Todavía no hay artículos publicados.',
 
   'card.presentation': 'Presentación',
@@ -164,7 +172,9 @@ const es = {
   'assess.step2': 'Marca todo lo que ya hayas considerado.',
   'assess.step3Title': 'Revisa tu resultado.',
   'assess.step3': 'Te damos tu puntaje, tu eje más débil y artículos para reforzarlo.',
-  'assess.fail': 'No pudimos cargar las evaluaciones. Revisa tu conexión e intenta de nuevo.',
+  'assess.updateFail': 'No pudimos actualizar las evaluaciones',
+  'assess.updateFailCached': 'Puedes consultar las evaluaciones guardadas mientras recuperamos la conexión.',
+  'assess.updateFailEmpty': 'Revisa tu conexión e inténtalo nuevamente.',
   'assess.empty': 'Todavía no hay evaluaciones disponibles.',
 
   'evalCard.questions': '{n} preguntas',
@@ -201,6 +211,9 @@ const es = {
   'fav.emptyTitle': 'Todavía no guardas nada',
   'fav.emptyText': 'Toca el corazón de cualquier artículo o presentación y quedará aquí, a la mano para cuando lo necesites.',
   'fav.explore': 'Explorar Aprende',
+  'fav.loadFail': 'No pudimos cargar tus favoritos',
+  'fav.loadPartial': 'No pudimos cargar algunos recursos',
+  'fav.loadFailText': 'Puedes seguir consultando los recursos disponibles. Revisa tu conexión e inténtalo nuevamente.',
 
   'profile.cropTitle': 'Ajusta tu foto',
   'profile.cropHint': 'Arrastra para ajustar la posición',

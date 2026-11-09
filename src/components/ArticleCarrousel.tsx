@@ -39,6 +39,7 @@ interface Props {
   articlesData: Article[] | null | undefined;
   loadingData: boolean;
   presentations: Presentation[] | null | undefined;
+  errorNotice?: React.ReactNode;
 }
 
 const ALL = '__all__';
@@ -51,7 +52,7 @@ const axisClass = (category?: string) => {
   return axis ? `axis-${axis}` : '';
 };
 
-const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations }) => {
+const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations, errorNotice }) => {
   const [topic, setTopic] = useState(ALL);
   const { search, changeSearch } = useContext(AppContext);
   const { t, tx, localizeArticle } = useI18n();
@@ -197,6 +198,8 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
       )}
 
       <div className='aprende__body'>
+        {errorNotice}
+
         {!loadingData && visiblePresentations.length > 0 && (
           <section className='section aprende-section'>
             <div className='aprende-section-head'>
@@ -275,10 +278,19 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
             })}
           </div>
 
-          {!loadingData && visibleArticles.length === 0 && (
-            <p className='empty'>
-              {search ? t('learn.noMatch', { q: search }) : t('learn.noArticles')}
-            </p>
+          {!loadingData && !errorNotice && visibleArticles.length === 0 && (
+            <div className='empty' role='status'>
+              <p>
+                {searchNorm && visiblePresentations.length === 0
+                  ? t('learn.noResults', { q: search })
+                  : searchNorm
+                    ? t('learn.noMatchArticles')
+                    : t('learn.noArticles')}
+              </p>
+              {searchNorm && visiblePresentations.length === 0 && (
+                <Button className='btn-line' onClick={() => { setTopic(ALL); clearQuery(); }}>{t('learn.showAll')}</Button>
+              )}
+            </div>
           )}
         </section>
       </div>
