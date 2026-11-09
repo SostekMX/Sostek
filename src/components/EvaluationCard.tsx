@@ -2,6 +2,7 @@ import React from 'react';
 import { IonCard, IonIcon } from '@ionic/react';
 import { businessOutline, colorPaletteOutline, schoolOutline, helpCircleOutline } from 'ionicons/icons';
 import './EvaluationCard.css';
+import { useI18n } from '../i18n/LanguageContext';
 
 interface EvaluationCardProps {
     name: string;
@@ -46,10 +47,11 @@ function getEvaluationMeta(name: string) {
 }
 
 const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, level, description, questionCount }) => {
+    const { t, tx } = useI18n();
     const meta = getEvaluationMeta(name);
     /* `||` y no `??`: el backend manda description: '' por defecto del esquema, y la
        cadena vacia no es nullish, asi que con ?? ganaba '' y la tarjeta salia sin texto. */
-    const displayDescription = description || meta.description;
+    const displayDescription = tx(description || meta.description);
     /* El semestre viene al inicio de la descripcion: "(3°-4° semestre) Mide...". En mobile
        el texto se lee igual que siempre; en escritorio el parentesis se esconde y el
        semestre sale como etiqueta propia junto al numero de nivel. */
@@ -76,7 +78,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, level, descri
                     {questionCount !== undefined && (
                         <span className='evaluation-card__badge'>
                             <IonIcon icon={helpCircleOutline} />
-                            {questionCount} preguntas
+                            {t('evalCard.questions', { n: questionCount })}
                         </span>
                     )}
                 </div>
@@ -88,13 +90,13 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({ name, id, level, descri
                         {semester && <span className='evaluation-card__semester'>{semester}</span>}
                     </div>
                 )}
-                <p className='evaluation__title'>{level ? `Nivel ${level}` : name}</p>
+                <p className='evaluation__title'>{level ? t('evalCard.level', { n: level }) : tx(name)}</p>
                 <p className='evaluation-card__desc'>
                     {semesterMatch
                         ? <><span className='evaluation-card__desc-semester'>{semesterMatch[0]}</span>{descriptionRest}</>
                         : displayDescription}
                 </p>
-                <p className='evaluation-card__start'>Empezar evaluación</p>
+                <p className='evaluation-card__start'>{t('evalCard.start')}</p>
             </div>
         </IonCard>
     );

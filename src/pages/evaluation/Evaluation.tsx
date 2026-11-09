@@ -12,6 +12,7 @@ import QuestionNav from "../../components/QuestionNav";
 import QuestionTestCard, { Option } from "../../components/QuestionTestCard";
 import { AnswerMap, computeMaxScore, toggleAnswer, totalScore, weakestCategory } from "../../utils/scoring";
 import "./Evaluation.css";
+import { useI18n } from "../../i18n/LanguageContext";
 
 interface Question {
   category: string;
@@ -32,6 +33,7 @@ interface RouteParams {
 
 const Evaluation: React.FC = () => {
   const { name, id } = useParams<RouteParams>();
+  const { t, tx } = useI18n();
   const [evaluation, setEvaluation] = useState<EvaluationData | null>(null);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState<AnswerMap>(new Map());
@@ -91,7 +93,7 @@ const Evaluation: React.FC = () => {
       href={`/score/${name}`}
       expand="block"
     >
-      Obtener resultados
+      {t('eval.submit')}
     </IonButton>
   );
 
@@ -113,7 +115,7 @@ const Evaluation: React.FC = () => {
         )}
         {!loading && !evaluation && (
           <p className="page-message">
-            No pudimos cargar esta evaluaci&oacute;n. Revisa tu conexi&oacute;n e intenta de nuevo.
+            {t('eval.fail')}
           </p>
         )}
         {!loading && evaluation && (
@@ -121,10 +123,9 @@ const Evaluation: React.FC = () => {
             {/* display: contents en mobile; en escritorio alinea titulo e indicacion con
                 la columna de preguntas. */}
             <div className="evaluation__header">
-              <h1 className="header__title">{name}</h1>
+              <h1 className="header__title">{tx(name)}</h1>
               <p className="evaluation__intro">
-                {total} preguntas sobre tu proyecto. Marca todas las opciones que ya hayas
-                considerado; puedes saltar entre preguntas desde el panel.
+                {t('eval.intro', { n: total })}
               </p>
             </div>
 
@@ -132,7 +133,7 @@ const Evaluation: React.FC = () => {
               <div className="eval-progress__bar">
                 <div className="eval-progress__fill" style={{ width: `${total > 0 ? (answered.size / total) * 100 : 0}%` }} />
               </div>
-              <span className="eval-progress__count">{answered.size} de {total}</span>
+              <span className="eval-progress__count">{t('common.of', { a: answered.size, b: total })}</span>
             </div>
 
             {/* El nav va antes que las preguntas en el DOM para que en mobile el

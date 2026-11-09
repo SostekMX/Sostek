@@ -8,6 +8,7 @@ import useFavorites from '../../hooks/useFavorites';
 import { Article, Presentation } from '../../components/ArticleCarrousel';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import { readCache } from '../../utils/cache';
+import { TKey, useI18n } from '../../i18n/LanguageContext';
 import './Favorites.css';
 
 interface FavoriteItem {
@@ -21,13 +22,14 @@ interface FavoriteItem {
 
 type TypeFilter = 'all' | FavoriteItem['type'];
 
-const FILTERS: { value: TypeFilter; label: string }[] = [
-  { value: 'all', label: 'Todos' },
-  { value: 'article', label: 'Artículos' },
-  { value: 'presentation', label: 'Presentaciones' },
+const FILTERS: { value: TypeFilter; label: TKey }[] = [
+  { value: 'all', label: 'fav.all' },
+  { value: 'article', label: 'fav.articles' },
+  { value: 'presentation', label: 'fav.presentations' },
 ];
 
 const Favorites: React.FC = () => {
+  const { t, localizeArticle } = useI18n();
   const { favorites, loading: favLoading, isLoggedIn, isFavorite, removeFavorite, addFavorite } = useFavorites();
   // Arranca con la cache que llena APRENDE; la peticion de abajo la pone al dia.
   const [allArticles, setAllArticles] = useState<Article[]>(() => readCache<Article[]>('articles') ?? []);
@@ -50,7 +52,8 @@ const Favorites: React.FC = () => {
 
   const resolvedItems: FavoriteItem[] = favorites.map(fav => {
     if (fav.type === 'article') {
-      const art = allArticles.find(a => a._id === fav.content_id);
+      const found = allArticles.find(a => a._id === fav.content_id);
+      const art = found && localizeArticle(found);
       if (art) return { id: art._id, type: 'article', name: art.title, image: art.image, description: art.subtitle, category: art.category };
     } else {
       const pres = allPresentations.find(p => p._id === fav.content_id);
@@ -72,10 +75,10 @@ const Favorites: React.FC = () => {
       <IonContent fullscreen class='app-dark-bg'>
         <div className='favorites-container'>
           <header className='favorites-header'>
-            <h2 className='favorites-title'>Favoritos</h2>
+            <h2 className='favorites-title'>{t('fav.title')}</h2>
             {isDesktop && !isLoading && resolvedItems.length > 0 && (
               <p className='favorites-count'>
-                {resolvedItems.length} {resolvedItems.length === 1 ? 'guardado' : 'guardados'}
+                {t(resolvedItems.length === 1 ? 'fav.savedOne' : 'fav.savedMany', { n: resolvedItems.length })}
               </p>
             )}
           </header>
@@ -88,7 +91,7 @@ const Favorites: React.FC = () => {
                   className={`filter-pill ${typeFilter === f.value ? 'filter-pill--active' : ''}`}
                   onClick={() => setTypeFilter(f.value)}
                 >
-                  {f.label} <span className='favorites-pill__count'>{countOf(f.value)}</span>
+                  {t(f.label)} <span className='favorites-pill__count'>{countOf(f.value)}</span>
                 </button>
               ))}
             </div>
@@ -112,19 +115,19 @@ const Favorites: React.FC = () => {
           {!isLoading && resolvedItems.length === 0 && (isDesktop ? (
             <div className='favorites-empty-desk'>
               <div className='favorites-empty-desk__icon'><IonIcon icon={heartOutline} aria-hidden='true' /></div>
-              <h3 className='favorites-empty-desk__title'>Todavía no guardas nada</h3>
+              <h3 className='favorites-empty-desk__title'>{t('fav.emptyTitle')}</h3>
               <p className='favorites-empty-desk__text'>
-                Toca el corazón de cualquier artículo o presentación y quedará aquí, a la mano para cuando lo necesites.
+                {t('fav.emptyText')}
               </p>
               <IonButton routerLink='/tab1' routerDirection='none' className='favorites-empty-desk__btn'>
-                Explorar Aprende
+                {t('fav.explore')}
               </IonButton>
             </div>
           ) : (
             <div className='favorites-empty'>
               <IonText>
-                <p>Aún no tienes favoritos.</p>
-                <p>Guarda artículos o presentaciones tocando el corazón en la lista.</p>
+                <p>{t('fav.empty1')}</p>
+                <p>{t('fav.empty2')}</p>
               </IonText>
             </div>
           ))}

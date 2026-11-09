@@ -51,6 +51,8 @@ import ResetPassword from './pages/resetPassword/ResetPassword';
 import Favorites from './pages/favorites/Favorites';
 import SideNav from './components/layout/SideNav';
 import { DESKTOP_QUERY } from './hooks/useMediaQuery';
+import { useI18n } from './i18n/LanguageContext';
+import LanguageToggle from './components/layout/LanguageToggle';
 
 setupIonicReact();
 
@@ -75,6 +77,7 @@ const getActiveTab = (pathname: string): 'tab1' | 'tab2' | 'tab3' | null => {
 /* Dentro del router para poder usar useLocation */
 const MainTabs: React.FC = () => {
   const location = useLocation();
+  const { t } = useI18n();
   const hidden = HIDE_TABBAR_PATHS.includes(location.pathname);
   const activeTab = getActiveTab(location.pathname);
   /* Desde 768px el tab bar se esconde por CSS y navega la barra lateral del split pane. En
@@ -104,15 +107,15 @@ const MainTabs: React.FC = () => {
           <IonTabBar className={hidden ? 'tab-bar--hidden' : 'tab-bar--visible'} slot="bottom">
             <IonTabButton tab="tab1" href="/tab1" className={activeTab === 'tab1' ? 'tab-bar__btn--active' : undefined}>
               <IonIcon icon={bookOutline} />
-              <IonLabel className='tab-bar__label'>APRENDE</IonLabel>
+              <IonLabel className='tab-bar__label'>{t('nav.learn')}</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab2" href="/tab2" className={activeTab === 'tab2' ? 'tab-bar__btn--active' : undefined}>
               <IonIcon icon={gameControllerOutline} />
-              <IonLabel className='tab-bar__label'>JUEGA</IonLabel>
+              <IonLabel className='tab-bar__label'>{t('nav.play')}</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab3" href="/tab3" className={activeTab === 'tab3' ? 'tab-bar__btn--active' : undefined}>
               <IonIcon icon={clipboardOutline} />
-              <IonLabel className='tab-bar__label'>EVALÚATE</IonLabel>
+              <IonLabel className='tab-bar__label'>{t('nav.assess')}</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>
@@ -130,6 +133,7 @@ const App: React.FC = () => {
             <MainTabs />
           </IonReactRouter>
         </IonContent>
+        <LanguageToggle />
       </IonApp>
     </AppProvider>
   );

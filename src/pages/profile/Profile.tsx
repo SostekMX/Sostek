@@ -7,8 +7,10 @@ import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import { clearSession, readAvatar, readEmail } from '../../utils/session';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import './Profile.css';
+import { useI18n } from '../../i18n/LanguageContext';
 
 const Profile: React.FC = () => {
+    const { t, apiError } = useI18n();
     const [name, setName] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
     const [birthDate, setBirthDate] = useState<string>('');
@@ -101,7 +103,7 @@ const Profile: React.FC = () => {
             }
         } catch (err) {
             console.error(err);
-            setMessage('No se pudo subir la foto. Intenta de nuevo.');
+            setMessage(t('errors.uploadFail'));
             setShowAlert(true);
         } finally {
             setAvatarUploading(false);
@@ -160,7 +162,7 @@ const Profile: React.FC = () => {
                     {/* En mobile .crop-dialog es display: contents y no cambia nada; en
                         escritorio es la tarjeta del dialogo. */}
                     <div className='crop-dialog' role='dialog' aria-modal='true' aria-labelledby='crop-title'>
-                    <p className='crop-title' id='crop-title'>Ajusta tu foto</p>
+                    <p className='crop-title' id='crop-title'>{t('profile.cropTitle')}</p>
                     <div
                         className='crop-circle-preview'
                         onPointerDown={onCropPointerDown}
@@ -170,23 +172,23 @@ const Profile: React.FC = () => {
                     >
                         <img
                             src={previewUrl}
-                            alt='preview'
+                            alt={t('profile.cropTitle')}
                             className='crop-img'
                             style={{ objectPosition: `${cropPos.x}% ${cropPos.y}%` }}
                             draggable={false}
                         />
                     </div>
-                    <p className='crop-hint'>Arrastra para ajustar la posicion</p>
+                    <p className='crop-hint'>{t('profile.cropHint')}</p>
                     <div className='crop-actions'>
                         <button
                             className='crop-btn crop-btn--confirm'
                             onClick={handleUploadConfirm}
                             disabled={avatarUploading}
                         >
-                            {avatarUploading ? 'Subiendo...' : 'Subir foto'}
+                            {avatarUploading ? t('profile.uploading') : t('profile.upload')}
                         </button>
                         <button className='crop-btn crop-btn--cancel' onClick={cancelCrop}>
-                            Cancelar
+                            {t('common.cancel')}
                         </button>
                     </div>
                     </div>
@@ -197,9 +199,9 @@ const Profile: React.FC = () => {
                 <div className='profile-container'>
                     {isDesktop && (
                         <header className='profile-page-header'>
-                            <h1 className='profile-page-header__title'>Tu perfil</h1>
+                            <h1 className='profile-page-header__title'>{t('profile.title')}</h1>
                             <p className='profile-page-header__text'>
-                                Mant&eacute;n tus datos al d&iacute;a. El correo con el que entras no se puede cambiar desde aqu&iacute;.
+                                {t('profile.text')}
                             </p>
                         </header>
                     )}
@@ -210,7 +212,7 @@ const Profile: React.FC = () => {
                         }
                         {isDesktop && (
                             <div className='profile-identity'>
-                                <p className='profile-identity__name'>{fullName || 'Sin nombre'}</p>
+                                <p className='profile-identity__name'>{fullName || t('profile.noName')}</p>
                                 {email && <p className='profile-identity__email'>{email}</p>}
                                 {occupation && <p className='profile-identity__occupation'>{occupation}</p>}
                             </div>
@@ -227,50 +229,50 @@ const Profile: React.FC = () => {
                             onClick={() => fileInputRef.current?.click()}
                         >
                             <IonIcon icon={cameraOutline} />
-                            Cambiar foto
+                            {t('profile.changePhoto')}
                         </button>
                     </div>
 
                     <div className='profile-card'>
-                        <h2 className='profile-title'>{isDesktop ? 'Datos personales' : 'Modificar Perfil'}</h2>
+                        <h2 className='profile-title'>{isDesktop ? t('profile.dataTitle') : t('profile.editTitle')}</h2>
                         <IonItem className='profile-input-item' lines='none'>
-                            <IonLabel position='stacked' className='profile-label'>Nombre</IonLabel>
+                            <IonLabel position='stacked' className='profile-label'>{t('form.name')}</IonLabel>
                             <IonInput value={name} onIonChange={(e) => setName(e.target.value as string)} type='text' />
                         </IonItem>
                         <IonItem className='profile-input-item' lines='none'>
-                            <IonLabel position='stacked' className='profile-label'>Apellido</IonLabel>
+                            <IonLabel position='stacked' className='profile-label'>{t('form.surname')}</IonLabel>
                             <IonInput value={surname} onIonChange={(e) => setSurname(e.target.value as string)} type='text' />
                         </IonItem>
                         <IonItem className='profile-input-item' lines='none'>
-                            <IonLabel position='stacked' className='profile-label'>Fecha de nacimiento</IonLabel>
+                            <IonLabel position='stacked' className='profile-label'>{t('form.birth')}</IonLabel>
                             <IonInput value={birthDate} onIonChange={(e) => setBirthDate(e.target.value as string)} type='date' />
                         </IonItem>
                         <IonItem className='profile-input-item' lines='none'>
-                            <IonLabel position='stacked' className='profile-label'>Ocupaci&oacute;n</IonLabel>
+                            <IonLabel position='stacked' className='profile-label'>{t('form.occupation')}</IonLabel>
                             <IonInput value={occupation} onIonChange={(e) => setOccupation(e.target.value as string)} type='text' />
                         </IonItem>
                         <IonItem className='profile-input-item' lines='none'>
-                            <IonLabel position='stacked' className='profile-label'>Sexo</IonLabel>
+                            <IonLabel position='stacked' className='profile-label'>{t('form.sex')}</IonLabel>
                             <IonSelect value={gender} onIonChange={(e) => setGender(e.target.value as string)} interface='popover'>
-                                <IonSelectOption value="masculino">Masculino</IonSelectOption>
-                                <IonSelectOption value="femenino">Femenino</IonSelectOption>
+                                <IonSelectOption value="masculino">{t('form.male')}</IonSelectOption>
+                                <IonSelectOption value="femenino">{t('form.female')}</IonSelectOption>
                             </IonSelect>
                         </IonItem>
                         <div className='profile-actions'>
                             <IonButton expand='block' color='primary' onClick={editUser}>
-                                Guardar cambios
+                                {t('profile.save')}
                             </IonButton>
                             <IonButton expand='block' fill='outline' color='primary' href="/MainMenu">
-                                Regresar
+                                {t('common.back')}
                             </IonButton>
                             <IonButton expand='block' fill='clear' color='danger' className='profile-delete-inline' onClick={() => setShowDeleteConfirm(true)}>
-                                Eliminar cuenta
+                                {t('profile.delete')}
                             </IonButton>
                         </div>
                         <IonToast
                             isOpen={showAlert}
                             onDidDismiss={() => setShowAlert(false)}
-                            message={message}
+                            message={apiError(message)}
                             duration={3500}
                             color="danger"
                             position="bottom"
@@ -279,11 +281,11 @@ const Profile: React.FC = () => {
                             isOpen={showDeleteConfirm}
                             onDidDismiss={() => setShowDeleteConfirm(false)}
                             cssClass="dark-alert"
-                            header="Eliminar cuenta"
-                            message="¿Estás seguro? Esta acción no se puede deshacer."
+                            header={t('profile.delete')}
+                            message={t('profile.deleteConfirm')}
                             buttons={[
-                                { text: 'Cancelar', role: 'cancel' },
-                                { text: 'Eliminar', role: 'destructive', handler: deleteUser }
+                                { text: t('common.cancel'), role: 'cancel' },
+                                { text: t('common.delete'), role: 'destructive', handler: deleteUser }
                             ]}
                         />
                     </div>
@@ -292,13 +294,13 @@ const Profile: React.FC = () => {
                     {isDesktop && (
                         <section className='profile-danger' aria-labelledby='profile-danger-title'>
                             <div>
-                                <h2 className='profile-danger__title' id='profile-danger-title'>Eliminar cuenta</h2>
+                                <h2 className='profile-danger__title' id='profile-danger-title'>{t('profile.delete')}</h2>
                                 <p className='profile-danger__text'>
-                                    Se borran tu perfil, tus favoritos y tus puntajes. No se puede deshacer.
+                                    {t('profile.dangerText')}
                                 </p>
                             </div>
                             <IonButton fill='outline' color='danger' className='profile-danger__btn' onClick={() => setShowDeleteConfirm(true)}>
-                                Eliminar cuenta
+                                {t('profile.delete')}
                             </IonButton>
                         </section>
                     )}

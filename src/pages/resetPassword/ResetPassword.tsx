@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { resetPassword as resetPasswordRequest } from '../../api/auth';
 import '../logIn/LogIn.css';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
+import { useI18n } from '../../i18n/LanguageContext';
 
 const ResetPassword: React.FC = () => {
     const location = useLocation();
@@ -16,10 +17,11 @@ const ResetPassword: React.FC = () => {
     const isDesktop = useMediaQuery(DESKTOP_QUERY);
     const [loading, setLoading] = useState<boolean>(false);
     const history = useHistory();
+    const { t, apiError } = useI18n();
 
     async function resetPassword() {
         if (newPassword.length < 8) {
-            setMessage('La contraseña debe tener al menos 8 caracteres');
+            setMessage(t('errors.passwordMin'));
             setSuccess(false);
             setShowAlert(true);
             return;
@@ -28,7 +30,7 @@ const ResetPassword: React.FC = () => {
         try {
             const data = await resetPasswordRequest(token, newPassword);
             if (data.success) {
-                setMessage('Contraseña actualizada. Ya puedes iniciar sesión.');
+                setMessage(t('reset.done'));
                 setSuccess(true);
                 setShowAlert(true);
             } else {
@@ -37,7 +39,7 @@ const ResetPassword: React.FC = () => {
                 setShowAlert(true);
             }
         } catch (error: any) {
-            setMessage(error.response?.data?.error ?? 'Error al cambiar la contraseña');
+            setMessage(error.response?.data?.error ?? t('errors.changeFail'));
             setSuccess(false);
             setShowAlert(true);
         } finally {
@@ -54,8 +56,8 @@ const ResetPassword: React.FC = () => {
                         <aside className='login-brand auth-brand'>
                             <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
                             <div className='login-brand__content'>
-                                <p className='login-brand__headline'>Una contrase&ntilde;a<br />nueva.</p>
-                                <p className='login-brand__desc'>Usa el c&oacute;digo que te lleg&oacute; por correo. La contrase&ntilde;a necesita al menos 8 caracteres.</p>
+                                <p className='login-brand__headline'>{t('reset.headline')}</p>
+                                <p className='login-brand__desc'>{t('reset.brandDesc')}</p>
                             </div>
                             <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
                         </aside>
@@ -65,29 +67,29 @@ const ResetPassword: React.FC = () => {
                             <img src="/assets/sostek-logo.png" className='login-logo-mobile' alt='Sostek' />
                             <div className='login-welcome'>
                                 <span className='login-welcome__line' />
-                                <span className='login-welcome__text'>NUEVA CONTRASE&Ntilde;A</span>
+                                <span className='login-welcome__text'>{t('reset.welcome')}</span>
                                 <span className='login-welcome__line' />
                             </div>
-                            <h2 className='login-title'>Cambiar contrase&ntilde;a</h2>
-                            <p className='login-subtitle'>Ingresa el c&oacute;digo que recibiste y tu nueva contrase&ntilde;a.</p>
+                            <h2 className='login-title'>{t('reset.title')}</h2>
+                            <p className='login-subtitle'>{t('reset.subtitle')}</p>
                             <div className='login-fields'>
                                 <div className='login-field'>
-                                    <label className='login-field__label'>C&oacute;digo de recuperaci&oacute;n</label>
+                                    <label className='login-field__label'>{t('reset.code')}</label>
                                     <IonItem className='login-field__item' lines='none'>
                                         <IonInput
                                             type='text'
-                                            placeholder='Código de recuperación'
+                                            placeholder={t('reset.code')}
                                             value={token}
                                             onIonChange={(e) => setToken(e.target.value as string)}
                                         />
                                     </IonItem>
                                 </div>
                                 <div className='login-field'>
-                                    <label className='login-field__label'>Nueva contrase&ntilde;a</label>
+                                    <label className='login-field__label'>{t('reset.newPassword')}</label>
                                     <IonItem className='login-field__item' lines='none'>
                                         <IonInput
                                             type='password'
-                                            placeholder='Mínimo 8 caracteres'
+                                            placeholder={t('auth.passwordPh')}
                                             value={newPassword}
                                             onIonChange={(e) => setNewPassword(e.target.value as string)}
                                         />
@@ -95,10 +97,10 @@ const ResetPassword: React.FC = () => {
                                 </div>
                             </div>
                             <IonButton expand='block' color='primary' onClick={resetPassword} disabled={loading} className='login-btn-main'>
-                                {loading ? 'Cambiando...' : 'Cambiar contraseña'}
+                                {loading ? t('reset.changing') : t('reset.submit')}
                             </IonButton>
                             <IonButton expand='block' fill='clear' href='/' className='login-btn-secondary'>
-                                Volver al inicio de sesi&oacute;n
+                                {t('auth.backToLogin')}
                             </IonButton>
                         </div>
                     </div>
@@ -106,7 +108,7 @@ const ResetPassword: React.FC = () => {
                 <IonToast
                     isOpen={showAlert && !success}
                     onDidDismiss={() => setShowAlert(false)}
-                    message={message}
+                    message={apiError(message)}
                     duration={3500}
                     color="danger"
                     position="bottom"
@@ -115,9 +117,9 @@ const ResetPassword: React.FC = () => {
                     isOpen={showAlert && success}
                     onDidDismiss={() => { setShowAlert(false); history.replace('/'); }}
                     cssClass="dark-alert"
-                    header="Contraseña actualizada"
-                    message="Ya puedes iniciar sesión con tu nueva contraseña."
-                    buttons={[{ text: 'Iniciar sesión', handler: () => history.replace('/') }]}
+                    header={t('reset.doneHeader')}
+                    message={t('reset.doneMsg')}
+                    buttons={[{ text: t('nav.login'), handler: () => history.replace('/') }]}
                 />
             </IonContent>
         </IonPage>

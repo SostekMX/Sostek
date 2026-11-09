@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './QuestionNav.css';
+import { useI18n } from '../i18n/LanguageContext';
 
 interface Props {
     total: number;
@@ -13,6 +14,7 @@ interface Props {
  * boton, que ademas hace de resumen del avance para que plegado siga diciendo algo.
  */
 const QuestionNav: React.FC<Props> = ({ total, answered, onJump, submit }) => {
+    const { t } = useI18n();
     const [open, setOpen] = useState(false);
 
     return (
@@ -23,7 +25,7 @@ const QuestionNav: React.FC<Props> = ({ total, answered, onJump, submit }) => {
                 aria-expanded={open}
                 onClick={() => setOpen(o => !o)}
             >
-                Preguntas &middot; {answered.size} de {total}
+                {t('qnav.toggle', { a: answered.size, b: total })}
             </button>
 
             <div className='qnav__panel'>
@@ -31,20 +33,20 @@ const QuestionNav: React.FC<Props> = ({ total, answered, onJump, submit }) => {
                     vez de en la barra pegada arriba de las preguntas. */}
                 <div className='qnav__progress'>
                     <p className='qnav__progress-count'>
-                        <strong>{answered.size}</strong> de {total} contestadas
+                        <strong>{answered.size}</strong> {t('qnav.answered', { b: total })}
                     </p>
                     <div className='qnav__progress-bar'>
                         <div className='qnav__progress-fill' style={{ width: `${total > 0 ? (answered.size / total) * 100 : 0}%` }} />
                     </div>
                 </div>
-                <p className='qnav__title'>Preguntas</p>
+                <p className='qnav__title'>{t('qnav.title')}</p>
                 <div className='qnav__grid'>
                     {Array.from({ length: total }, (_, i) => (
                         <button
                             key={i}
                             type='button'
                             className={`qnav__chip ${answered.has(i) ? 'qnav__chip--done' : ''}`}
-                            aria-label={`Ir a la pregunta ${i + 1}, ${answered.has(i) ? 'contestada' : 'sin contestar'}`}
+                            aria-label={t(answered.has(i) ? 'qnav.goDone' : 'qnav.goPending', { i: i + 1 })}
                             onClick={() => { onJump(i); setOpen(false); }}
                         >
                             {i + 1}

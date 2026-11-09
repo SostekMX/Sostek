@@ -8,6 +8,7 @@ import type { Swiper as SwiperInstance } from 'swiper';
 import { getPresentations } from '../../api/content';
 import { AppMenu } from '../../components/layout/AppBarPopOver';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
+import { useI18n } from '../../i18n/LanguageContext';
 import './Presentation.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -19,6 +20,7 @@ interface RouteParams {
 
 const Presentation: React.FC = () => {
   const { driveId } = useParams<RouteParams>();
+  const { t } = useI18n();
   const [slides, setSlides] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -46,7 +48,7 @@ const Presentation: React.FC = () => {
       <IonHeader>
         <IonToolbar className="dark-toolbar">
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tab1" text={isDesktop ? 'Aprende' : ''} />
+            <IonBackButton defaultHref="/tab1" text={isDesktop ? t('nav.learn') : ''} />
           </IonButtons>
           {isDesktop && title && <IonTitle className="presd-toolbar-title">{title}</IonTitle>}
           <IonButtons slot="end">
@@ -66,7 +68,7 @@ const Presentation: React.FC = () => {
         {isDesktop && !loading && slides.length > 0 && <SlideStage key={driveId} slides={slides} />}
         {!loading && slides.length === 0 && (
           <p className="page-message">
-            No pudimos cargar esta presentaci&oacute;n. Puede que ya no est&eacute; publicada o que no haya conexi&oacute;n.
+            {t('pres.fail')}
           </p>
         )}
         {!isDesktop && !loading && slides.length > 0 && (
@@ -80,7 +82,7 @@ const Presentation: React.FC = () => {
           >
             {slides.map((url, index) => (
               <SwiperSlide key={index}>
-                <img src={url} alt={`slide ${index + 1}`} />
+                <img src={url} alt={t('pres.slideAlt', { i: index + 1, n: slides.length })} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -93,6 +95,7 @@ const Presentation: React.FC = () => {
 /* Escritorio: la diapositiva al tamano maximo que quepa, flechas a los lados, teclado, tira
    de miniaturas y pantalla completa. Mobile sigue con el carrusel de puntos de arriba. */
 const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
+  const { t } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
@@ -144,7 +147,7 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
           className="presd__nav"
           onClick={() => swiper?.slidePrev()}
           disabled={index === 0}
-          aria-label="Diapositiva anterior"
+          aria-label={t('pres.prev')}
           aria-keyshortcuts="ArrowLeft"
         >
           <IonIcon icon={chevronBackOutline} aria-hidden="true" />
@@ -160,7 +163,7 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
         >
           {slides.map((url, i) => (
             <SwiperSlide key={i}>
-              <img src={url} alt={`Diapositiva ${i + 1} de ${slides.length}`} />
+              <img src={url} alt={t('pres.slideAlt', { i: i + 1, n: slides.length })} />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -169,7 +172,7 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
           className="presd__nav"
           onClick={() => swiper?.slideNext()}
           disabled={index === last}
-          aria-label="Diapositiva siguiente"
+          aria-label={t('pres.next')}
           aria-keyshortcuts="ArrowRight"
         >
           <IonIcon icon={chevronForwardOutline} aria-hidden="true" />
@@ -179,9 +182,9 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
       <div className="presd__footer">
         <div className="presd__count">
           <p className="presd__count-value" aria-live="polite">
-            <span className="presd__count-current">{index + 1}</span> de {slides.length}
+            <span className="presd__count-current">{index + 1}</span> {t('pres.ofTotal', { n: slides.length })}
           </p>
-          <p className="presd__hint">Avanza con las flechas del teclado</p>
+          <p className="presd__hint">{t('pres.hint')}</p>
         </div>
 
         <div className="presd__strip" ref={stripRef}>
@@ -190,7 +193,7 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
               key={i}
               className="presd__thumb"
               onClick={() => swiper?.slideTo(i)}
-              aria-label={`Ir a la diapositiva ${i + 1}`}
+              aria-label={t('pres.goTo', { i: i + 1 })}
               aria-current={i === index ? 'true' : undefined}
             >
               <img src={url} alt="" loading="lazy" />
@@ -201,8 +204,8 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
         <button
           className="presd__icon-btn"
           onClick={toggleFullscreen}
-          aria-label={isFull ? 'Salir de pantalla completa' : 'Ver en pantalla completa'}
-          title={isFull ? 'Salir de pantalla completa (F)' : 'Pantalla completa (F)'}
+          aria-label={isFull ? t('pres.exitFull') : t('pres.enterFull')}
+          title={isFull ? t('pres.exitFullKey') : t('pres.enterFullKey')}
           aria-keyshortcuts="F"
         >
           <IonIcon icon={isFull ? contractOutline : expandOutline} aria-hidden="true" />

@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { login } from '../../api/auth';
 import { getProfile } from '../../api/user';
 import { clearSession, startSession } from '../../utils/session';
+import { useI18n } from '../../i18n/LanguageContext';
 import '../../App.css';
 import './LogIn.css';
 
@@ -13,6 +14,7 @@ const LogIn: React.FC = () => {
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const history = useHistory();
+    const { t, lang, apiError } = useI18n();
 
     // Entrar al login cierra la sesion completa; antes quedaba el token y se seguia mandando.
     useEffect(() => {
@@ -31,7 +33,7 @@ const LogIn: React.FC = () => {
         }).catch(function (error) {
             // Sin esto un backend caido o el limite de intentos (429) no decia nada.
             console.error(error);
-            setMessage(error.response?.data?.error ?? 'No pudimos conectar con el servidor. Intenta de nuevo.');
+            setMessage(error.response?.data?.error ?? t('errors.noServer'));
             setShowAlert(true);
         });
     }
@@ -54,21 +56,20 @@ const LogIn: React.FC = () => {
                     <div className='login-brand'>
                         <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
                         <div className='login-brand__content'>
-                            <p className='login-brand__tag'>Plataforma Educativa</p>
+                            <p className='login-brand__tag'>{t('auth.platform')}</p>
                             <h1 className='login-brand__headline'>
-                                Aprende,<br />eval&uacute;a<br />y crece.
+                                {t('login.headline')}
                             </h1>
                             <p className='login-brand__desc'>
-                                Mide el nivel de sostenibilidad de tus proyectos acad&eacute;micos
-                                y accede a contenido especializado.
+                                {t('login.desc')}
                             </p>
                             <a
-                                href='https://sostek.tec.mx/es'
+                                href={`https://sostek.tec.mx/${lang}`}
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 className='login-brand__site-link'
                             >
-                                🌿 Visitar sitio oficial de <u>SOSTEK</u>
+                                {t('login.visitSite')}
                             </a>
                         </div>
                         <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
@@ -83,27 +84,27 @@ const LogIn: React.FC = () => {
 
                             <div className='login-welcome'>
                                 <span className='login-welcome__line' />
-                                <span className='login-welcome__text'>BIENVENIDO</span>
+                                <span className='login-welcome__text'>{t('login.welcome')}</span>
                                 <span className='login-welcome__line' />
                             </div>
 
-                            <h2 className='login-title'>Iniciar sesi&oacute;n</h2>
-                            <p className='login-subtitle'>Ingresa tus credenciales para continuar.</p>
+                            <h2 className='login-title'>{t('login.title')}</h2>
+                            <p className='login-subtitle'>{t('login.subtitle')}</p>
 
                             <div className='login-fields'>
                                 <div className='login-field'>
-                                    <label className='login-field__label'>Correo electr&oacute;nico</label>
+                                    <label className='login-field__label'>{t('auth.email')}</label>
                                     <IonItem className='login-field__item' lines='none'>
                                         <IonInput
                                             type='email'
-                                            placeholder='usuario@ejemplo.com'
+                                            placeholder={t('auth.emailPh')}
                                             value={email}
                                             onIonChange={(e) => setEmail(e.target.value as string)}
                                         />
                                     </IonItem>
                                 </div>
                                 <div className='login-field'>
-                                    <label className='login-field__label'>Contrase&ntilde;a</label>
+                                    <label className='login-field__label'>{t('auth.password')}</label>
                                     <IonItem className='login-field__item' lines='none'>
                                         <IonInput
                                             type='password'
@@ -116,23 +117,23 @@ const LogIn: React.FC = () => {
                             </div>
 
                             <IonButton expand='block' color='primary' onClick={loginUser} className='login-btn-main'>
-                                Iniciar sesi&oacute;n
+                                {t('login.title')}
                             </IonButton>
 
                             <IonButton expand='block' fill='clear' href='/ForgotPassword' className='login-btn-secondary'>
-                                &iquest;Olvidaste tu contrase&ntilde;a?
+                                {t('login.forgot')}
                             </IonButton>
 
                             <IonButton expand='block' fill='clear' href='SignUp' className='login-btn-secondary'>
-                                &iquest;No tienes cuenta? Reg&iacute;strate
+                                {t('login.noAccount')}
                             </IonButton>
 
                             <div className='login-divider'>
-                                <span /><small>o</small><span />
+                                <span /><small>{t('login.or')}</small><span />
                             </div>
 
                             <IonButton expand='block' fill='clear' href='MainMenu' className='login-btn-guest'>
-                                Continuar como invitado
+                                {t('login.guest')}
                             </IonButton>
 
 
@@ -143,7 +144,7 @@ const LogIn: React.FC = () => {
                 <IonToast
                     isOpen={showAlert}
                     onDidDismiss={() => setShowAlert(false)}
-                    message={message}
+                    message={apiError(message)}
                     duration={3500}
                     color="danger"
                     position="bottom"

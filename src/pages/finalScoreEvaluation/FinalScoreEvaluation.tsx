@@ -11,6 +11,7 @@ import { readCache } from '../../utils/cache';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
 import { Article } from '../../components/ArticleCarrousel';
 import './FinalScoreEvaluation.css';
+import { useI18n } from '../../i18n/LanguageContext';
 
 interface Params {
     name: string;
@@ -41,6 +42,7 @@ const FinalScoreEvaluation: React.FC = () => {
         };
     });
     const { changeSearch } = useContext(AppContext);
+    const { t, tx, lang, localizeArticle } = useI18n();
     const isDesktop = useMediaQuery(DESKTOP_QUERY);
     const router = useIonRouter();
 
@@ -67,12 +69,12 @@ const FinalScoreEvaluation: React.FC = () => {
                 <IonContent fullscreen class="app-dark-bg">
                     <div className="score-page">
                         <div className="score-card">
-                            <p className="score-card__titulo">No hay un resultado que mostrar</p>
+                            <p className="score-card__titulo">{t('score.none')}</p>
                             <p className="score-card__mensaje">
-                                Contesta una evaluaci&oacute;n para ver aqu&iacute; tu puntaje.
+                                {t('score.noneText')}
                             </p>
                             <IonButton href="/tab3" color="primary" className="finalScoreEvaluation__button">
-                                Ir a Eval&uacute;ate
+                                {t('score.goAssess')}
                             </IonButton>
                         </div>
                     </div>
@@ -82,10 +84,10 @@ const FinalScoreEvaluation: React.FC = () => {
     }
 
     const { score, maxScore, weakestCategory } = result;
-    const { titulo, mensaje } = getFeedback(score, maxScore);
+    const { titulo, mensaje } = getFeedback(score, maxScore, lang);
 
     function goToRecommended() {
-        changeSearch!(weakestCategory);
+        changeSearch!(tx(weakestCategory));
         clearScoreSession();
     }
 
@@ -103,12 +105,12 @@ const FinalScoreEvaluation: React.FC = () => {
                 <IonContent fullscreen class="app-dark-bg">
                     <div className="score-desk">
                         <header className="score-desk__header">
-                            <p className="score-desk__kicker">Resultado de tu autodiagn&oacute;stico</p>
-                            <h1 className="score-desk__title">{name}</h1>
+                            <p className="score-desk__kicker">{t('score.kicker')}</p>
+                            <h1 className="score-desk__title">{tx(name)}</h1>
                         </header>
 
                         <div className={`score-desk__grid${weakestCategory ? '' : ' score-desk__grid--single'}`}>
-                            <section className="score-desk__result" aria-label="Puntaje">
+                            <section className="score-desk__result" aria-label={t('score.aria')}>
                                 <div className="score-ring" style={{ '--ring-c': RING_C, '--ring-offset': RING_C * (1 - pct) } as any}>
                                     <svg viewBox="0 0 200 200" aria-hidden="true">
                                         <circle className="score-ring__track" cx="100" cy="100" r={RING_R} />
@@ -116,7 +118,7 @@ const FinalScoreEvaluation: React.FC = () => {
                                     </svg>
                                     <div className="score-ring__label">
                                         <span className="score-ring__score">{score}</span>
-                                        {maxScore > 0 && <span className="score-ring__max">de {maxScore} puntos</span>}
+                                        {maxScore > 0 && <span className="score-ring__max">{t('score.ofPoints', { n: maxScore })}</span>}
                                     </div>
                                 </div>
                                 <h2 className="score-desk__feedback-title">{titulo}</h2>
@@ -126,20 +128,19 @@ const FinalScoreEvaluation: React.FC = () => {
                                     className="score-desk__secondary"
                                     onClick={e => { e.preventDefault(); router.push('/tab3', 'back'); }}
                                 >
-                                    Hacer otra evaluaci&oacute;n
+                                    {t('score.again')}
                                 </a>
                             </section>
 
                             {weakestCategory && (
                                 <section
                                     className={`score-desk__weak${axis ? ` axis-${axis}` : ''}${mixedAxis ? ' score-desk__weak--mixed' : ''}`}
-                                    aria-label="Eje a reforzar"
+                                    aria-label={t('score.weakAria')}
                                 >
-                                    <p className="score-desk__weak-label">Tu eje m&aacute;s d&eacute;bil</p>
-                                    <p className="score-desk__weak-axis">{weakestCategory}</p>
+                                    <p className="score-desk__weak-label">{t('score.weakLabel')}</p>
+                                    <p className="score-desk__weak-axis">{tx(weakestCategory)}</p>
                                     <p className="score-desk__weak-note">
-                                        Es el &aacute;rea donde tu proyecto sum&oacute; menos en proporci&oacute;n a lo
-                                        que pod&iacute;a obtener. Estas lecturas te ayudan a reforzarla.
+                                        {t('score.weakNote')}
                                     </p>
 
                                     {recommended.length > 0 && (
@@ -155,8 +156,8 @@ const FinalScoreEvaluation: React.FC = () => {
                                                         >
                                                             <img src={a.image} alt="" className="score-article__img" loading="lazy" />
                                                             <span className="score-article__text">
-                                                                <span className={`score-article__category${aAxis ? ` axis-${aAxis}` : ''}`}>{a.category}</span>
-                                                                <span className="score-article__title">{a.title}</span>
+                                                                <span className={`score-article__category${aAxis ? ` axis-${aAxis}` : ''}`}>{tx(a.category)}</span>
+                                                                <span className="score-article__title">{localizeArticle(a).title}</span>
                                                                 {a.author && <span className="score-article__author">{a.author}</span>}
                                                             </span>
                                                         </a>
@@ -172,7 +173,7 @@ const FinalScoreEvaluation: React.FC = () => {
                                         className="score-desk__cta"
                                         onClick={goToRecommended}
                                     >
-                                        Ver todos los art&iacute;culos recomendados
+                                        {t('score.allRecommended')}
                                     </IonButton>
                                 </section>
                             )}
@@ -190,25 +191,24 @@ const FinalScoreEvaluation: React.FC = () => {
                 <IonHeader collapse="condense"></IonHeader>
                 <div className="score-page">
                     <div className="score-card">
-                        <p className="score-card__evaluation-name">{name}</p>
+                        <p className="score-card__evaluation-name">{tx(name)}</p>
                         <p className="score-card__points">
                             {score}
                             {maxScore > 0 && <span className="score-card__points-max">/{maxScore}</span>}
                         </p>
-                        <p className="score-card__pts-label">puntos</p>
+                        <p className="score-card__pts-label">{t('score.points')}</p>
                         <p className="score-card__titulo">{titulo}</p>
                         <p className="score-card__mensaje">{mensaje}</p>
                         {weakestCategory && (
                             <>
                                 <div className="score-card__divider" />
                                 <p className="score-card__weakest-label">
-                                    &Aacute;rea con menor puntaje:
+                                    {t('score.lowestArea')}
                                 </p>
-                                <p className="score-card__weakest-category">
-                                    {weakestCategory}
-                                </p>
+                                <p className="score-card__weakest-category">                                    {tx(weakestCategory)}
+</p>
                                 <p className="score-card__cta-label">
-                                    Encuentra art&iacute;culos para reforzar esta &aacute;rea:
+                                    {t('score.findArticles')}
                                 </p>
                                 <IonButton
                                     href="/MainMenu"
@@ -216,7 +216,7 @@ const FinalScoreEvaluation: React.FC = () => {
                                     className="finalScoreEvaluation__button"
                                     onClick={goToRecommended}
                                 >
-                                    Art&iacute;culos recomendados
+                                    {t('score.recommended')}
                                 </IonButton>
                             </>
                         )}

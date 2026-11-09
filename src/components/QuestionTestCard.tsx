@@ -2,6 +2,7 @@ import './QuestionTestCard.css';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonList, IonLabel, IonCheckbox } from '@ionic/react';
 import { AnswerMap } from '../utils/scoring';
 import { axisOf, isMixedAxis } from '../utils/axis';
+import { useI18n } from '../i18n/LanguageContext';
 
 export interface Option {
     text: string;
@@ -27,6 +28,7 @@ interface props {
 const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question, category, options, answers, onToggle }) => {
     /* Escritorio: el eje de la pregunta va como etiqueta con su color. "Economico y Social"
        es un eje doble y lleva los dos colores. */
+    const { tx } = useI18n();
     const axis = axisOf(category);
     const mixedAxis = isMixedAxis(category);
     /* Dos columnas solo si todas las opciones son cortas: una oracion larga partida en una
@@ -38,12 +40,11 @@ const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question
             {/* Fuera del IonCardHeader: adentro, Ionic le pone margen al titulo por no ser
                 el primer hijo y la tarjeta crecia 8px en mobile aunque la etiqueta este oculta. */}
             {category && (
-                <span className={`eval-card__axis${axis ? ` axis-${axis}` : ''}${mixedAxis ? ' eval-card__axis--mixed' : ''}`}>
-                    {category}
-                </span>
+                <span className={`eval-card__axis${axis ? ` axis-${axis}` : ''}${mixedAxis ? ' eval-card__axis--mixed' : ''}`}>                    {tx(category)}
+</span>
             )}
             <IonCardHeader>
-                <IonCardTitle><span className="eval-card__number">{number}.</span> {question}</IonCardTitle>
+                <IonCardTitle><span className="eval-card__number">{number}.</span> {tx(question)}</IonCardTitle>
             </IonCardHeader>
 
             <IonCardContent>
@@ -65,7 +66,7 @@ const QuestionTestCard: React.FC<props> = ({ id, number, questionIndex, question
                                     class="ion-text-wrap"
                                     slot="start"
                                 />
-                                <IonLabel class="ion-text-wrap">{option.text}</IonLabel>
+                                <IonLabel class="ion-text-wrap">{tx(option.text)}</IonLabel>
                             </IonItem>
                         );
                     })}

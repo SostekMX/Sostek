@@ -1,0 +1,19 @@
+/* Lo que mide el control: los encabezados dejan este hueco a la derecha. */
+:root {
+  --lang-toggle-space: 112px;
+}
+
+.lang-toggle {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  right: 12px;
+  z-index: 100;
+  padding: 3px;
+  border-radius: 100px;
+}
+
+.lang-toggle .lg-segmented {
+  --lg-tab-width: 42px;
+  --lg-tab-height: 30px;
+  font-weight: 600;
+}

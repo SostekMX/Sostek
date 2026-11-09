@@ -1,0 +1,37 @@
+/* El backend responde en espanol y varios tests suyos fijan esas cadenas, asi que la
+   traduccion vive aqui, por texto exacto. Lo que no este en el mapa se muestra tal cual. */
+const apiErrorsEn: Record<string, string> = {
+  'Demasiados intentos, intenta más tarde': 'Too many attempts. Please try again later.',
+  'Token requerido': 'A token is required',
+  'Token inválido o expirado': 'Invalid or expired token',
+  'Correo inválido': 'Invalid email',
+  'Correo demasiado largo': 'Email is too long',
+  'La contraseña debe tener al menos 8 caracteres': 'Your password must be at least 8 characters long',
+  'Contraseña demasiado larga': 'Password is too long',
+  'El nombre es requerido': 'First name is required',
+  'El nombre es demasiado largo': 'First name is too long',
+  'El apellido es requerido': 'Last name is required',
+  'El apellido es demasiado largo': 'Last name is too long',
+  'Fecha de nacimiento inválida': 'Invalid date of birth',
+  'Ocupación demasiado larga': 'Occupation is too long',
+  'Género inválido': 'Invalid sex',
+  'La contraseña es requerida': 'Password is required',
+  'Correo o contraseña incorrectos': 'Incorrect email or password',
+  'Correo ingresado está ya registrado en la plataforma': 'That email is already registered',
+  'Error al crear cuenta': "We couldn't create your account",
+  'Error interno': 'Internal error',
+  'No se pudo actualizar información del usuario': "We couldn't update your information",
+  'Usuario no encontrado': 'User not found',
+  'Si el correo está registrado, recibirás instrucciones en tu bandeja de entrada': "If that email is registered, you'll receive instructions in your inbox",
+  'El token es requerido': 'A token is required',
+  'Invalid value': 'A recovery code is required',
+  'Token inválido': 'Invalid token',
+  'Token expirado': 'Expired token',
+  'Error al actualizar contraseña': "We couldn't update your password",
+  'La imagen no debe superar 5MB': 'The image must not exceed 5 MB',
+  'La imagen es requerida': 'An image is required',
+  'Formato no válido. Solo jpg, png o webp': 'Invalid format. Only jpg, png or webp',
+  'Error al subir imagen': "We couldn't upload the image",
+};
+
+export default apiErrorsEn;

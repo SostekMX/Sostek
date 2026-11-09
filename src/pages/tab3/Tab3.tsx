@@ -5,6 +5,7 @@ import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
 import { readCache } from '../../utils/cache';
+import { useI18n } from '../../i18n/LanguageContext';
 
 interface EvaluationItem {
   _id: string;
@@ -23,6 +24,7 @@ function levelOf(name: string): number | undefined {
 }
 
 const Tab3: React.FC = () => {
+  const { t, tx } = useI18n();
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -76,26 +78,24 @@ const Tab3: React.FC = () => {
               escritorio arma la fila de titulo + "Como funciona". */}
           <div className='evalua-intro'>
             <header className='evalua-header'>
-              <h1 className='evalua-header__title'>Eval&uacute;ate</h1>
+              <h1 className='evalua-header__title'>{t('assess.title')}</h1>
               <p className='evalua-header__subtitle'>
-                Autodiagn&oacute;sticos de sostenibilidad para tu proyecto. Elige el nivel que
-                corresponde a la etapa en la que vas: al terminar te decimos cu&aacute;l fue tu
-                eje m&aacute;s d&eacute;bil y con qu&eacute; art&iacute;culos reforzarlo.
+                {t('assess.subtitle')}
               </p>
             </header>
 
             {/* Solo escritorio: en mobile el subtitulo ya lo cuenta en una linea. */}
-            <aside className='evalua-howto' aria-label='Cómo funciona'>
-              <p className='evalua-howto__title'>C&oacute;mo funciona</p>
+            <aside className='evalua-howto' aria-label={t('assess.howTitle')}>
+              <p className='evalua-howto__title'>{t('assess.howTitle')}</p>
               <ol className='evalua-howto__steps'>
                 <li>
-                  <span><strong>Elige tu nivel.</strong> Cada carrera tiene tres, seg&uacute;n el semestre en que vas.</span>
+                  <span><strong>{t('assess.step1Title')}</strong> {t('assess.step1')}</span>
                 </li>
                 <li>
-                  <span><strong>Contesta sobre tu proyecto.</strong> Marca todo lo que ya hayas considerado.</span>
+                  <span><strong>{t('assess.step2Title')}</strong> {t('assess.step2')}</span>
                 </li>
                 <li>
-                  <span><strong>Revisa tu resultado.</strong> Te damos tu puntaje, tu eje m&aacute;s d&eacute;bil y art&iacute;culos para reforzarlo.</span>
+                  <span><strong>{t('assess.step3Title')}</strong> {t('assess.step3')}</span>
                 </li>
               </ol>
             </aside>
@@ -120,8 +120,8 @@ const Tab3: React.FC = () => {
           {!loading && groups.map(group => (
             <section className='evalua-group' key={group.career}>
               <h2 className='evalua-group__title'>
-                {group.career}
-                <span className='evalua-group__count'>{group.items.length} {group.items.length === 1 ? 'nivel' : 'niveles'}</span>
+                {tx(group.career)}
+<span className='evalua-group__count'>{group.items.length} {group.items.length === 1 ? t('assess.level') : t('assess.levels')}</span>
               </h2>
               <div className='evaluation-grid'>
                 {group.items.map(ev => (
@@ -143,8 +143,8 @@ const Tab3: React.FC = () => {
           {!loading && evaluations.length === 0 && (
             <p className='tab3-empty'>
               {failed
-                ? 'No pudimos cargar las evaluaciones. Revisa tu conexión e intenta de nuevo.'
-                : 'Todavía no hay evaluaciones disponibles.'}
+                ? t('assess.fail')
+                : t('assess.empty')}
             </p>
           )}
         </div>

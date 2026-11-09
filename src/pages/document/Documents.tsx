@@ -8,6 +8,7 @@ import { AppMenu } from '../../components/layout/AppBarPopOver';
 import { axisOf } from '../../utils/axis';
 import useFavorites from '../../hooks/useFavorites';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
+import { useI18n } from '../../i18n/LanguageContext';
 import './Documents.css';
 
 interface RouteParams {
@@ -16,7 +17,9 @@ interface RouteParams {
 
 const Documents: React.FC = () => {
   const { id } = useParams<RouteParams>();
-  const [article, setArticle] = useState<Article | null>(null);
+  const { t, localizeArticle } = useI18n();
+  const [rawArticle, setArticle] = useState<Article | null>(null);
+  const article = rawArticle && localizeArticle(rawArticle);
   const [loadingData, setLoadingData] = useState(true);
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const scrollElRef = useRef<HTMLElement | null>(null);
@@ -53,7 +56,7 @@ const Documents: React.FC = () => {
       <IonHeader>
         <IonToolbar className="dark-toolbar">
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tab1" text={isDesktop ? 'Aprende' : ''} />
+            <IonBackButton defaultHref="/tab1" text={isDesktop ? t('nav.learn') : ''} />
           </IonButtons>
           {/* En escritorio el titulo aparece en la barra cuando la portada ya salio de la vista. */}
           {isDesktop && article && (
@@ -99,7 +102,7 @@ const Documents: React.FC = () => {
 
         {!loadingData && !article && (
           <p className="page-message">
-            No pudimos cargar este art&iacute;culo. Puede que ya no est&eacute; publicado o que no haya conexi&oacute;n.
+            {t('doc.fail')}
           </p>
         )}
 
@@ -112,9 +115,9 @@ const Documents: React.FC = () => {
             <div className="doc-content">
               {(article.page_image || article.author_image) && (
                 <p className="doc-image-credit">
-                  Imagen
-                  {article.page_image && ` de ${article.page_image}`}
-                  {article.author_image && ` por ${article.author_image}`}
+                  {t('doc.image')}
+                  {article.page_image && ` ${t('doc.imageFrom', { x: article.page_image })}`}
+                  {article.author_image && ` ${t('doc.imageBy', { x: article.author_image })}`}
                 </p>
               )}
 
@@ -134,7 +137,7 @@ const Documents: React.FC = () => {
               {article.bibliography && (
                 <div className="doc-bibliography">
                   <div className="doc-divider" />
-                  <p className="doc-bibliography__label">Bibliografía</p>
+                  <p className="doc-bibliography__label">{t('doc.biblio')}</p>
                   {article.bibliography.split('\n').filter(l => l.trim()).map((line, i) => (
                     <p key={i} className="doc-bibliography__entry">{line}</p>
                   ))}
@@ -154,6 +157,7 @@ const Documents: React.FC = () => {
    para que la version mobile de arriba no cambie en nada. */
 const ArticleDesktop: React.FC<{ article: Article | null; loading: boolean }> = ({ article, loading }) => {
   const router = useIonRouter();
+  const { t } = useI18n();
 
   if (loading) {
     return (
@@ -176,13 +180,13 @@ const ArticleDesktop: React.FC<{ article: Article | null; loading: boolean }> = 
   if (!article) {
     return (
       <div className="docd-error">
-        <p className="docd-error__title">No pudimos cargar este art&iacute;culo</p>
+        <p className="docd-error__title">{t('doc.failTitle')}</p>
         <p className="docd-error__text">
-          Puede que ya no est&eacute; publicado o que no haya conexi&oacute;n. Revisa tu conexi&oacute;n y vuelve a intentarlo.
+          {t('doc.failText')}
         </p>
         <button className="docd-button" onClick={() => router.push('/tab1', 'back')}>
           <IonIcon icon={arrowBackOutline} aria-hidden="true" />
-          Volver a Aprende
+          {t('doc.backToLearn')}
         </button>
       </div>
     );
@@ -212,7 +216,7 @@ const ArticleDesktop: React.FC<{ article: Article | null; loading: boolean }> = 
 
           {bibliography.length > 0 && (
             <section className="docd-biblio" aria-labelledby="docd-biblio-title">
-              <h2 id="docd-biblio-title" className="docd-biblio__title">Bibliograf&iacute;a</h2>
+              <h2 id="docd-biblio-title" className="docd-biblio__title">{t('doc.biblio')}</h2>
               <ol className="docd-biblio__list">
                 {bibliography.map((line, i) => <li key={i}>{line}</li>)}
               </ol>
@@ -230,29 +234,30 @@ const ArticleDesktop: React.FC<{ article: Article | null; loading: boolean }> = 
    en escritorio. */
 const ArticleAside: React.FC<{ article: Article; minutes: number }> = ({ article, minutes }) => {
   const router = useIonRouter();
+  const { t } = useI18n();
   const { isLoggedIn, isFavorite, addFavorite, removeFavorite } = useFavorites();
   const saved = isFavorite(article._id);
   const credit = [
-    article.page_image && `de ${article.page_image}`,
-    article.author_image && `por ${article.author_image}`,
+    article.page_image && t('doc.imageFrom', { x: article.page_image }),
+    article.author_image && t('doc.imageBy', { x: article.author_image }),
   ].filter(Boolean).join(' ');
 
   return (
-    <aside className="docd-aside" aria-label="Sobre este artículo">
+    <aside className="docd-aside" aria-label={t('doc.about')}>
       <dl className="docd-facts">
         {article.author && (
           <div className="docd-fact">
-            <dt>Escrito por</dt>
+            <dt>{t('doc.writtenBy')}</dt>
             <dd className="docd-fact__author">{article.author}</dd>
           </div>
         )}
         <div className="docd-fact">
-          <dt>Lectura</dt>
-          <dd>{minutes} min</dd>
+          <dt>{t('doc.reading')}</dt>
+          <dd>{t('doc.minutes', { n: minutes })}</dd>
         </div>
         {credit && (
           <div className="docd-fact docd-fact--credit">
-            <dt>Imagen</dt>
+            <dt>{t('doc.image')}</dt>
             <dd>{credit}</dd>
           </div>
         )}
@@ -266,12 +271,12 @@ const ArticleAside: React.FC<{ article: Article; minutes: number }> = ({ article
             onClick={() => (saved ? removeFavorite(article._id) : addFavorite(article._id, 'article'))}
           >
             <IonIcon icon={saved ? heart : heartOutline} aria-hidden="true" />
-            {saved ? 'Guardado en favoritos' : 'Guardar en favoritos'}
+            {saved ? t('doc.saved') : t('doc.save')}
           </button>
         )}
         <button className="docd-button docd-button--quiet" onClick={() => router.push('/tab1', 'back')}>
           <IonIcon icon={arrowBackOutline} aria-hidden="true" />
-          Volver a Aprende
+          {t('doc.backToLearn')}
         </button>
       </div>
     </aside>

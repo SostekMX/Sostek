@@ -7,9 +7,10 @@ export type Axis = 'ambiental' | 'economico' | 'social';
 
 export function axisOf(category: string | undefined | null): Axis | null {
   const c = normalize(category ?? '');
-  if (c.includes('ambient') || c.includes('ecosistema')) return 'ambiental';
+  // Con el contenido en ingles la categoria llega traducida: los dos idiomas caen en el mismo eje.
+  if (c.includes('ambient') || c.includes('ecosistema') || c.includes('environment') || c.includes('ecosystem')) return 'ambiental';
   if (c.includes('econom')) return 'economico';
-  if (c.includes('social') || c.includes('sociedad')) return 'social';
+  if (c.includes('social') || c.includes('sociedad') || c.includes('society')) return 'social';
   return null;
 }
 

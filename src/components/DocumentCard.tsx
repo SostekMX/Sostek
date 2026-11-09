@@ -3,6 +3,7 @@ import './DocumentCard.css';
 import { IonCard, IonIcon, IonImg } from '@ionic/react';
 import { heart, heartOutline } from 'ionicons/icons';
 import { axisOf } from '../utils/axis';
+import { useI18n } from '../i18n/LanguageContext';
 
 interface DocumentProps {
     name: string;
@@ -18,6 +19,7 @@ interface DocumentProps {
 }
 
 const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type, category, meta, isFavorite, isLoggedIn, onToggleFavorite }) => {
+    const { t, tx } = useI18n();
     const [imgLoading, setImgLoading] = useState(true);
     const [imgError, setImgError] = useState(false);
     // El color del eje solo se pinta en escritorio (DocumentCard.css, >= 768px).
@@ -41,7 +43,7 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
                 {isLoggedIn && (
                     <button
                         className={`document-card__fav-btn ${isFavorite ? 'document-card__fav-btn--active' : ''}`}
-                        aria-label={isFavorite ? 'Quitar de favoritos' : 'Guardar en favoritos'}
+                        aria-label={isFavorite ? t('card.removeFav') : t('card.addFav')}
                         aria-pressed={!!isFavorite}
                         onClick={(e) => {
                             e.preventDefault();
@@ -55,7 +57,7 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
             </div>
             <div className='document-card__content'>
                 <span className='document-card__type-badge'>
-                    {category || (type === 'presentation' ? 'Presentación' : 'Artículo')}
+                    {tx(category) || (type === 'presentation' ? t('card.presentation') : t('card.article'))}
                 </span>
                 <p className='document-card__title'>{name}</p>
                 {description && (

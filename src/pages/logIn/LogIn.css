@@ -72,6 +72,7 @@
 }
 
 .login-brand__headline {
+  white-space: pre-line;
     color: #ffffff;
     font-size: 2.6rem;
     font-weight: 800;

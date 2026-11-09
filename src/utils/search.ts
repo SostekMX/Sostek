@@ -13,6 +13,7 @@ export const CATEGORY_RECOMMENDATIONS: Record<string, string[]> = {
   [normalize('Economía y sociedad')]: [normalize('economico'), normalize('social')],
   [normalize('Sociedad y Economía')]: [normalize('economico'), normalize('social')],
   [normalize('Económico y Social')]: [normalize('economico'), normalize('social')],
+  [normalize('Economic and Social')]: [normalize('economico'), normalize('social')],
 };
 
 /* Se busca contra categoria, titulo y tags: el seed de articulos llena `tags` (desde la

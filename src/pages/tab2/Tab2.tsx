@@ -4,6 +4,7 @@ import { downloadOutline } from 'ionicons/icons';
 import { getTutorial } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import { readCache } from '../../utils/cache';
+import { TKey, useI18n } from '../../i18n/LanguageContext';
 import './Tab2.css';
 
 interface GameCard {
@@ -25,10 +26,10 @@ const formatResource = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 
 type ResourceKey = keyof GameCard['resources'];
 
-const AXES: { key: ResourceKey; label: string }[] = [
-  { key: 'ambiental', label: 'Ambiental' },
-  { key: 'economico', label: 'Económico' },
-  { key: 'social', label: 'Social' },
+const AXES: { key: ResourceKey; labelKey: TKey }[] = [
+  { key: 'ambiental', labelKey: 'axis.environmental' },
+  { key: 'economico', labelKey: 'axis.economic' },
+  { key: 'social', labelKey: 'axis.social' },
 ];
 
 /* Casi todas las cartas mueven entre -3 y +3; con la escala en el maximo real (10) esas
@@ -40,6 +41,7 @@ const dominantAxis = (r: GameCard['resources']): ResourceKey =>
   AXES.reduce((best, { key }) => (r[key] > r[best] ? key : best), 'ambiental' as ResourceKey);
 
 const Tab2: React.FC = () => {
+  const { t, tx } = useI18n();
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
   const [loading, setLoading] = useState(true);
   const [cardFilter, setCardFilter] = useState<CardFilter>('scenario');
@@ -75,9 +77,9 @@ const Tab2: React.FC = () => {
 
           {/* Hero */}
           <div className='juega-hero'>
-            <p className='juega-hero__label'>VIDEOJUEGO EDUCATIVO</p>
+            <p className='juega-hero__label'>{t('play.label')}</p>
             <h1 className='juega-hero__title'>Survivor</h1>
-            <p className='juega-hero__subtitle'>Aprende sobre sostenibilidad mientras juegas</p>
+            <p className='juega-hero__subtitle'>{t('play.subtitle')}</p>
           </div>
 
           {/* Bloque superior. En mobile es una columna en el orden del DOM;
@@ -106,8 +108,8 @@ const Tab2: React.FC = () => {
             >
               <div className='juega-download-card__icon'><IonIcon icon={downloadOutline} /></div>
               <div>
-                <p className='juega-download-card__title'>Versión física</p>
-                <p className='juega-download-card__desc'>Imprime las cartas y juega con tus amigos</p>
+                <p className='juega-download-card__title'>{t('play.printTitle')}</p>
+                <p className='juega-download-card__desc'>{t('play.printDesc')}</p>
               </div>
             </a>
 
@@ -115,51 +117,51 @@ const Tab2: React.FC = () => {
             <div className='juega-wip'>
               <div className='juega-wip__dot' />
               <div>
-                <p className='juega-wip__text'>La versión online está en construcción</p>
-                <p className='juega-wip__text'>Próximamente disponible</p>
+                <p className='juega-wip__text'>{t('play.wip1')}</p>
+                <p className='juega-wip__text'>{t('play.wip2')}</p>
               </div>
             </div>
 
             <div className='juega-top__howto'>
               {/* Instructivo */}
               <div className='juega-section-header'>
-                <p className='juega-section-label'>INSTRUCTIVO</p>
-                <h2 className='juega-section-title'>¿Cómo se juega?</h2>
+                <p className='juega-section-label'>{t('play.howtoLabel')}</p>
+                <h2 className='juega-section-title'>{t('play.howtoTitle')}</h2>
               </div>
 
               {/* Stats */}
               <div className='juega-stats'>
                 <div className='juega-stat'>
                   <span className='juega-stat__value'>4–6</span>
-                  <span className='juega-stat__label'>jugadores</span>
+                  <span className='juega-stat__label'>{t('play.players')}</span>
                 </div>
                 <div className='juega-stat'>
                   <span className='juega-stat__value'>4</span>
-                  <span className='juega-stat__label'>tipos de tarjeta</span>
+                  <span className='juega-stat__label'>{t('play.cardTypes')}</span>
                 </div>
                 <div className='juega-stat'>
                   <span className='juega-stat__value'>20</span>
-                  <span className='juega-stat__label'>fichas por recurso</span>
+                  <span className='juega-stat__label'>{t('play.tokens')}</span>
                 </div>
               </div>
 
               {/* Tipos de tarjeta */}
               <div className='juega-card-types'>
                 <div className='juega-card-type juega-card-type--scenario'>
-                  <span className='juega-card-type__name'>Escenario</span>
-                  <span className='juega-card-type__desc'>Problema al centro de la mesa</span>
+                  <span className='juega-card-type__name'>{t('play.scenario')}</span>
+                  <span className='juega-card-type__desc'>{t('play.scenarioDesc')}</span>
                 </div>
                 <div className='juega-card-type juega-card-type--ambiental'>
-                  <span className='juega-card-type__name'>🌿 Ambiental</span>
-                  <span className='juega-card-type__desc'>Solución de impacto ambiental</span>
+                  <span className='juega-card-type__name'>🌿 {t('axis.environmental')}</span>
+                  <span className='juega-card-type__desc'>{t('play.envDesc')}</span>
                 </div>
                 <div className='juega-card-type juega-card-type--economico'>
-                  <span className='juega-card-type__name'>💰 Económico</span>
-                  <span className='juega-card-type__desc'>Solución de impacto económico</span>
+                  <span className='juega-card-type__name'>💰 {t('axis.economic')}</span>
+                  <span className='juega-card-type__desc'>{t('play.econDesc')}</span>
                 </div>
                 <div className='juega-card-type juega-card-type--social'>
-                  <span className='juega-card-type__name'>👥 Social</span>
-                  <span className='juega-card-type__desc'>Solución de impacto social</span>
+                  <span className='juega-card-type__name'>👥 {t('axis.social')}</span>
+                  <span className='juega-card-type__desc'>{t('play.socDesc')}</span>
                 </div>
               </div>
             </div>
@@ -167,7 +169,7 @@ const Tab2: React.FC = () => {
             {/* Reglas. El card se renderiza siempre para conservar su
                 celda en el grid; lo que cambia es el contenido. */}
             <div className='juega-rules'>
-              <p className='juega-section-label'>REGLAS</p>
+              <p className='juega-section-label'>{t('play.rulesLabel')}</p>
               {loading ? (
                 <div className='juega-rules__skeleton'>
                   {Array.from({ length: 7 }).map((_, i) => (
@@ -177,15 +179,15 @@ const Tab2: React.FC = () => {
               ) : tutorial ? (
                 <>
                   <p className={`juega-rules__text ${rulesOpen ? '' : 'juega-rules__text--clamped'}`}>
-                    {tutorial.rules}
+                    {tx(tutorial.rules)}
                   </p>
                   <button className='juega-rules__toggle' onClick={() => setRulesOpen(o => !o)}>
-                    {rulesOpen ? 'Ver menos' : 'Ver todas las reglas'}
+                    {rulesOpen ? t('play.rulesLess') : t('play.rulesAll')}
                   </button>
                 </>
               ) : (
                 <p className='juega-empty'>
-                  No pudimos cargar el instructivo. Revisa tu conexión e intenta de nuevo.
+                  {t('play.rulesFail')}
                 </p>
               )}
             </div>
@@ -196,8 +198,8 @@ const Tab2: React.FC = () => {
           {(loading || tutorial) && (
             <>
               <div className='juega-section-header'>
-                <p className='juega-section-label'>TARJETAS DEL JUEGO</p>
-                <h2 className='juega-section-title'>Explora las cartas</h2>
+                <p className='juega-section-label'>{t('play.cardsLabel')}</p>
+                <h2 className='juega-section-title'>{t('play.cardsTitle')}</h2>
               </div>
             </>
           )}
@@ -230,13 +232,13 @@ const Tab2: React.FC = () => {
                   className={`juega-filter-pill ${cardFilter === 'scenario' ? 'juega-filter-pill--active' : ''}`}
                   onClick={() => setCardFilter('scenario')}
                 >
-                  Escenario ({tutorial.cards.filter(c => c.type === 'scenario').length})
+                  {t('play.scenario')} ({tutorial.cards.filter(c => c.type === 'scenario').length})
                 </button>
                 <button
                   className={`juega-filter-pill ${cardFilter === 'solution' ? 'juega-filter-pill--active' : ''}`}
                   onClick={() => setCardFilter('solution')}
                 >
-                  Solución ({tutorial.cards.filter(c => c.type === 'solution').length})
+                  {t('play.solution')} ({tutorial.cards.filter(c => c.type === 'solution').length})
                 </button>
               </div>
 
@@ -247,9 +249,9 @@ const Tab2: React.FC = () => {
                     className={`juega-game-card juega-game-card--${card.type}${card.type === 'solution' ? ` axis-${dominantAxis(card.resources)}` : ''}`}
                   >
                     {/* Solo escritorio: el tipo de carta como en la carta impresa. */}
-                    <p className='juega-game-card__kind'>{card.type === 'scenario' ? 'Escenario' : 'Solución'}</p>
-                    <p className='juega-game-card__name'>{card.name}</p>
-                    <p className='juega-game-card__desc'>{card.description}</p>
+                    <p className='juega-game-card__kind'>{card.type === 'scenario' ? t('play.scenario') : t('play.solution')}</p>
+                    <p className='juega-game-card__name'>{tx(card.name)}</p>
+                    <p className='juega-game-card__desc'>{tx(card.description)}</p>
                     {card.type === 'solution' && (
                       <div className='juega-game-card__resources'>
                         <span>🌿 {formatResource(card.resources.ambiental)}</span>
@@ -262,12 +264,12 @@ const Tab2: React.FC = () => {
                         de su eje. */}
                     {card.type === 'solution' && (
                       <dl className='juega-game-card__meter'>
-                        {AXES.map(({ key, label }) => {
+                        {AXES.map(({ key, labelKey }) => {
                           const value = card.resources[key];
                           const width = Math.min(Math.abs(value), METER_SCALE) / METER_SCALE * 50;
                           return (
                             <div key={key} className={`juega-meter__row axis-${key}`}>
-                              <dt className='juega-meter__label'>{label}</dt>
+                              <dt className='juega-meter__label'>{t(labelKey)}</dt>
                               <dd className='juega-meter__track'>
                                 <span
                                   className={`juega-meter__bar${value < 0 ? ' juega-meter__bar--neg' : ''}`}

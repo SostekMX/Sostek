@@ -9,6 +9,7 @@ import useFavorites from '../hooks/useFavorites';
 import { normalize, matchesSearch } from '../utils/search';
 import { axisOf } from '../utils/axis';
 import useMediaQuery, { DESKTOP_QUERY } from '../hooks/useMediaQuery';
+import { useI18n } from '../i18n/LanguageContext';
 
 export interface Article {
   _id: string;
@@ -38,7 +39,7 @@ interface Props {
   presentations: Presentation[] | null | undefined;
 }
 
-const ALL = 'Todos';
+const ALL = '__all__';
 
 /* Cuantos articulos ocupa la portada de escritorio: uno grande y cuatro al lado. */
 const FEATURE_COUNT = 5;
@@ -51,6 +52,7 @@ const axisClass = (category?: string) => {
 const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations }) => {
   const [topic, setTopic] = useState(ALL);
   const { search } = useContext(AppContext);
+  const { t, tx, localizeArticle } = useI18n();
   const { isLoggedIn, isFavorite, addFavorite, removeFavorite } = useFavorites();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const presRowRef = useRef<HTMLDivElement>(null);
@@ -59,8 +61,8 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
   const searchNorm = normalize(search);
 
   const matchingArticles = useMemo(
-    () => (articlesData ?? []).filter(article => matchesSearch(article, search)),
-    [articlesData, search]
+    () => (articlesData ?? []).filter(article => matchesSearch(article, search) || matchesSearch(localizeArticle(article), search)),
+    [articlesData, search, localizeArticle]
   );
 
   /* Los temas salen de los datos, ordenados por cuántos artículos tienen: si mañana se
@@ -118,29 +120,29 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
   return (
     <div className='aprende-page'>
       <header className='aprende-header'>
-        <h1 className='aprende-header__title'>Aprende</h1>
+        <h1 className='aprende-header__title'>{t('learn.title')}</h1>
         <p className='aprende-header__subtitle'>
-          Artículos y presentaciones sobre sostenibilidad, escritos por la comunidad SOSTEK.
-          {' '}{isDesktop ? 'Filtra por tema o usa el buscador de arriba.' : 'Filtra por tema o busca con la lupa.'}
+          {t('learn.subtitle')}
+          {' '}{isDesktop ? t('learn.filterDesktop') : t('learn.filterMobile')}
         </p>
       </header>
 
       {showFeature && lead && (
-        <section className='aprende-feature' aria-label='Lo más reciente'>
+        <section className='aprende-feature' aria-label={t('learn.latest')}>
           <div className='aprende-lead-wrap'>
             <Link to={`/Documents/${lead._id}`} className={`aprende-lead ${axisClass(lead.category)}`}>
               <img src={lead.image} alt='' className='aprende-lead__img' />
               <div className='aprende-lead__body'>
-                {lead.category && <span className='aprende-axis-chip'>{lead.category}</span>}
-                <h2 className='aprende-lead__title'>{lead.title}</h2>
-                {lead.subtitle && <p className='aprende-lead__subtitle'>{lead.subtitle}</p>}
-                {lead.author && <p className='aprende-lead__author'>Por {lead.author}</p>}
+                {lead.category && <span className='aprende-axis-chip'>{tx(lead.category)}</span>}
+                <h2 className='aprende-lead__title'>{localizeArticle(lead).title}</h2>
+                {lead.subtitle && <p className='aprende-lead__subtitle'>{localizeArticle(lead).subtitle}</p>}
+                {lead.author && <p className='aprende-lead__author'>{t('learn.by', { author: lead.author })}</p>}
               </div>
             </Link>
             {isLoggedIn && (
               <button
                 className={`document-card__fav-btn aprende-lead__fav ${isFavorite(lead._id) ? 'document-card__fav-btn--active' : ''}`}
-                aria-label={isFavorite(lead._id) ? 'Quitar de favoritos' : 'Guardar en favoritos'}
+                aria-label={isFavorite(lead._id) ? t('card.removeFav') : t('card.addFav')}
                 aria-pressed={isFavorite(lead._id)}
                 onClick={() => isFavorite(lead._id) ? removeFavorite(lead._id) : addFavorite(lead._id, 'article')}
               >
@@ -150,13 +152,13 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
           </div>
 
           <div className='aprende-side'>
-            <h2 className='aprende-side__title'>También reciente</h2>
+            <h2 className='aprende-side__title'>{t('learn.alsoRecent')}</h2>
             {sideArticles.map(article => (
               <Link key={article._id} to={`/Documents/${article._id}`} className={`aprende-side__item ${axisClass(article.category)}`}>
                 <img src={article.image} alt='' className='aprende-side__img' loading='lazy' />
                 <span className='aprende-side__text'>
-                  {article.category && <span className='aprende-side__axis'>{article.category}</span>}
-                  <span className='aprende-side__name'>{article.title}</span>
+                  {article.category && <span className='aprende-side__axis'>{tx(article.category)}</span>}
+                  <span className='aprende-side__name'>{localizeArticle(article).title}</span>
                   {article.author && <span className='aprende-side__author'>{article.author}</span>}
                 </span>
               </Link>
@@ -168,13 +170,13 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
       {!loadingData && visiblePresentations.length > 0 && (
         <section className='aprende-section'>
           <div className='aprende-section__head'>
-            <h2 className='aprende-section__title'>Presentaciones</h2>
+            <h2 className='aprende-section__title'>{t('learn.presentations')}</h2>
             {isDesktop && presOverflow && (
               <div className='aprende-row-nav'>
-                <button className='aprende-row-nav__btn' aria-label='Presentaciones anteriores' onClick={() => scrollPres(-1)}>
+                <button className='aprende-row-nav__btn' aria-label={t('learn.prevPres')} onClick={() => scrollPres(-1)}>
                   <IonIcon icon={chevronBack} />
                 </button>
-                <button className='aprende-row-nav__btn' aria-label='Más presentaciones' onClick={() => scrollPres(1)}>
+                <button className='aprende-row-nav__btn' aria-label={t('learn.morePres')} onClick={() => scrollPres(1)}>
                   <IonIcon icon={chevronForward} />
                 </button>
               </div>
@@ -189,7 +191,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
                 img_url={pres.cover || pres.slides?.[0] || ''}
                 id={pres._id}
                 type="presentation"
-                meta={`${pres.slides?.length ?? 0} diapositivas`}
+                meta={t(pres.slides?.length === 1 ? 'learn.slide' : 'learn.slides', { n: pres.slides?.length ?? 0 })}
                 isLoggedIn={isLoggedIn}
                 isFavorite={isFavorite(pres._id)}
                 onToggleFavorite={() =>
@@ -202,7 +204,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
       )}
 
       <section className='aprende-section'>
-        <h2 className='aprende-section__title'>{showFeature ? 'Más artículos' : 'Artículos'}</h2>
+        <h2 className='aprende-section__title'>{showFeature ? t('learn.moreArticles') : t('learn.articles')}</h2>
 
         {!loadingData && topics.length > 1 && (
           <div className='filter-pills aprende-pills'>
@@ -212,7 +214,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
                 className={`filter-pill ${activeTopic === name ? 'filter-pill--active' : ''} ${axisClass(name)}`}
                 onClick={() => setTopic(name)}
               >
-                {name} <span className='aprende-pill__count'>{count}</span>
+                {name === ALL ? t('learn.all') : tx(name)} <span className='aprende-pill__count'>{count}</span>
               </button>
             ))}
           </div>
@@ -223,8 +225,8 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
           {!loadingData && gridArticles.map(article => (
             <DocumentCard
               key={article._id}
-              name={article.title}
-              description={article.subtitle || article.body}
+              name={localizeArticle(article).title}
+              description={localizeArticle(article).subtitle || localizeArticle(article).body}
               img_url={article.image}
               id={article._id}
               type={article.type}
@@ -241,7 +243,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
 
         {!loadingData && visibleArticles.length === 0 && (
           <p className='aprende-empty'>
-            {search ? `No hay artículos que coincidan con “${search}”.` : 'Todavía no hay artículos publicados.'}
+            {search ? t('learn.noMatch', { q: search }) : t('learn.noArticles')}
           </p>
         )}
       </section>

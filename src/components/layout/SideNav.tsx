@@ -5,6 +5,7 @@ import {
   personCircleOutline, logOutOutline, logInOutline,
 } from 'ionicons/icons';
 import { clearSession, isLoggedIn, readAvatar, readEmail } from '../../utils/session';
+import { TKey, useI18n } from '../../i18n/LanguageContext';
 import './SideNav.css';
 
 interface Props {
@@ -12,17 +13,18 @@ interface Props {
   pathname: string;
 }
 
-const SECTIONS = [
-  { tab: 'tab1', href: '/tab1', label: 'Aprende', hint: 'Artículos y presentaciones', icon: bookOutline },
-  { tab: 'tab2', href: '/tab2', label: 'Juega', hint: 'Survivor, el juego de cartas', icon: gameControllerOutline },
-  { tab: 'tab3', href: '/tab3', label: 'Evalúate', hint: 'Diagnostica tu proyecto', icon: clipboardOutline },
-] as const;
+const SECTIONS: { tab: string; href: string; label: TKey; hint: TKey; icon: string }[] = [
+  { tab: 'tab1', href: '/tab1', label: 'nav.learn', hint: 'nav.learnHint', icon: bookOutline },
+  { tab: 'tab2', href: '/tab2', label: 'nav.play', hint: 'nav.playHint', icon: gameControllerOutline },
+  { tab: 'tab3', href: '/tab3', label: 'nav.assess', hint: 'nav.assessHint', icon: clipboardOutline },
+];
 
 /* Navegacion de escritorio: los mismos destinos que el tab bar mas las opciones del popover
    del header, siempre a la vista. Solo se pinta dentro del IonSplitPane (>= 768px); en
    mobile el menu queda cerrado y sin gesto para abrirlo. */
 const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
   const router = useIonRouter();
+  const { t } = useI18n();
   const isUserLogged = isLoggedIn();
   const email = readEmail();
   const avatar = readAvatar();
@@ -49,7 +51,7 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
   return (
     <IonMenu contentId='main' swipeGesture={false} className='sidenav'>
       <IonContent className='sidenav__content'>
-        <nav className='sidenav__inner' aria-label='Principal'>
+        <nav className='sidenav__inner' aria-label={t('nav.main')}>
           <a href='/MainMenu' className='sidenav__logo' onClick={e => { e.preventDefault(); router.push('/MainMenu', 'none'); }}>
             <img src='/assets/sostek-logo.png' alt='SOSTEK' />
           </a>
@@ -61,12 +63,12 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
           </div>
 
           <div className='sidenav__group'>
-            {SECTIONS.map(s => link(s.href, s.label, s.icon, activeTab === s.tab, '', s.hint))}
+            {SECTIONS.map(s => link(s.href, t(s.label), s.icon, activeTab === s.tab, '', t(s.hint)))}
           </div>
 
           {isUserLogged && (
             <div className='sidenav__group sidenav__group--divided'>
-              {link('/Favorites', 'Favoritos', heartOutline, pathname === '/Favorites')}
+              {link('/Favorites', t('nav.favorites'), heartOutline, pathname === '/Favorites')}
             </div>
           )}
 
@@ -77,28 +79,28 @@ const SideNav: React.FC<Props> = ({ activeTab, pathname }) => {
                   href='/Profile'
                   className={`sidenav__user ${pathname === '/Profile' ? 'sidenav__link--active' : ''}`}
                   aria-current={pathname === '/Profile' ? 'page' : undefined}
-                  title='Perfil'
+                  title={t('nav.profile')}
                   onClick={e => { e.preventDefault(); router.push('/Profile', 'none'); }}
                 >
                   {avatar.url
                     ? <img src={avatar.url} alt='' className='sidenav__avatar' style={{ objectPosition: `${avatar.pos.x}% ${avatar.pos.y}%` }} />
                     : <IonIcon icon={personCircleOutline} className='sidenav__avatar sidenav__avatar--icon' aria-hidden='true' />}
                   <span className='sidenav__user-text'>
-                    <span className='sidenav__user-title'>Perfil</span>
+                    <span className='sidenav__user-title'>{t('nav.profile')}</span>
                     {email && <span className='sidenav__user-email'>{email}</span>}
                   </span>
                 </a>
                 <button
                   className='sidenav__link sidenav__link--quiet'
-                  title='Cerrar sesión'
+                  title={t('nav.logout')}
                   onClick={() => { clearSession(); router.push('/', 'root', 'replace'); }}
                 >
                   <IonIcon icon={logOutOutline} aria-hidden='true' />
-                  <span className='sidenav__label'>Cerrar sesión</span>
+                  <span className='sidenav__label'>{t('nav.logout')}</span>
                 </button>
               </>
             ) : (
-              link('/', 'Iniciar sesión', logInOutline, false, 'sidenav__link--cta')
+              link('/', t('nav.login'), logInOutline, false, 'sidenav__link--cta')
             )}
           </div>
         </nav>
