@@ -53,6 +53,10 @@
     color: var(--ivory);
   }
 
+  .evalua-steps + .load-error {
+    margin-top: var(--s-10);
+  }
+
   .evalua-group {
     margin-top: var(--s-16);
   }

@@ -232,7 +232,8 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
           </section>
         )}
 
-        <section className='section aprende-section'>
+        {/* Si fallo la carga y no hay articulos, el aviso de arriba ya lo dice todo. */}
+        <section className='section aprende-section' hidden={!loadingData && !!errorNotice && visibleArticles.length === 0}>
           <div className='aprende-section-head aprende-section-head--wrap'>
             <h2 className='section-title'>{showCover ? t('learn.moreArticles') : t('learn.articles')}</h2>
 
