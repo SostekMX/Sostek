@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { getArticles, getPresentations } from '../../api/content';
 import ArticleCarrousel, { Article, Presentation } from '../../components/ArticleCarrousel';
@@ -38,8 +38,7 @@ const Tab1: React.FC = () => {
   return (
     <IonPage>
       <AppBarPopOver />
-      <IonContent fullscreen class='app-dark-bg'>
-        <IonHeader collapse="condense" />
+      <IonContent fullscreen>
         <ArticleCarrousel
           articlesData={articles}
           loadingData={loadingData}

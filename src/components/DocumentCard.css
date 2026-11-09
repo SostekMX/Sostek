@@ -1,251 +1,246 @@
-.document-card {
-    background: rgba(255, 255, 255, 0.07) !important;
-    border-radius: 16px !important;
-    box-shadow: none !important;
-    margin: 0 0 2px 0 !important;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.11) !important;
-    transition: background 0.18s, border-color 0.18s, transform 160ms ease-out !important;
+/* Sin caja: la foto y el texto sobre el verde. En movil, fila con linea divisoria; desde
+   768, foto arriba y texto abajo. */
+.doc-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--s-4);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--line);
 }
 
-.document-card:active {
-    background: rgba(255, 255, 255, 0.12) !important;
-    transform: scale(0.98);
+.doc-card__media {
+  position: relative;
+  min-height: 5.75rem;
+  border-radius: var(--r-sm);
+  background: var(--raise);
+  overflow: hidden;
 }
 
-/* El gate evita que en tactil el hover se quede pegado despues del tap */
-@media (hover: hover) and (pointer: fine) {
-    .document-card:hover {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border-color: rgba(128, 178, 89, 0.45) !important;
-    }
+.doc-card__placeholder {
+  position: absolute;
+  inset: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .document-card:active {
-        transform: none;
-    }
+.doc-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: brightness(0.86) saturate(0.94);
+  transition: opacity var(--dur) ease-out, transform 700ms var(--ease), filter var(--dur) ease-out;
 }
 
-/* Image wrapper keeps a fixed height so the spinner is centered */
-.document-card__image-wrapper {
-    position: relative;
-    height: 160px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.04);
+.doc-card__img--ready {
+  opacity: 1;
 }
 
-.document-card__skeleton {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.04) 0%,
-        rgba(255, 255, 255, 0.10) 50%,
-        rgba(255, 255, 255, 0.04) 100%
-    );
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+.doc-card__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s-1);
+  min-width: 0;
 }
 
-@keyframes skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+.doc-card__title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--t-md);
+  font-weight: 500;
+  line-height: 1.28;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
-.document-card__img-fallback {
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.04);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.doc-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
 }
 
-.document-card__img-fallback::after {
-    content: '';
-    width: 40px;
-    height: 40px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='rgba(255,255,255,0.2)' d='M447.1 32h-384C28.64 32-.0091 60.65 0 96v320c-.0091 35.35 28.64 64 63.1 64h384c35.35 0 64-28.65 64-64V96C511.1 60.65 483.3 32 447.1 32zM111.1 96c26.51 0 48 21.49 48 48S138.5 192 111.1 192s-48-21.49-48-48S85.48 96 111.1 96zM446.1 407.6C443.3 412.8 437.9 416 432 416H82.01c-6.021 0-11.53-3.379-14.26-8.75c-2.73-5.367-2.215-11.81 1.334-16.68l70-96C142.1 290.4 146.9 288 152 288s9.916 2.441 12.93 6.574l32.46 44.51l93.3-139.1C293.7 194.7 298.7 192 304 192s10.35 2.672 13.31 7.125l128 192C448.6 396 448.9 402.3 446.1 407.6z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    opacity: 0.4;
+.doc-card__link:focus-visible {
+  outline: none;
 }
 
-.document-card-image {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    display: block;
-    transition: opacity 200ms ease-out;
+.doc-card__link:focus-visible::after {
+  outline: 2px solid var(--lichen);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
 }
 
-/* Content */
-.document-card__content {
-    padding: 12px 14px 16px;
+.doc-card__desc {
+  display: none;
 }
 
-.document-card__type-badge {
-    display: inline-block;
-    font-size: 0.62rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.9px;
-    padding: 3px 9px;
-    border-radius: 100px;
-    margin-bottom: 8px;
-    background: rgba(128, 178, 89, 0.18);
-    color: #80b259;
+.doc-card__meta {
+  overflow: hidden;
+  font-size: var(--t-xs);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ivory-3);
 }
 
-.document-card__title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0 0 6px;
-    line-height: 1.35;
-    /* Dos renglones fijos: en el grid las tarjetas de una fila quedan alineadas aunque
-       el titulo sea de una linea. No se usa margin-top: auto porque el contenido de
-       ion-card vive detras de su shadow root y el flex no llega. */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 2.7em;
+.doc-card__fav.lg-button {
+  position: absolute;
+  top: calc(var(--s-3) + 0.375rem);
+  left: 0.375rem;
+  z-index: 1;
+  width: 2.25rem;
+  height: 2.25rem;
+  --lg-blur: 8px;
 }
 
-.document-card__description {
-    font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.5);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.5;
-    min-height: 3em;
-    margin: 0;
+.doc-card__fav.lg-button > ion-icon {
+  font-size: 1.0625rem;
 }
 
-.document-card__meta {
-    margin: 10px 0 0;
-    font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.4);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.doc-card__fav.lg-button[aria-pressed='true'] {
+  color: var(--lichen);
 }
 
-.document-card__fav-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 2;
-    background: rgba(0, 0, 0, 0.45);
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 18px;
-    transition: background 0.15s, color 0.15s;
+/* Fila horizontal: siempre foto arriba */
+.aprende-grid--row .doc-card {
+  flex: 0 0 84vw;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: var(--s-3);
+  padding: 0;
+  border: 0;
+  scroll-snap-align: start;
 }
 
-.document-card__fav-btn--active {
-    color: #e05260;
-    background: rgba(224, 82, 96, 0.18);
+.aprende-grid--row .doc-card__media {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-md);
 }
 
-.document-card__fav-btn:focus-visible {
-    outline: 2px solid #80b259;
-    outline-offset: 2px;
+.doc-card-skeleton {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--s-4);
+  min-height: 5.75rem;
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--line);
 }
 
-/* === ESCRITORIO === La tarjeta toma el color de su eje (--axis, ver utils/axis.ts) en la
-   etiqueta y en el borde al pasar el mouse. Sin eje (presentaciones) queda el verde. */
+.doc-card-skeleton__image {
+  border-radius: var(--r-sm);
+}
+
+.doc-card-skeleton__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s-2);
+}
+
+.doc-card-skeleton__badge,
+.doc-card-skeleton__title,
+.doc-card-skeleton__desc {
+  border-radius: 6px;
+}
+
+.doc-card-skeleton__badge { width: 40%; height: 0.625rem; }
+.doc-card-skeleton__title { width: 92%; height: 1.125rem; }
+.doc-card-skeleton__desc { width: 60%; height: 0.75rem; }
+
 @media (min-width: 768px) {
-    .document-card {
-        background: var(--d-surface) !important;
-        border-color: var(--d-line) !important;
-        border-radius: 18px !important;
-        height: 100%;
-        --background: transparent;
-    }
+  .doc-card,
+  .doc-card-skeleton {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    gap: var(--s-4);
+    padding: 0;
+    border: 0;
+  }
 
-    /* El contenido vive en el shadow root de ion-card: sin esto, en una fila con tarjetas
-       mas altas su fondo no llega hasta abajo. */
-    .document-card::part(native) {
-        height: 100%;
-    }
+  .doc-card__media,
+  .doc-card-skeleton__image {
+    aspect-ratio: 3 / 2;
+    border-radius: var(--r-md);
+  }
 
-    .document-card__image-wrapper {
-        height: auto;
-        aspect-ratio: 16 / 10;
-    }
+  .doc-card-skeleton__image {
+    min-height: 0;
+  }
 
-    .document-card-image {
-        position: absolute;
-        inset: 0;
-        height: 100%;
-        transition: opacity 200ms ease-out, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-    }
+  .doc-card__body {
+    justify-content: flex-start;
+    gap: var(--s-2);
+  }
 
-    .document-card__content {
-        padding: 16px 18px 20px;
-    }
+  .doc-card__title {
+    font-size: var(--t-lg);
+    font-weight: 400;
+    line-height: 1.24;
+    letter-spacing: -0.004em;
+  }
 
-    .document-card__type-badge {
-        font-size: 0.74rem;
-        text-transform: none;
-        letter-spacing: 0.2px;
-        padding: 4px 11px;
-        margin-bottom: 10px;
-        color: var(--axis, #80b259);
-        background: color-mix(in srgb, var(--axis, #80b259) 16%, transparent);
-    }
+  .doc-card__desc {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: var(--t-sm);
+    line-height: 1.5;
+    color: var(--ivory-2);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
 
-    .document-card__title {
-        font-size: 1.06rem;
-        line-height: 1.34;
-        color: var(--d-text);
-        margin-bottom: 8px;
-    }
+  .doc-card__fav.lg-button {
+    top: var(--s-3);
+    left: auto;
+    right: var(--s-3);
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 
-    .document-card__description {
-        font-size: 0.88rem;
-        line-height: 1.55;
-        color: var(--d-text-2);
-    }
+  /* Las presentaciones son fichas horizontales: sus portadas son ilustraciones muy
+     claras y a todo el ancho se comerian la pantalla. */
+  .aprende-grid--row .doc-card {
+    flex: 1 0 min(100%, 30rem);
+    grid-template-columns: 13rem minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-items: center;
+    gap: var(--s-6);
+    padding: var(--s-3);
+    border-radius: 1.5rem;
+    background: var(--raise);
+  }
 
-    .document-card__meta {
-        margin-top: 14px;
-        font-size: 0.78rem;
-        color: var(--d-text-3);
-    }
+  .aprende-grid--row .doc-card__media {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+    border-radius: 1rem;
+  }
 
-    .document-card:focus-visible {
-        outline: 2px solid var(--axis, #80b259);
-        outline-offset: 3px;
-    }
+  .aprende-grid--row .doc-card__body {
+    justify-content: center;
+    padding-right: var(--s-12);
+  }
+
+  .aprende-grid--row .doc-card__fav.lg-button {
+    top: 50%;
+    right: var(--s-5);
+    margin-top: -1.25rem;
+  }
 }
 
-@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-    .document-card:hover {
-        background: var(--d-surface-2) !important;
-        border-color: color-mix(in srgb, var(--axis, #80b259) 55%, transparent) !important;
-    }
-
-    .document-card:hover .document-card-image {
-        transform: scale(1.04);
-    }
+@media (hover: hover) and (pointer: fine) {
+  .doc-card:hover .doc-card__img--ready {
+    transform: scale(1.035);
+    filter: brightness(1) saturate(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .document-card-image {
-        transition: opacity 200ms ease-out;
-    }
+  .doc-card__img {
+    transition: none;
+  }
+
+  .doc-card:hover .doc-card__img--ready {
+    transform: none;
+  }
 }

@@ -17,7 +17,7 @@ interface Children {
 }
 
 export const AppProvider: FC<Children> = ({children}) => {
-    const [search, setSearch] = useState(defaultState.search);
+    const [search, setSearch] = useState(() => sessionStorage.getItem("search") ?? defaultState.search);
 
     const changeSearch = (currentSearch : string) => {
       sessionStorage.setItem("search", currentSearch);
