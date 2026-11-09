@@ -38,6 +38,10 @@ La primera versión, en claro, se rechazó. La vigente es oscura, y la vara es q
 - `src/utils/image.ts` pide el tamaño justo a Cloudinary y a Unsplash. Las fotos de otros hosts siguen en su tamaño original; una pesada se arregla subiéndola a Cloudinary.
 - `localhost` corre en modo desarrollo: 1.25 MB de JS frente a 243 KB en el `main` de producción, y peticiones duplicadas por `StrictMode`.
 
+## Integración con `main`
+
+`f8a1aa2` (HeribertoSaenz, 5 de noviembre) entró a `main` mientras se trabajaba esta rama. Sus mejoras se portaron a mano al diseño nuevo y en ambos idiomas: mostrar u ocultar contraseña (`PasswordInput`), errores de carga con reintento (`LoadError`), búsqueda sin resultados, respuestas atrasadas de favoritos, accesibilidad, contraste y correcciones de texto. Por eso el merge conserva el árbol de esta rama.
+
 ## Cómo se verificó
 
 Capturas por CDP a 2000, 1440, 1024, 390 y 360 px; clic real en el botón de idioma; error real del servidor en inglés; recorrido del DOM en modo EN buscando español; crítica independiente de las capturas; `tsc`, tests y `npm run build`.
