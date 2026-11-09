@@ -8,6 +8,7 @@ import AppContext from '../../context/AppContext';
 import { getFeedback, clearScoreSession } from '../../utils/scoring';
 import { matchesSearch } from '../../utils/search';
 import { axisOf, isMixedAxis } from '../../utils/axis';
+import { sized } from '../../utils/image';
 import { readCache } from '../../utils/cache';
 import { Article } from '../../components/ArticleCarrousel';
 import { useI18n } from '../../i18n/LanguageContext';
@@ -125,7 +126,7 @@ const FinalScoreEvaluation: React.FC = () => {
                                                         className='score-article'
                                                         onClick={e => { e.preventDefault(); router.push(`/Documents/${a._id}`, 'forward'); }}
                                                     >
-                                                        <img src={a.image} alt='' loading='lazy' />
+                                                        <img src={sized(a.image, 320)} alt='' loading='lazy' decoding='async' />
                                                         <span className='score-article__text'>
                                                             <span className={`axis-tag${aAxis ? ` axis-${aAxis}` : ''}`}>{tx(a.category)}</span>
                                                             <span className='score-article__title'>{localizeArticle(a).title}</span>

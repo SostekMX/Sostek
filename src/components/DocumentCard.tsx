@@ -4,6 +4,7 @@ import { IonIcon } from '@ionic/react';
 import { Button } from 'glisse';
 import { heart, heartOutline } from 'ionicons/icons';
 import { axisOf } from '../utils/axis';
+import { sized } from '../utils/image';
 import { useI18n } from '../i18n/LanguageContext';
 import './DocumentCard.css';
 
@@ -34,7 +35,7 @@ const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id,
                 {imgState !== 'error' && (
                     <img
                         className={`doc-card__img${imgState === 'ok' ? ' doc-card__img--ready' : ''}`}
-                        src={img_url}
+                        src={sized(img_url, 800)}
                         alt=''
                         loading='lazy'
                         decoding='async'

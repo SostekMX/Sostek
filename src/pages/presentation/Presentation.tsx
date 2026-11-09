@@ -8,6 +8,7 @@ import { Pagination, Keyboard } from 'swiper';
 import type { Swiper as SwiperInstance } from 'swiper';
 import { getPresentations } from '../../api/content';
 import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
+import { sized } from '../../utils/image';
 import { useI18n } from '../../i18n/LanguageContext';
 import './Presentation.css';
 import 'swiper/css';
@@ -66,7 +67,7 @@ const Presentation: React.FC = () => {
             <Swiper key={driveId} className='pres__swiper' direction='horizontal' modules={[Pagination]} pagination initialSlide={0}>
               {slides.map((url, index) => (
                 <SwiperSlide key={index}>
-                  <img src={url} alt={t('pres.slideAlt', { i: index + 1, n: slides.length })} />
+                  <img src={sized(url, 1920)} alt={t('pres.slideAlt', { i: index + 1, n: slides.length })} />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -138,7 +139,7 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
         >
           {slides.map((url, i) => (
             <SwiperSlide key={i}>
-              <img src={url} alt={t('pres.slideAlt', { i: i + 1, n: slides.length })} />
+              <img src={sized(url, 1920)} alt={t('pres.slideAlt', { i: i + 1, n: slides.length })} />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -179,7 +180,7 @@ const SlideStage: React.FC<{ slides: string[] }> = ({ slides }) => {
               aria-label={t('pres.goTo', { i: i + 1 })}
               aria-current={i === index ? 'true' : undefined}
             >
-              <img src={url} alt='' loading='lazy' />
+              <img src={sized(url, 320)} alt='' loading='lazy' decoding='async' />
             </button>
           ))}
         </div>

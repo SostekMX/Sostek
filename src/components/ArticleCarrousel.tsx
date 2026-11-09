@@ -9,6 +9,7 @@ import AppContext from '../context/AppContext';
 import useFavorites from '../hooks/useFavorites';
 import { normalize, matchesSearch } from '../utils/search';
 import { axisOf } from '../utils/axis';
+import { sized } from '../utils/image';
 import useMediaQuery, { DESKTOP_QUERY } from '../hooks/useMediaQuery';
 import { useI18n } from '../i18n/LanguageContext';
 
@@ -183,7 +184,7 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
             <div className='recent__list'>
               {sideArticles.map(article => (
                 <Link key={article._id} to={`/Documents/${article._id}`} className={`recent__item ${axisClass(article.category)}`}>
-                  <img src={article.image} alt='' loading='lazy' />
+                  <img src={sized(article.image, 320)} alt='' loading='lazy' decoding='async' />
                   <span className='recent__text'>
                     {article.category && <span className='axis-tag'>{tx(article.category)}</span>}
                     <span className='recent__name'>{localizeArticle(article).title}</span>
