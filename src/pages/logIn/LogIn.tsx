@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { login } from '../../api/auth';
 import { getProfile } from '../../api/user';
 import Field from '../../components/ui/Field';
+import PasswordInput from '../../components/ui/PasswordInput';
 import { useI18n } from '../../i18n/LanguageContext';
 import { clearSession, startSession } from '../../utils/session';
 import AuthLayout from './AuthLayout';
@@ -67,7 +68,7 @@ const LogIn: React.FC = () => {
                     <Input id='login-email' type='email' autoComplete='email' placeholder={t('auth.emailPh')} value={email} onValueChange={setEmail} />
                 </Field>
                 <Field id='login-password' label={t('auth.password')}>
-                    <Input id='login-password' type='password' autoComplete='current-password' placeholder='••••••••' value={password} onValueChange={setPassword} />
+                    <PasswordInput id='login-password' autoComplete='current-password' placeholder='••••••••' value={password} onValueChange={setPassword} />
                 </Field>
                 <Button type='submit' variant='filled' className='btn-lg btn-block'>{t('login.title')}</Button>
             </form>

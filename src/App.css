@@ -366,6 +366,39 @@ ion-content.canopy {
   caret-color: var(--lichen);
 }
 
+.password-input {
+  position: relative;
+}
+
+.password-input .lg-input input {
+  padding-inline-end: 3.25rem;
+}
+
+.password-input__toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.25rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ivory-2);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color var(--dur-fast) ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .password-input__toggle:hover {
+    color: var(--ivory);
+  }
+}
+
 /* El autorrelleno de Chrome pinta su propio fondo; aqui se le da el del campo. */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

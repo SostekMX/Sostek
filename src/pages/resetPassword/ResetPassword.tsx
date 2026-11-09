@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { resetPassword as resetPasswordRequest } from '../../api/auth';
 import Field from '../../components/ui/Field';
+import PasswordInput from '../../components/ui/PasswordInput';
 import { useI18n } from '../../i18n/LanguageContext';
 import AuthLayout from '../logIn/AuthLayout';
 
@@ -58,7 +59,7 @@ const ResetPassword: React.FC = () => {
                     <Input id='reset-token' autoComplete='one-time-code' placeholder={t('reset.code')} value={token} onValueChange={setToken} />
                 </Field>
                 <Field id='reset-password' label={t('reset.newPassword')}>
-                    <Input id='reset-password' type='password' autoComplete='new-password' placeholder={t('auth.passwordPh')} value={newPassword} onValueChange={setNewPassword} />
+                    <PasswordInput id='reset-password' autoComplete='new-password' placeholder={t('auth.passwordPh')} value={newPassword} onValueChange={setNewPassword} />
                 </Field>
                 <Button type='submit' variant='filled' className='btn-lg btn-block' disabled={loading}>
                     {loading ? t('reset.changing') : t('reset.submit')}

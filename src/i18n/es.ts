@@ -40,6 +40,8 @@ const es = {
   'auth.emailPh': 'usuario@ejemplo.com',
   'auth.password': 'Contraseña',
   'auth.passwordPh': 'Mínimo 8 caracteres',
+  'auth.showPassword': 'Mostrar contraseña',
+  'auth.hidePassword': 'Ocultar contraseña',
   'auth.backToLogin': 'Volver al inicio de sesión',
 
   'login.headline': 'Aprende,\nevalúa\ny crece.',

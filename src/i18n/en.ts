@@ -40,6 +40,8 @@ const en: typeof es = {
   'auth.emailPh': 'user@example.com',
   'auth.password': 'Password',
   'auth.passwordPh': 'At least 8 characters',
+  'auth.showPassword': 'Show password',
+  'auth.hidePassword': 'Hide password',
   'auth.backToLogin': 'Back to log in',
 
   'login.headline': 'Learn,\nassess\nand grow.',

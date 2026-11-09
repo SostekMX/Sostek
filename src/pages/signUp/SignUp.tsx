@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { signup } from '../../api/auth';
 import Field from '../../components/ui/Field';
+import PasswordInput from '../../components/ui/PasswordInput';
 import { useI18n } from '../../i18n/LanguageContext';
 import { startSession } from '../../utils/session';
 import AuthLayout from '../logIn/AuthLayout';
@@ -64,7 +65,7 @@ const SignUp: React.FC = () => {
                         <Input id='su-email' type='email' autoComplete='email' placeholder={t('auth.emailPh')} value={email} onValueChange={setEmail} />
                     </Field>
                     <Field id='su-password' label={t('auth.password')} className='full'>
-                        <Input id='su-password' type='password' autoComplete='new-password' placeholder={t('auth.passwordPh')} value={password} onValueChange={setPassword} />
+                        <PasswordInput id='su-password' autoComplete='new-password' placeholder={t('auth.passwordPh')} value={password} onValueChange={setPassword} />
                     </Field>
                     <Field id='su-birth' label={t('form.birth')}>
                         <Input id='su-birth' type='date' autoComplete='bday' value={birthDate} onValueChange={setBirthDate} />
