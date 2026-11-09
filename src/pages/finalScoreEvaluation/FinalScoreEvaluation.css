@@ -1,400 +1,191 @@
-/* Tope de ancho: a 1920px la tarjeta se estiraba a todo el ancho con una sola linea
-   de mensaje. 560px deja el texto en ~70 caracteres por linea. */
-.score-page {
-    width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 24px 20px 40px;
+.score {
+  display: grid;
+  gap: var(--s-8);
 }
 
-.score-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    padding: 28px 22px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    text-align: center;
+.score-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100%;
+  box-sizing: border-box;
+  gap: var(--s-4);
 }
 
-.score-card__evaluation-name {
-    font-size: 0.82rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: rgba(255, 255, 255, 0.45);
-    margin: 0;
+.score-empty__title {
+  max-width: 14em;
+  font-size: var(--t-2xl);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.012em;
 }
 
-.score-card__points {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #80b259;
-    margin: 0;
-    line-height: 1;
-    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+.score-empty__text {
+  font-size: var(--t-md);
+  color: var(--ivory-2);
 }
 
-.score-card__points-max {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.35);
+.score-main__name {
+  font-size: var(--t-md);
+  font-weight: 400;
+  color: var(--ivory-2);
 }
 
-.score-card__pts-label {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin-top: -8px;
+/* La cifra es la pantalla. */
+.score-main__number {
+  margin: var(--s-2) 0 0 -0.04em;
+  font-family: var(--font-display);
+  font-size: clamp(9rem, 4rem + 22vw, 24rem);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
 }
 
-.score-card__titulo {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #f0f0f0;
-    margin: 0;
-    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
+.score-main__max {
+  margin-top: var(--s-3);
+  font-size: var(--t-lg);
+  font-weight: 300;
+  color: var(--ivory-2);
 }
 
-.score-card__mensaje {
-    font-size: 0.88rem;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.6;
-    margin: 0;
+.score-main__bar {
+  height: 2px;
+  margin-top: var(--s-5);
+  background: var(--line-strong);
 }
 
-.score-card__divider {
-    width: 48px;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
+.score-main__fill {
+  height: 100%;
+  background: var(--lichen);
+  transform-origin: left;
+  animation: score-fill 1100ms var(--ease) 120ms both;
 }
 
-.score-card__weakest-label {
-    font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
+@keyframes score-fill {
+  from { transform: scaleX(0); }
 }
 
-.score-card__weakest-category {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #80b259;
+.score-main__verdict {
+  margin-top: var(--s-6);
+  font-size: var(--t-2xl);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.012em;
 }
 
-.score-card__cta-label {
-    font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
+.score-main__msg {
+  max-width: 34em;
+  margin-top: var(--s-3);
+  font-size: var(--t-md);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--ivory-2);
 }
 
-.finalScoreEvaluation__button {
-    margin-inline: auto;
-    display: flex;
-    --border-radius: 100px;
-    font-weight: 700;
+.score-main__again {
+  display: inline-block;
+  margin-top: var(--s-5);
+  font-size: var(--t-sm);
 }
 
-/* ==========================================================
-   Escritorio (>= 768px). El render de escritorio usa .score-desk; .score-page solo queda
-   para el estado "No hay un resultado", que necesita aire arriba sin la barra superior.
-   ========================================================== */
-@media (min-width: 768px) {
-    .score-page {
-        padding-top: 64px;
-    }
-
-    .score-desk {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 44px 32px 64px;
-    }
-
-    .score-desk__header {
-        margin-bottom: 28px;
-    }
-
-    .score-desk__kicker {
-        margin: 0 0 8px;
-        font-size: 0.95rem;
-        color: var(--d-text-3);
-    }
-
-    .score-desk__title {
-        margin: 0;
-        font-family: var(--d-display);
-        font-size: 2.3rem;
-        font-weight: 400;
-        line-height: 1.1;
-        color: var(--d-text);
-    }
-
-    .score-desk__grid {
-        display: grid;
-        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-        gap: 24px;
-        align-items: stretch;
-    }
-
-    .score-desk__grid--single {
-        grid-template-columns: minmax(0, 560px);
-    }
-
-    .score-desk__result,
-    .score-desk__weak {
-        border-radius: 22px;
-        background: var(--d-surface);
-        border: 1px solid var(--d-line);
-        padding: 36px 32px;
-    }
-
-    .score-desk__result {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    /* --- Anillo --- */
-    .score-ring {
-        position: relative;
-        width: 220px;
-        height: 220px;
-        margin-bottom: 26px;
-    }
-
-    .score-ring svg {
-        width: 100%;
-        height: 100%;
-        transform: rotate(-90deg);
-    }
-
-    .score-ring circle {
-        fill: none;
-        stroke-width: 12;
-    }
-
-    .score-ring__track {
-        stroke: rgba(255, 255, 255, 0.07);
-    }
-
-    .score-ring__fill {
-        stroke: var(--axis-ambiental);
-        stroke-linecap: round;
-        stroke-dasharray: var(--ring-c);
-        stroke-dashoffset: var(--ring-offset);
-        animation: score-ring-fill 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    .score-ring__label {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-    }
-
-    .score-ring__score {
-        font-family: var(--d-display);
-        font-size: 4rem;
-        line-height: 1;
-        color: var(--d-text);
-        font-variant-numeric: tabular-nums;
-    }
-
-    .score-ring__max {
-        font-size: 0.88rem;
-        color: var(--d-text-3);
-    }
-
-    .score-desk__feedback-title {
-        margin: 0 0 10px;
-        font-family: var(--d-display);
-        font-size: 1.6rem;
-        font-weight: 400;
-        color: var(--d-text);
-    }
-
-    .score-desk__feedback {
-        margin: 0;
-        max-width: 38ch;
-        font-size: 0.95rem;
-        line-height: 1.65;
-        color: var(--d-text-2);
-    }
-
-    .score-desk__secondary {
-        margin-top: auto;
-        padding-top: 28px;
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: var(--d-text-2);
-        text-decoration: underline;
-        text-decoration-color: var(--d-line-strong);
-        text-underline-offset: 4px;
-    }
-
-    /* --- Eje a reforzar --- */
-    .score-desk__weak {
-        display: flex;
-        flex-direction: column;
-        border-top: 4px solid var(--axis, var(--axis-ambiental));
-    }
-
-    /* Eje doble: el filete superior lleva los dos colores. */
-    .score-desk__weak--mixed {
-        border-top-color: transparent;
-        background:
-            linear-gradient(90deg, var(--axis-economico) 50%, var(--axis-social) 50%) top / 100% 4px no-repeat,
-            var(--d-surface);
-        background-origin: border-box;
-    }
-
-    .score-desk__weak-label {
-        margin: 0 0 6px;
-        font-size: 0.9rem;
-        color: var(--d-text-3);
-    }
-
-    .score-desk__weak-axis {
-        margin: 0 0 12px;
-        font-family: var(--d-display);
-        font-size: 2rem;
-        line-height: 1.1;
-        color: var(--axis, var(--d-text));
-    }
-
-    .score-desk__weak--mixed .score-desk__weak-axis {
-        color: var(--d-text);
-    }
-
-    .score-desk__weak-note {
-        margin: 0 0 24px;
-        max-width: 56ch;
-        font-size: 0.92rem;
-        line-height: 1.6;
-        color: var(--d-text-2);
-    }
-
-    .score-desk__articles {
-        list-style: none;
-        margin: 0 0 24px;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        border-top: 1px solid var(--d-line);
-    }
-
-    .score-desk__articles li {
-        border-bottom: 1px solid var(--d-line);
-    }
-
-    .score-article {
-        display: grid;
-        grid-template-columns: 96px minmax(0, 1fr);
-        gap: 18px;
-        align-items: center;
-        padding: 14px 6px;
-        border-radius: 12px;
-        text-decoration: none;
-        color: inherit;
-        transition: background 0.18s;
-    }
-
-    .score-article:focus-visible {
-        outline: 2px solid var(--axis-ambiental);
-        outline-offset: 2px;
-    }
-
-    .score-article__img {
-        width: 96px;
-        height: 68px;
-        border-radius: 10px;
-        object-fit: cover;
-        background: var(--d-surface-2);
-    }
-
-    .score-article__text {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        min-width: 0;
-    }
-
-    .score-article__category {
-        font-size: 0.76rem;
-        font-weight: 700;
-        color: var(--axis, var(--d-text-3));
-    }
-
-    .score-article__title {
-        font-size: 0.98rem;
-        font-weight: 700;
-        line-height: 1.35;
-        color: var(--d-text);
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .score-article__author {
-        font-size: 0.8rem;
-        color: var(--d-text-3);
-    }
-
-    .score-desk__cta {
-        margin: auto 0 0;
-        align-self: flex-start;
-        --border-radius: 100px;
-        height: 46px;
-        font-weight: 700;
-        text-transform: none;
-        letter-spacing: 0.2px;
-    }
+.score-weak.lg-glass {
+  padding: var(--s-6) var(--s-5);
+  border-radius: var(--r-lg);
+  --lg-glass: rgb(9 26 17 / 0.5);
+  --lg-blur: 20px;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.4);
 }
 
-@keyframes score-ring-fill {
-    from { stroke-dashoffset: var(--ring-c); }
-    to   { stroke-dashoffset: var(--ring-offset); }
+.score-weak__label {
+  font-size: var(--t-sm);
+  color: var(--ivory-2);
+}
+
+.score-weak__axis {
+  margin-top: var(--s-2);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.5rem + 1.6vw, 3.25rem);
+  line-height: 1.02;
+  color: var(--axis, var(--ivory));
+}
+
+.score-weak__axis--mixed {
+  color: var(--ivory);
+}
+
+.score-weak__note {
+  margin-top: var(--s-3);
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  color: var(--ivory-2);
+}
+
+.score-weak__list {
+  margin: var(--s-5) 0 var(--s-6);
+  border-top: 1px solid var(--line);
+}
+
+.score-weak__list li {
+  border-bottom: 1px solid var(--line);
+}
+
+.score-article {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-3) 0;
+}
+
+.score-article img {
+  display: block;
+  width: 4.5rem;
+  height: 3.5rem;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--raise);
+  filter: brightness(0.9) saturate(0.92);
+}
+
+.score-article__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.score-article__title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--t-sm);
+  font-weight: 500;
+  line-height: 1.32;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 @media (min-width: 1024px) {
-    .score-desk {
-        padding: 48px var(--d-gutter) 72px;
-    }
+  .score {
+    grid-template-columns: minmax(0, 1fr) 33rem;
+    gap: var(--s-16);
+    align-items: center;
+    min-height: 100%;
+    box-sizing: border-box;
+    padding-bottom: var(--s-16);
+  }
 
-    .score-desk__grid {
-        gap: 28px;
-    }
+  .score--single {
+    grid-template-columns: minmax(0, 46rem);
+  }
 
-    .score-desk__result,
-    .score-desk__weak {
-        padding: 40px;
-    }
-}
-
-@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-    .score-article:hover {
-        background: rgba(255, 255, 255, 0.04);
-    }
-
-    .score-article:hover .score-article__title {
-        text-decoration: underline;
-        text-decoration-color: var(--d-line-strong);
-        text-underline-offset: 3px;
-    }
-
-    .score-desk__secondary:hover {
-        color: var(--d-text);
-    }
+  .score-weak.lg-glass {
+    padding: var(--s-10);
+    border-radius: 2.25rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .score-ring__fill {
-        animation: none;
-    }
+  .score-main__fill {
+    animation: none;
+  }
 }

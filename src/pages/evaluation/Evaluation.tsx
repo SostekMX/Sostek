@@ -1,18 +1,14 @@
-import {
-  IonButton,
-  IonContent,
-  IonPage,
-  IonRow,
-} from "@ionic/react";
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { IonContent, IonPage } from '@ionic/react';
+import { Button } from 'glisse';
+import { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router';
 import { getEvaluation } from '../../api/content';
-import AppBarPopOver from "../../components/layout/AppBarPopOver";
-import QuestionNav from "../../components/QuestionNav";
-import QuestionTestCard, { Option } from "../../components/QuestionTestCard";
-import { AnswerMap, computeMaxScore, toggleAnswer, totalScore, weakestCategory } from "../../utils/scoring";
-import "./Evaluation.css";
-import { useI18n } from "../../i18n/LanguageContext";
+import AppBarPopOver from '../../components/layout/AppBarPopOver';
+import QuestionNav from '../../components/QuestionNav';
+import QuestionTestCard, { Option } from '../../components/QuestionTestCard';
+import { useI18n } from '../../i18n/LanguageContext';
+import { AnswerMap, computeMaxScore, toggleAnswer, totalScore, weakestCategory } from '../../utils/scoring';
+import './Evaluation.css';
 
 interface Question {
   category: string;
@@ -76,91 +72,68 @@ const Evaluation: React.FC = () => {
     setAnswers(prev => toggleAnswer(prev, key, category, value));
   }
 
-  function setFinalScore() {
+  /* Recarga a proposito: la pagina de resultado lee la sesion una sola vez y el outlet de
+     Ionic no la desmonta, asi que con el router mostraria el resultado anterior. */
+  function submit() {
     const questions = evaluation?.questions ?? [];
-    sessionStorage.setItem("finalScore", String(score));
-    sessionStorage.setItem("maxScore", String(computeMaxScore(questions)));
-    sessionStorage.setItem("weakestCategory", weakestCategory(answers, questions));
-    sessionStorage.setItem("scorePending", "1");
+    sessionStorage.setItem('finalScore', String(score));
+    sessionStorage.setItem('maxScore', String(computeMaxScore(questions)));
+    sessionStorage.setItem('weakestCategory', weakestCategory(answers, questions));
+    sessionStorage.setItem('scorePending', '1');
+    window.location.assign(`/score/${name}`);
   }
 
   /* El mismo elemento se renderiza en el panel y al final de las preguntas: un elemento
      de React es un descriptor inmutable, no hace falta un componente para reusarlo. */
   const submitButton = (
-    <IonButton
-      onClick={setFinalScore}
-      color="primary"
-      href={`/score/${name}`}
-      expand="block"
-    >
-      {t('eval.submit')}
-    </IonButton>
+    <Button variant='filled' className='btn-lg btn-block' onClick={submit}>{t('eval.submit')}</Button>
   );
 
   return (
     <IonPage>
-      <AppBarPopOver></AppBarPopOver>
-      <IonContent fullscreen class="app-dark-bg">
-        {loading && (
-          <div className="evaluation__skeleton">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="eval-question-skeleton">
-                <div className="eval-question-skeleton__title shimmer" />
-                <div className="eval-question-skeleton__option shimmer" />
-                <div className="eval-question-skeleton__option shimmer" />
-                <div className="eval-question-skeleton__option eval-question-skeleton__option--short shimmer" />
-              </div>
-            ))}
-          </div>
-        )}
-        {!loading && !evaluation && (
-          <p className="page-message">
-            {t('eval.fail')}
-          </p>
-        )}
-        {!loading && evaluation && (
-          <>
-            {/* display: contents en mobile; en escritorio alinea titulo e indicacion con
-                la columna de preguntas. */}
-            <div className="evaluation__header">
-              <h1 className="header__title">{tx(name)}</h1>
-              <p className="evaluation__intro">
-                {t('eval.intro', { n: total })}
-              </p>
+      <AppBarPopOver />
+      <IonContent fullscreen>
+        <div className='page evaluation'>
+          {loading && (
+            <div className='evaluation__questions'>
+              {Array.from({ length: 3 }).map((_, i) => <div key={i} className='question question--skeleton shimmer' />)}
             </div>
+          )}
 
-            <div className="eval-progress">
-              <div className="eval-progress__bar">
-                <div className="eval-progress__fill" style={{ width: `${total > 0 ? (answered.size / total) * 100 : 0}%` }} />
+          {!loading && !evaluation && <p className='page-message'>{t('eval.fail')}</p>}
+
+          {!loading && evaluation && (
+            <>
+              <header className='page-head'>
+                <h1 className='page-head__title'>{tx(name)}</h1>
+                <p className='page-head__lead'>{t('eval.intro', { n: total })}</p>
+              </header>
+
+              {/* El nav va antes que las preguntas en el DOM para que en movil quede arriba;
+                  desde 1024 la colocacion del grid lo manda a la columna derecha. */}
+              <div className='evaluation__layout'>
+                <QuestionNav total={total} answered={answered} onJump={jumpTo} submit={submitButton} />
+
+                <div className='evaluation__questions'>
+                  {evaluation.questions.map((question, index) => (
+                    <QuestionTestCard
+                      key={index}
+                      id={`q-${index}`}
+                      number={index + 1}
+                      questionIndex={index}
+                      question={question.text}
+                      category={question.category}
+                      options={question.options}
+                      answers={answers}
+                      onToggle={handleToggle}
+                    />
+                  ))}
+                  <div className='evaluation__submit'>{submitButton}</div>
+                </div>
               </div>
-              <span className="eval-progress__count">{t('common.of', { a: answered.size, b: total })}</span>
-            </div>
-
-            {/* El nav va antes que las preguntas en el DOM para que en mobile el
-                desplegable quede arriba; en desktop la colocacion explicita del grid lo
-                manda a la columna derecha. */}
-            <div className="evaluation__layout">
-              <QuestionNav total={total} answered={answered} onJump={jumpTo} submit={submitButton} />
-
-              <div className="evaluation__questions">
-                {evaluation?.questions.map((question, index) => (
-                  <QuestionTestCard
-                    key={index}
-                    id={`q-${index}`}
-                    number={index + 1}
-                    questionIndex={index}
-                    question={question.text}
-                    category={question.category}
-                    options={question.options}
-                    answers={answers}
-                    onToggle={handleToggle}
-                  />
-                ))}
-                <IonRow className="align-center evaluation__submit">{submitButton}</IonRow>
-              </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </IonContent>
     </IonPage>
   );

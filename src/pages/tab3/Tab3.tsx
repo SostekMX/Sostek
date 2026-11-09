@@ -30,7 +30,7 @@ const Tab3: React.FC = () => {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    const cached = readCache<EvaluationItem[]>("evaluations");
+    const cached = readCache<EvaluationItem[]>('evaluations');
     if (cached) {
       setEvaluations(cached);
       setLoading(false);
@@ -40,7 +40,7 @@ const Tab3: React.FC = () => {
       .then(data => {
         if (data.success) {
           setEvaluations(data.evaluations);
-          localStorage.setItem("evaluations", JSON.stringify(data.evaluations));
+          localStorage.setItem('evaluations', JSON.stringify(data.evaluations));
         } else {
           setFailed(true);
         }
@@ -49,8 +49,8 @@ const Tab3: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  /* Agrupar por carrera reemplaza a las pills de filtro: con los tres niveles en fila
-     bajo el nombre de la carrera, filtrar y agrupar hacian el mismo trabajo. */
+  /* Agrupar por carrera reemplaza a un filtro: con los tres niveles en fila bajo el nombre
+     de la carrera, filtrar y agrupar harian el mismo trabajo. */
   const groups = useMemo(() => {
     const byCareer = new Map<string, EvaluationItem[]>();
     evaluations.forEach(ev => {
@@ -72,58 +72,29 @@ const Tab3: React.FC = () => {
   return (
     <IonPage>
       <AppBarPopOver />
-      <IonContent fullscreen class='app-dark-bg'>
-        <div className='evalua-page'>
-          {/* display: contents en mobile, asi que el header queda donde siempre; en
-              escritorio arma la fila de titulo + "Como funciona". */}
-          <div className='evalua-intro'>
-            <header className='evalua-header'>
-              <h1 className='evalua-header__title'>{t('assess.title')}</h1>
-              <p className='evalua-header__subtitle'>
-                {t('assess.subtitle')}
-              </p>
-            </header>
+      <IonContent fullscreen>
+        <div className='page evalua'>
+          <header className='page-head'>
+            <h1 className='page-head__title'>{t('assess.title')}</h1>
+            <p className='page-head__lead'>{t('assess.subtitle')}</p>
+          </header>
 
-            {/* Solo escritorio: en mobile el subtitulo ya lo cuenta en una linea. */}
-            <aside className='evalua-howto' aria-label={t('assess.howTitle')}>
-              <p className='evalua-howto__title'>{t('assess.howTitle')}</p>
-              <ol className='evalua-howto__steps'>
-                <li>
-                  <span><strong>{t('assess.step1Title')}</strong> {t('assess.step1')}</span>
-                </li>
-                <li>
-                  <span><strong>{t('assess.step2Title')}</strong> {t('assess.step2')}</span>
-                </li>
-                <li>
-                  <span><strong>{t('assess.step3Title')}</strong> {t('assess.step3')}</span>
-                </li>
-              </ol>
-            </aside>
-          </div>
+          <ol className='evalua-steps' aria-label={t('assess.howTitle')}>
+            <li><strong>{t('assess.step1Title')}</strong> {t('assess.step1')}</li>
+            <li><strong>{t('assess.step2Title')}</strong> {t('assess.step2')}</li>
+            <li><strong>{t('assess.step3Title')}</strong> {t('assess.step3')}</li>
+          </ol>
 
           {loading && (
-            <div className='evaluation-grid'>
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className='eval-card-skeleton'>
-                  <div className='eval-card-skeleton__header'>
-                    <div className='eval-card-skeleton__icon shimmer' />
-                    <div className='eval-card-skeleton__badge shimmer' />
-                  </div>
-                  <div className='eval-card-skeleton__title shimmer' />
-                  <div className='eval-card-skeleton__desc shimmer' />
-                  <div className='eval-card-skeleton__desc eval-card-skeleton__desc--short shimmer' />
-                </div>
-              ))}
+            <div className='evalua-grid'>
+              {Array.from({ length: 3 }).map((_, i) => <div key={i} className='level level--skeleton shimmer' />)}
             </div>
           )}
 
           {!loading && groups.map(group => (
             <section className='evalua-group' key={group.career}>
-              <h2 className='evalua-group__title'>
-                {tx(group.career)}
-<span className='evalua-group__count'>{group.items.length} {group.items.length === 1 ? t('assess.level') : t('assess.levels')}</span>
-              </h2>
-              <div className='evaluation-grid'>
+              <h2 className='evalua-group__title'>{tx(group.career)}</h2>
+              <div className='evalua-grid'>
                 {group.items.map(ev => (
                   <EvaluationCard
                     key={ev._id}
@@ -141,11 +112,7 @@ const Tab3: React.FC = () => {
           {/* Un fallo de red no es una lista vacia: si la peticion fallo y no hubo cache
               que mostrar, el mensaje tiene que decir eso. */}
           {!loading && evaluations.length === 0 && (
-            <p className='tab3-empty'>
-              {failed
-                ? t('assess.fail')
-                : t('assess.empty')}
-            </p>
+            <p className='empty'>{failed ? t('assess.fail') : t('assess.empty')}</p>
           )}
         </div>
       </IonContent>
