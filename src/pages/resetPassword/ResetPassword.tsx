@@ -1,27 +1,29 @@
-import { IonButton, IonToast, IonAlert, IonContent, IonInput, IonItem, IonPage, IonIcon } from '@ionic/react';
-import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
-import { useState } from 'react';
+import { IonAlert, IonToast } from '@ionic/react';
+import { Button, Input } from 'glisse';
+import { FormEvent, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { resetPassword as resetPasswordRequest } from '../../api/auth';
-import '../logIn/LogIn.css';
-import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
+import Field from '../../components/ui/Field';
+import PasswordInput from '../../components/ui/PasswordInput';
+import { useI18n } from '../../i18n/LanguageContext';
+import AuthLayout from '../logIn/AuthLayout';
 
 const ResetPassword: React.FC = () => {
     const location = useLocation();
     const tokenFromUrl = new URLSearchParams(location.search).get('token') ?? '';
-    const [token, setToken] = useState<string>(tokenFromUrl);
-    const [newPassword, setNewPassword] = useState<string>('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [message, setMessage] = useState<string>('');
-    const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [success, setSuccess] = useState<boolean>(false);
-    const isDesktop = useMediaQuery(DESKTOP_QUERY);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [token, setToken] = useState(tokenFromUrl);
+    const [newPassword, setNewPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
     const history = useHistory();
+    const { t, apiError } = useI18n();
 
-    async function resetPassword() {
+    async function resetPassword(event: FormEvent) {
+        event.preventDefault();
         if (newPassword.length < 8) {
-            setMessage('La contraseña debe tener al menos 8 caracteres');
+            setMessage(t('errors.passwordMin'));
             setSuccess(false);
             setShowAlert(true);
             return;
@@ -30,7 +32,7 @@ const ResetPassword: React.FC = () => {
         try {
             const data = await resetPasswordRequest(token, newPassword);
             if (data.success) {
-                setMessage('Contraseña actualizada. Ya puedes iniciar sesión.');
+                setMessage(t('reset.done'));
                 setSuccess(true);
                 setShowAlert(true);
             } else {
@@ -39,7 +41,7 @@ const ResetPassword: React.FC = () => {
                 setShowAlert(true);
             }
         } catch (error: any) {
-            setMessage(error.response?.data?.error ?? 'Error al cambiar la contraseña');
+            setMessage(error.response?.data?.error ?? t('errors.changeFail'));
             setSuccess(false);
             setShowAlert(true);
         } finally {
@@ -48,92 +50,43 @@ const ResetPassword: React.FC = () => {
     }
 
     return (
-        <IonPage>
-            <IonContent fullscreen>
-                <div className='login-split'>
-                    {/* Panel de marca: el mismo de LogIn, solo en escritorio. */}
-                    {isDesktop && (
-                        <aside className='login-brand auth-brand'>
-                            <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
-                            <div className='login-brand__content'>
-                                <p className='login-brand__headline'>Una contrase&ntilde;a<br />nueva.</p>
-                                <p className='login-brand__desc'>Usa el c&oacute;digo que te lleg&oacute; por correo. La contrase&ntilde;a necesita al menos 8 caracteres.</p>
-                            </div>
-                            <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
-                        </aside>
-                    )}
-                    <div className='login-form-panel'>
-                        <div className='login-form-inner'>
-                            <img src="/assets/sostek-logo.png" className='login-logo-mobile' alt='Sostek' />
-                            <div className='login-welcome'>
-                                <span className='login-welcome__line' />
-                                <span className='login-welcome__text'>NUEVA CONTRASE&Ntilde;A</span>
-                                <span className='login-welcome__line' />
-                            </div>
-                            <h2 className='login-title'>Cambiar contrase&ntilde;a</h2>
-                            <p className='login-subtitle'>Ingresa el c&oacute;digo que recibiste y tu nueva contrase&ntilde;a.</p>
-                            <div className='login-fields'>
-                                <div className='login-field'>
-                                    <label className='login-field__label'>C&oacute;digo de recuperaci&oacute;n</label>
-                                    <IonItem className='login-field__item' lines='none'>
-                                        <IonInput
-                                            type='text'
-                                            placeholder='Código de recuperación'
-                                            value={token}
-                                            onIonChange={(e) => setToken(e.target.value as string)}
-                                        />
-                                    </IonItem>
-                                </div>
-                                <div className='login-field'>
-                                    <label className='login-field__label'>Nueva contrase&ntilde;a</label>
-                                    <IonItem className='login-field__item' lines='none'>
-                                        <IonInput
-                                            type={showPassword ? 'text' : 'password'}
-                                            placeholder='Mínimo 8 caracteres'
-                                            value={newPassword}
-                                            onIonChange={(e) => setNewPassword(e.target.value as string)}
-                                        />
-                                        <IonButton
-                                            slot='end'
-                                            type='button'
-                                            fill='clear'
-                                            className='password-visibility-toggle'
-                                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                                            aria-pressed={showPassword}
-                                            onClick={() => setShowPassword(prev => !prev)}
-                                        >
-                                            <IonIcon slot='icon-only' icon={showPassword ? eyeOffOutline : eyeOutline} />
-                                        </IonButton>
-                                    </IonItem>
-                                </div>
-                            </div>
-                            <IonButton expand='block' color='primary' onClick={resetPassword} disabled={loading} className='login-btn-main'>
-                                {loading ? 'Cambiando...' : 'Cambiar contraseña'}
-                            </IonButton>
-                            <IonButton expand='block' fill='clear' href='/' className='login-btn-secondary'>
-                                Volver al inicio de sesi&oacute;n
-                            </IonButton>
-                        </div>
-                    </div>
-                </div>
-                <IonToast
-                    isOpen={showAlert && !success}
-                    onDidDismiss={() => setShowAlert(false)}
-                    message={message}
-                    duration={3500}
-                    color="danger"
-                    position="bottom"
-                />
-                <IonAlert
-                    isOpen={showAlert && success}
-                    onDidDismiss={() => { setShowAlert(false); history.replace('/'); }}
-                    cssClass="dark-alert"
-                    header="Contraseña actualizada"
-                    message="Ya puedes iniciar sesión con tu nueva contraseña."
-                    buttons={[{ text: 'Iniciar sesión', handler: () => history.replace('/') }]}
-                />
-            </IonContent>
-        </IonPage>
+        <AuthLayout headline={t('reset.headline')} desc={t('reset.brandDesc')}>
+            <h1 className='auth__title'>{t('reset.title')}</h1>
+            <p className='auth__sub'>{t('reset.subtitle')}</p>
+
+            <form className='form-stack' onSubmit={resetPassword}>
+                <Field id='reset-token' label={t('reset.code')}>
+                    <Input id='reset-token' autoComplete='one-time-code' placeholder={t('reset.code')} value={token} onValueChange={setToken} />
+                </Field>
+                <Field id='reset-password' label={t('reset.newPassword')}>
+                    <PasswordInput id='reset-password' autoComplete='new-password' placeholder={t('auth.passwordPh')} value={newPassword} onValueChange={setNewPassword} />
+                </Field>
+                <Button type='submit' variant='filled' className='btn-lg btn-block' disabled={loading}>
+                    {loading ? t('reset.changing') : t('reset.submit')}
+                </Button>
+            </form>
+
+            <div className='auth__links'>
+                <a className='text-link' href='/'>{t('auth.backToLogin')}</a>
+            </div>
+
+            <IonToast
+                isOpen={showAlert && !success}
+                onDidDismiss={() => setShowAlert(false)}
+                message={apiError(message)}
+                duration={3500}
+                color='danger'
+                position='bottom'
+            />
+            <IonAlert
+                isOpen={showAlert && success}
+                onDidDismiss={() => { setShowAlert(false); history.replace('/'); }}
+                cssClass='sos-alert'
+                header={t('reset.doneHeader')}
+                message={t('reset.doneMsg')}
+                buttons={[{ text: t('nav.login'), handler: () => history.replace('/') }]}
+            />
+        </AuthLayout>
     );
 };
 

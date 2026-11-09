@@ -15,8 +15,8 @@ const useFavorites = () => {
   const isLoggedIn = isUserLoggedIn();
   const token = isLoggedIn ? sessionStorage.getItem('token') : null;
 
-  /* El token cambia entre sesiones. Ignorar respuestas atrasadas evita mostrar
-     favoritos de una cuenta anterior si la petición termina después del logout. */
+  /* Depende del token porque Ionic deja montadas las paginas. Ignorar respuestas atrasadas
+     evita mostrar favoritos de la cuenta anterior si la peticion termina despues del logout. */
   const refreshFavorites = useCallback(async () => {
     const currentRequest = ++requestId.current;
     if (!token) {
@@ -30,7 +30,7 @@ const useFavorites = () => {
     try {
       const response = await getFavorites();
       if (!response?.success || !Array.isArray(response.favorites)) {
-        throw new Error('Respuesta de favoritos inválida');
+        throw new Error('Respuesta de favoritos invalida');
       }
       if (currentRequest !== requestId.current) return;
       setFavorites(response.favorites);

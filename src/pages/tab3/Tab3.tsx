@@ -4,7 +4,9 @@ import { getEvaluations } from '../../api/content';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
+import LoadError from '../../components/ui/LoadError';
 import { readCache } from '../../utils/cache';
+import { useI18n } from '../../i18n/LanguageContext';
 
 interface EvaluationItem {
   _id: string;
@@ -23,6 +25,7 @@ function levelOf(name: string): number | undefined {
 }
 
 const Tab3: React.FC = () => {
+  const { t, tx } = useI18n();
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -33,7 +36,7 @@ const Tab3: React.FC = () => {
     try {
       const response = await getEvaluations();
       if (!response?.success || !Array.isArray(response.evaluations)) {
-        throw new Error('Respuesta de evaluaciones inválida');
+        throw new Error('Respuesta de evaluaciones invalida');
       }
       setEvaluations(response.evaluations);
       localStorage.setItem('evaluations', JSON.stringify(response.evaluations));
@@ -56,8 +59,8 @@ const Tab3: React.FC = () => {
     void loadEvaluations();
   }, [loadEvaluations]);
 
-  /* Agrupar por carrera reemplaza a las pills de filtro: con los tres niveles en fila
-     bajo el nombre de la carrera, filtrar y agrupar hacian el mismo trabajo. */
+  /* Agrupar por carrera reemplaza a un filtro: con los tres niveles en fila bajo el nombre
+     de la carrera, filtrar y agrupar harian el mismo trabajo. */
   const groups = useMemo(() => {
     const byCareer = new Map<string, EvaluationItem[]>();
     evaluations.forEach(ev => {
@@ -79,79 +82,38 @@ const Tab3: React.FC = () => {
   return (
     <IonPage>
       <AppBarPopOver />
-      <IonContent fullscreen class='app-dark-bg'>
-        <div className='evalua-page'>
-          {/* display: contents en mobile, asi que el header queda donde siempre; en
-              escritorio arma la fila de titulo + "Como funciona". */}
-          <div className='evalua-intro'>
-            <header className='evalua-header'>
-              <h1 className='evalua-header__title'>Eval&uacute;ate</h1>
-              <p className='evalua-header__subtitle'>
-                Autodiagn&oacute;sticos de sostenibilidad para tu proyecto. Elige el nivel que
-                corresponde a la etapa en la que vas: al terminar te decimos cu&aacute;l fue tu
-                eje m&aacute;s d&eacute;bil y con qu&eacute; art&iacute;culos reforzarlo.
-              </p>
-            </header>
+      <IonContent fullscreen>
+        <div className='page evalua'>
+          <header className='page-head'>
+            <h1 className='page-head__title'>{t('assess.title')}</h1>
+            <p className='page-head__lead'>{t('assess.subtitle')}</p>
+          </header>
 
-            {/* Solo escritorio: en mobile el subtitulo ya lo cuenta en una linea. */}
-            <aside className='evalua-howto' aria-label='Cómo funciona'>
-              <p className='evalua-howto__title'>C&oacute;mo funciona</p>
-              <ol className='evalua-howto__steps'>
-                <li>
-                  <span><strong>Elige tu nivel.</strong> Cada carrera tiene tres, seg&uacute;n el semestre en que vas.</span>
-                </li>
-                <li>
-                  <span><strong>Contesta sobre tu proyecto.</strong> Marca todo lo que ya hayas considerado.</span>
-                </li>
-                <li>
-                  <span><strong>Revisa tu resultado.</strong> Te damos tu puntaje, tu eje m&aacute;s d&eacute;bil y art&iacute;culos para reforzarlo.</span>
-                </li>
-              </ol>
-            </aside>
-          </div>
+          <ol className='evalua-steps' aria-label={t('assess.howTitle')}>
+            <li><strong>{t('assess.step1Title')}</strong> {t('assess.step1')}</li>
+            <li><strong>{t('assess.step2Title')}</strong> {t('assess.step2')}</li>
+            <li><strong>{t('assess.step3Title')}</strong> {t('assess.step3')}</li>
+          </ol>
 
           {!loading && failed && (
-            <div className='content-load-error' role='alert'>
-              <h2 className='content-load-error__title'>No pudimos actualizar las evaluaciones</h2>
-              <p className='content-load-error__description'>
-                {evaluations.length > 0
-                  ? 'Puedes consultar las evaluaciones guardadas mientras recuperamos la conexión.'
-                  : 'Revisa tu conexión e inténtalo nuevamente.'}
-              </p>
-              <button
-                type='button'
-                className='content-load-error__button'
-                disabled={isRefreshing}
-                onClick={() => void loadEvaluations()}
-              >
-                {isRefreshing ? 'Reintentando...' : 'Reintentar'}
-              </button>
-            </div>
+            <LoadError
+              title={t('assess.updateFail')}
+              text={t(evaluations.length > 0 ? 'assess.updateFailCached' : 'assess.updateFailEmpty')}
+              retrying={isRefreshing}
+              onRetry={() => void loadEvaluations()}
+            />
           )}
 
           {loading && (
-            <div className='evaluation-grid'>
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className='eval-card-skeleton'>
-                  <div className='eval-card-skeleton__header'>
-                    <div className='eval-card-skeleton__icon shimmer' />
-                    <div className='eval-card-skeleton__badge shimmer' />
-                  </div>
-                  <div className='eval-card-skeleton__title shimmer' />
-                  <div className='eval-card-skeleton__desc shimmer' />
-                  <div className='eval-card-skeleton__desc eval-card-skeleton__desc--short shimmer' />
-                </div>
-              ))}
+            <div className='evalua-grid'>
+              {Array.from({ length: 3 }).map((_, i) => <div key={i} className='level level--skeleton shimmer' />)}
             </div>
           )}
 
           {!loading && groups.map(group => (
             <section className='evalua-group' key={group.career}>
-              <h2 className='evalua-group__title'>
-                {group.career}
-                <span className='evalua-group__count'>{group.items.length} {group.items.length === 1 ? 'nivel' : 'niveles'}</span>
-              </h2>
-              <div className='evaluation-grid'>
+              <h2 className='evalua-group__title'>{tx(group.career)}</h2>
+              <div className='evalua-grid'>
                 {group.items.map(ev => (
                   <EvaluationCard
                     key={ev._id}
@@ -166,9 +128,9 @@ const Tab3: React.FC = () => {
             </section>
           ))}
 
-          {/* No confundir una respuesta vacía con una petición fallida. */}
+          {/* Una respuesta vacia no es una peticion fallida: esa ya la avisa LoadError. */}
           {!loading && !failed && evaluations.length === 0 && (
-            <p className='tab3-empty'>Todavía no hay evaluaciones disponibles.</p>
+            <p className='empty'>{t('assess.empty')}</p>
           )}
         </div>
       </IonContent>

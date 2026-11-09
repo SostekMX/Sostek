@@ -1,11 +1,14 @@
-import { IonContent, IonHeader, IonPage } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getArticles, getPresentations } from '../../api/content';
 import ArticleCarrousel, { Article, Presentation } from '../../components/ArticleCarrousel';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
+import LoadError from '../../components/ui/LoadError';
+import { useI18n } from '../../i18n/LanguageContext';
 import { readCache } from '../../utils/cache';
 
 const Tab1: React.FC = () => {
+  const { t } = useI18n();
   const [articles, setArticles] = useState<Article[]>([]);
   const [presentations, setPresentations] = useState<Presentation[]>([]);
   const [loadingData, setLoadingData] = useState(true);
@@ -58,31 +61,19 @@ const Tab1: React.FC = () => {
   return (
     <IonPage>
       <AppBarPopOver />
-      <IonContent fullscreen class='app-dark-bg'>
-        <IonHeader collapse="condense" />
-        {loadError && (
-          <div className='content-load-error' role='alert'>
-            <h2 className='content-load-error__title'>No pudimos cargar todo el contenido</h2>
-            <p className='content-load-error__description'>
-              {articles.length || presentations.length
-                ? 'Puedes seguir consultando los recursos disponibles. Intenta actualizar nuevamente.'
-                : 'Revisa tu conexión e intenta cargar el contenido otra vez.'}
-            </p>
-            <button
-              type='button'
-              className='content-load-error__button'
-              disabled={isRefreshing}
-              onClick={() => void loadContent()}
-            >
-              {isRefreshing ? 'Reintentando...' : 'Reintentar'}
-            </button>
-          </div>
-        )}
+      <IonContent fullscreen>
         <ArticleCarrousel
           articlesData={articles}
           loadingData={loadingData}
           presentations={presentations}
-          loadError={loadError}
+          errorNotice={loadError && (
+            <LoadError
+              title={t('learn.loadFail')}
+              text={t(articles.length || presentations.length ? 'learn.loadFailPartial' : 'learn.loadFailEmpty')}
+              retrying={isRefreshing}
+              onRetry={() => void loadContent()}
+            />
+          )}
         />
       </IonContent>
     </IonPage>

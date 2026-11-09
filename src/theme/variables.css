@@ -1,166 +1,149 @@
-/* Ionic Variables and Theming */
-
+/* Sostek de noche. Verde botella, marfil y un solo material: el vidrio de Glisse sobre el
+   follaje. Todo color, tamano, radio y duracion sale de aqui. */
 :root {
-  --ion-font-family: 'Raleway', sans-serif;
+  color-scheme: dark;
 
-  /* PRIMARY: Brand Green */
-  --ion-color-primary: #80b259;
-  --ion-color-primary-rgb: 128, 178, 89;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #5c8a3a;
-  --ion-color-primary-tint: #9dc974;
+  /* Verdes */
+  --bg: #0b1f14;
+  --bg-deep: #071510;
+  --raise: #11291b;
+  --raise-2: #193626;
+  --moss: #80b259;
+  --lichen: #c6dea3;
 
-  /* SECONDARY: Teal */
-  --ion-color-secondary: #5a9ea0;
-  --ion-color-secondary-rgb: 90, 158, 160;
-  --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #3e7e80;
-  --ion-color-secondary-tint: #7db8ba;
+  /* Marfil: el texto y la accion principal */
+  --ivory: #f3f1e5;
+  --ivory-2: rgb(243 241 229 / 0.72);
+  --ivory-3: rgb(243 241 229 / 0.52);
+  --on-ivory: #0b1f14;
 
-  /* TERTIARY */
-  --ion-color-tertiary: #5260ff;
-  --ion-color-tertiary-rgb: 82, 96, 255;
-  --ion-color-tertiary-contrast: #ffffff;
-  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-  --ion-color-tertiary-shade: #4854e0;
-  --ion-color-tertiary-tint: #6370ff;
+  /* Lineas */
+  --line: rgb(243 241 229 / 0.12);
+  --line-strong: rgb(243 241 229 / 0.24);
+  --line-field: rgb(243 241 229 / 0.36);
 
-  /* SUCCESS */
-  --ion-color-success: #2dd36f;
-  --ion-color-success-rgb: 45, 211, 111;
-  --ion-color-success-contrast: #ffffff;
-  --ion-color-success-contrast-rgb: 255, 255, 255;
-  --ion-color-success-shade: #28ba62;
-  --ion-color-success-tint: #42d77d;
+  --danger: #ffa08f;
 
-  /* WARNING */
-  --ion-color-warning: #ffc409;
-  --ion-color-warning-rgb: 255, 196, 9;
-  --ion-color-warning-contrast: #000000;
-  --ion-color-warning-contrast-rgb: 0, 0, 0;
-  --ion-color-warning-shade: #e0ac08;
-  --ion-color-warning-tint: #ffca22;
+  /* Los tres ejes */
+  --axis-ambiental: #9ccb74;
+  --axis-economico: #e3b48a;
+  --axis-social: #a3c4c1;
 
-  /* DANGER */
-  --ion-color-danger: #eb445a;
-  --ion-color-danger-rgb: 235, 68, 90;
-  --ion-color-danger-contrast: #ffffff;
-  --ion-color-danger-contrast-rgb: 255, 255, 255;
-  --ion-color-danger-shade: #cf3c4f;
-  --ion-color-danger-tint: #ed576b;
+  /* Fondos */
+  --wall: url('../../public/assets/canopy.webp');
+  --wall-ambient: url('../../public/assets/canopy-ambient.webp');
+  --wall-film: url('../../public/assets/canopy-film.webp');
+  --wall-score: url('../../public/assets/canopy-score.webp');
 
-  /* DARK */
-  --ion-color-dark: #1a2e1a;
-  --ion-color-dark-rgb: 26, 46, 26;
-  --ion-color-dark-contrast: #ffffff;
-  --ion-color-dark-contrast-rgb: 255, 255, 255;
-  --ion-color-dark-shade: #152415;
-  --ion-color-dark-tint: #2f4330;
+  /* Tipografia. Kiona solo trae mayusculas: voz de marca en titulos grandes y cifras. */
+  --font-display: 'Kiona', 'Raleway', sans-serif;
+  --font-body: 'Raleway', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --t-xs: 0.8125rem;
+  --t-sm: 0.9375rem;
+  --t-md: 1.0625rem;
+  --t-lg: 1.3125rem;
+  --t-xl: 1.75rem;
+  --t-2xl: clamp(2rem, 1.5rem + 1.5vw, 3rem);
+  --t-mast: clamp(3.25rem, 1.2rem + 7vw, 9rem);
 
-  /* MEDIUM */
-  --ion-color-medium: #5a7260;
-  --ion-color-medium-rgb: 90, 114, 96;
-  --ion-color-medium-contrast: #ffffff;
-  --ion-color-medium-contrast-rgb: 255, 255, 255;
-  --ion-color-medium-shade: #3f5244;
-  --ion-color-medium-tint: #7a9280;
+  /* Espaciado en rem: crece con el texto en pantallas grandes */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+  --s-24: 6rem;
 
-  /* LIGHT */
-  --ion-color-light: #f4f8f0;
-  --ion-color-light-rgb: 244, 248, 240;
-  --ion-color-light-contrast: #1a2e1a;
-  --ion-color-light-contrast-rgb: 26, 46, 26;
-  --ion-color-light-shade: #ddebd5;
-  --ion-color-light-tint: #f9fbf7;
+  /* Radios: cuanto mas grande la superficie, mas radio */
+  --r-sm: 0.75rem;
+  --r-md: 1rem;
+  --r-lg: 1.75rem;
 
-  /* CUSTOM: Accent Orange */
-  --ion-color-orange: #ecaf80;
-  --ion-color-orange-rgb: 236, 175, 128;
-  --ion-color-orange-contrast: #1a2e1a;
-  --ion-color-orange-contrast-rgb: 26, 46, 26;
-  --ion-color-orange-shade: #d4905a;
-  --ion-color-orange-tint: #f2c49a;
+  /* Movimiento */
+  --dur-fast: 120ms;
+  --dur: 260ms;
+  --dur-slow: 900ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* CUSTOM: Light Green (soft surface) */
-  --ion-color-light-green: #deebd7;
-  --ion-color-light-green-rgb: 222, 235, 215;
-  --ion-color-light-green-contrast: #1a2e1a;
-  --ion-color-light-green-contrast-rgb: 26, 46, 26;
-  --ion-color-light-green-shade: #c2cebf;
-  --ion-color-light-green-tint: #e9f3e3;
+  /* Maquetacion */
+  --content-max: 104rem;
+  --reading-max: 66ch;
+  --gutter: var(--s-5);
+  --pane-inset: 0px;
+  --side-w: 0px;
+  --appbar-height: 3.5rem;
+  --lang-toggle-space: 7.25rem;
+  --tabbar-clearance: 7rem;
+  --top-clearance: calc(env(safe-area-inset-top, 0px) + var(--appbar-height) + var(--s-5));
+  --page-bottom: calc(var(--tabbar-clearance) + env(safe-area-inset-bottom, 0px));
 
-  /* CUSTOM: Greyish Blue */
-  --ion-color-greyish-blue: #cfdee5;
-  --ion-color-greyish-blue-rgb: 207, 222, 229;
-  --ion-color-greyish-blue-contrast: #1a2e1a;
-  --ion-color-greyish-blue-contrast-rgb: 26, 46, 26;
-  --ion-color-greyish-blue-shade: #b6c3ca;
-  --ion-color-greyish-blue-tint: #d4e1e8;
+  /* Glisse */
+  --lg-foreground: var(--ivory);
+  --lg-muted: rgb(243 241 229 / 0.62);
+  --lg-glass: rgb(11 31 20 / 0.42);
+  --lg-glass-active: rgb(40 66 50 / 0.62);
+  --lg-edge: rgb(255 255 255 / 0.14);
+  --lg-drop: rgb(0 0 0 / 0.28);
+  --lg-fill: var(--lichen);
+  --lg-on: var(--moss);
+  --lg-ring: rgb(243 241 229 / 0.72);
+  --lg-destructive: var(--danger);
+  --lg-selection: rgb(198 222 163 / 0.17);
+  --lg-highlight: rgb(243 241 229 / 0.1);
+  --lg-lens: rgb(255 255 255 / 0.06);
+  --lg-segment-track: rgb(255 255 255 / 0.07);
+  --lg-segment-thumb: rgb(243 241 229 / 0.22);
+  --lg-segment-label: var(--ivory);
+  --lg-segment-lens: transparent;
+  --lg-surface: rgb(17 41 27 / 0.86);
+  --lg-surface-edge: rgb(255 255 255 / 0.14);
+  --lg-shadow: rgb(0 0 0 / 0.5);
+  --lg-separator: var(--line-strong);
+  --lg-rim-shine: 0.18;
 
-  /* DESIGN TOKENS */
-  --sos-bg: #f4f8f0;
-  --sos-surface: #ffffff;
-  --sos-text-primary: #1a2e1a;
-  --sos-text-secondary: #5a7260;
-  --sos-border: #ddebd5;
-  --sos-accent: #ecaf80;
-
-  --sos-radius-sm: 8px;
-  --sos-radius-md: 14px;
-  --sos-radius-lg: 20px;
-  --sos-radius-pill: 100px;
-
-  --sos-shadow-sm: 0 1px 4px rgba(26, 46, 26, 0.08);
-  --sos-shadow-md: 0 4px 16px rgba(26, 46, 26, 0.12);
-  --sos-shadow-lg: 0 8px 28px rgba(26, 46, 26, 0.18);
-
-  /* ESCRITORIO (>= 768px). Solo los usan reglas dentro de media queries de escritorio. */
-  --d-bg: #0f1d12;
-  --d-surface: #15261a;
-  --d-surface-2: #1c3122;
-  --d-line: rgba(222, 235, 215, 0.1);
-  --d-line-strong: rgba(222, 235, 215, 0.18);
-  --d-text: #eef3e8;
-  --d-text-2: rgba(238, 243, 232, 0.68);
-  --d-text-3: rgba(238, 243, 232, 0.44);
-  --d-display: 'Kiona-Regular', 'Raleway', sans-serif;
-  --d-content-max: 1240px;
-  --d-gutter: 40px;
-
-  /* Los tres ejes (ver src/utils/axis.ts) */
-  --axis-ambiental: #80b259;
-  --axis-economico: #ecaf80;
-  --axis-social: #7db8ba;
-
-  --ion-background-color: var(--sos-bg);
-  --ion-item-background: var(--sos-surface);
+  /* Ionic */
+  --ion-font-family: var(--font-body);
+  --ion-background-color: #0b1f14;
+  --ion-background-color-rgb: 11, 31, 20;
+  --ion-text-color: #f3f1e5;
+  --ion-text-color-rgb: 243, 241, 229;
+  --ion-color-primary: #c6dea3;
+  --ion-color-primary-rgb: 198, 222, 163;
+  --ion-color-primary-contrast: #0b1f14;
+  --ion-color-primary-contrast-rgb: 11, 31, 20;
+  --ion-color-primary-shade: #aec38f;
+  --ion-color-primary-tint: #cce1ac;
+  --ion-color-success: #2c5f3c;
+  --ion-color-success-rgb: 44, 95, 60;
+  --ion-color-success-contrast: #f3f1e5;
+  --ion-color-success-contrast-rgb: 243, 241, 229;
+  --ion-color-success-shade: #275435;
+  --ion-color-success-tint: #416f50;
+  --ion-color-danger: #7c2a22;
+  --ion-color-danger-rgb: 124, 42, 34;
+  --ion-color-danger-contrast: #f3f1e5;
+  --ion-color-danger-contrast-rgb: 243, 241, 229;
+  --ion-color-danger-shade: #6d251e;
+  --ion-color-danger-tint: #893f38;
 }
 
-.ion-color-orange {
-  --ion-color-base: var(--ion-color-orange);
-  --ion-color-base-rgb: var(--ion-color-orange-rgb);
-  --ion-color-contrast: var(--ion-color-orange-contrast);
-  --ion-color-contrast-rgb: var(--ion-color-orange-contrast-rgb);
-  --ion-color-shade: var(--ion-color-orange-shade);
-  --ion-color-tint: var(--ion-color-orange-tint);
+@media (min-width: 768px) {
+  :root {
+    --gutter: clamp(2.5rem, 4.4vw, 6rem);
+    --pane-inset: 0.75rem;
+    --side-w: 5.75rem;
+    --tabbar-clearance: var(--s-16);
+    --top-clearance: var(--s-16);
+  }
 }
 
-.ion-color-light-green {
-  --ion-color-base: var(--ion-color-light-green);
-  --ion-color-base-rgb: var(--ion-color-light-green-rgb);
-  --ion-color-contrast: var(--ion-color-light-green-contrast);
-  --ion-color-contrast-rgb: var(--ion-color-light-green-contrast-rgb);
-  --ion-color-shade: var(--ion-color-light-green-shade);
-  --ion-color-tint: var(--ion-color-light-green-tint);
-}
-
-.ion-color-greyish-blue {
-  --ion-color-base: var(--ion-color-greyish-blue);
-  --ion-color-base-rgb: var(--ion-color-greyish-blue-rgb);
-  --ion-color-contrast: var(--ion-color-greyish-blue-contrast);
-  --ion-color-contrast-rgb: var(--ion-color-greyish-blue-contrast-rgb);
-  --ion-color-shade: var(--ion-color-greyish-blue-shade);
-  --ion-color-tint: var(--ion-color-greyish-blue-tint);
+@media (min-width: 1200px) {
+  :root {
+    --side-w: 15.25rem;
+  }
 }

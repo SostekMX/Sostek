@@ -1,31 +1,34 @@
-import { IonButton, IonToast, IonContent, IonInput, IonItem, IonPage, IonIcon } from '@ionic/react';
-import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
-import { useEffect, useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { IonToast } from '@ionic/react';
+import { Button, Input } from 'glisse';
+import { FormEvent, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { login } from '../../api/auth';
 import { getProfile } from '../../api/user';
+import Field from '../../components/ui/Field';
+import PasswordInput from '../../components/ui/PasswordInput';
+import { useI18n } from '../../i18n/LanguageContext';
 import { clearSession, startSession } from '../../utils/session';
-import '../../App.css';
-import './LogIn.css';
+import AuthLayout from './AuthLayout';
 
 const LogIn: React.FC = () => {
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string | null>('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [message, setMessage] = useState<string>('');
-    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
     const history = useHistory();
+    const { t, lang, apiError } = useI18n();
 
     // Entrar al login cierra la sesion completa; antes quedaba el token y se seguia mandando.
     useEffect(() => {
         clearSession();
-    }, [])
+    }, []);
 
-    function loginUser() {
-        login(email, password ?? '').then(function (data) {
+    function loginUser(event: FormEvent) {
+        event.preventDefault();
+        login(email, password).then(function (data) {
             if (data.success) {
                 startSession(email, data.token);
-                fetchAvatar().finally(() => history.push("/tab1"));
+                fetchAvatar().finally(() => history.push('/tab1'));
             } else {
                 setMessage(data.error);
                 setShowAlert(true);
@@ -33,7 +36,7 @@ const LogIn: React.FC = () => {
         }).catch(function (error) {
             // Sin esto un backend caido o el limite de intentos (429) no decia nada.
             console.error(error);
-            setMessage(error.response?.data?.error ?? 'No pudimos conectar con el servidor. Intenta de nuevo.');
+            setMessage(error.response?.data?.error ?? t('errors.noServer'));
             setShowAlert(true);
         });
     }
@@ -48,121 +51,44 @@ const LogIn: React.FC = () => {
     }
 
     return (
-        <IonPage>
-            <IonContent fullscreen>
-                <div className='login-split'>
+        <AuthLayout
+            headline={t('login.headline')}
+            desc={t('login.desc')}
+            extra={
+                <a href={`https://sostek.tec.mx/${lang}`} target='_blank' rel='noopener noreferrer' className='auth__site'>
+                    {t('login.visitSite')}
+                </a>
+            }
+        >
+            <h1 className='auth__title'>{t('login.title')}</h1>
+            <p className='auth__sub'>{t('login.subtitle')}</p>
 
-                    {/* Panel izquierdo — solo desktop */}
-                    <div className='login-brand'>
-                        <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
-                        <div className='login-brand__content'>
-                            <p className='login-brand__tag'>Plataforma Educativa</p>
-                            <h1 className='login-brand__headline'>
-                                Aprende,<br />eval&uacute;a<br />y crece.
-                            </h1>
-                            <p className='login-brand__desc'>
-                                Mide el nivel de sostenibilidad de tus proyectos acad&eacute;micos
-                                y accede a contenido especializado.
-                            </p>
-                            <a
-                                href='https://sostek.tec.mx/es'
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                className='login-brand__site-link'
-                            >
-                                🌿 Visitar sitio oficial de <u>SOSTEK</u>
-                            </a>
-                        </div>
-                        <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
-                    </div>
+            <form className='form-stack' onSubmit={loginUser}>
+                <Field id='login-email' label={t('auth.email')}>
+                    <Input id='login-email' type='email' autoComplete='email' placeholder={t('auth.emailPh')} value={email} onValueChange={setEmail} />
+                </Field>
+                <Field id='login-password' label={t('auth.password')}>
+                    <PasswordInput id='login-password' autoComplete='current-password' placeholder='••••••••' value={password} onValueChange={setPassword} />
+                </Field>
+                <Button type='submit' variant='filled' className='btn-lg btn-block'>{t('login.title')}</Button>
+            </form>
 
-                    {/* Panel derecho — formulario */}
-                    <div className='login-form-panel'>
-                        <div className='login-form-inner'>
+            <div className='auth__links auth__links--split'>
+                <a className='text-link' href='/ForgotPassword'>{t('login.forgot')}</a>
+                <a className='text-link' href='/SignUp'>{t('login.noAccount')}</a>
+            </div>
 
-                            {/* Logo — solo mobile */}
-                            <img src="/assets/sostek-logo.png" className='login-logo-mobile' alt='Sostek' />
+            <button type='button' className='auth__guest' onClick={() => history.push('/MainMenu')}>{t('login.guest')}</button>
 
-                            <div className='login-welcome'>
-                                <span className='login-welcome__line' />
-                                <span className='login-welcome__text'>BIENVENIDO</span>
-                                <span className='login-welcome__line' />
-                            </div>
-
-                            <h2 className='login-title'>Iniciar sesi&oacute;n</h2>
-                            <p className='login-subtitle'>Ingresa tus credenciales para continuar.</p>
-
-                            <div className='login-fields'>
-                                <div className='login-field'>
-                                    <label className='login-field__label'>Correo electr&oacute;nico</label>
-                                    <IonItem className='login-field__item' lines='none'>
-                                        <IonInput
-                                            type='email'
-                                            placeholder='usuario@ejemplo.com'
-                                            value={email}
-                                            onIonChange={(e) => setEmail(e.target.value as string)}
-                                        />
-                                    </IonItem>
-                                </div>
-                                <div className='login-field'>
-                                    <label className='login-field__label'>Contrase&ntilde;a</label>
-                                    <IonItem className='login-field__item' lines='none'>
-                                        <IonInput
-                                            type={showPassword ? 'text' : 'password'}
-                                            placeholder='••••••••'
-                                            value={password}
-                                            onIonChange={(e) => setPassword(e.target.value as string)}
-                                        />
-                                        <IonButton
-                                            slot='end'
-                                            type='button'
-                                            fill='clear'
-                                            className='password-visibility-toggle'
-                                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                                            aria-pressed={showPassword}
-                                            onClick={() => setShowPassword(prev => !prev)}
-                                        >
-                                            <IonIcon slot='icon-only' icon={showPassword ? eyeOffOutline : eyeOutline} />
-                                        </IonButton>
-                                    </IonItem>
-                                </div>
-                            </div>
-
-                            <IonButton expand='block' color='primary' onClick={loginUser} className='login-btn-main'>
-                                Iniciar sesi&oacute;n
-                            </IonButton>
-
-                            <IonButton expand='block' fill='clear' href='/ForgotPassword' className='login-btn-secondary'>
-                                &iquest;Olvidaste tu contrase&ntilde;a?
-                            </IonButton>
-
-                            <IonButton expand='block' fill='clear' href='SignUp' className='login-btn-secondary'>
-                                &iquest;No tienes cuenta? Reg&iacute;strate
-                            </IonButton>
-
-                            <div className='login-divider'>
-                                <span /><small>o</small><span />
-                            </div>
-
-                            <IonButton expand='block' fill='clear' href='MainMenu' className='login-btn-guest'>
-                                Continuar como invitado
-                            </IonButton>
-
-
-                        </div>
-                    </div>
-                </div>
-
-                <IonToast
-                    isOpen={showAlert}
-                    onDidDismiss={() => setShowAlert(false)}
-                    message={message}
-                    duration={3500}
-                    color="danger"
-                    position="bottom"
-                />
-            </IonContent>
-        </IonPage>
+            <IonToast
+                isOpen={showAlert}
+                onDidDismiss={() => setShowAlert(false)}
+                message={apiError(message)}
+                duration={3500}
+                color='danger'
+                position='bottom'
+            />
+        </AuthLayout>
     );
 };
 

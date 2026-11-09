@@ -1,211 +1,38 @@
-/* Envoltorio y texto de apoyo: solo cuentan en escritorio. */
-.evaluation__header {
-    display: contents;
-}
-
-.evaluation__intro {
-    display: none;
-}
-
-.header__title {
-    color: #f0f0f0;
-    text-align: center;
-    font-size: 1.15rem;
-    font-weight: 700;
-    padding: 20px 20px 12px;
-    font-family: 'Kiona-Regular', 'Raleway', sans-serif;
-    letter-spacing: 0.4px;
-}
-
-/* AppBarPopOver es un ion-toolbar suelto ANTES del ion-content, asi que el contenedor de
-   scroll ya empieza debajo de la barra: el sticky va a top 0, no a 56px. */
-.eval-progress {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
-    background: #0d1a0d;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.eval-progress__bar {
-    flex: 1;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-}
-
-.eval-progress__fill {
-    height: 100%;
-    border-radius: 3px;
-    background: #80b259;
-    transition: width 300ms ease-out;
-}
-
-.eval-progress__count {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.55);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+.evaluation .page-head__title {
+  font-size: clamp(2.5rem, 1rem + 5vw, 6.5rem);
+  line-height: 1;
 }
 
 .evaluation__layout {
-    padding: 14px 16px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
 }
 
-/* El tope existe tambien abajo de 1024: el problema del screenshot era el texto de las
-   preguntas cruzando la ventana entera. */
 .evaluation__questions {
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .evaluation__submit {
-    padding: 16px 0 0;
-}
-
-.evaluation__submit ion-button {
-    --border-radius: 100px;
-    width: 100%;
-    max-width: 340px;
-    height: 50px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-}
-
-.evaluation__skeleton {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px 16px 8px;
-    max-width: 720px;
-    margin: 0 auto;
-}
-
-.eval-question-skeleton {
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.04);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.eval-question-skeleton__title {
-    height: 16px;
-    width: 85%;
-}
-
-.eval-question-skeleton__option {
-    height: 14px;
-    width: 70%;
-}
-
-.eval-question-skeleton__option--short {
-    width: 45%;
+  margin-top: var(--s-8);
 }
 
 @media (min-width: 1024px) {
-    /* Colocacion explicita: el nav esta antes en el DOM por mobile, pero aqui va a la
-       derecha. Es el mismo recurso que usa .juega-top. */
-    .evaluation__layout {
-        display: grid;
-        grid-template-columns: minmax(0, 720px) 300px;
-        gap: 28px;
-        justify-content: center;
-        align-items: start;
-        padding: 20px 40px 48px;
-    }
+  .evaluation__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    align-items: start;
+    gap: var(--s-16);
+  }
 
-    /* Que el contador no quede pegado al borde de la ventana. */
-    .eval-progress {
-        padding-inline: 40px;
-    }
+  .evaluation__questions {
+    grid-column: 1;
+    grid-row: 1;
+  }
 
-    .evaluation__questions {
-        grid-column: 1;
-        grid-row: 1;
-        max-width: none;
-    }
-
-    .qnav {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    .header__title {
-        font-size: 1.4rem;
-        padding-top: 28px;
-    }
-}
-
-/* ==========================================================
-   Escritorio (>= 768px). La barra superior no existe aqui, asi que el titulo pone su
-   propio aire y se alinea a la izquierda con la columna de preguntas (720 + 28 + 300).
-   ========================================================== */
-@media (min-width: 768px) {
-    .evaluation__header {
-        display: block;
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 40px 32px 20px;
-    }
-
-    .header__title {
-        text-align: left;
-        padding: 0;
-        margin: 0 0 10px;
-        font-family: var(--d-display);
-        font-size: 2rem;
-        font-weight: 400;
-        line-height: 1.1;
-        color: var(--d-text);
-    }
-
-    .evaluation__intro {
-        display: block;
-        margin: 0;
-        max-width: 60ch;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: var(--d-text-2);
-    }
-
-    .eval-progress {
-        background: var(--d-bg);
-        border-bottom-color: var(--d-line);
-    }
-}
-
-@media (min-width: 1024px) {
-    .evaluation__header {
-        max-width: calc(720px + 28px + 300px);
-        padding: 44px var(--d-gutter) 8px;
-        box-sizing: content-box;
-    }
-
-    .header__title {
-        font-size: 2.3rem;
-        padding: 0;
-    }
-
-    /* El avance pasa al panel de la derecha (QuestionNav). */
-    .eval-progress {
-        display: none;
-    }
-
-    .evaluation__layout {
-        padding-top: 24px;
-        gap: 36px;
-    }
+  .evaluation__submit {
+    display: none;
+  }
 }

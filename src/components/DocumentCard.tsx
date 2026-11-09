@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import './DocumentCard.css';
-import { IonCard, IonIcon, IonImg } from '@ionic/react';
+import { Link } from 'react-router-dom';
+import { IonIcon } from '@ionic/react';
+import { Button } from 'glisse';
 import { heart, heartOutline } from 'ionicons/icons';
 import { axisOf } from '../utils/axis';
+import { sized } from '../utils/image';
+import { useI18n } from '../i18n/LanguageContext';
+import './DocumentCard.css';
 
 interface DocumentProps {
     name: string;
@@ -18,52 +22,49 @@ interface DocumentProps {
 }
 
 const DocumentCard: React.FC<DocumentProps> = ({ name, description, img_url, id, type, category, meta, isFavorite, isLoggedIn, onToggleFavorite }) => {
-    const [imgLoading, setImgLoading] = useState(true);
-    const [imgError, setImgError] = useState(false);
-    // El color del eje solo se pinta en escritorio (DocumentCard.css, >= 768px).
+    const { t, tx } = useI18n();
+    const [imgState, setImgState] = useState<'loading' | 'ok' | 'error'>('loading');
     const axis = axisOf(category);
+    const href = type === 'presentation' ? `/presentation/${id}` : `/Documents/${id}`;
+
     return (
-        <IonCard
-            className={`document-card${axis ? ` axis-${axis}` : ''}`}
-            button
-            routerDirection='forward'
-            routerLink={type === 'presentation' ? `/presentation/${id}` : `/Documents/${id}`}
-        >
-            <div className='document-card__image-wrapper'>
-                {imgLoading && !imgError && <div className='document-card__skeleton' />}
-                {imgError && <div className='document-card__img-fallback' />}
-                <IonImg
-                    className={`document-card-image ${imgLoading ? 'hidden' : 'visible'}`}
-                    src={img_url}
-                    onIonImgDidLoad={() => setImgLoading(false)}
-                    onIonError={() => { setImgLoading(false); setImgError(true); }}
-                />
-                {isLoggedIn && (
-                    <button
-                        className={`document-card__fav-btn ${isFavorite ? 'document-card__fav-btn--active' : ''}`}
-                        aria-label={isFavorite ? 'Quitar de favoritos' : 'Guardar en favoritos'}
-                        aria-pressed={!!isFavorite}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            onToggleFavorite?.();
-                        }}
-                    >
-                        <IonIcon icon={isFavorite ? heart : heartOutline} />
-                    </button>
+        <article className={`doc-card${axis ? ` axis-${axis}` : ''}`}>
+            <div className='doc-card__media'>
+                {imgState === 'loading' && <div className='doc-card__placeholder shimmer' />}
+                {imgState === 'error' && <div className='doc-card__placeholder' />}
+                {imgState !== 'error' && (
+                    <img
+                        className={`doc-card__img${imgState === 'ok' ? ' doc-card__img--ready' : ''}`}
+                        src={sized(img_url, 800)}
+                        alt=''
+                        loading='lazy'
+                        decoding='async'
+                        onLoad={() => setImgState('ok')}
+                        onError={() => setImgState('error')}
+                    />
                 )}
             </div>
-            <div className='document-card__content'>
-                <span className='document-card__type-badge'>
-                    {category || (type === 'presentation' ? 'Presentación' : 'Artículo')}
+            <div className='doc-card__body'>
+                <span className='axis-tag'>
+                    {tx(category) || (type === 'presentation' ? t('card.presentation') : t('card.article'))}
                 </span>
-                <p className='document-card__title'>{name}</p>
-                {description && (
-                    <p className='document-card__description'>{description}</p>
-                )}
-                {meta && <p className='document-card__meta'>{meta}</p>}
+                <h3 className='doc-card__title'>
+                    {/* El ::after del enlace cubre la tarjeta: toda es clicable y el corazon sigue siendo un boton aparte. */}
+                    <Link to={href} className='doc-card__link'>{name}</Link>
+                </h3>
+                {description && <p className='doc-card__desc'>{description}</p>}
+                {meta && <p className='doc-card__meta'>{meta}</p>}
             </div>
-        </IonCard>
+            {isLoggedIn && (
+                <Button
+                    className='doc-card__fav'
+                    icon={<IonIcon icon={isFavorite ? heart : heartOutline} aria-hidden='true' />}
+                    aria-label={isFavorite ? t('card.removeFav') : t('card.addFav')}
+                    aria-pressed={!!isFavorite}
+                    onClick={() => onToggleFavorite?.()}
+                />
+            )}
+        </article>
     );
 };
 

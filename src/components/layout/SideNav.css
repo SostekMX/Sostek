@@ -1,325 +1,186 @@
-/* Ancho del panel: riel de iconos en tablet y laptop chica, barra completa desde 1200px. */
+/* Riel de iconos entre 768 y 1199; barra con texto desde 1200. */
 ion-split-pane {
-    --side-width: 84px;
-    --side-min-width: 84px;
-    --side-max-width: 84px;
-    --border: 1px solid var(--d-line);
+  --side-width: 5.75rem;
+  --side-min-width: 5.75rem;
+  --side-max-width: 5.75rem;
+  --border: 0;
 }
 
-/* El borde del split pane es translucido: sin fondo propio deja ver el fondo claro de Ionic.
-   Un tono mas hondo que el del contenido para que el panel se lea como marco. */
 .sidenav {
-    --background: #0b160d;
-    background: #0b160d;
+  --background: transparent;
+  --width: 5.75rem;
 }
 
 .sidenav__content {
-    --background: #0b160d;
+  --background: linear-gradient(90deg, rgb(11 31 20 / 0.2) 0, rgb(11 31 20 / 0.5) 60%, #0b1f14 100%), var(--wall-ambient) 0 0 / auto 140% no-repeat, #0b1f14;
+}
+
+.sidenav__glass.lg-glass {
+  position: absolute;
+  inset: var(--pane-inset) 0 var(--pane-inset) var(--pane-inset);
+  border-radius: var(--r-lg);
+  --lg-glass: rgb(9 26 17 / 0.44);
+  --lg-blur: 26px;
+  box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 0.34);
 }
 
 .sidenav__inner {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-height: 100%;
-    padding: 18px 10px 14px;
-    box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--s-5) var(--s-2);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidenav__inner::-webkit-scrollbar {
+  display: none;
+}
+
+.sidenav__lens.lg-glass {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 1rem;
+  --lg-glass: rgb(243 241 229 / 0.12);
+  --lg-edge: rgb(255 255 255 / 0.16);
+  --lg-blur: 0px;
+  box-shadow: none;
+  transition: transform 380ms var(--ease), width 380ms var(--ease), height 380ms var(--ease);
+  pointer-events: none;
 }
 
 .sidenav__logo {
-    display: flex;
-    justify-content: center;
-    padding: 6px 0 10px;
-    border-radius: 10px;
-}
-
-.sidenav__logo img {
-    height: 26px;
-    width: auto;
-}
-
-/* Firma: los tres ejes como una franja de tres tramos bajo el logo. */
-.sidenav__axes {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3px;
-    width: 36px;
-    margin: 0 auto 22px;
-}
-
-.sidenav__axes span {
-    height: 3px;
-    border-radius: 2px;
-    background: var(--axis);
+  position: relative;
+  display: block;
+  width: 3.5rem;
+  margin-inline: auto;
+  color: var(--ivory);
 }
 
 .sidenav__group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.sidenav__group--divided {
-    margin-top: 12px;
-    padding-top: 14px;
-    border-top: 1px solid var(--d-line);
-}
-
-/* Riel: icono arriba y etiqueta corta debajo, igual que el tab bar pero de pie. */
-.sidenav__link,
-.sidenav__user {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    width: 100%;
-    padding: 10px 4px;
-    border: none;
-    border-radius: 14px;
-    background: transparent;
-    color: var(--d-text-3);
-    font: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.18s, color 0.18s;
-    box-sizing: border-box;
-}
-
-.sidenav__link ion-icon {
-    font-size: 22px;
-    flex-shrink: 0;
-}
-
-.sidenav__text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-}
-
-.sidenav__label {
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    text-transform: uppercase;
-    /* "Iniciar sesion" y "Cerrar sesion" se parten en dos lineas en el riel; las palabras no. */
-    text-align: center;
-}
-
-/* En el riel no hay lugar para la descripcion: la da el atributo title. */
-.sidenav__hint {
-    display: none;
-}
-
-.sidenav__link--active {
-    background: rgba(128, 178, 89, 0.14);
-    color: #80b259;
-}
-
-.sidenav__link:focus-visible,
-.sidenav__user:focus-visible,
-.sidenav__logo:focus-visible {
-    outline: 2px solid #80b259;
-    outline-offset: 2px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .sidenav__link:hover,
-    .sidenav__user:hover {
-        background: rgba(222, 235, 215, 0.06);
-        color: var(--d-text);
-    }
-
-    .sidenav__link--active:hover {
-        background: rgba(128, 178, 89, 0.2);
-        color: #80b259;
-    }
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--s-8);
 }
 
 .sidenav__account {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-top: 14px;
-    border-top: 1px solid var(--d-line);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
 }
 
-.sidenav__avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1.5px solid #80b259;
-    flex-shrink: 0;
+.sidenav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3rem;
+  padding: var(--s-2);
+  border: 0;
+  border-radius: 1rem;
+  background: none;
+  color: var(--ivory-2);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-fast) ease-out, transform var(--dur-fast) ease-out;
 }
 
-.sidenav__avatar--icon {
-    border: none;
-    font-size: 34px;
+.sidenav__link:active {
+  transform: scale(0.98);
 }
 
-.sidenav__user-text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
+.sidenav__link[aria-current='page'] {
+  color: var(--ivory);
 }
 
-.sidenav__user-title {
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    text-transform: uppercase;
+.sidenav__link ion-icon {
+  flex: none;
+  font-size: 1.375rem;
 }
 
-/* En el riel no cabe el correo. */
-.sidenav__user-email {
-    display: none;
+.sidenav__label {
+  display: none;
 }
 
 .sidenav__link--cta {
-    color: #80b259;
+  color: var(--ivory);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
 }
 
-/* Barra completa: icono y texto en fila, cada seccion con una linea que dice que hay adentro
-   y el correo bajo "Perfil". */
+.sidenav__avatar {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sidenav__link:hover {
+    color: var(--ivory);
+  }
+
+  .sidenav__link--cta:hover {
+    box-shadow: inset 0 0 0 1px var(--ivory-2);
+  }
+}
+
 @media (min-width: 1200px) {
-    ion-split-pane {
-        --side-width: 260px;
-        --side-min-width: 260px;
-        --side-max-width: 260px;
-    }
+  ion-split-pane {
+    --side-width: 15.25rem;
+    --side-min-width: 15.25rem;
+    --side-max-width: 15.25rem;
+  }
 
-    .sidenav__inner {
-        padding: 26px 16px 18px;
-    }
+  .sidenav {
+    --width: 15.25rem;
+  }
 
-    .sidenav__logo {
-        justify-content: flex-start;
-        padding: 0 12px 14px;
-    }
+  .sidenav__inner {
+    padding: var(--s-6) var(--s-3);
+  }
 
-    .sidenav__logo img {
-        height: 40px;
-    }
+  .sidenav__logo {
+    width: 7.5rem;
+    margin: 0 var(--s-2);
+  }
 
-    .sidenav__axes {
-        width: 64px;
-        margin: 0 12px 34px;
-    }
+  .sidenav__group {
+    margin-top: var(--s-10);
+  }
 
-    .sidenav__link,
-    .sidenav__user {
-        flex-direction: row;
-        gap: 14px;
-        padding: 11px 14px;
-        border-radius: 12px;
-        text-align: left;
-    }
+  .sidenav__link {
+    justify-content: flex-start;
+    gap: var(--s-3);
+    padding: var(--s-2) var(--s-3);
+  }
 
-    .sidenav__text {
-        align-items: flex-start;
-        gap: 1px;
-    }
+  .sidenav__label {
+    display: block;
+    font-size: var(--t-md);
+    font-weight: 500;
+  }
 
-    .sidenav__label {
-        font-size: 0.95rem;
-        font-weight: 600;
-        letter-spacing: 0.1px;
-        text-transform: none;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    .sidenav__hint {
-        display: block;
-        font-size: 0.74rem;
-        color: var(--d-text-3);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
-
-    .sidenav__link--active {
-        color: var(--d-text);
-    }
-
-    .sidenav__link--active ion-icon {
-        color: #80b259;
-    }
-
-    /* Marca de la seccion activa pegada al borde del boton. */
-    .sidenav__link--active::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 12px;
-        bottom: 12px;
-        width: 3px;
-        border-radius: 0 3px 3px 0;
-        background: #80b259;
-    }
-
-    .sidenav__link--active .sidenav__hint {
-        color: var(--d-text-2);
-    }
-
-    .sidenav__user {
-        background: var(--d-surface);
-        padding: 10px 12px;
-    }
-
-    .sidenav__user.sidenav__link--active {
-        background: rgba(128, 178, 89, 0.14);
-    }
-
-    .sidenav__user-title {
-        font-size: 0.92rem;
-        font-weight: 600;
-        letter-spacing: 0.1px;
-        text-transform: none;
-        color: var(--d-text);
-    }
-
-    .sidenav__user-email {
-        display: block;
-        font-size: 0.74rem;
-        color: var(--d-text-3);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    /* Blanco sobre el verde de marca no llega al contraste minimo: va texto oscuro. */
-    .sidenav__link--cta {
-        justify-content: center;
-        background: #80b259;
-        color: #0f1d12;
-        border-radius: 100px;
-    }
-
-    .sidenav__link--cta .sidenav__label {
-        font-weight: 700;
-    }
+  .sidenav__link--cta {
+    justify-content: center;
+  }
 }
 
-@media (hover: hover) and (pointer: fine) and (min-width: 1200px) {
-    .sidenav__user:hover {
-        background: var(--d-surface-2);
-    }
+@media (prefers-reduced-motion: reduce) {
+  .sidenav__lens.lg-glass,
+  .sidenav__link {
+    transition: none;
+  }
 
-    .sidenav__link--cta:hover {
-        background: #9dc974;
-        color: #0f1d12;
-    }
-}
-
-/* Contenedor de IonTabs dentro del split pane. Ionic solo lo estira cuando el panel lateral
-   esta visible; en mobile hay que estirarlo a mano o queda con ancho 0. */
-.main-pane {
-    position: relative;
-    flex: 1;
-    min-width: 0;
+  .sidenav__link:active {
+    transform: none;
+  }
 }

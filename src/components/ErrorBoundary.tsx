@@ -1,4 +1,5 @@
 import React from 'react';
+import { LanguageContext } from '../i18n/LanguageContext';
 
 interface State {
   hasError: boolean;
@@ -17,18 +18,21 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, State> {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className='error-boundary'>
-          <img src='/assets/sostek-logo.png' alt='SOSTEK' className='error-boundary__logo' />
-          <h2 className='error-boundary__title'>Algo salió mal</h2>
-          <p className='error-boundary__msg'>Ocurrió un error inesperado. Intenta recargar la página.</p>
-          <button
-            className='error-boundary__btn'
-            onClick={() => { this.setState({ hasError: false }); window.location.replace('/'); }}
-          >
-            Reintentar
-          </button>
-        </div>
+      return (        <LanguageContext.Consumer>
+          {({ t }) => (
+            <div className='error-boundary'>
+              <img src='/assets/sostek-logo.png' alt='SOSTEK' className='error-boundary__logo' />
+              <h2 className='error-boundary__title'>{t('error.title')}</h2>
+              <p className='error-boundary__msg'>{t('error.msg')}</p>
+              <button
+                className='error-boundary__btn'
+                onClick={() => { this.setState({ hasError: false }); window.location.replace('/'); }}
+              >
+                {t('error.retry')}
+              </button>
+            </div>
+          )}
+        </LanguageContext.Consumer>
       );
     }
     return this.props.children;

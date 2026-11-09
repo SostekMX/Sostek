@@ -1,0 +1,30 @@
+.lang-toggle.lg-glass {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 0.625rem);
+  right: var(--s-3);
+  z-index: 100;
+  padding: 3px;
+  border-radius: 100px;
+  --lg-glass: rgb(11 31 20 / 0.66);
+  --lg-blur: 18px;
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.3);
+}
+
+.lang-toggle .lg-segmented {
+  --lg-tab-width: 2.625rem;
+  --lg-tab-height: 1.875rem;
+}
+
+.lang-toggle .lg-segmented .lg-tab,
+.lang-toggle .lg-segmented .lg-tab-copy {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+@media (min-width: 768px) {
+  .lang-toggle.lg-glass {
+    top: calc(var(--pane-inset) + var(--s-5));
+    right: calc(var(--pane-inset) + var(--s-5));
+  }
+}

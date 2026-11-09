@@ -1,61 +1,41 @@
-import {
-    IonContent,
-    IonItem,
-    IonInput,
-    IonToast,
-    IonPage,
-    IonButton,
-    IonIcon,
-} from '@ionic/react';
-import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
-import { useHistory } from "react-router-dom";
-import '../../App.css';
-import '../logIn/LogIn.css';
-import './SignUp.css';
-import useMediaQuery, { DESKTOP_QUERY } from '../../hooks/useMediaQuery';
-import { useEffect, useRef, useState } from 'react';
+import { IonToast } from '@ionic/react';
+import { Button, Input, SegmentedControl } from 'glisse';
+import { FormEvent, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { signup } from '../../api/auth';
+import Field from '../../components/ui/Field';
+import PasswordInput from '../../components/ui/PasswordInput';
+import { useI18n } from '../../i18n/LanguageContext';
 import { startSession } from '../../utils/session';
+import AuthLayout from '../logIn/AuthLayout';
 
 const SignUp: React.FC = () => {
-    const [email, setEmail] = useState<string | null>('');
-    const [password, setPassword] = useState<string | null>('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [name, setName] = useState<string | null>('');
-    const [surname, setSurname] = useState<string | null>('');
-    const [birthDate, setBirthDate] = useState<string | null>('');
-    const [occupation, setOccupation] = useState<string | null>('');
-    const [gender, setGender] = useState<string | null>('');
-    const [message, setMessage] = useState<string>('');
-    const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [genderOpen, setGenderOpen] = useState(false);
-    const genderRef = useRef<HTMLDivElement>(null);
-    const isDesktop = useMediaQuery(DESKTOP_QUERY);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [birthDate, setBirthDate] = useState('');
+    const [occupation, setOccupation] = useState('');
+    const [gender, setGender] = useState('');
+    const [message, setMessage] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
     const history = useHistory();
+    const { t, apiError } = useI18n();
 
-    useEffect(() => {
-        function handleClickOutside(e: MouseEvent) {
-            if (genderRef.current && !genderRef.current.contains(e.target as Node)) {
-                setGenderOpen(false);
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    function signUpUser() {
-        if (!password || password.length < 8) {
-            setMessage('La contraseña debe tener al menos 8 caracteres');
+    function signUpUser(event: FormEvent) {
+        event.preventDefault();
+        if (password.length < 8) {
+            setMessage(t('errors.passwordMin'));
             setShowAlert(true);
             return;
         }
         signup({
             email, password, name, surname,
-            birth_date: birthDate, occupation, gender
+            birth_date: birthDate, occupation, gender,
         }).then(function (data) {
             if (data.success) {
-                startSession(email as string, data.token);
-                history.push("/tab1");
+                startSession(email, data.token);
+                history.push('/tab1');
             } else {
                 setMessage(data.error);
                 setShowAlert(true);
@@ -63,173 +43,64 @@ const SignUp: React.FC = () => {
         }).catch(function (error) {
             // Sin esto un backend caido o el limite de intentos (429) no decia nada.
             console.error(error);
-            setMessage(error.response?.data?.error ?? 'No pudimos conectar con el servidor. Intenta de nuevo.');
+            setMessage(error.response?.data?.error ?? t('errors.noServer'));
             setShowAlert(true);
         });
     }
 
     return (
-        <IonPage>
-            <IonContent fullscreen>
-                {/* En mobile .signup-split es un div sin estilos; en escritorio pone la marca
-                    a la izquierda y el formulario a la derecha. */}
-                <div className='signup-split'>
-                {/* Panel de marca: el mismo de LogIn, solo en escritorio. */}
-                {isDesktop && (
-                    <aside className='login-brand auth-brand'>
-                        <img src="/assets/sostek-logo.png" className='login-brand__logo' alt='Sostek' />
-                        <div className='login-brand__content'>
-                            <p className='login-brand__headline'>Guarda lo<br />que aprendes.</p>
-                            <p className='login-brand__desc'>Con tu cuenta guardas art&iacute;culos y presentaciones en Favoritos, y el puntaje de tus evaluaciones queda registrado.</p>
-                        </div>
-                        <p className='login-brand__footer'>SOSTEK &copy; 2025</p>
-                    </aside>
-                )}
-                <div className='signup-page'>
+        <AuthLayout headline={t('signup.headline')} desc={t('signup.brandDesc')} wide>
+            <h1 className='auth__title'>{t('signup.title')}</h1>
+            <p className='auth__sub'>{t('signup.subtitle')}</p>
 
-                    {/* Header */}
-                    <div className='signup-header'>
-                        <p className='signup-header__tag'>Formulario de registro</p>
-                        <h1 className='signup-header__title'>Crea tu cuenta</h1>
-                        <p className='signup-header__subtitle'>
-                            Solo los datos esenciales. Podr&aacute;s completar tu perfil despu&eacute;s.
-                        </p>
-                    </div>
-
-                    {/* Tarjeta de formulario */}
-                    <div className='signup-card'>
-                        <div className='signup-card__header'>
-                            <div className='signup-card__icon'>🌱</div>
-                            <div>
-                                <h2 className='signup-card__section-title'>Informaci&oacute;n personal</h2>
-                                <p className='signup-card__section-desc'>Ingresa tus datos para crear tu cuenta en SOSTEK.</p>
-                            </div>
-                        </div>
-
-                        <div className='signup-fields'>
-                            <div className='signup-field'>
-                                <label className='signup-field__label'>Nombre</label>
-                                <IonItem className='signup-field__item' lines='none'>
-                                    <IonInput
-                                        type='text'
-                                        placeholder='Ej. Ana'
-                                        value={name}
-                                        onIonChange={(e) => setName(e.target.value as string)}
-                                    />
-                                </IonItem>
-                            </div>
-                            <div className='signup-field'>
-                                <label className='signup-field__label'>Apellido</label>
-                                <IonItem className='signup-field__item' lines='none'>
-                                    <IonInput
-                                        type='text'
-                                        placeholder='Ej. Mart&iacute;nez'
-                                        value={surname}
-                                        onIonChange={(e) => setSurname(e.target.value as string)}
-                                    />
-                                </IonItem>
-                            </div>
-                            <div className='signup-field signup-field--full'>
-                                <label className='signup-field__label'>Correo electr&oacute;nico</label>
-                                <IonItem className='signup-field__item' lines='none'>
-                                    <IonInput
-                                        type='email'
-                                        placeholder='usuario@ejemplo.com'
-                                        value={email}
-                                        onIonChange={(e) => setEmail(e.target.value as string)}
-                                    />
-                                </IonItem>
-                            </div>
-                            <div className='signup-field signup-field--full'>
-                                <label className='signup-field__label'>Contrase&ntilde;a</label>
-                                <IonItem className='signup-field__item' lines='none'>
-                                    <IonInput
-                                        type={showPassword ? 'text' : 'password'}
-                                        placeholder='Mínimo 8 caracteres'
-                                        value={password}
-                                        onIonChange={(e) => setPassword(e.target.value as string)}
-                                    />
-                                    <IonButton
-                                        slot='end'
-                                        type='button'
-                                        fill='clear'
-                                        className='password-visibility-toggle'
-                                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                                        aria-pressed={showPassword}
-                                        onClick={() => setShowPassword(prev => !prev)}
-                                    >
-                                        <IonIcon slot='icon-only' icon={showPassword ? eyeOffOutline : eyeOutline} />
-                                    </IonButton>
-                                </IonItem>
-                            </div>
-                            <div className='signup-field'>
-                                <label className='signup-field__label'>Fecha de nacimiento</label>
-                                <IonItem className='signup-field__item' lines='none'>
-                                    <IonInput
-                                        type='date'
-                                        value={birthDate}
-                                        onIonChange={(e) => setBirthDate(e.target.value as string)}
-                                    />
-                                </IonItem>
-                            </div>
-                            <div className='signup-field'>
-                                <label className='signup-field__label'>Ocupaci&oacute;n</label>
-                                <IonItem className='signup-field__item' lines='none'>
-                                    <IonInput
-                                        type='text'
-                                        placeholder='Ej. Estudiante'
-                                        value={occupation}
-                                        onIonChange={(e) => setOccupation(e.target.value as string)}
-                                    />
-                                </IonItem>
-                            </div>
-                            <div className='signup-field' ref={genderRef}>
-                                <label className='signup-field__label'>Sexo</label>
-                                <div className='signup-select-wrapper'>
-                                    <button
-                                        type='button'
-                                        className={`signup-select-btn ${genderOpen ? 'open' : ''}`}
-                                        onClick={() => setGenderOpen(o => !o)}
-                                    >
-                                        <span className={gender ? '' : 'placeholder'}>
-                                            {gender === 'masculino' ? 'Masculino' : gender === 'femenino' ? 'Femenino' : 'Selecciona'}
-                                        </span>
-                                        <span className={`signup-select-chevron ${genderOpen ? 'open' : ''}`}>&#8964;</span>
-                                    </button>
-                                    <div className={`signup-select-dropdown ${genderOpen ? 'open' : ''}`}>
-                                        <button type='button' onClick={() => { setGender('masculino'); setGenderOpen(false); }}>
-                                            Masculino
-                                        </button>
-                                        <button type='button' onClick={() => { setGender('femenino'); setGenderOpen(false); }}>
-                                            Femenino
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='signup-actions'>
-                            <IonButton expand='block' color='primary' onClick={signUpUser} className='signup-btn-main'>
-                                Registrarme
-                            </IonButton>
-                            <IonButton expand='block' fill='clear' href='/' className='signup-btn-back'>
-                                &iquest;Ya tienes cuenta? Inicia sesi&oacute;n
-                            </IonButton>
-                        </div>
-                    </div>
-
+            <form className='form-stack' onSubmit={signUpUser}>
+                <div className='auth__grid'>
+                    <Field id='su-name' label={t('form.name')}>
+                        <Input id='su-name' autoComplete='given-name' placeholder={t('form.namePh')} value={name} onValueChange={setName} />
+                    </Field>
+                    <Field id='su-surname' label={t('form.surname')}>
+                        <Input id='su-surname' autoComplete='family-name' placeholder={t('form.surnamePh')} value={surname} onValueChange={setSurname} />
+                    </Field>
+                    <Field id='su-email' label={t('auth.email')} className='full'>
+                        <Input id='su-email' type='email' autoComplete='email' placeholder={t('auth.emailPh')} value={email} onValueChange={setEmail} />
+                    </Field>
+                    <Field id='su-password' label={t('auth.password')} className='full'>
+                        <PasswordInput id='su-password' autoComplete='new-password' placeholder={t('auth.passwordPh')} value={password} onValueChange={setPassword} />
+                    </Field>
+                    <Field id='su-birth' label={t('form.birth')}>
+                        <Input id='su-birth' type='date' autoComplete='bday' value={birthDate} onValueChange={setBirthDate} />
+                    </Field>
+                    <Field id='su-occupation' label={t('form.occupation')}>
+                        <Input id='su-occupation' placeholder={t('form.occupationPh')} value={occupation} onValueChange={setOccupation} />
+                    </Field>
+                    <Field label={t('form.sex')} className='full segmented-wide'>
+                        <SegmentedControl
+                            aria-label={t('form.sex')}
+                            items={[
+                                { value: 'masculino', label: t('form.male') },
+                                { value: 'femenino', label: t('form.female') },
+                            ]}
+                            value={gender || null}
+                            onValueChange={setGender}
+                        />
+                    </Field>
                 </div>
-                </div>
-                <IonToast
-                    isOpen={showAlert}
-                    onDidDismiss={() => setShowAlert(false)}
-                    message={message}
-                    duration={3500}
-                    color="danger"
-                    position="bottom"
-                />
-            </IonContent>
-        </IonPage>
+                <Button type='submit' variant='filled' className='btn-lg btn-block'>{t('signup.submit')}</Button>
+            </form>
+
+            <div className='auth__links'>
+                <a className='text-link' href='/'>{t('signup.haveAccount')}</a>
+            </div>
+
+            <IonToast
+                isOpen={showAlert}
+                onDidDismiss={() => setShowAlert(false)}
+                message={apiError(message)}
+                duration={3500}
+                color='danger'
+                position='bottom'
+            />
+        </AuthLayout>
     );
 };
 
