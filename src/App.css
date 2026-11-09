@@ -1,352 +1,489 @@
-/* Imported fonts */
 @font-face {
-    font-family: 'Kiona-Regular';
-    font-style: normal;
-    font-weight: normal;
-    src: url('../public/assets/fonts/Kiona-Regular.ttf');
+  font-family: 'Kiona';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../public/assets/fonts/Kiona-Regular.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: 'Raleway';
-    font-style: normal;
-    font-weight: normal;
-    src: url('../public/assets/fonts/Raleway.ttf');
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../public/assets/fonts/Raleway.ttf') format('truetype');
 }
 
-@font-face {
-    font-family: 'Cinzel';
-    font-style: normal;
-    font-weight: normal;
-    src: url('../public/assets/fonts/Cinzel.ttf');
+/* ─── Base ─── */
+html {
+  /* El texto crece con la pantalla: en un monitor grande nada se ve chiquito. */
+  font-size: clamp(16px, 0.45vw + 10px, 21px);
+  font-variant-numeric: lining-nums;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* === GLOBAL RESETS === */
+body {
+  background: var(--bg);
+  color: var(--ivory);
+  letter-spacing: 0.002em;
+}
+
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure {
+  margin: 0;
+}
+
+ul, ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: rgb(198 222 163 / 0.32);
+}
+
+:focus-visible {
+  outline: 2px solid var(--lichen);
+  outline-offset: 3px;
+}
 
 ion-content {
-    --background: none;
-    --padding-top: 0px;
+  --background: linear-gradient(180deg, rgb(11 31 20 / 0.66) 0, rgb(11 31 20 / 0.88) 44vh, #0b1f14 84vh), var(--wall-ambient) center top / cover no-repeat, #0b1f14;
+  --color: var(--ivory);
 }
 
-ion-content.bg-img {
-    background-image: url('../public/assets/bg-img.png');
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
+ion-content::part(scroll) {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(243 241 229 / 0.2) transparent;
+  overscroll-behavior: contain;
 }
 
-ion-content.app-dark-bg {
-    --background: linear-gradient(160deg, #0e1a0e 0%, #163016 70%, #1e4018 100%);
+ion-content.canopy {
+  --background: linear-gradient(180deg, rgb(7 21 16 / 0.72), rgb(7 21 16 / 0.54)), var(--wall-score) 40% center / cover no-repeat, #071510;
 }
 
-.header-collapse-condense ion-toolbar,
-ion-toolbar.transparent {
-    --background: transparent;
-    --ion-color-base: transparent !important;
-}
-
-/* Header oscuro reutilizable para pantallas con botón de regreso
-   (Documents, Presentation) — mismo estilo que .appbar */
-.dark-toolbar {
-    --background: #0d1a0d;
-    --color: #ffffff;
-    --border-width: 0 0 1px 0;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-style: solid;
-    --min-height: 56px;
-}
-
-/* Sus opciones ya estan en la barra lateral de escritorio; el boton de regreso se queda. */
+/* La junta con la barra lateral se funde en un mismo verde: sin costura vertical. */
 @media (min-width: 768px) {
-    .dark-toolbar__menu-btn {
-        display: none;
-    }
+  ion-content {
+    --background: linear-gradient(90deg, #0b1f14 0, rgb(11 31 20 / 0) 24%), linear-gradient(180deg, rgb(11 31 20 / 0.66) 0, rgb(11 31 20 / 0.88) 44vh, #0b1f14 84vh), var(--wall-ambient) center top / cover no-repeat, #0b1f14;
+  }
+
+  ion-content.canopy {
+    --background: linear-gradient(90deg, #0b1f14 0, rgb(7 21 16 / 0.72) 20%, rgb(7 21 16 / 0.08) 64%), var(--wall-score) 72% center / cover no-repeat, #071510;
+  }
 }
 
-/* === TAB BAR === */
-
-ion-tab-bar {
-    --background: #0d1a0d;
-    --border: 1px solid rgba(255, 255, 255, 0.08);
-    height: 62px;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+.main-pane {
+  flex: 1;
+  min-width: 0;
+  position: relative;
 }
 
-ion-tab-button {
-    --color: rgba(255, 255, 255, 0.4);
-    --color-selected: #80b259;
-    --background: transparent;
-    --background-focused: transparent;
-    position: relative;
+/* ─── Marca ─── */
+.logo {
+  display: block;
+  aspect-ratio: 2500 / 1405;
+  background: currentColor;
+  -webkit-mask: url('../public/assets/sostek-logo.png') center / contain no-repeat;
+  mask: url('../public/assets/sostek-logo.png') center / contain no-repeat;
 }
 
-ion-tab-button ion-icon {
-    font-size: 22px;
-    margin-bottom: 2px;
-}
-
-.tab-bar__label {
-    font-size: 0.62rem;
-    letter-spacing: 0.8px;
-    font-weight: 700;
-}
-
-ion-tab-button.tab-selected::before,
-ion-tab-button.tab-bar__btn--active::before {
-    content: '';
-    position: absolute;
-    top: 6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 48px;
-    height: 32px;
-    background: rgba(128, 178, 89, 0.15);
-    border-radius: 20px;
-}
-
-ion-tab-button.tab-bar__btn--active {
-    --color: #80b259;
-}
-
-.tab-bar--hidden {
-    display: none;
-    opacity: 0;
-}
-
-.tab-bar--visible {
-    opacity: 1;
-}
-
-/* En escritorio navega la barra lateral (SideNav). El tab bar sigue en el DOM porque
-   IonTabs no funciona sin el. */
-@media (min-width: 768px) {
-    ion-tab-bar.tab-bar--visible {
-        display: none;
-    }
-}
-
-
-/* === POPOVER MENU === */
-
-ion-popover {
-    --background: #1a2e1a;
-    --backdrop-opacity: 0.45;
-}
-
-ion-popover::part(content) {
-    background: #1a2e1a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-}
-
-ion-popover ion-content {
-    --background: #1a2e1a;
-    --ion-background-color: #1a2e1a;
-}
-
-ion-popover ion-list {
-    padding: 8px 0;
-    background: #1a2e1a !important;
-    --background: #1a2e1a;
-}
-
-ion-popover ion-item {
-    --min-height: 48px;
-    --padding-start: 16px;
-    --background: #1a2e1a;
-    --color: #f0f0f0;
-    --border-color: rgba(255, 255, 255, 0.07);
-    font-size: 0.95rem;
-    cursor: pointer;
-}
-
-
-/* === ERROR BOUNDARY === */
-
-.error-boundary {
-    min-height: 100vh;
-    background: #0d1a0d;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 24px;
-    text-align: center;
-}
-
-.error-boundary__logo {
-    height: 48px;
-    width: auto;
-    margin-bottom: 32px;
-    opacity: 0.8;
-}
-
-.error-boundary__title {
-    color: #f0f0f0;
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0 0 12px;
-    font-family: 'Kiona-Regular', sans-serif;
-}
-
-.error-boundary__msg {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin: 0 0 32px;
-}
-
-.error-boundary__btn {
-    background: #80b259;
-    color: #ffffff;
-    border: none;
-    border-radius: 100px;
-    padding: 14px 36px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 0.4px;
-}
-
-/* === DARK ALERT (confirmaciones destructivas) === */
-
-.dark-alert .alert-wrapper {
-    background: #1a2e1a;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-}
-
-.dark-alert .alert-head {
-    padding-bottom: 4px;
-}
-
-.dark-alert .alert-title {
-    color: #f0f0f0;
-    font-weight: 700;
-}
-
-.dark-alert .alert-message {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 0.9rem;
-}
-
-.dark-alert .alert-button-group {
-    border-top: 1px solid rgba(255, 255, 255, 0.22);
-}
-
-.dark-alert .alert-button {
-    color: #80b259;
-    font-weight: 600;
-}
-
-.dark-alert .alert-button.ion-color-danger,
-.dark-alert [role="destructive"] {
-    color: #e05555 !important;
-}
-
-/* === SKELETON SHIMMER === */
-
-@keyframes skeleton-shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Mensaje de pagina cuando una peticion falla o el contenido no existe: mismo tono que
-   los vacios de APRENDE y EVALUATE. */
-.page-message {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    padding: 48px 24px;
-    margin: 0;
-}
-
-.shimmer {
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.04) 0%,
-        rgba(255, 255, 255, 0.10) 50%,
-        rgba(255, 255, 255, 0.04) 100%
-    );
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.4s ease-in-out infinite;
-    border-radius: 6px;
-}
-
-/* === UTILITY === */
-
-.hidden {
-    opacity: 0;
-}
-
-.visible {
-    opacity: 1;
-}
-
-/* === FILTER PILLS === */
-
-.filter-pills {
-    display: flex;
-    gap: 8px;
-    padding: 14px 16px 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-}
-
-.filter-pills::-webkit-scrollbar {
-    display: none;
-}
-
-.filter-pill {
-    flex-shrink: 0;
-    padding: 7px 18px;
-    border-radius: 100px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.07);
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.18s, color 0.18s, border-color 0.18s, transform 160ms ease-out;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-    outline: none;
-}
-
-.filter-pill:active {
-    transform: scale(0.97);
-}
-
-/* outline: none de arriba dejaba sin foco visible a quien navega con teclado */
-.filter-pill:focus-visible {
-    outline: 2px solid #80b259;
-    outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .filter-pill:active {
-        transform: none;
-    }
-}
-
-.filter-pill--active {
-    background: #80b259;
-    border-color: #80b259;
-    color: #ffffff;
-}
-
-/* === SHARED FORM (Profile) === */
-
-.align-center {
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    justify-items: center;
-}
-
-/* === EJES (ver src/utils/axis.ts) ===
-   Solo fijan --axis; cada componente decide en sus reglas de escritorio donde usarlo. */
 .axis-ambiental { --axis: var(--axis-ambiental); }
 .axis-economico { --axis: var(--axis-economico); }
 .axis-social { --axis: var(--axis-social); }
+
+/* Eje: un punto de color y el nombre, sin caja. */
+.axis-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--axis, var(--ivory-2));
+}
+
+.axis-tag::before {
+  content: '';
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.axis-tag--mixed::before {
+  background: linear-gradient(90deg, var(--axis-economico) 50%, var(--axis-social) 50%);
+}
+
+/* ─── Pagina ─── */
+.page {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: var(--top-clearance) var(--gutter) var(--page-bottom);
+}
+
+.mast__title,
+.page-head__title {
+  font-family: var(--font-display);
+  font-size: var(--t-mast);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.012em;
+  margin-left: -0.045em;
+}
+
+.mast__title {
+  margin-left: 0;
+}
+
+.page-head {
+  margin-bottom: var(--s-12);
+}
+
+.page-head__lead {
+  max-width: 62ch;
+  margin-top: var(--s-5);
+  font-size: clamp(1.125rem, 1rem + 0.3vw, 1.3125rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ivory-2);
+}
+
+.section {
+  margin-top: var(--s-16);
+}
+
+.section-title {
+  font-size: var(--t-xl);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.008em;
+}
+
+.page-message {
+  max-width: 38em;
+  margin: var(--s-24) auto;
+  padding-inline: var(--gutter);
+  text-align: center;
+  font-size: var(--t-lg);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ivory-2);
+}
+
+.empty {
+  padding: var(--s-16) var(--s-6);
+  text-align: center;
+  font-size: var(--t-lg);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ivory-2);
+}
+
+.text-link {
+  font-weight: 500;
+  color: var(--ivory);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color var(--dur-fast) ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .text-link:hover {
+    text-decoration-color: var(--ivory);
+  }
+}
+
+/* ─── Controles de Glisse ─── */
+
+.lg-button {
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  transition: background-color 200ms, transform var(--dur-fast) ease-out;
+}
+
+.lg-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* La accion principal es marfil: la unica superficie clara de la pantalla. */
+.lg-button[data-variant='filled'],
+.lg-button[data-variant='filled']:disabled {
+  --lg-button-fill: var(--ivory);
+  color: var(--on-ivory);
+  font-weight: 600;
+}
+
+.lg-button > ion-icon,
+.lg-menu-item > ion-icon,
+.lg-input-icon > ion-icon {
+  flex: none;
+}
+
+.lg-button > ion-icon {
+  font-size: 1.25rem;
+}
+
+.lg-menu-item > ion-icon {
+  font-size: 1.0625rem;
+}
+
+.lg-input-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.lg-input-icon > ion-icon {
+  display: block;
+  font-size: 1.125rem;
+}
+
+.lg-menu-card {
+  font-weight: 500;
+}
+
+.btn-lg {
+  height: 3.25rem;
+  padding-inline: var(--s-8);
+  border-radius: 1.625rem;
+  font-size: var(--t-md);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Boton secundario: una linea, sin relleno */
+.btn-line.lg-button {
+  background-color: transparent;
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.segmented-wide .lg-segmented {
+  --lg-tab-width: 7.5rem;
+  --lg-tab-height: 2.5rem;
+}
+
+.segmented-wide .lg-segmented .lg-tab,
+.segmented-wide .lg-segmented .lg-tab-copy {
+  font-size: var(--t-sm);
+  font-weight: 500;
+}
+
+/* Controles que flotan sobre fotos */
+.float-bar {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 0.625rem);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.float-bar--start {
+  left: var(--s-3);
+}
+
+.float-bar--end {
+  right: calc(var(--lang-toggle-space) + var(--s-1));
+}
+
+.float-bar .lg-glass {
+  --lg-blur: 10px;
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.3);
+}
+
+@media (min-width: 768px) {
+  .float-bar {
+    top: calc(var(--pane-inset) + var(--s-5));
+  }
+
+  .float-bar--start {
+    left: calc(var(--pane-inset) + var(--s-5));
+  }
+
+  .float-bar--end {
+    right: calc(var(--pane-inset) + var(--lang-toggle-space) + var(--s-3));
+  }
+}
+
+/* ─── Formularios ─── */
+.field__label {
+  display: block;
+  margin-bottom: var(--s-2);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--ivory-2);
+}
+
+.field .lg-input {
+  max-width: none;
+  height: 3.25rem;
+  padding: 0;
+  border-radius: var(--r-md);
+  background-color: rgb(4 14 9 / 0.34);
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px var(--line-field);
+  transition: box-shadow var(--dur-fast) ease-out, background-color var(--dur-fast) ease-out;
+}
+
+.field .lg-input:focus-within {
+  background-color: rgb(4 14 9 / 0.5);
+  box-shadow: inset 0 0 0 1.5px var(--ivory);
+}
+
+.field .lg-input input {
+  height: 100%;
+  padding-inline: var(--s-4);
+  border-radius: inherit;
+  font-size: 1rem;
+  caret-color: var(--lichen);
+}
+
+/* El autorrelleno de Chrome pinta su propio fondo; aqui se le da el del campo. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ivory);
+  caret-color: var(--lichen);
+  -webkit-box-shadow: 0 0 0 100px #14281c inset;
+  box-shadow: 0 0 0 100px #14281c inset;
+  transition: background-color 99999s ease-out;
+}
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+/* ─── Estados de carga ─── */
+.shimmer {
+  background: linear-gradient(100deg, #12291c 30%, #1b3627 50%, #12291c 70%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.6s linear infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+/* ─── Avisos de Ionic ─── */
+ion-toast {
+  --border-radius: 1rem;
+  --max-width: 28rem;
+  --start: 1rem;
+  --end: 1rem;
+  font-weight: 500;
+}
+
+.sos-alert {
+  --background: #14291c;
+  --backdrop-opacity: 0.6;
+}
+
+.sos-alert .alert-wrapper {
+  border-radius: var(--r-lg);
+}
+
+.sos-alert .alert-title {
+  font-weight: 500;
+  color: var(--ivory);
+}
+
+.sos-alert .alert-message {
+  color: var(--ivory-2);
+}
+
+.sos-alert .alert-button {
+  font-weight: 500;
+  color: var(--ivory);
+}
+
+.sos-alert .alert-button-role-destructive {
+  color: var(--danger);
+}
+
+/* ─── Error general ─── */
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--s-6);
+  gap: var(--s-3);
+  text-align: center;
+  background: var(--bg);
+  color: var(--ivory);
+}
+
+.error-boundary__logo {
+  width: 7.5rem;
+}
+
+.error-boundary__title {
+  font-size: var(--t-xl);
+  font-weight: 400;
+}
+
+.error-boundary__msg {
+  color: var(--ivory-2);
+}
+
+.error-boundary__btn {
+  margin-top: var(--s-3);
+  padding: var(--s-3) var(--s-8);
+  border: 0;
+  border-radius: 1.625rem;
+  background: var(--ivory);
+  color: var(--on-ivory);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+  }
+
+  .lg-button:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lg-glass {
+    background-color: var(--raise) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --line: rgb(243 241 229 / 0.3);
+    --line-strong: rgb(243 241 229 / 0.5);
+    --ivory-2: rgb(243 241 229 / 0.88);
+    --ivory-3: rgb(243 241 229 / 0.76);
+  }
+}
