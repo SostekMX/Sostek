@@ -209,6 +209,14 @@ ion-content.canopy {
 
 /* ─── Controles de Glisse ─── */
 
+/* Glisse dobla el fondo de cada vidrio con un filtro SVG que el navegador recalcula en cada
+   cuadro: Aprende caia a 9 fps y la entrada del login a 13 en una RTX 3050 Ti. El !important
+   le gana al estilo en linea con el que Glisse lo fija. Quedan el desenfoque y el borde de luz,
+   que es lo que se ve; Safari y iPhone nunca tuvieron la refraccion. */
+.lg-glass {
+  --lg-filter: saturate(1.5) !important;
+}
+
 .lg-button {
   font-weight: 500;
   letter-spacing: 0.005em;
