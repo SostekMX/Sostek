@@ -12,3 +12,10 @@ window.matchMedia = window.matchMedia || function() {
       removeListener: function() {}
   };
 };
+
+/* jsdom no trae ResizeObserver y los controles de Glisse lo usan al montar. */
+global.ResizeObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
