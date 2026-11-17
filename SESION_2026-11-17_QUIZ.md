@@ -1,6 +1,6 @@
 # Sesión del 17 de noviembre de 2026: quiz de proyectos de negocio
 
-Ramas: `feature/quiz-nivel3` en los dos repos. Las dos salen de `development` adelantada a `main` en local, sin push.
+Ramas: `feature/quiz-nivel3` en los dos repos. **Publicado el 17 de noviembre** (ver «Publicación»).
 
 ## Qué es
 
@@ -38,9 +38,19 @@ Un quiz de sostenibilidad para proyectos de negocio, diseñado por Carlos, con a
 - Con respuestas de puntaje i % 4, los resultados coinciden con la cuenta a mano: 48 % global; 50, 50 y 43 % por bloque; 5 óptimas, 12 parciales y 6 nulas.
 - Sin errores en la consola.
 
+## Publicación
+
+1. `development` se adelantó a `main` en los dos repos (fast-forward).
+2. `npm run seed:quiz` contra Atlas: Nivel 3, tipos 1 y 2, 23 preguntas cada uno.
+3. Backend: PR #4 (`feature/quiz-nivel3` → `development`) y PR #6 (`development` → `main`). Render lo publicó en ~1 min; `GET /quiz?level=3` responde en producción.
+4. Frontend: PR #44 (`feature/quiz-nivel3` → `development`) y PR #45 (`development` → `main`). Vercel lo publicó en https://sostek.vercel.app.
+5. Recorrido completo contra producción a 2000 px: mismos resultados que en local y sin errores en la consola.
+6. La corrección de seguridad del backend (`chore/cambios-pendientes`, PR #5) quedó abierta para revisión, ya al día con `development` y sin conflictos.
+
 ## Pendiente
 
-- Correr `npm run seed:quiz` contra Atlas.
-- Que Carlos revise la retroalimentación y luego poner `feedbackDraft: false` y volver a sembrar.
+- Que Carlos revise la retroalimentación y luego poner `feedbackDraft: false` y volver a sembrar. Mientras tanto se muestra el aviso «Retroalimentación preliminar».
+- Revisar e integrar el PR #5 del backend (sanea el body antes de usarlo).
+- Contenido de los niveles 1 y 2: basta con agregarlo al JSON y sembrarlo.
 - El resultado no se guarda en el perfil: `POST /user/score` solo tiene `score_test`, que es de la evaluación. Haría falta un campo nuevo.
 - El contenido del quiz pasa por `tx()`, pero todavía no tiene traducción en `content.en.json`. En inglés se ve en español.
