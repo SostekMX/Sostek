@@ -48,16 +48,16 @@ setupIonicReact();
 
 const HIDE_TABBAR_PATHS = ['/', '/SignUp', '/ForgotPassword', '/ResetPassword'];
 
-/* Las rutas de articulos/presentaciones/quiz y evaluacion/puntaje son sub-pantallas de APRENDE y
+/* Las rutas de articulos/presentaciones y evaluacion/puntaje/quiz son sub-pantallas de APRENDE y
    EVALUATE: su pestana sigue marcada aunque la ruta no coincida exactamente. */
 const getActiveTab = (pathname: string): ActiveTab => {
-  if (pathname.startsWith('/tab1') || pathname === '/MainMenu' || pathname.startsWith('/Documents') || pathname.startsWith('/presentation') || pathname.startsWith('/quiz')) {
+  if (pathname.startsWith('/tab1') || pathname === '/MainMenu' || pathname.startsWith('/Documents') || pathname.startsWith('/presentation')) {
     return 'tab1';
   }
   if (pathname.startsWith('/tab2')) {
     return 'tab2';
   }
-  if (pathname.startsWith('/tab3') || pathname.startsWith('/Evaluation') || pathname.startsWith('/score')) {
+  if (pathname.startsWith('/tab3') || pathname.startsWith('/Evaluation') || pathname.startsWith('/score') || pathname.startsWith('/quiz')) {
     return 'tab3';
   }
   if (pathname.startsWith('/Profile') || pathname.startsWith('/Favorites')) {

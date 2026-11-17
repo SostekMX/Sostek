@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { getArticles, getPresentations } from '../../api/content';
 import ArticleCarrousel, { Article, Presentation } from '../../components/ArticleCarrousel';
 import AppBarPopOver from '../../components/layout/AppBarPopOver';
-import QuizEntry from '../../components/QuizEntry';
 import LoadError from '../../components/ui/LoadError';
 import { useI18n } from '../../i18n/LanguageContext';
 import { readCache } from '../../utils/cache';
@@ -67,7 +66,6 @@ const Tab1: React.FC = () => {
           articlesData={articles}
           loadingData={loadingData}
           presentations={presentations}
-          quizEntry={<QuizEntry />}
           errorNotice={loadError && (
             <LoadError
               title={t('learn.loadFail')}

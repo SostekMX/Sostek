@@ -40,8 +40,6 @@ interface Props {
   loadingData: boolean;
   presentations: Presentation[] | null | undefined;
   errorNotice?: React.ReactNode;
-  /* Acceso al quiz; se esconde mientras hay busqueda, igual que la portada. */
-  quizEntry?: React.ReactNode;
 }
 
 const ALL = '__all__';
@@ -54,7 +52,7 @@ const axisClass = (category?: string) => {
   return axis ? `axis-${axis}` : '';
 };
 
-const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations, errorNotice, quizEntry }) => {
+const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presentations, errorNotice }) => {
   const [topic, setTopic] = useState(ALL);
   const { search, changeSearch } = useContext(AppContext);
   const { t, tx, localizeArticle } = useI18n();
@@ -201,8 +199,6 @@ const ArticleCarrousel: React.FC<Props> = ({ articlesData, loadingData, presenta
 
       <div className='aprende__body'>
         {errorNotice}
-
-        {!searchNorm && quizEntry}
 
         {!loadingData && visiblePresentations.length > 0 && (
           <section className='section aprende-section'>

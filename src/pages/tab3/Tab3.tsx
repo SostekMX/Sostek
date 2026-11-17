@@ -5,6 +5,7 @@ import AppBarPopOver from '../../components/layout/AppBarPopOver';
 import './Tab3.css';
 import EvaluationCard from '../../components/EvaluationCard';
 import LoadError from '../../components/ui/LoadError';
+import QuizEntry from '../../components/QuizEntry';
 import { readCache } from '../../utils/cache';
 import { useI18n } from '../../i18n/LanguageContext';
 
@@ -103,6 +104,11 @@ const Tab3: React.FC = () => {
               onRetry={() => void loadEvaluations()}
             />
           )}
+
+          {/* El quiz no depende de GET /evaluations: se muestra aunque esa carga falle. */}
+          <section className='evalua-quiz'>
+            <QuizEntry />
+          </section>
 
           {loading && (
             <div className='evalua-grid'>
