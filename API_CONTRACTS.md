@@ -404,6 +404,47 @@ Lista **sin** preguntas.
 
 ---
 
+### `GET /quiz` — público
+
+Parámetro opcional `?level=N` (entero ≥ 1). El frontend pide todo sin filtro y decide qué
+niveles mostrar como «Próximamente» según los datos.
+
+```json
+{
+  "success": true,
+  "quizzes": [
+    {
+      "level": 3,
+      "type": 1,
+      "title": "Modelo de Negocio",
+      "summary": "Enfoque estratégico / propuesta de valor",
+      "focus": "Escalamiento del modelo de negocio, ...",
+      "feedbackDraft": true,
+      "blocks": [
+        {
+          "name": "Ambiental y Regeneración Sistémica",
+          "questions": [
+            { "text": "...", "options": [ { "text": "...", "score": 0, "feedback": "..." } ] }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+> Ordenados por `level` y `type`. Un nivel sin contenido devuelve `quizzes: []`. Cada
+> opción trae `score` de 0 (nula) a 3 (óptima); el puntaje se calcula en el cliente
+> (`src/utils/quiz.ts`). El número de bloques y de preguntas por bloque sale de los datos.
+> `feedbackDraft: true` marca retroalimentación pendiente de revisión.
+
+**Errores**
+| `error` | Causa |
+|---|---|
+| `"Nivel inválido"` | `level` no es un entero ≥ 1 |
+| `"Error al obtener el quiz"` | Falla de la consulta en MongoDB |
+
+---
+
 ## Variables de entorno relevantes del backend
 
 No están en este repo, pero afectan directamente cómo se comporta el frontend en cada ambiente:
