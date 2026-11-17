@@ -6,6 +6,11 @@
   margin-top: var(--s-10);
 }
 
+/* En movil sigue directo al encabezado, que ya deja su aire abajo. */
+.evalua-quiz {
+  margin-top: 0;
+}
+
 .evalua-group__title {
   font-size: var(--t-2xl);
   font-weight: 300;
@@ -59,6 +64,10 @@
 
   .evalua-group {
     margin-top: var(--s-16);
+  }
+
+  .evalua-quiz {
+    margin-top: var(--s-12);
   }
 
   .evalua-grid {

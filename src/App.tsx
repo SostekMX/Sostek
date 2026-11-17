@@ -19,6 +19,9 @@ import Documents from './pages/document/Documents';
 import Presentation from './pages/presentation/Presentation';
 import Evaluation from './pages/evaluation/Evaluation';
 import FinalScoreEvaluation from './pages/finalScoreEvaluation/FinalScoreEvaluation';
+import QuizStart from './pages/quiz/QuizStart';
+import QuizQuestions from './pages/quiz/QuizQuestions';
+import QuizResults from './pages/quiz/QuizResults';
 import LogIn from './pages/logIn/LogIn';
 import SignUp from './pages/signUp/SignUp';
 import ForgotPassword from './pages/forgotPassword/ForgotPassword';
@@ -45,7 +48,7 @@ setupIonicReact();
 
 const HIDE_TABBAR_PATHS = ['/', '/SignUp', '/ForgotPassword', '/ResetPassword'];
 
-/* Las rutas de articulos/presentaciones y evaluacion/puntaje son sub-pantallas de APRENDE y
+/* Las rutas de articulos/presentaciones y evaluacion/puntaje/quiz son sub-pantallas de APRENDE y
    EVALUATE: su pestana sigue marcada aunque la ruta no coincida exactamente. */
 const getActiveTab = (pathname: string): ActiveTab => {
   if (pathname.startsWith('/tab1') || pathname === '/MainMenu' || pathname.startsWith('/Documents') || pathname.startsWith('/presentation')) {
@@ -54,7 +57,7 @@ const getActiveTab = (pathname: string): ActiveTab => {
   if (pathname.startsWith('/tab2')) {
     return 'tab2';
   }
-  if (pathname.startsWith('/tab3') || pathname.startsWith('/Evaluation') || pathname.startsWith('/score')) {
+  if (pathname.startsWith('/tab3') || pathname.startsWith('/Evaluation') || pathname.startsWith('/score') || pathname.startsWith('/quiz')) {
     return 'tab3';
   }
   if (pathname.startsWith('/Profile') || pathname.startsWith('/Favorites')) {
@@ -87,6 +90,9 @@ const MainTabs: React.FC = () => {
             <Route exact path="/presentation/:driveId"><Presentation /></Route>
             <Route exact path="/Evaluation/:name/:id"><Evaluation /></Route>
             <Route path="/score/:name"><FinalScoreEvaluation /></Route>
+            <Route exact path="/quiz"><QuizStart /></Route>
+            <Route exact path="/quiz/resultados"><QuizResults /></Route>
+            <Route exact path="/quiz/:level/:type"><QuizQuestions /></Route>
             <Route exact path="/ForgotPassword"><ForgotPassword /></Route>
             <Route exact path="/ResetPassword"><ResetPassword /></Route>
             <PrivateRoute exact path="/Favorites"><Favorites /></PrivateRoute>

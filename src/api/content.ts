@@ -17,3 +17,6 @@ export const getEvaluation = (id: string) =>
 
 export const getTutorial = () =>
   apiClient.get('/tutorial').then(res => res.data);
+
+export const getQuizzes = () =>
+  apiClient.get('/quiz').then(res => res.data);
