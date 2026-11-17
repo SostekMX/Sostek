@@ -4,7 +4,7 @@ Ramas: `feature/quiz-nivel3` en los dos repos. Las dos salen de `development` ad
 
 ## Qué es
 
-Un quiz de sostenibilidad para proyectos de negocio, diseñado por Carlos, con acceso desde APRENDE. El flujo tiene tres pasos:
+Un quiz de sostenibilidad para proyectos de negocio, diseñado por Carlos, con acceso desde EVALÚATE: un banner entre «Cómo funciona» y las evaluaciones por carrera. Al principio quedó en APRENDE por error y se movió en la misma sesión. El flujo tiene tres pasos:
 1. Se elige el nivel. El 1 y el 2 salen como «Próximamente» mientras no tengan datos.
 2. Se elige el tipo de proyecto, que es obligatorio: Modelo de Negocio o Empresa Rentable.
 3. Se contesta por bloques y se ven los resultados.

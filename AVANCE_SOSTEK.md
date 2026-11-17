@@ -46,7 +46,7 @@ src/
 │   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
 │   ├── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
 │   ├── QuizQuestionCard.tsx         # Pregunta del quiz, opción única con opciones barajadas
-│   └── QuizEntry.tsx                # Acceso al quiz dentro de APRENDE
+│   └── QuizEntry.tsx                # Acceso al quiz dentro de EVALÚATE (banner sobre las evaluaciones)
 ├── pages/
 │   ├── logIn/         LogIn.tsx          # Pantalla de inicio de sesión
 │   ├── signUp/        SignUp.tsx          # Pantalla de registro
@@ -122,7 +122,7 @@ src/
 - **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT; UI de cambio de avatar con selector de imagen, overlay de recorte circular (drag para reposicionar), sube a `POST /user/avatar` como `multipart/form-data`; persiste posición del recorte en `localStorage`
 - **Validación contraseña** — mínimo 8 caracteres en signup y reset-password antes de llamar al backend
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
-- **Quiz de proyectos de negocio** (`/quiz`) — acceso desde APRENDE; nivel (1 y 2 «Próximamente» hasta que haya datos), tipo de proyecto obligatorio, preguntas por bloque desde `GET /quiz` con opciones barajadas, «Obtener resultados» solo con todo contestado; resultados con % global y por bloque, conteo de óptimas/parciales/nulas y retroalimentación por pregunta filtrable. Puntaje en `src/utils/quiz.ts` con tests. El resultado no se guarda en el perfil (ver pendientes)
+- **Quiz de proyectos de negocio** (`/quiz`) — acceso desde EVALÚATE, con un banner entre «Cómo funciona» y las carreras; dentro del quiz queda marcada la pestaña EVALÚATE; nivel (1 y 2 «Próximamente» hasta que haya datos), tipo de proyecto obligatorio, preguntas por bloque desde `GET /quiz` con opciones barajadas, «Obtener resultados» solo con todo contestado; resultados con % global y por bloque, conteo de óptimas/parciales/nulas y retroalimentación por pregunta filtrable. Puntaje en `src/utils/quiz.ts` con tests. El resultado no se guarda en el perfil (ver pendientes)
 - **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
 - **Recuperación de contraseña** — pantalla `ForgotPassword.tsx` (email → token por response) + `ResetPassword.tsx` (token + nueva contraseña); rutas `/ForgotPassword` y `/ResetPassword`; link desde `LogIn.tsx`
 - **Favoritos** — botón corazón en `DocumentCard` (lista y carrusel), hook `useFavorites.ts` con `POST/GET/DELETE /user/favorites`, página `/Favorites` que lista contenido guardado con opción de quitar
