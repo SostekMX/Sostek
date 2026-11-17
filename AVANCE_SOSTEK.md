@@ -32,7 +32,7 @@ src/
 │   ├── client.ts                    # Instancia única de axios — baseURL + interceptor que agrega Authorization automáticamente
 │   ├── auth.ts                      # login, signup, forgotPassword, resetPassword
 │   ├── user.ts                      # getProfile, editProfile, uploadAvatar, deleteAccount, saveScore, favoritos
-│   └── content.ts                   # getArticles, getArticle, getPresentations, getEvaluations, getEvaluation, getTutorial
+│   └── content.ts                   # getArticles, getArticle, getPresentations, getEvaluations, getEvaluation, getTutorial, getQuizzes
 ├── context/
 │   └── AppContext.tsx               # Estado global: search, tutorial, score, transparentToolbar
 ├── components/
@@ -44,7 +44,9 @@ src/
 │   ├── ArticleCardModal.tsx         # ⚠️ HUÉRFANO — no se importa en ningún lado, ver bug #9
 │   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación en la lista (con botón favorito)
 │   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
-│   └── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
+│   ├── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
+│   ├── QuizQuestionCard.tsx         # Pregunta del quiz, opción única con opciones barajadas
+│   └── QuizEntry.tsx                # Acceso al quiz dentro de APRENDE
 ├── pages/
 │   ├── logIn/         LogIn.tsx          # Pantalla de inicio de sesión
 │   ├── signUp/        SignUp.tsx          # Pantalla de registro
@@ -57,6 +59,7 @@ src/
 │   ├── presentation/  Presentation.tsx    # Viewer de slides
 │   ├── evaluation/    Evaluation.tsx      # Evaluación con preguntas y checkboxes
 │   ├── finalScoreEvaluation/ FinalScoreEvaluation.tsx # Resultados y feedback
+│   ├── quiz/          QuizStart, QuizQuestions, QuizResults # Quiz de proyectos de negocio
 │   └── profile/       Profile.tsx         # Edición de perfil del usuario
 ├── hooks/
 │   └── useFavorites.ts              # GET/POST/DELETE /user/favorites con optimistic update
@@ -89,6 +92,9 @@ src/
 | `/presentation/:driveId` | `Presentation` | Viewer de presentación |
 | `/Evaluation/:name/:id` | `Evaluation` | Cuestionario de evaluación |
 | `/score/:name` | `FinalScoreEvaluation` | Resultado de evaluación |
+| `/quiz` | `QuizStart` | Quiz: elegir nivel y tipo de proyecto |
+| `/quiz/:level/:type` | `QuizQuestions` | Quiz: preguntas por bloque |
+| `/quiz/resultados` | `QuizResults` | Quiz: calificación global, por bloque y retroalimentación |
 
 ---
 
@@ -116,6 +122,7 @@ src/
 - **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT; UI de cambio de avatar con selector de imagen, overlay de recorte circular (drag para reposicionar), sube a `POST /user/avatar` como `multipart/form-data`; persiste posición del recorte en `localStorage`
 - **Validación contraseña** — mínimo 8 caracteres en signup y reset-password antes de llamar al backend
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
+- **Quiz de proyectos de negocio** (`/quiz`) — acceso desde APRENDE; nivel (1 y 2 «Próximamente» hasta que haya datos), tipo de proyecto obligatorio, preguntas por bloque desde `GET /quiz` con opciones barajadas, «Obtener resultados» solo con todo contestado; resultados con % global y por bloque, conteo de óptimas/parciales/nulas y retroalimentación por pregunta filtrable. Puntaje en `src/utils/quiz.ts` con tests. El resultado no se guarda en el perfil (ver pendientes)
 - **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
 - **Recuperación de contraseña** — pantalla `ForgotPassword.tsx` (email → token por response) + `ResetPassword.tsx` (token + nueva contraseña); rutas `/ForgotPassword` y `/ResetPassword`; link desde `LogIn.tsx`
 - **Favoritos** — botón corazón en `DocumentCard` (lista y carrusel), hook `useFavorites.ts` con `POST/GET/DELETE /user/favorites`, página `/Favorites` que lista contenido guardado con opción de quitar
@@ -294,8 +301,8 @@ src/
 
 ```
 Backend local :8080 (MongoDB)  ←─ artículos, evaluaciones, presentaciones, tutorial, usuarios
-localStorage                   ←─ caché de artículos/evaluaciones/presentaciones, avatar URL, user_email (display)
-sessionStorage                 ←─ token JWT, flag de sesión (login), búsqueda activa, scores de evaluación
+localStorage                   ←─ caché de artículos/evaluaciones/presentaciones/quizzes, avatar URL, user_email (display)
+sessionStorage                 ←─ token JWT, flag de sesión (login), búsqueda activa, scores de evaluación, resultado del quiz (sostekQuiz.result)
 Google Drive                   ←─ solo el archivo de descarga del juego (zip) — ya no se usa para contenido
 ```
 
