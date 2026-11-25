@@ -33,5 +33,7 @@ yarn-error.log*
 .eslintcache
 .gstack/
 
-ARQUITECTURA.md
 /Claude images/
+
+# Notas y bitacoras en PDF: pueden traer datos personales y el repo es publico
+*.pdf

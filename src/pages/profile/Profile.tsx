@@ -167,7 +167,7 @@ const Profile: React.FC = () => {
             if (data.success) {
                 history.replace('/tab1');
             } else {
-                // Los validadores responden con `error`; solo el fallo de la base usa `message`.
+                // El backend manda todos los errores en `error`; `message` queda por si responde una versión vieja.
                 setMessage(data.error ?? data.message);
                 setShowAlert(true);
             }
