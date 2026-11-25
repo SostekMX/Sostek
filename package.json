@@ -3,6 +3,9 @@
   "description": "Get bi-weekly news of sustainability topics for students",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "start": "ionic serve --external -p=3000",
     "build": "ionic build",
