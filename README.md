@@ -1,162 +1,98 @@
 # Sostek
 
-Plataforma educativa digital de sostenibilidad para estudiantes y docentes de la facultad. Permite aprender sobre temas de sostenibilidad, evaluar proyectos académicos y acceder a contenido sobre aspectos culturales, económicos y ambientales.
+Plataforma educativa de sostenibilidad para estudiantes y docentes de la facultad. Sirve para aprender sobre sostenibilidad (**APRENDE**), jugar Survivor (**JUEGA**) y evaluar qué tan sostenibles son los proyectos académicos (**EVALÚATE**). Funciona en web y está preparada para iOS y Android con Capacitor.
 
-> ¿Primera vez en este repo? Lee `ONBOARDING_FRONTEND.md` — tiene el contexto histórico del proyecto, cómo acceder a todos los servicios (backend, base de datos, imágenes) y las reglas para no romper nada. `AVANCE_SOSTEK.md` tiene el estado actual: qué está hecho, qué falta y bugs conocidos.
+- **En producción:** https://sostek.vercel.app
+- **Este repo:** el frontend, con Ionic React 6, TypeScript, Create React App y Capacitor 4.
+- **El backend** está en otro repo: [SostekMX/Sostek-backend](https://github.com/SostekMX/Sostek-backend).
 
----
-
-## Requisitos previos
-
-Antes de instalar, asegúrate de tener lo siguiente:
-
-- [Node.js](https://nodejs.org/) v16 o superior
-- [npm](https://www.npmjs.com/) v8 o superior
-- [Ionic CLI](https://ionicframework.com/docs/intro/cli) instalado globalmente:
-  ```bash
-  npm install -g @ionic/cli
-  ```
-- Git
+> **¿Primera vez?** Sigue **«Tus primeros 30 minutos»** en [`ONBOARDING_FRONTEND.md`](ONBOARDING_FRONTEND.md): levanta los dos repos en tu máquina con el contenido real, sin pedir ninguna cuenta.
 
 ---
 
-## Instalación
+## Correr el frontend
 
-### 1. Clonar el repositorio
+Necesitas Node 24 (está en `.nvmrc`) y Git. No hace falta instalar Ionic CLI global, porque viene en las dependencias.
+
 ```bash
-git clone [url-del-repositorio]
+git clone https://github.com/SostekMX/Sostek.git
 cd Sostek
-```
-
-### 2. Cambiar a la rama de desarrollo
-```bash
-git checkout development
-```
-
-### 3. Instalar dependencias
-```bash
 npm install
+cp .env.example .env     # REACT_APP_BACKEND_URL=http://localhost:8080
+npm run start            # http://localhost:3000
 ```
 
-### 4. Configurar variables de entorno
+Para tener datos, levanta también el backend con `npm run dev:memoria` (ve su README). Sin backend, la app abre, pero solo muestra lo que tenga en caché.
 
-Copia el archivo de ejemplo:
-```bash
-cp .env.example .env
-```
-
-El frontend solo necesita una variable, la URL del backend:
-```
-REACT_APP_BACKEND_URL=http://localhost:8080
-```
-
-> Si no se define, `src/config.ts` cae al fallback `http://localhost:8080`. En producción se configura en el panel de Render (ver `ONBOARDING_FRONTEND.md`).
-
----
-
-## Correr la aplicación
-
-### Modo desarrollo (web)
-```bash
-npm run start
-```
-Abre automáticamente en `http://localhost:3000`.
-
-### Build de producción
-```bash
-npm run build
-```
-Genera la carpeta `/build` lista para deploy.
-
----
-
-## Backend
-
-El sistema de usuarios (login, registro, perfil, favoritos) y todo el contenido (artículos, presentaciones, evaluaciones, tutorial) viven en un servidor backend (Node.js + Express + MongoDB) que corre por separado en `http://localhost:8080` y **no está en este repositorio**.
-
-- Sin el backend corriendo, el login/registro/perfil no funcionan — pero puedes usar **toda la app como invitado** sin él (no vas a poder cargar contenido nuevo si no hay nada cacheado todavía en `localStorage`).
-- Cómo conseguir acceso al backend (repo, credenciales de MongoDB/Cloudinary) está en `ONBOARDING_FRONTEND.md`.
-
----
-
-## Estructura del proyecto
-
-```
-src/
-├── App.tsx                          # Router principal + MainTabs + lógica de ocultar tab bar
-├── config.ts                        # BACKEND_URL desde variable de entorno REACT_APP_BACKEND_URL
-├── api/                              # Toda llamada HTTP pasa por aquí — no usar axios directo en páginas
-│   ├── client.ts                    # Instancia de axios + interceptor que agrega el token automáticamente
-│   ├── auth.ts                      # login, signup, forgotPassword, resetPassword
-│   ├── user.ts                      # perfil, avatar, eliminar cuenta, puntaje, favoritos
-│   └── content.ts                   # artículos, presentaciones, evaluaciones, tutorial
-├── context/
-│   └── AppContext.tsx               # Estado global: search, tutorial, score, transparentToolbar
-├── components/
-│   ├── ErrorBoundary.tsx            # Error boundary global
-│   ├── PrivateRoute.tsx             # HOC de ruta privada — redirige a / si no hay sesión activa
-│   ├── layout/AppBarPopOver.tsx     # Toolbar: búsqueda, menú lateral, logout
-│   ├── ArticleCarrousel.tsx         # Carrusel horizontal de artículos y presentaciones
-│   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación (con botón favorito)
-│   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
-│   └── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
-├── pages/
-│   ├── logIn/, signUp/, forgotPassword/, resetPassword/   # Autenticación
-│   ├── tab1/   # APRENDE — artículos + presentaciones
-│   ├── tab2/   # JUEGA — video + descarga del juego físico
-│   ├── tab3/   # EVALÚATE — lista de evaluaciones
-│   ├── document/, presentation/                            # Detalle de artículo / viewer de slides
-│   ├── evaluation/, finalScoreEvaluation/                   # Cuestionario y resultados
-│   └── profile/, favorites/                                  # Perfil y favoritos del usuario
-├── hooks/
-│   └── useFavorites.ts              # GET/POST/DELETE favoritos con optimistic update
-├── utils/
-│   ├── scoring.ts                   # Lógica pura del puntaje de evaluación
-│   └── search.ts                    # normalize() — elimina tildes y pasa a minúsculas
-└── __tests__/                       # Unit tests (Jest) — ver sección Testing
-```
+| Comando | Qué hace |
+|---|---|
+| `npm run start` | Servidor de desarrollo en `localhost:3000` (`ionic serve`) |
+| `npm run build` | Build de producción en `build/`. Es lo que corre Vercel |
+| `npm test -- --watchAll=false` | Tests, una sola corrida (lo que usa CI) |
 
 ---
 
 ## Secciones de la app
 
-| Tab | Nombre | Descripción |
+| Pestaña | Nombre | Qué tiene |
 |-----|--------|-------------|
-| 1 | **APRENDE** | Artículos y presentaciones de sostenibilidad (contenido desde el backend) |
-| 2 | **JUEGA** | Videojuego "Survivor" — descarga de versión física y video; versión online pendiente |
-| 3 | **EVALÚATE** | Evaluaciones para medir la sostenibilidad de proyectos académicos |
+| 1 | **APRENDE** | Artículos y presentaciones de sostenibilidad, con búsqueda y favoritos |
+| 2 | **JUEGA** | El juego Survivor: video, instructivo con las 48 cartas y descarga de la versión física. La versión online está pendiente |
+| 3 | **EVALÚATE** | Evaluaciones por carrera y nivel, y el quiz de proyectos de negocio |
+
+El login es opcional: todo funciona como invitado. Con una cuenta se guardan el perfil, los favoritos y el puntaje.
 
 ---
 
-## Testing
+## Estructura
 
-```bash
-npm test                              # corre los 23 tests existentes en modo watch
-npm test -- --watchAll=false          # corre una sola vez (lo que usa CI)
-npm test -- --coverage --watchAll=false   # reporte de cobertura
+```
+src/
+├── App.tsx                 # Rutas, pestañas y navegación
+├── config.ts               # BACKEND_URL, desde REACT_APP_BACKEND_URL
+├── api/                    # TODA llamada HTTP pasa por aquí; no uses axios directo en las páginas
+│   ├── client.ts           # Instancia de axios; agrega el token automáticamente
+│   ├── auth.ts             # login, signup, forgotPassword, resetPassword
+│   ├── user.ts             # perfil, avatar, eliminar cuenta, puntaje, favoritos
+│   └── content.ts          # artículos, presentaciones, evaluaciones, tutorial, quiz
+├── pages/
+│   ├── logIn/, signUp/, forgotPassword/, resetPassword/   # Autenticación (AuthLayout comparte el marco)
+│   ├── tab1/               # APRENDE
+│   ├── tab2/               # JUEGA
+│   ├── tab3/               # EVALÚATE (evaluaciones y acceso al quiz)
+│   ├── document/           # Detalle de un artículo
+│   ├── presentation/       # Visor de slides
+│   ├── evaluation/         # Cuestionario de una evaluación
+│   ├── finalScoreEvaluation/  # Resultado de la evaluación y artículos recomendados
+│   ├── quiz/               # Quiz: QuizStart (nivel y tipo), QuizQuestions, QuizResults
+│   ├── profile/            # Perfil y foto
+│   └── favorites/          # Favoritos del usuario
+├── components/
+│   ├── layout/             # AppBarPopOver (barra superior), SideNav (escritorio), GlassTabBar (móvil), LanguageToggle
+│   ├── ui/                 # Field, PasswordInput, LoadError
+│   ├── ArticleCarrousel, DocumentCard, EvaluationCard, QuestionTestCard, QuestionNav
+│   ├── QuizEntry, QuizQuestionCard
+│   └── ErrorBoundary, PrivateRoute
+├── hooks/                  # useFavorites (actualización optimista), useQuizzes, useMediaQuery
+├── utils/                  # Lógica pura: scoring, quiz, search, axis, cache, image, session
+├── i18n/                   # es.ts y en.ts (textos de la interfaz), content.en.json (contenido en inglés)
+├── context/AppContext.tsx  # Estado global: búsqueda, tutorial, puntaje
+├── theme/variables.css     # Colores, tipografía y espaciado
+└── __tests__/              # Tests con Jest y Testing Library
 ```
 
-Hoy la cobertura es solo de lógica pura: `utils/scoring.ts`, `utils/search.ts` y `hooks/useFavorites.ts` (23 tests, 3 suites). No hay tests de componentes ni de páginas todavía. Corre en GitHub Actions en cada push/PR a `main` o `development` (`.github/workflows/test.yml`).
-
-**Manual (obligatorio antes de dar un cambio por terminado):** correr `npm run start` y probar el flujo afectado en el navegador, priorizando la vista mobile.
+`ios/` es el proyecto nativo de Capacitor. `android/` no se versiona: ve `DESPLIEGUE.md`.
 
 ---
 
-## Scripts disponibles
-
-| Comando | Descripción |
-|---------|-------------|
-| `npm run start` | Inicia servidor de desarrollo en `localhost:3000` |
-| `npm run build` | Genera build de producción |
-| `npm test` | Corre los tests (agregar `-- --coverage --watchAll=false` para reporte de cobertura) |
-
----
-
-## Más documentación
+## Documentación
 
 | Archivo | Para qué |
 |---|---|
-| `ONBOARDING_FRONTEND.md` | Empezar desde cero: historia del proyecto, accesos, qué no romper |
-| `AVANCE_SOSTEK.md` | Estado actual: qué está hecho, qué falta, bugs conocidos, prioridades |
-| `API_CONTRACTS.md` | Contrato de cada endpoint del backend (body, respuesta, errores) que consume `src/api/` |
-| `CLAUDE.md` | Convenciones del proyecto (commits, code style) — pensado para trabajar con Claude Code pero aplica igual a cualquier desarrollador |
+| [`ONBOARDING_FRONTEND.md`](ONBOARDING_FRONTEND.md) | Empezar desde cero: los primeros 30 minutos, la historia del proyecto y qué no romper |
+| [`AVANCE_SOSTEK.md`](AVANCE_SOSTEK.md) | Estado actual: qué está hecho, qué falta, bugs conocidos y prioridades |
+| [`ARQUITECTURA.md`](ARQUITECTURA.md) | Cómo encajan el frontend, el backend y los datos, y las fricciones reales |
+| [`API_CONTRACTS.md`](API_CONTRACTS.md) | El contrato de cada endpoint del backend que consume `src/api/` |
+| [`DESPLIEGUE.md`](DESPLIEGUE.md) | Producción: Vercel, Render, variables, CORS, rollback y apps nativas |
+| [`ACCESOS.md`](ACCESOS.md) | Las cuentas del proyecto, quién las administra y cómo pedir acceso |
+| [`docs/historial/`](docs/historial/) | Bitácoras e investigaciones de sesiones pasadas |
