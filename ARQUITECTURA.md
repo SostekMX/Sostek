@@ -163,7 +163,7 @@ de dejar que Mongoose lo pluralice solo.
 | `evaluations` | Nombre, carrera, descripción y las preguntas anidadas con sus opciones y valores | `seed:content`, desde `seed/content/evaluations.json` |
 | `presentations` | Nombre, portada y un arreglo de URLs de slides | `seed:content`, desde `seed/content/presentations.json` |
 | `tutorial` | Un único documento: título, reglas y las cartas del juego con sus recursos ambiental, económico y social | `seed:tutorial`, desde `seed/tutorial_data.json` |
-| `quizzes` | Un documento por nivel y tipo de proyecto: bloques, preguntas y opciones con puntaje de 0 a 3 y su retroalimentación | `seed:quiz`, con upsert por nivel y tipo |
+| `quizzes` | Un documento por nivel (1 a 3) y tipo de proyecto (Modelo de Negocio o Empresa Rentable). Trae los bloques, las preguntas con su peso (4 o 5) y las opciones con su escalón de 0 a 3, más los 5 tramos de retroalimentación final | `seed:quiz`, desde `seed/quiz_data.json`, con upsert por nivel y tipo |
 
 De ahí sale una división limpia:
 - **El contenido es de solo lectura desde la app.** Vive versionado en los JSON de `seed/` del backend y se carga con los seeds.
@@ -240,8 +240,8 @@ del cliente, y la elección de cuál usar para cada dato es intencional en cada 
 
 | Almacén | Qué guarda | Vive hasta | Por qué ahí |
 |---|---|---|---|
-| `sessionStorage` | Token JWT, bandera `login`, búsqueda activa, puntaje de la última evaluación y resultado del último quiz (`sostekQuiz.result`) | Que se cierre la pestaña | El token estaba en `localStorage` y se movió a propósito: reduce la ventana en que una sesión queda viva en un equipo compartido |
-| `localStorage` | Caché de artículos, presentaciones, evaluaciones y quizzes (`quiz`); URL y recorte del avatar; correo para mostrar | Que alguien limpie el navegador | Es lo que hace que la app abra con contenido en pantalla antes de que responda la red |
+| `sessionStorage` | Token JWT, bandera `login`, búsqueda activa, puntaje de la última evaluación y resultado del último quiz (`sostekQuiz.result.v2`) | Que se cierre la pestaña | El token estaba en `localStorage` y se movió a propósito: reduce la ventana en que una sesión queda viva en un equipo compartido |
+| `localStorage` | Caché de artículos, presentaciones, evaluaciones y quizzes (`quiz.v2`); URL y recorte del avatar; correo para mostrar | Que alguien limpie el navegador | Es lo que hace que la app abra con contenido en pantalla antes de que responda la red |
 | MongoDB | Perfil, contraseña, puntajes y favoritos | Siempre | Es lo único que sobrevive al dispositivo y sigue al usuario a otro equipo |
 
 ### El patrón de caché
@@ -276,9 +276,16 @@ solo si hay sesión. Un invitado puede contestar una evaluación completa y ver 
 resultado sin que nada salga del navegador.
 
 El quiz de proyectos de negocio (`/quiz`) sigue el mismo camino con llave propia: guarda
-el resultado completo (global, por bloque y por pregunta) en `sostekQuiz.result` y la
+el resultado completo (global, por bloque y por pregunta) en `sostekQuiz.result.v2` y la
 pantalla de resultados lo lee de ahí. No se manda al backend: `score_test` es un solo
 número y lo usa la evaluación.
+
+El puntaje del quiz va de 0 a 100 y se suma en tercios exactos. Cada opción tiene un escalón
+de 0 a 3 y cada pregunta un peso: 4 si es estándar y 5 si es estratégica. La opción vale
+`escalón × peso / 3`, y el total se divide entre 3 solo al final. Así los 1.33 y 1.67 del PDF
+de Carlos no se acumulan en un 99.99, y el redondeo a 2 decimales, que es solo para mostrar el
+número, nunca cambia el tramo de retroalimentación. Las llaves llevan `.v2` desde que el quiz
+tiene pesos y tramos: lo que quede guardado con la forma anterior se ignora.
 
 ---
 
