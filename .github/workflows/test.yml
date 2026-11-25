@@ -25,3 +25,9 @@ jobs:
         run: npm test -- --watchAll=false
         env:
           CI: true
+
+      # Vercel compila con CI=1: cualquier warning de ESLint tumba el deploy. Mejor verlo aqui.
+      - name: Compilar como en Vercel
+        run: npm run build
+        env:
+          CI: true
