@@ -12,10 +12,12 @@
 Este documento es una investigación del sistema completo, escrita leyendo el código
 de ambos repos. Complementa a los otros:
 
-- `ONBOARDING_FRONTEND.md` — cómo empezar, accesos, qué no romper
-- `AVANCE_SOSTEK.md` — estado actual: qué está hecho, qué falta, bugs
-- `API_CONTRACTS.md` — el contrato de cada endpoint
-- **este archivo** — cómo encajan las piezas entre sí
+- `ONBOARDING_FRONTEND.md`: cómo empezar (incluye «Tus primeros 30 minutos») y qué no romper
+- `AVANCE_SOSTEK.md`: estado actual, con qué está hecho, qué falta y los bugs
+- `API_CONTRACTS.md`: el contrato de cada endpoint
+- `DESPLIEGUE.md`: cómo llega cada pieza a producción, sus variables y cómo hacer rollback
+- `ACCESOS.md`: las cuentas del proyecto y cómo pedir acceso
+- **este archivo**: cómo encajan las piezas entre sí
 
 ---
 
@@ -50,8 +52,9 @@ evaluaciones. No sabe nada de bases de datos.
 
 ### Repositorio 2 — `Sostek-backend`
 
-Node.js + Express 4 + Mongoose 6. Un solo archivo de rutas (`src/index.js`, unas 520
-líneas) y dos archivos de modelos.
+Node.js + Express 4 + Mongoose 6. Tiene un solo archivo de rutas, `src/index.ts`, de unas 560 líneas, y
+dos archivos de modelos. Todo se escribe en TypeScript, y `npm run build` genera los `.js`
+que corre el servidor.
 
 **Su responsabilidad:** ser la única puerta a la base de datos. Valida entradas, hashea
 contraseñas, firma y verifica tokens, sube imágenes a Cloudinary y devuelve JSON.
@@ -92,15 +95,17 @@ centralizarlas aquí.
 Del otro lado, el backend decide quién puede hablarle. La lista de desarrollo está
 escrita en el código, no en el `.env`:
 
-```js
-// src/index.js:27
+```ts
+// src/index.ts:30
 const corsOrigins = ['http://localhost:3000', 'http://localhost:8100'];
-if (process.env.CORS_ORIGIN) corsOrigins.push(...process.env.CORS_ORIGIN.split(','));
+if (process.env.CORS_ORIGIN) corsOrigins.push(...process.env.CORS_ORIGIN.split(',').map(o => o.trim()));
 ```
 
 Por eso en local no hay que configurar CORS: `localhost:3000` y `localhost:8100`
 (el puerto por defecto de `ionic serve`) ya vienen permitidos. `CORS_ORIGIN` solo
-existe para agregar los dominios de producción.
+existe para agregar los dominios de producción; hoy es `https://sostek.vercel.app`.
+Un origen que no esté en la lista no puede pedir **nada** al backend, ni siquiera el contenido
+público: la app abre, pero se queda vacía.
 
 ### La forma de toda respuesta
 
@@ -145,7 +150,7 @@ por una razón distinta.
 El navegador solo conoce una dirección: la del backend. Las credenciales de Mongo y de
 Cloudinary viven únicamente en el `.env` del servidor y nunca viajan al cliente.
 
-### Las cinco colecciones
+### Las seis colecciones
 
 Mongoose define dos archivos de modelos que se reparten la base `SostekDB`. Detalle de
 diseño que vale notar: cada esquema fija su nombre de colección explícitamente en vez
@@ -154,16 +159,18 @@ de dejar que Mongoose lo pluralice solo.
 | Colección | Qué guarda | Quién escribe |
 |---|---|---|
 | `users` | Nombre, correo, contraseña hasheada, fecha de nacimiento, ocupación, género, puntajes, avatar, favoritos y token de recuperación | La app, cuando alguien se registra o edita su perfil |
-| `articles` | Título, subtítulo, cuerpo, imágenes, autor, categoría, etiquetas, bibliografía | Solo los scripts de `seed/`. La app únicamente lee |
-| `evaluations` | Nombre, carrera, descripción y preguntas anidadas con sus opciones y valores | Solo `seed/` |
-| `presentations` | Nombre, portada y arreglo de URLs de slides | Solo `seed/` |
-| `tutorial` | Un único documento: título, reglas y cartas del juego con sus recursos ambiental, económico y social | Solo `seed/` |
-| `quizzes` | Un documento por nivel y tipo de proyecto: bloques, preguntas, opciones con puntaje 0–3 y su retroalimentación | Solo `seed/` (`seed:quiz`, upsert por nivel + tipo) |
+| `articles` | Título, subtítulo, cuerpo, imágenes, autor, categoría, etiquetas y bibliografía | `seed:content`, desde `seed/content/articles.json`. La app solo lee |
+| `evaluations` | Nombre, carrera, descripción y las preguntas anidadas con sus opciones y valores | `seed:content`, desde `seed/content/evaluations.json` |
+| `presentations` | Nombre, portada y un arreglo de URLs de slides | `seed:content`, desde `seed/content/presentations.json` |
+| `tutorial` | Un único documento: título, reglas y las cartas del juego con sus recursos ambiental, económico y social | `seed:tutorial`, desde `seed/tutorial_data.json` |
+| `quizzes` | Un documento por nivel y tipo de proyecto: bloques, preguntas y opciones con puntaje de 0 a 3 y su retroalimentación | `seed:quiz`, con upsert por nivel y tipo |
 
-De ahí sale una división limpia: **el contenido es de solo lectura desde la app** y se
-carga por fuera con los seeds; **los datos de usuario son de lectura y escritura** y son
-los únicos que la app modifica. No existe ningún panel de administración ni endpoint
-para crear artículos.
+De ahí sale una división limpia:
+- **El contenido es de solo lectura desde la app.** Vive versionado en los JSON de `seed/` del backend y se carga con los seeds.
+- **Los datos de usuario son de lectura y escritura.** Son lo único que la app modifica.
+
+No existe panel de administración ni endpoint para crear artículos: el contenido nuevo se
+agrega a los JSON y se carga con `npm run seed:content`.
 
 ### Por qué Cloudinary y no Mongo
 
@@ -312,23 +319,24 @@ presentaciones y el tutorial **directamente de Google Sheets y Google Drive** co
 atadas a cuentas personales de estudiantes, no institucionales — llaves que expiran, se
 revocan y no se pueden heredar al siguiente que agarre el proyecto.
 
-La migración a MongoDB Atlas resolvió eso. Los scripts de `seed/` son precisamente esa
-mudanza, congelada: leen de un CSV o de un Google Sheet y escriben en Mongo. Se
-corrieron una vez y quedaron ahí por si hay que recargar contenido.
+La migración a MongoDB Atlas resolvió eso. Se hizo con scripts que leían de un CSV y de
+Google Sheets. Después, el contenido se siguió corrigiendo directo en Atlas: categorías para
+las recomendaciones, descripciones, portadas y textos con la codificación rota. Así, esas
+fuentes quedaron viejas.
 
-### Estado de los seeds
+En noviembre de 2026 se exportó el contenido de producción a `seed/content/*.json`, con sus
+`_id`, y esos scripts se retiraron. Hoy el contenido vive versionado en el repo del backend:
 
-| Script | Estado |
-|---|---|
-| `seed:tutorial` | Autosuficiente — lee `seed/tutorial_data.json`, que sí está en el repo |
-| `seed:articles` | Necesita un `articles.csv` que **no está versionado** |
-| `seed:evaluations` | Descarga de un Google Sheet vía su exportación CSV pública; hay que pasarle el ID de la hoja |
-| `seed:presentations` | Requiere credenciales de Cloudinary |
+| Script | Fuente | Qué hace |
+|---|---|---|
+| `seed:content` | `seed/content/*.json` | Hace upsert por `_id` de artículos, presentaciones y evaluaciones. No borra y conserva los favoritos |
+| `seed:quiz` | `seed/quiz_data.json` | Hace upsert por nivel y tipo |
+| `seed:tutorial` | `seed/tutorial_data.json` | Reemplaza el documento del tutorial |
+| `seed:presentations` | Una carpeta de imágenes | Las sube a Cloudinary y agrega la presentación a `seed/content/presentations.json` |
 
-Conclusión operativa importante: **armarte una base de datos propia y vacía te sirve para
-probar registro, login, perfil y favoritos, pero no para ver el contenido real de la
-app**. Los artículos, evaluaciones y presentaciones que ve un usuario solo existen en el
-cluster `SostekDB` del proyecto. Ese acceso se pide, no se genera.
+Conclusión operativa: **para ver la app con el contenido real no necesitas acceso a Atlas.**
+`npm run dev:memoria` levanta el backend con una base en memoria ya llena con esos JSON. El
+acceso a Atlas solo hace falta para tocar producción, y se pide: ve `ACCESOS.md`.
 
 ---
 
@@ -336,95 +344,109 @@ cluster `SostekDB` del proyecto. Ese acceso se pide, no se genera.
 
 ### En tu máquina
 
-Dos terminales, siempre. El orden importa poco, pero el backend conviene levantarlo
-primero para que el primer render del frontend ya encuentre datos.
+Siempre son dos terminales. Conviene levantar primero el backend, para que el primer render
+del frontend ya encuentre datos.
 
 ```bash
-# terminal 1 — Sostek-backend
+# terminal 1: Sostek-backend
 npm install
-cp .env.example .env      # JWT_CODE y DB_URL son obligatorios
-npm run dev:js            # nodemon en :8080
+npm run dev:memoria       # :8080, MongoDB en memoria con el contenido real; no toca Atlas
 
-# terminal 2 — Sostek
+# terminal 2: Sostek
 npm install
 cp .env.example .env      # ya apunta a localhost:8080
 npm run start             # ionic serve en :3000
 ```
 
-De las variables del backend, solo dos impiden que arranque: `JWT_CODE` (te lo inventas,
-cualquier string largo y aleatorio) y la base de datos. Las de correo solo hacen falta
-para probar recuperación de contraseña — sin ellas el servidor avisa por consola y sigue
-funcionando. Las de Cloudinary, solo para subir avatares y para el seed de
-presentaciones.
+`dev:memoria` no necesita `.env`. Si quieres una base que se conserve entre sesiones, el
+backend usa un MongoDB local con su `.env` (ve `ONBOARDING_BACKEND.md` §2). En ese caso
+solo dos variables impiden que arranque:
+- `JWT_CODE`: te lo inventas, y el `.env.example` dice cómo.
+- La base de datos.
 
-Atajo útil: los tests del backend usan `mongodb-memory-server`, una base en memoria.
-`npm test` corre sin `.env`, sin internet y sin tocar Atlas.
+Si falta alguna, el servidor lo dice al arrancar. Las de correo solo hacen falta para probar
+la recuperación de contraseña: sin ellas, el servidor avisa por consola y sigue. Las de
+Cloudinary solo sirven para subir avatares y para `seed:presentations`.
+
+Los tests del backend también usan una base en memoria (`mongodb-memory-server`):
+`npm test` corre sin `.env`, sin internet y sin tocar Atlas. La primera instalación baja
+ese MongoDB: unos 780 MB en Windows y unos 120 MB en Linux o macOS.
 
 ### En producción
 
 | Pieza | Dónde vive | Nota |
 |---|---|---|
-| Backend | `sostek-backend.onrender.com` | Render, con UptimeRobot pegándole para que no se duerma |
-| Frontend | `sostek-frontend.onrender.com` | Sitio estático desplegado desde `main` |
-| Frontend viejo | `sostek.pages.dev` | Cloudflare Pages, build previo a la integración con el backend. Abandonado por decisión del equipo: la cuenta es de un colaborador anterior y no se puede transferir sin arriesgar la URL |
-| Datos | MongoDB Atlas + Cloudinary | Compartidos entre local y producción: apuntar tu backend local al mismo `DB_URL` escribe en la base real |
+| Frontend (oficial) | `sostek.vercel.app` | Vercel publica `main` solo |
+| Backend | `sostek-backend.onrender.com` | Render publica `main` solo. UptimeRobot le pega a `/health` para que no se duerma |
+| Datos | MongoDB Atlas y Cloudinary | Si tu backend local usa el `DB_URL` de Atlas, escribe en la base real |
+| Frontend en Render (abandonado) | `sostek-frontend.onrender.com` | Se sigue publicando con cada push a `main`, pero CORS no lo deja pasar, así que no carga contenido. Está pendiente de baja |
+| Frontend viejo (abandonado) | `sostek.pages.dev` | Cloudflare Pages, con el build anterior al backend. Lo administra un colaborador anterior |
 
-Los dos repos tienen su propio workflow de GitHub Actions que corre los tests en cada
-push y cada PR a `main` o `development`. El frontend tiene 23 tests sobre lógica pura
-(puntaje, normalización de búsqueda, favoritos); el backend tiene 33 con Jest y
-Supertest.
+El paso a paso de cada pieza (variables, CORS, rollback) está en `DESPLIEGUE.md`, y de quién
+es cada cuenta, en `ACCESOS.md`.
+
+Cada repo tiene su workflow de GitHub Actions, que corre en cada push y en cada PR a `main`
+o a `development`:
+- En el frontend, corre los tests y compila el build.
+- En el backend, corre los tests (Jest y Supertest) y revisa que los `.js` salgan de los `.ts`.
 
 ---
 
 ## 9. Fricciones reales
 
-Cosas que están en el código hoy y que te van a morder si no las conoces de antemano.
+Son cosas que están en el código hoy y que te van a morder si no las conoces de antemano.
 No son opiniones de estilo, son trampas concretas.
 
-### El servidor muere sin mensaje si no alcanza la base — *arranque*
-
-`src/models/authModel.js:7` hace `mongoose.connect(DB_URL)` sin `.catch()`, en el momento
-de importar el módulo. Si la base no responde, esa promesa se rechaza sin manejo y en
-Node moderno eso tumba el proceso.
-
-El síntoma que ves es un stack trace de Mongoose y el puerto 8080 muerto, en vez de un
-"no me pude conectar a la base". Un `.catch()` ahí convierte diez minutos de confusión
-en una línea legible.
-
-### `index.ts` e `index.js` se sincronizan a mano — *despliegue*
-
-El servidor corre `src/index.js`. El `.ts` existe al lado pero no se compila en cada
-commit. Si editas un endpoint solo en el TypeScript, el cambio se ve bien en el PR y
-**nunca llega a producción**. Lo mismo aplica a los dos archivos de modelos.
-
-### Los errores llegan como `200 OK` — *depuración*
+### Los errores llegan como `200 OK` (*depuración*)
 
 La pestaña Network del navegador te va a mostrar puras respuestas exitosas aunque el
 login esté fallando. Hay que abrir el cuerpo de la respuesta y mirar `success`. Un
 `.catch()` de axios en el frontend no atrapa errores de negocio, solo caídas de red.
 
-### `CORS_ORIGIN` en producción apunta al dominio abandonado — *producción*
+### El servidor corre los `.js`, no los `.ts` (*despliegue*)
 
-La variable en Render sigue configurada con `sostek.pages.dev`, el frontend viejo.
-Mientras no se actualice al dominio que se esté usando, el login y el perfil no funcionan
-desde el frontend nuevo desplegado. En local no afecta, porque `localhost:3000` está en
-la lista fija del código.
+En el backend se edita el TypeScript (`src/index.ts`, `src/models/*.ts`) y se regeneran los
+`.js` con `npm run build`. Render corre los `.js`. Si solo commiteas el `.ts`, el cambio
+nunca llega a producción. Para que no pase en silencio, CI falla si los `.js` no coinciden
+con lo que genera `tsc`.
 
-### Los favoritos guardan solo el ID, sin resolver — *arquitectura*
+### Local puede escribir en producción (*datos*)
 
-`GET /user/favorites` devuelve pares de `content_id` y `type`, no los artículos. La
-pantalla de Favoritos tiene que cruzar esos IDs contra la lista de artículos y
-presentaciones que ya tiene cacheada. Funciona, pero significa que **los favoritos
-dependen de que el caché de contenido esté poblado**.
+Si el `.env` del backend tiene el `DB_URL` de Atlas, todo lo que hagas en localhost
+(registros, favoritos, seeds) escribe en la base real. Los seeds también usan esa base.
+Para trabajar sin ese riesgo, usa `npm run dev:memoria`: sobrescribe el `DB_URL` y nunca
+toca Atlas.
 
-### `ArticleCardModal.tsx` existe y nadie lo importa — *código muerto*
+### El contenido se identifica por su `_id` (*datos*)
 
-La documentación del proyecto describe un modal con el artículo más reciente al entrar a
-APRENDE, pero `Tab1.tsx` no tiene rastro de esa lógica. Parece una regresión de algún
-refactor anterior. Está marcado como pendiente de decisión: se reactiva o se borra.
+Los favoritos guardan el `_id` del artículo o de la presentación, y las URLs de las
+evaluaciones llevan el suyo. Si un documento de contenido se borra y se vuelve a crear con
+otro `_id`, los favoritos quedan apuntando a nada. Por eso `seed:content` hace upsert y
+conserva los `_id` de `seed/content`. No borres documentos para «recargarlos».
+
+### Las categorías conectan evaluaciones y artículos (*datos*)
+
+Al terminar una evaluación, la app recomienda artículos de la categoría más débil. Funciona
+porque los dos lados usan los mismos nombres:
+- los artículos, `Ambiental`, `Económico` o `Social`;
+- las preguntas de las evaluaciones, `Ambiental` o `Económico y Social`.
+
+Un test del backend lo revisa. Si cambias una categoría en un lado, cámbiala en el otro.
+
+### CORS bloquea todo, no solo el login (*producción*)
+
+Un frontend en un dominio que no está en `CORS_ORIGIN` no puede pedir nada al backend,
+ni siquiera el contenido público. Por eso el sitio viejo de Render
+(`sostek-frontend.onrender.com`) abre pero se queda vacío. Si algún día hay dominio propio,
+hay que agregarlo a `CORS_ORIGIN` en Render (ve `DESPLIEGUE.md`).
+
+### Vercel trata los warnings como errores (*despliegue*)
+
+Vercel compila con `CI=1`, y con eso Create React App convierte cualquier warning de
+ESLint (un import sin usar, por ejemplo) en un error que tumba el deploy. CI del frontend
+corre el mismo build, así que el problema aparece en el PR y no al publicar.
 
 ---
 
-*Basado en la lectura del código de ambos repositorios: `Sostek` en la rama `main` y
-`Sostek-backend`, más `ONBOARDING_FRONTEND.md`, `ONBOARDING_BACKEND.md`,
-`AVANCE_SOSTEK.md` y `API_CONTRACTS.md`.*
+*Basado en la lectura del código de los dos repositorios, `Sostek` y `Sostek-backend`, en
+la rama `main`. Actualizado el 24 de noviembre de 2026.*
