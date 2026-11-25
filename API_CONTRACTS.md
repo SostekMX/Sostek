@@ -71,8 +71,9 @@ Envía un email con un link de recuperación válido por **1 hora**. El token **
 
 **Body**
 ```json
-{ "email": "juan@ejemplo.com" }
+{ "email": "juan@ejemplo.com", "lang": "es" }
 ```
+> `lang` es opcional (`es` o `en`): es el idioma del correo. El frontend manda el idioma activo de la app; si falta, el correo sale en español.
 
 **Respuesta exitosa**
 ```json
@@ -167,11 +168,11 @@ Actualiza datos del perfil. El usuario se identifica por el JWT — **no enviar 
 ```
 
 **Errores**
-| `error` / `message` | Causa |
+| `error` | Causa |
 |---|---|
 | `"Token requerido"` / `"Token inválido o expirado"` | Problema de JWT |
 | `"El nombre es requerido"` / `"El apellido es requerido"` | Campo vacío |
-| `"No se pudo actualizar información del usuario"` | Error interno de DB |
+| `"No se pudo actualizar información del usuario"` | Error interno de la base (hasta noviembre de 2026 llegaba en `message`) |
 
 ---
 
@@ -451,6 +452,6 @@ No están en este repo, pero afectan directamente cómo se comporta el frontend 
 
 | Variable | Para qué |
 |---|---|
-| `CORS_ORIGIN` | Debe matchear la URL real del frontend desplegado, si no, todo lo que requiere JWT falla en producción aunque el endpoint esté bien. Ver estado actual en `AVANCE_SOSTEK.md` → "Despliegue". |
+| `CORS_ORIGIN` | Tiene que incluir el dominio del frontend desplegado (hoy, `https://sostek.vercel.app`). Si no, el navegador bloquea **todas** las peticiones de ese dominio, incluido el contenido público: la app abre, pero vacía. Ve `DESPLIEGUE.md`. |
 | Connection string de MongoDB | Sin esto el backend no levanta. |
 | Credenciales de Cloudinary | Necesarias para `POST /user/avatar`; sin esto el upload de foto de perfil falla con `"Error al subir imagen"`. |
