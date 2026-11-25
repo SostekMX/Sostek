@@ -48,7 +48,7 @@ El árbol completo, con un comentario por carpeta, está en [`README.md`](README
 | `/score/:name` | `FinalScoreEvaluation` | Resultado de evaluación |
 | `/quiz` | `QuizStart` | Quiz: elegir nivel y tipo de proyecto |
 | `/quiz/:level/:type` | `QuizQuestions` | Quiz: preguntas por bloque |
-| `/quiz/resultados` | `QuizResults` | Quiz: calificación global, por bloque y retroalimentación |
+| `/quiz/resultados` | `QuizResults` | Quiz: puntaje de 0 a 100, retroalimentación del tramo y revisión por pregunta |
 
 ---
 
@@ -75,7 +75,7 @@ El árbol completo, con un comentario por carpeta, está en [`README.md`](README
 - **Perfil** — carga datos con `GET /user/profile`, edición con `POST /user/edit`, ambos con header JWT; UI de cambio de avatar con selector de imagen, overlay de recorte circular (drag para reposicionar), sube a `POST /user/avatar` como `multipart/form-data`; persiste posición del recorte en `localStorage`
 - **Validación contraseña** — mínimo 8 caracteres en signup y reset-password antes de llamar al backend
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
-- **Quiz de proyectos de negocio** (`/quiz`) — acceso desde EVALÚATE, con un banner entre «Cómo funciona» y las carreras; dentro del quiz queda marcada la pestaña EVALÚATE; nivel (1 y 2 «Próximamente» hasta que haya datos), tipo de proyecto obligatorio, preguntas por bloque desde `GET /quiz` con opciones barajadas, «Obtener resultados» solo con todo contestado; resultados con % global y por bloque, conteo de óptimas/parciales/nulas y retroalimentación por pregunta filtrable. Puntaje en `src/utils/quiz.ts` con tests. El resultado no se guarda en el perfil (ver pendientes)
+- **Quiz de proyectos de negocio** (`/quiz`): se entra desde EVALÚATE con un banner entre «Cómo funciona» y las carreras, y dentro del quiz queda marcada esa pestaña. Tiene los 6 tests del PDF de Carlos: niveles 1 (primer semestre), 2 (segundo semestre) y 3 (semestre avanzado), cada uno en Modelo de Negocio y Empresa Rentable, de 23 preguntas en 3 bloques. El tipo de proyecto es obligatorio, las opciones salen barajadas y «Obtener resultados» solo se habilita con todo contestado. Cada pregunta vale 4 puntos, o 5 si es estratégica (la 6, 7, 8, 14, 15, 16, 22 y 23), y la opción vale su escalón de 0 a 3 × peso / 3. El total, de 0 a 100, se suma en tercios exactos. Los resultados muestran el puntaje, la retroalimentación de su tramo (5 tramos, de «Nivel Base-Inicial» a «Nivel Avanzado»), el % por bloque, el conteo de óptimas, parciales y nulas, y una revisión por pregunta con los puntos de tu opción y de la óptima. El cálculo está en `src/utils/quiz.ts`, con tests. El resultado no se guarda en el perfil (ver pendientes).
 - **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
 - **Recuperación de contraseña**: `ForgotPassword.tsx` pide el correo y el backend manda un link con el token **por correo**, en el idioma de la app (el token nunca viene en la respuesta). `ResetPassword.tsx` recibe el token y la contraseña nueva. Las rutas son `/ForgotPassword` y `/ResetPassword`, con link desde `LogIn.tsx`.
 - **Favoritos** — botón corazón en `DocumentCard` (lista y carrusel), hook `useFavorites.ts` con `POST/GET/DELETE /user/favorites`, página `/Favorites` que lista contenido guardado con opción de quitar
@@ -97,7 +97,9 @@ El árbol completo, con un comentario por carpeta, está en [`README.md`](README
 | Elemento | Ubicación | Estado |
 |----------|-----------|--------|
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
-| Quiz: retroalimentación | `seed/quiz_data.json` (backend) | Es un borrador (`feedbackDraft: true`) y la app lo marca como «preliminar». Falta que Carlos la revise || Quiz: niveles 1 y 2 | `seed/quiz_data.json` (backend) | Sin contenido: salen como «Próximamente» y se activan solos cuando haya datos || Quiz: guardar el resultado | Backend y `QuizResults.tsx` | No se guarda en el perfil: `POST /user/score` solo tiene `score_test`, que usa la evaluación. Haría falta un campo nuevo || Quiz en inglés | `src/i18n/content.en.json` | La interfaz sí está traducida; el contenido del quiz sale en español || Apps nativas | `ios/`, `capacitor.config.ts` | Nunca se publicaron. iOS no tiene equipo de firma y Android no tiene carpeta. Ve `DESPLIEGUE.md` |
+| Quiz: guardar el resultado | Backend y `QuizResults.tsx` | No se guarda en el perfil: `POST /user/score` solo tiene `score_test`, que usa la evaluación. Haría falta un campo nuevo |
+| Quiz en inglés | `seed/quiz_data.json` (backend) y `src/i18n/content.en.json` | La interfaz sí está traducida; las preguntas, las opciones y los tramos del quiz salen en español |
+| Apps nativas | `ios/`, `capacitor.config.ts` | Nunca se publicaron. iOS no tiene equipo de firma y Android no tiene carpeta. Ve `DESPLIEGUE.md` |
 
 ---
 
@@ -255,8 +257,8 @@ El árbol completo, con un comentario por carpeta, está en [`README.md`](README
 
 ```
 Backend local :8080 (MongoDB)  ←─ artículos, evaluaciones, presentaciones, tutorial, usuarios
-localStorage                   ←─ caché de artículos/evaluaciones/presentaciones/quizzes, avatar URL, user_email (display)
-sessionStorage                 ←─ token JWT, flag de sesión (login), búsqueda activa, scores de evaluación, resultado del quiz (sostekQuiz.result)
+localStorage                   ←─ caché de artículos/evaluaciones/presentaciones/quizzes (quiz.v2), avatar URL, user_email (display)
+sessionStorage                 ←─ token JWT, flag de sesión (login), búsqueda activa, scores de evaluación, resultado del quiz (sostekQuiz.result.v2)
 Google Drive                   ←─ solo el archivo de descarga del juego (zip) — ya no se usa para contenido
 ```
 
@@ -287,7 +289,7 @@ Esto queda para quien siga, más o menos en orden de importancia:
 1. **Cuentas.** Identificar a los dueños de cada servicio y pasarlos a cuentas del proyecto o institucionales (`ACCESOS.md`). Es lo más importante: hoy varias dependen de personas que ya no están.
 2. **Sitios abandonados.** Dar de baja el sitio estático de Render y `sostek.pages.dev`, o redirigirlos a `sostek.vercel.app`.
 3. **Pruebas en producción** con una cuenta de prueba, no la de nadie real: guardar el puntaje, favoritos, recuperar la contraseña por correo y eliminar la cuenta. Se verificaron con el código y con tests, pero no en el navegador contra producción.
-4. **Quiz:** que Carlos revise la retroalimentación; los niveles 1 y 2; decidir si el resultado se guarda en el perfil; traducir el contenido al inglés (ve la tabla de «Incompleto»).
+4. **Quiz:** los 6 tests y su retroalimentación ya son los finales de Carlos. Falta decidir si el resultado se guarda en el perfil y traducir el contenido al inglés (ve la tabla de «Incompleto»).
 5. **Imágenes de los artículos.** Están enlazadas a sitios ajenos y algunas ya no cargan. Conviene subirlas a Cloudinary y cambiar las URLs en `seed/content/articles.json` (backend).
 6. **JUEGA online:** sigue como placeholder.
 7. **Apps nativas:** antes de publicar en las tiendas, actualizar Capacitor (ve `DESPLIEGUE.md`).

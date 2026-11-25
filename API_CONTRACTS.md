@@ -408,35 +408,44 @@ Lista **sin** preguntas.
 ### `GET /quiz` — público
 
 Parámetro opcional `?level=N` (entero ≥ 1). El frontend pide todo sin filtro y decide qué
-niveles mostrar como «Próximamente» según los datos.
+niveles mostrar como «Próximamente» según los datos. Hoy hay 6 tests: niveles 1, 2 y 3, cada uno
+con `type` 1 (Modelo de Negocio) y 2 (Empresa Rentable), de 23 preguntas.
 
 ```json
 {
   "success": true,
   "quizzes": [
     {
-      "level": 3,
+      "level": 1,
       "type": 1,
       "title": "Modelo de Negocio",
       "summary": "Enfoque estratégico / propuesta de valor",
-      "focus": "Escalamiento del modelo de negocio, ...",
-      "feedbackDraft": true,
+      "focus": "",
       "blocks": [
         {
-          "name": "Ambiental y Regeneración Sistémica",
+          "name": "Ambiental",
           "questions": [
-            { "text": "...", "options": [ { "text": "...", "score": 0, "feedback": "..." } ] }
+            { "text": "...", "weight": 4, "options": [ { "text": "...", "score": 2 }, { "text": "...", "score": 3 } ] }
           ]
         }
+      ],
+      "tiers": [
+        { "min": 0, "title": "Nivel Base-Inicial", "text": "..." },
+        { "min": 20, "title": "Nivel Inicial", "text": "..." }
       ]
     }
   ]
 }
 ```
-> Ordenados por `level` y `type`. Un nivel sin contenido devuelve `quizzes: []`. Cada
-> opción trae `score` de 0 (nula) a 3 (óptima); el puntaje se calcula en el cliente
-> (`src/utils/quiz.ts`). El número de bloques y de preguntas por bloque sale de los datos.
-> `feedbackDraft: true` marca retroalimentación pendiente de revisión.
+> Ordenados por `level` y `type`. Un nivel sin contenido devuelve `quizzes: []`.
+>
+> **Puntaje** (lo calcula el cliente en `src/utils/quiz.ts`):
+> - `score` es el escalón de la opción: 0 nula, 1 y 2 parciales, 3 óptima. Las opciones no vienen ordenadas por puntaje.
+> - `weight` es lo que vale la pregunta: 4 si es estándar y 5 si es estratégica (la 6, 7, 8, 14, 15, 16, 22 y 23).
+> - La opción vale `score × weight / 3` puntos: 0, 1.33, 2.67 o 4 en una estándar; 0, 1.67, 3.33 o 5 en una estratégica.
+> - El total se suma en tercios enteros (`Σ score × weight`, máximo 300) y se divide entre 3 solo al final. Así un test vale 100 exactos, y el redondeo a 2 decimales es solo para mostrarlo.
+>
+> **`tiers`** son los 5 tramos de retroalimentación final, iguales en los 6 tests. Cada tramo aplica desde su `min` hasta el `min` del siguiente: 0, 20, 40, 60 y 80.
 
 **Errores**
 | `error` | Causa |
