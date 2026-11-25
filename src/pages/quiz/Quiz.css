@@ -348,10 +348,17 @@
   gap: var(--s-8);
 }
 
+/* El puntaje ("49.67/100") escala con el ancho de su columna: con vw no cabe en móvil ni en la
+   columna angosta de escritorio. */
+.quiz-result__main {
+  container-type: inline-size;
+}
+
 .quiz-result__pct {
   margin: var(--s-2) 0 0 -0.04em;
   font-family: var(--font-display);
-  font-size: clamp(8rem, 3.5rem + 19vw, 21rem);
+  font-size: clamp(4rem, 1rem + 20vw, 14rem); /* respaldo sin container queries */
+  font-size: min(28cqi, 21rem);
   line-height: 0.86;
   letter-spacing: -0.03em;
   font-variant-numeric: lining-nums tabular-nums;
