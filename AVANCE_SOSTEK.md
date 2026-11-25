@@ -1,8 +1,8 @@
 # AVANCE SOSTEK — Fuente de Verdad del Proyecto
 
-> Última actualización: 2026-06-17
-> Rama activa: `development`
-> Stack: Ionic React 6 + TypeScript + Capacitor 4 + Backend Node.js/MongoDB
+> Última actualización: 2026-11-24, entrega del servicio social. Los pendientes para quien siga están al final, en «Pendientes de la entrega».
+> Rama activa: `development`. `main` es lo que está publicado en https://sostek.vercel.app.
+> Stack: Ionic React 6, TypeScript, Capacitor 4 y Node 24, con el backend Node.js/MongoDB en otro repo
 
 ---
 
@@ -16,7 +16,7 @@ La aplicación **web/móvil de SOSTEK**: una plataforma educativa de sostenibili
 | 2 | **JUEGA** | Videojuego "Survivor" — versión física descargable + video; versión online pendiente |
 | 3 | **EVALÚATE** | Evaluaciones tipo cuestionario para medir el nivel de sostenibilidad de proyectos académicos |
 
-El backend (login/registro/perfil/contenido) es un servidor externo en `http://localhost:8080` que **no está en este repositorio**.
+El backend (login, registro, perfil y contenido) está en otro repo, [SostekMX/Sostek-backend](https://github.com/SostekMX/Sostek-backend). En local corre en `http://localhost:8080`, y en producción en `https://sostek-backend.onrender.com`.
 
 > ¿Primera vez en este repo? Lee `ONBOARDING_FRONTEND.md` — tiene la historia del proyecto (por qué se migró de Google Sheets/Drive a esta base de datos) y cómo conseguir acceso a todo lo que necesitas. Este archivo (`AVANCE_SOSTEK.md`) es el estado actual, no el punto de partida.
 
@@ -24,53 +24,7 @@ El backend (login/registro/perfil/contenido) es un servidor externo en `http://l
 
 ## Estructura del proyecto
 
-```
-src/
-├── App.tsx                          # Router principal + MainTabs + lógica de ocultar tab bar
-├── config.ts                        # BACKEND_URL desde variable de entorno REACT_APP_BACKEND_URL
-├── api/
-│   ├── client.ts                    # Instancia única de axios — baseURL + interceptor que agrega Authorization automáticamente
-│   ├── auth.ts                      # login, signup, forgotPassword, resetPassword
-│   ├── user.ts                      # getProfile, editProfile, uploadAvatar, deleteAccount, saveScore, favoritos
-│   └── content.ts                   # getArticles, getArticle, getPresentations, getEvaluations, getEvaluation, getTutorial, getQuizzes
-├── context/
-│   └── AppContext.tsx               # Estado global: search, tutorial, score, transparentToolbar
-├── components/
-│   ├── ErrorBoundary.tsx            # Error boundary global — pantalla de error con botón "Reintentar"
-│   ├── PrivateRoute.tsx             # HOC de ruta privada — redirige a / si no hay sesión activa
-│   ├── layout/
-│   │   └── AppBarPopOver.tsx        # Toolbar: búsqueda, menú lateral, logout
-│   ├── ArticleCarrousel.tsx         # Carrusel horizontal de artículos y presentaciones
-│   ├── ArticleCardModal.tsx         # ⚠️ HUÉRFANO — no se importa en ningún lado, ver bug #9
-│   ├── DocumentCard.tsx             # Tarjeta de artículo/presentación en la lista (con botón favorito)
-│   ├── EvaluationCard.tsx           # Tarjeta de evaluación en Tab3
-│   ├── QuestionTestCard.tsx         # Tarjeta de pregunta con checkboxes
-│   ├── QuizQuestionCard.tsx         # Pregunta del quiz, opción única con opciones barajadas
-│   └── QuizEntry.tsx                # Acceso al quiz dentro de EVALÚATE (banner sobre las evaluaciones)
-├── pages/
-│   ├── logIn/         LogIn.tsx          # Pantalla de inicio de sesión
-│   ├── signUp/        SignUp.tsx          # Pantalla de registro
-│   ├── forgotPassword/ ForgotPassword.tsx # Solicitud de token de recuperación
-│   ├── resetPassword/  ResetPassword.tsx  # Cambio de contraseña con token
-│   ├── tab1/          Tab1.tsx            # APRENDE — artículos + presentaciones
-│   ├── tab2/          Tab2.tsx            # JUEGA — video + descarga
-│   ├── tab3/          Tab3.tsx            # EVALÚATE — lista de evaluaciones
-│   ├── document/      Documents.tsx       # Detalle completo de un artículo
-│   ├── presentation/  Presentation.tsx    # Viewer de slides
-│   ├── evaluation/    Evaluation.tsx      # Evaluación con preguntas y checkboxes
-│   ├── finalScoreEvaluation/ FinalScoreEvaluation.tsx # Resultados y feedback
-│   ├── quiz/          QuizStart, QuizQuestions, QuizResults # Quiz de proyectos de negocio
-│   └── profile/       Profile.tsx         # Edición de perfil del usuario
-├── hooks/
-│   └── useFavorites.ts              # GET/POST/DELETE /user/favorites con optimistic update
-├── utils/
-│   ├── scoring.ts                   # Lógica pura: getFeedback, applyAnswer, computeCategoryScores, clearScoreSession
-│   └── search.ts                    # normalize() — elimina tildes y pasa a minúsculas
-└── __tests__/
-    ├── scoring.test.ts              # 14 tests: rangos de feedback, seleccionar/deseleccionar, agrupación por categoría
-    ├── search.test.ts               # 5 tests: tildes, mayúsculas, cadena vacía
-    └── favorites.test.ts            # 6 tests: isFavorite, add, remove, lista vacía
-```
+El árbol completo, con un comentario por carpeta, está en [`README.md`](README.md). Mantenerlo en un solo lugar evita que dos copias digan cosas distintas.
 
 ---
 
@@ -105,7 +59,6 @@ src/
 - **Login / Registro** — formularios completos, JWT guardado en `sessionStorage`, redirige a `/tab1`
 - **Tab 1 — APRENDE**
   - Artículos cargados desde `GET /articles` (backend MongoDB)
-  - ⚠️ Modal del artículo más reciente al entrar — **no está activo actualmente**, ver bug #9
   - Carrusel de artículos + presentaciones desde `GET /presentations`
   - Búsqueda con normalización de tildes
   - Filtro por tipo (Artículos / Presentaciones / Ambos)
@@ -124,7 +77,7 @@ src/
 - **Eliminar cuenta** (`DELETE /user`) — botón en `Profile.tsx`, confirmación con alert, limpia token y redirige a login
 - **Quiz de proyectos de negocio** (`/quiz`) — acceso desde EVALÚATE, con un banner entre «Cómo funciona» y las carreras; dentro del quiz queda marcada la pestaña EVALÚATE; nivel (1 y 2 «Próximamente» hasta que haya datos), tipo de proyecto obligatorio, preguntas por bloque desde `GET /quiz` con opciones barajadas, «Obtener resultados» solo con todo contestado; resultados con % global y por bloque, conteo de óptimas/parciales/nulas y retroalimentación por pregunta filtrable. Puntaje en `src/utils/quiz.ts` con tests. El resultado no se guarda en el perfil (ver pendientes)
 - **Guardar puntaje** (`POST /user/score`) — se envía `score_test` al backend al finalizar una evaluación si el usuario está logueado
-- **Recuperación de contraseña** — pantalla `ForgotPassword.tsx` (email → token por response) + `ResetPassword.tsx` (token + nueva contraseña); rutas `/ForgotPassword` y `/ResetPassword`; link desde `LogIn.tsx`
+- **Recuperación de contraseña**: `ForgotPassword.tsx` pide el correo y el backend manda un link con el token **por correo**, en el idioma de la app (el token nunca viene en la respuesta). `ResetPassword.tsx` recibe el token y la contraseña nueva. Las rutas son `/ForgotPassword` y `/ResetPassword`, con link desde `LogIn.tsx`.
 - **Favoritos** — botón corazón en `DocumentCard` (lista y carrusel), hook `useFavorites.ts` con `POST/GET/DELETE /user/favorites`, página `/Favorites` que lista contenido guardado con opción de quitar
 
 #### Fixes técnicos aplicados
@@ -144,6 +97,7 @@ src/
 | Elemento | Ubicación | Estado |
 |----------|-----------|--------|
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
+| Quiz: retroalimentación | `seed/quiz_data.json` (backend) | Es un borrador (`feedbackDraft: true`) y la app lo marca como «preliminar». Falta que Carlos la revise || Quiz: niveles 1 y 2 | `seed/quiz_data.json` (backend) | Sin contenido: salen como «Próximamente» y se activan solos cuando haya datos || Quiz: guardar el resultado | Backend y `QuizResults.tsx` | No se guarda en el perfil: `POST /user/score` solo tiene `score_test`, que usa la evaluación. Haría falta un campo nuevo || Quiz en inglés | `src/i18n/content.en.json` | La interfaz sí está traducida; el contenido del quiz sale en español || Apps nativas | `ios/`, `capacitor.config.ts` | Nunca se publicaron. iOS no tiene equipo de firma y Android no tiene carpeta. Ve `DESPLIEGUE.md` |
 
 ---
 
@@ -161,7 +115,7 @@ src/
 | ~~U1~~ | ~~Skeleton loaders en Tab1 y Tab3~~ | ✅ Resuelto — skeleton shimmer en Tab1, Tab3, Documents, Evaluation y Favorites. Spinner eliminado de toda la app |
 | ~~U2~~ | ~~Cachear evaluaciones y presentaciones~~ | ✅ Resuelto — evaluaciones y presentaciones cacheadas en `localStorage`, mismo patrón que artículos |
 | ~~U3~~ | ~~Error boundary global~~ | ✅ Resuelto — `ErrorBoundary.tsx` envuelve toda la app; pantalla dark con logo + botón "Reintentar" |
-| ~~T1~~ | ~~Unit tests frontend (Jest)~~ | ✅ Resuelto — 23 tests en 3 suites: `scoring.test.ts` (getFeedback, applyAnswer, computeCategoryScores, clearScoreSession), `search.test.ts` (normalize con tildes), `favorites.test.ts` (isFavorite, add, remove) |
+| ~~T1~~ | ~~Unit tests frontend (Jest)~~ | ✅ Resuelto. Hoy hay 10 suites en `src/__tests__/` (ve `ONBOARDING_FRONTEND.md` §6), y CI corre los tests y el build. |
 
 ### 🔒 SEGURIDAD / CALIDAD — PENDIENTE BACKEND
 
@@ -171,7 +125,7 @@ src/
 | ~~BS2~~ | ~~Sanitizar inputs + NoSQL injection~~ | ✅ Resuelto — `helmet`, `express-mongo-sanitize` y `express-validator` activos |
 | ~~BS4~~ | ~~Contraseña mínima 8 caracteres~~ | ✅ Resuelto — `isLength({ min: 8 })` en signup y reset-password |
 | ~~BS5~~ | ~~HTTPS / SSL (producción)~~ | ✅ Resuelto — Render provee TLS automáticamente |
-| ~~BT1~~ | ~~Unit tests backend (Jest + Supertest)~~ | ✅ Resuelto — 33 tests, corren en CI |
+| ~~BT1~~ | ~~Unit tests backend (Jest + Supertest)~~ | ✅ Resuelto: corren en CI, que además revisa que los `.js` salgan de los `.ts` |
 
 ---
 
@@ -310,42 +264,31 @@ Google Drive                   ←─ solo el archivo de descarga del juego (zip
 
 ## Cómo correr el proyecto
 
-```bash
-npm install
-npm run start        # dev server en http://localhost:3000
-```
-
-El backend debe estar corriendo por separado en `http://localhost:8080`.
+Ve «Tus primeros 30 minutos» en `ONBOARDING_FRONTEND.md`. En resumen: `npm run dev:memoria` en el backend (contenido real, sin Atlas) y `npm run start` aquí.
 
 ---
 
 ## Despliegue
 
-- **Backend** ya está desplegado en `https://sostek-backend.onrender.com` (con UptimeRobot configurado para que no se duerma).
-- **Frontend (Render)** ya está desplegado en `https://sostek-frontend.onrender.com` (Static Site con `render.yaml`, deployado desde `main`) ✅ — código actualizado, pero ahora mismo **sin CORS** (ver abajo).
-- **Frontend (Cloudflare Pages)** — `https://sostek.pages.dev`. Lo maneja el compañero que inició el proyecto hace 4 años, corre el build viejo (pre-integración al backend, usa `apis.google.com/js/api.js`). **Decisión 2026-06-12: se abandona este link.** No hay forma de transferir el proyecto entre cuentas de Cloudflare sin riesgo de perder la URL `sostek.pages.dev` por tiempo indefinido. El link público va a ser un dominio propio sobre el deploy de Render (ver "Plan de dominio personalizado" abajo).
+- **Frontend oficial:** Vercel, en `https://sostek.vercel.app`. Se publica solo al integrar a `main`.
+- **Backend:** Render, en `https://sostek-backend.onrender.com`, con UptimeRobot para que no se duerma.
+- **`CORS_ORIGIN`** del backend deja pasar `https://sostek.vercel.app` (verificado el 2026-11-24).
+- **Sitios abandonados**, pendientes de baja: el sitio estático de Render (`sostek-frontend.onrender.com`), que CORS ya no deja pasar, y `sostek.pages.dev` (Cloudflare, la versión de 2022).
+- **Dominio propio** (por ejemplo, `app.sostek.com.mx`): pendiente de decidir con la facultad. Los pasos están en `DESPLIEGUE.md`.
 
-### ⚠️ Estado actual de CORS_ORIGIN
+Las variables, el rollback, los respaldos y las apps nativas están en [`DESPLIEGUE.md`](DESPLIEGUE.md); las cuentas, en [`ACCESOS.md`](ACCESOS.md).
 
-`CORS_ORIGIN` está configurado como `https://sostek.pages.dev` — desactualizado, hay que cambiarlo:
-- **Ahora:** `CORS_ORIGIN=https://sostek-frontend.onrender.com` (para que login/perfil/favoritos funcionen mientras no haya dominio propio) — pedir directamente a quien administre las variables de entorno del servicio backend en Render
-- **Más adelante:** cuando esté listo el dominio personalizado, cambiarlo de nuevo a ese dominio
+---
 
-### 🌐 Plan de dominio personalizado — `app.sostek.com.mx` (o el que se compre/asigne)
+## Pendientes de la entrega (noviembre de 2026)
 
-Para que el link público no diga "onrender", se va a usar un dominio propio apuntando al mismo Static Site de Render. No requiere Cloudflare ni la cuenta del compañero.
+Esto queda para quien siga, más o menos en orden de importancia:
 
-**Frontend — ya listo, no requiere cambios de código:**
-- `src/config.ts` lee `REACT_APP_BACKEND_URL` desde variable de entorno → domain-agnostic
-- `render.yaml` ya tiene la rewrite SPA (`/* → /index.html`)
-- No hay URLs hardcodeadas en el código
-
-**Checklist para cuando se tenga el dominio** (subdominio de algo que ya tenga la facultad, o uno comprado):
-1. ⏳ En Render → servicio `sostek-frontend` → Settings → Custom Domains → agregar `app.sostek.com.mx` (o el dominio que sea)
-2. ⏳ Render entrega un registro DNS (CNAME/ALIAS) — agregarlo en el proveedor del dominio
-3. ⏳ Render emite el certificado SSL automáticamente (puede tardar unos minutos)
-4. ⏳ Backend: cambiar `CORS_ORIGIN` al nuevo dominio (`https://app.sostek.com.mx`) — coordinar directamente con quien administre el backend en Render
-
-- En desarrollo local todo sigue igual: `REACT_APP_BACKEND_URL` no se define y `src/config.ts` cae al fallback `http://localhost:8080`.
-
-> ⚠️ Al correr por primera vez después de la migración a MongoDB, limpiar la clave `articles` de `localStorage` en el navegador para evitar conflictos con el formato anterior.
+1. **Cuentas.** Identificar a los dueños de cada servicio y pasarlos a cuentas del proyecto o institucionales (`ACCESOS.md`). Es lo más importante: hoy varias dependen de personas que ya no están.
+2. **Sitios abandonados.** Dar de baja el sitio estático de Render y `sostek.pages.dev`, o redirigirlos a `sostek.vercel.app`.
+3. **Pruebas en producción** con una cuenta de prueba, no la de nadie real: guardar el puntaje, favoritos, recuperar la contraseña por correo y eliminar la cuenta. Se verificaron con el código y con tests, pero no en el navegador contra producción.
+4. **Quiz:** que Carlos revise la retroalimentación; los niveles 1 y 2; decidir si el resultado se guarda en el perfil; traducir el contenido al inglés (ve la tabla de «Incompleto»).
+5. **Imágenes de los artículos.** Están enlazadas a sitios ajenos y algunas ya no cargan. Conviene subirlas a Cloudinary y cambiar las URLs en `seed/content/articles.json` (backend).
+6. **JUEGA online:** sigue como placeholder.
+7. **Apps nativas:** antes de publicar en las tiendas, actualizar Capacitor (ve `DESPLIEGUE.md`).
+8. **Deuda técnica.** Create React App está abandonado (la alternativa natural es Vite), y Ionic 6, React 18 y react-router 5 están varias versiones atrás. No bloquean nada hoy.
