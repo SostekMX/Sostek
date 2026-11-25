@@ -479,25 +479,6 @@
   --lg-tab-width: 9rem;
 }
 
-.quiz-draft {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6em;
-  margin-top: var(--s-4);
-  font-size: var(--t-sm);
-  color: var(--caution);
-}
-
-.quiz-draft::before {
-  content: '';
-  flex: none;
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
-  background: currentColor;
-  transform: translateY(-0.1em);
-}
-
 .quiz-fb-block {
   margin-top: var(--s-10);
 }
@@ -572,10 +553,10 @@
   line-height: 1.42;
 }
 
-.quiz-fb__why {
+.quiz-fb__points {
   margin-top: var(--s-2);
   font-size: var(--t-sm);
-  line-height: 1.58;
+  font-variant-numeric: tabular-nums;
   color: var(--ivory-2);
 }
 

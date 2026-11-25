@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getQuizzes } from '../api/content';
 import { readCache } from '../utils/cache';
-import { Quiz, QUIZ_CACHE_KEY } from '../utils/quiz';
+import { OLD_QUIZ_CACHE_KEY, Quiz, QUIZ_CACHE_KEY } from '../utils/quiz';
 
 /* Mismo patron que EVALUATE: se pinta lo guardado al instante y se revalida contra el
    backend. La seleccion de nivel y la de preguntas comparten la misma entrada de cache. */
@@ -31,6 +31,8 @@ export default function useQuizzes() {
   }, []);
 
   useEffect(() => {
+    // La cache de antes no trae pesos ni tramos; ya no se lee, solo se borra.
+    localStorage.removeItem(OLD_QUIZ_CACHE_KEY);
     const cached = readCache<Quiz[]>(QUIZ_CACHE_KEY);
     if (Array.isArray(cached)) {
       setQuizzes(cached);
