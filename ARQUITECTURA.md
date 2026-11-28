@@ -32,6 +32,7 @@ de ambos repos. Complementa a los otros:
 7. [Por qué existe el backend](#7-por-qué-existe-el-backend)
 8. [Local y producción](#8-local-y-producción)
 9. [Fricciones reales](#9-fricciones-reales)
+10. [Diseño](#10-diseño)
 
 ---
 
@@ -275,6 +276,22 @@ resultados no recibe nada por props ni por la ruta: **lee todo de vuelta de
 solo si hay sesión. Un invitado puede contestar una evaluación completa y ver su
 resultado sin que nada salga del navegador.
 
+El cálculo está en `src/utils/scoring.ts` y tiene tres decisiones a propósito:
+- **El máximo es la suma de todas las opciones positivas.** Las preguntas son de selección
+  múltiple (casillas), así que ese techo sí se alcanza.
+- **La retroalimentación sale del porcentaje del máximo**, con cortes en 85, 70, 50 y 30 %.
+  Los máximos van de 86 a 100 según la evaluación, así que un corte fijo en puntos no
+  serviría para todas.
+- **El eje más débil se elige por porcentaje del máximo de cada eje**, no por la suma: los
+  dos ejes de una evaluación valen distinto (en Diseño Industrial N1, 36 contra 64). Los
+  ejes salen de las preguntas y no de las respuestas, así que un eje sin ninguna casilla
+  marcada también compite, con 0 %.
+
+El nivel de cada evaluación se lee de su nombre (`/nivel\s*(\d+)/i`, en `Tab3.tsx`), porque
+`GET /evaluations` no trae ese campo. Los tres niveles son etapas del proyecto, no grados de
+dificultad: el 1 revisa el análisis, el 2 el diseño y el 3 la operación a largo plazo. Por eso
+la lista no les pone etiquetas como «básico» o «avanzado».
+
 El quiz de proyectos de negocio (`/quiz`) sigue el mismo camino con llave propia: guarda
 el resultado completo (global, por bloque y por pregunta) en `sostekQuiz.result.v2` y la
 pantalla de resultados lo lee de ahí. No se manda al backend: `score_test` es un solo
@@ -392,6 +409,9 @@ ese MongoDB: unos 780 MB en Windows y unos 120 MB en Linux o macOS.
 El paso a paso de cada pieza (variables, CORS, rollback) está en `DESPLIEGUE.md`, y de quién
 es cada cuenta, en `ACCESOS.md`.
 
+**Migración planeada:** el próximo semestre el backend y la base pasan de Render y MongoDB
+Atlas a Supabase. Este documento describe lo que corre hoy.
+
 Cada repo tiene su workflow de GitHub Actions, que corre en cada push y en cada PR a `main`
 o a `development`:
 - En el frontend, corre los tests y compila el build.
@@ -444,8 +464,40 @@ Un test del backend lo revisa. Si cambias una categoría en un lado, cámbiala e
 
 Un frontend en un dominio que no está en `CORS_ORIGIN` no puede pedir nada al backend,
 ni siquiera el contenido público. Por eso el sitio viejo de Render
-(`sostek-frontend.onrender.com`) abre pero se queda vacío. Si algún día hay dominio propio,
-hay que agregarlo a `CORS_ORIGIN` en Render (ve `DESPLIEGUE.md`).
+(`sostek-frontend.onrender.com`) abre pero se queda vacío. Si algún día cambia la URL del
+frontend, hay que agregarla a `CORS_ORIGIN` en Render (ve `DESPLIEGUE.md`).
+
+### Ionic no desmonta la página anterior (*estado*)
+
+Al navegar, el outlet de Ionic deja montada la página de la que sales, y su estado de React
+sobrevive. Si vuelves, la encuentras como la dejaste. Si solo cambia el parámetro de la ruta
+(otra evaluación) o la sesión (otra cuenta), el componente no se vuelve a crear. Por eso:
+- el estado que depende de la ruta se reinicia a mano cuando cambia el parámetro, como las
+  respuestas de `Evaluation` al cambiar de `id`;
+- lo que depende de la sesión se vuelve a pedir al cambiar de cuenta, como los favoritos.
+
+Cuidado también con `ionChange`: Ionic lo emite cuando cambias `checked` desde React, no solo
+cuando el usuario toca la casilla. El handler de `QuestionTestCard` ignora los eventos que
+piden lo que ya hay; sin esa guardia, vaciar las respuestas volvería a marcar las casillas.
+
+### `ion-card` e `ion-button` esconden su enlace (*diseño y pruebas*)
+
+Con `href`, los dos pintan un `<a>` dentro de su shadow root, y lo que les pones adentro queda
+dentro de ese `<a>`. Esto trae dos consecuencias:
+- **Un `display: flex` en el `ion-card` no llega a sus hijos.** Para igualar alturas, las
+  tarjetas reservan en CSS el alto del título y de la descripción.
+- **En una prueba automatizada, `click()` sobre el elemento no navega.** Hay que hacer clic
+  en `elemento.shadowRoot.querySelector('a')`.
+
+### El inglés solo cambia lo que se pinta (*idioma*)
+
+`tx()` y `localizeArticle()` (`src/i18n/LanguageContext.tsx`) traducen al pintar. La lógica
+sigue leyendo el español: los ejes, la búsqueda de artículos recomendados, el nivel y las
+URLs. En `content.en.json`, los artículos se traducen por su `_id`. Todo lo demás
+(evaluaciones, cartas, reglas y ejes) se traduce por su texto original en español. Por eso:
+- **si cambias un texto en español, su traducción deja de aplicarse sin avisar**, y en inglés
+  se ve en español hasta que actualices la llave;
+- un artículo nuevo se ve en español hasta que lo agregues a `content.en.json`.
 
 ### Vercel trata los warnings como errores (*despliegue*)
 
@@ -455,5 +507,43 @@ corre el mismo build, así que el problema aparece en el PR y no al publicar.
 
 ---
 
+## 10. Diseño
+
+- **Tokens.** Los colores, la tipografía y los espacios están en `src/theme/variables.css`:
+  - fondo verde botella (`--bg`);
+  - marfil (`--ivory`) para el texto y la acción principal;
+  - liquen (`--lichen`) y el verde de marca (`--moss`) como acentos;
+  - un color por eje (`--axis-*`).
+
+  No pongas colores sueltos en el CSS de una pantalla.
+- **Tipografía.** Kiona solo tiene mayúsculas, así que se usa en títulos y cifras grandes.
+  Para todo lo demás se usa Raleway. El tamaño base crece con la pantalla, de 16 a 21 px
+  (`App.css`).
+- **Vidrio (Glisse).** Va en lo que flota sobre el fondo:
+  - el panel de acceso;
+  - la barra lateral y la barra inferior;
+  - el menú y el resultado;
+  - los controles sobre fotos.
+
+  La lectura y los formularios no llevan vidrio.
+- **La refracción de Glisse está apagada a propósito**, con una regla en `App.css`: con unos
+  30 vidrios, APRENDE bajaba a 9 fps. Sin ella se ve casi igual. No la vuelvas a encender en
+  elementos que estén sobre contenido que se mueve.
+- **Movimiento.** Solo la entrada del acceso tiene coreografía; lo demás responde a lo que
+  hace el usuario. Se respetan `prefers-reduced-motion`, `prefers-reduced-transparency` y
+  `prefers-contrast`.
+- **Móvil y escritorio.** Hay tres anchos:
+  - abajo de 768 px es la app de celular, con las tabs abajo;
+  - de 768 a 1199 px hay un riel de íconos a la izquierda;
+  - desde 1200 px, una barra lateral con texto.
+
+  Lo maneja `IonSplitPane`, en `App.tsx`, con `DESKTOP_QUERY` de `useMediaQuery`. La barra
+  de tabs sigue montada porque Ionic la necesita, y en escritorio se esconde con CSS. Lo de
+  escritorio va dentro de `@media (min-width: 768px)` o en una rama de JSX con
+  `useMediaQuery`. **No cambies una regla que ya aplica en móvil para arreglar el
+  escritorio**: compara la pantalla a 390 px antes y después.
+
+---
+
 *Basado en la lectura del código de los dos repositorios, `Sostek` y `Sostek-backend`, en
-la rama `main`. Actualizado el 24 de noviembre de 2026.*
+la rama `main`. Actualizado el 27 de noviembre de 2026.*

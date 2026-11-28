@@ -44,6 +44,10 @@ npm run start          # http://localhost:3000
 2. En `Sostek/.env`, pon `REACT_APP_BACKEND_URL=http://localhost:8081`.
 3. Reinicia los dos.
 
+**Dos trampas al levantar el frontend:**
+- **La URL del backend va en `.env`, no delante del comando.** En Git Bash de Windows, `REACT_APP_BACKEND_URL=… npx ionic serve` no funciona: la variable llega en minúsculas, la app no la reconoce y cae a `localhost:8080`.
+- **Si al reiniciar el frontend aparece en el puerto 3001**, el servidor anterior sigue vivo con el 3000. Cortar `ionic` no siempre cierra el `react-scripts` que lanzó. El backend solo acepta `localhost:3000` y `localhost:8100`, así que en el 3001 todo sale vacío. Cierra el `node` que quedó escuchando en el 3000 y vuelve a arrancar.
+
 ---
 
 ## 1. Historia rápida: por qué el proyecto está armado así
@@ -57,7 +61,7 @@ El equipo perdió el acceso a las API keys y credenciales que necesitaba esa int
 - El contenido vive versionado en el repo del backend (`seed/content`) y se carga a la base con los seeds.
 - En Google Drive solo queda el **zip del juego físico**, que es un link externo y no contenido de la app.
 
-**Despliegue:** el frontend oficial está en **Vercel** (`https://sostek.vercel.app`). Hay dos sitios viejos abandonados: uno en Render y otro en Cloudflare Pages (`sostek.pages.dev`), este último con la versión de 2022. El detalle está en `DESPLIEGUE.md`.
+**Despliegue:** el frontend oficial está en **Vercel** (`https://sostek.vercel.app`). Hay dos sitios viejos abandonados: uno en Render y otro en Cloudflare Pages (`sostek.pages.dev`), este último con la versión de 2022. El detalle está en `DESPLIEGUE.md`. El próximo semestre el backend y la base se van a migrar de Render y MongoDB Atlas a Supabase (ve `ACCESOS.md`).
 
 ---
 
@@ -76,7 +80,7 @@ El stack y la estructura están en `README.md`. Qué está hecho y qué falta, e
 
 ## 3. Accesos
 
-**Para trabajar en el código solo necesitas acceso de escritura a los repos en GitHub.** Con `npm run dev:memoria` tienes la app completa en local, sin ninguna credencial.
+**Para trabajar en el código solo necesitas acceso de escritura a los repos en GitHub**, y se lo pides a la encargada del servicio social. Con `npm run dev:memoria` tienes la app completa en local, sin ninguna credencial.
 
 Las demás cuentas (Vercel, Render, MongoDB Atlas, Cloudinary, etc.) solo hacen falta para publicar o tocar producción. Quién las administra y cómo pedir acceso está en [`ACCESOS.md`](ACCESOS.md).
 
@@ -180,8 +184,7 @@ El árbol completo, con un comentario por archivo, está en `README.md`.
 | `AVANCE_SOSTEK.md` | Estado actual: qué está hecho, qué falta, bugs conocidos y prioridades | Cualquiera, cada vez que resuelve o encuentra algo (ve §5) |
 | `ARQUITECTURA.md` | Cómo encajan el frontend, el backend y los datos, y las fricciones reales | Quien cambie cómo se conectan las piezas |
 | `API_CONTRACTS.md` | El contrato de cada endpoint del backend: body, respuesta y errores | Quien cambie algo en `src/api/` o en las rutas del backend |
-| `DESPLIEGUE.md` | Producción: Vercel, Render, variables, CORS, rollback y apps nativas | Quien cambie cómo o dónde se publica |
-| `ACCESOS.md` | Las cuentas del proyecto, quién las administra y cómo pedir acceso | Quien entra o sale del proyecto |
-| `docs/historial/` | Bitácoras de sesiones e investigaciones pasadas | Nadie: es archivo |
+| `DESPLIEGUE.md` | Producción: Vercel, Render, variables, CORS, rollback y apps nativas (como referencia) | Quien cambie cómo o dónde se publica |
+| `ACCESOS.md` | Las cuentas del proyecto, quién las administra, cómo pedir acceso y la migración a Supabase | Quien entra o sale del proyecto |
 
 El backend tiene su propio `README.md`, `ONBOARDING_BACKEND.md` y `AVANCE_SOSTEK.md`.
