@@ -95,4 +95,3 @@ src/
 | [`API_CONTRACTS.md`](API_CONTRACTS.md) | El contrato de cada endpoint del backend que consume `src/api/` |
 | [`DESPLIEGUE.md`](DESPLIEGUE.md) | Producción: Vercel, Render, variables, CORS, rollback y apps nativas (como referencia) |
 | [`ACCESOS.md`](ACCESOS.md) | Las cuentas del proyecto, quién las administra, cómo pedir acceso y la migración a Supabase |
-| [`docs/historial/`](docs/historial/) | Bitácoras e investigaciones de sesiones pasadas |

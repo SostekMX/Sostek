@@ -186,6 +186,5 @@ El árbol completo, con un comentario por archivo, está en `README.md`.
 | `API_CONTRACTS.md` | El contrato de cada endpoint del backend: body, respuesta y errores | Quien cambie algo en `src/api/` o en las rutas del backend |
 | `DESPLIEGUE.md` | Producción: Vercel, Render, variables, CORS, rollback y apps nativas (como referencia) | Quien cambie cómo o dónde se publica |
 | `ACCESOS.md` | Las cuentas del proyecto, quién las administra, cómo pedir acceso y la migración a Supabase | Quien entra o sale del proyecto |
-| `docs/historial/` | Bitácoras de sesiones e investigaciones pasadas | Nadie: es archivo |
 
 El backend tiene su propio `README.md`, `ONBOARDING_BACKEND.md` y `AVANCE_SOSTEK.md`.

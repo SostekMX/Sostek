@@ -207,7 +207,7 @@ El árbol completo, con un comentario por carpeta, está en [`README.md`](README
 
 ## 🆕 Correcciones pendientes — revisión 2026-06-10
 
-> QA manual (jefa). Pendientes de frontend — algunos dependieron de cambios del backend (coordinados directamente con el equipo de backend, ya no por archivo de texto).
+> QA manual. Pendientes de frontend — algunos dependieron de cambios del backend (coordinados directamente con el equipo de backend, ya no por archivo de texto).
 
 | # | Descripción | Archivo(s) | Depende de backend |
 |---|-------------|------------|---------------------|
