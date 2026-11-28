@@ -99,7 +99,7 @@ El árbol completo, con un comentario por carpeta, está en [`README.md`](README
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
 | Quiz: guardar el resultado | Backend y `QuizResults.tsx` | No se guarda en el perfil: `POST /user/score` solo tiene `score_test`, que usa la evaluación. Haría falta un campo nuevo |
 | Quiz en inglés | `seed/quiz_data.json` (backend) y `src/i18n/content.en.json` | La interfaz sí está traducida; las preguntas, las opciones y los tramos del quiz salen en español |
-| Apps nativas | `ios/`, `capacitor.config.ts` | Nunca se publicaron. iOS no tiene equipo de firma y Android no tiene carpeta. Ve `DESPLIEGUE.md` |
+| Apps nativas | `ios/`, `capacitor.config.ts` | **Fuera de alcance** (noviembre de 2026): no habrá apps en App Store ni en Google Play. Nunca se publicaron; los pasos quedan como referencia en `DESPLIEGUE.md` |
 
 ---
 
@@ -276,9 +276,10 @@ Ve «Tus primeros 30 minutos» en `ONBOARDING_FRONTEND.md`. En resumen: `npm run
 - **Backend:** Render, en `https://sostek-backend.onrender.com`, con UptimeRobot para que no se duerma.
 - **`CORS_ORIGIN`** del backend deja pasar `https://sostek.vercel.app` (verificado el 2026-11-24).
 - **Sitios abandonados**, pendientes de baja: el sitio estático de Render (`sostek-frontend.onrender.com`), que CORS ya no deja pasar, y `sostek.pages.dev` (Cloudflare, la versión de 2022).
-- **Dominio propio** (por ejemplo, `app.sostek.com.mx`): pendiente de decidir con la facultad. Los pasos están en `DESPLIEGUE.md`.
+- **Migración planeada:** el próximo semestre el backend y la base pasan de Render y MongoDB Atlas a Supabase. Mientras tanto, la app sigue en las cuentas actuales, que no se van a transferir (ve `ACCESOS.md`).
+- **Descartados** (noviembre de 2026): el dominio propio y las apps en App Store o Google Play.
 
-Las variables, el rollback, los respaldos y las apps nativas están en [`DESPLIEGUE.md`](DESPLIEGUE.md); las cuentas, en [`ACCESOS.md`](ACCESOS.md).
+Las variables, el rollback, los respaldos y las apps nativas (como referencia) están en [`DESPLIEGUE.md`](DESPLIEGUE.md); las cuentas, en [`ACCESOS.md`](ACCESOS.md).
 
 ---
 
@@ -286,11 +287,10 @@ Las variables, el rollback, los respaldos y las apps nativas están en [`DESPLIE
 
 Esto queda para quien siga, más o menos en orden de importancia:
 
-1. **Cuentas.** Identificar a los dueños de cada servicio y pasarlos a cuentas del proyecto o institucionales (`ACCESOS.md`). Es lo más importante: hoy varias dependen de personas que ya no están.
+1. **Migración a Supabase (próximo semestre).** El backend y la base de datos pasan de Render y MongoDB Atlas a Supabase. Las cuentas actuales no se van a transferir: hasta la migración, la app sigue en las cuentas de un alumno anterior (`ACCESOS.md`).
 2. **Sitios abandonados.** Dar de baja el sitio estático de Render y `sostek.pages.dev`, o redirigirlos a `sostek.vercel.app`.
 3. **Pruebas en producción** con una cuenta de prueba, no la de nadie real: guardar el puntaje, favoritos, recuperar la contraseña por correo y eliminar la cuenta. Se verificaron con el código y con tests, pero no en el navegador contra producción.
 4. **Quiz:** los 6 tests y su retroalimentación ya son los finales de Carlos. Falta decidir si el resultado se guarda en el perfil y traducir el contenido al inglés (ve la tabla de «Incompleto»).
 5. **Imágenes de los artículos.** Están enlazadas a sitios ajenos y algunas ya no cargan. Conviene subirlas a Cloudinary y cambiar las URLs en `seed/content/articles.json` (backend).
 6. **JUEGA online:** sigue como placeholder.
-7. **Apps nativas:** antes de publicar en las tiendas, actualizar Capacitor (ve `DESPLIEGUE.md`).
-8. **Deuda técnica.** Create React App está abandonado (la alternativa natural es Vite), y Ionic 6, React 18 y react-router 5 están varias versiones atrás. No bloquean nada hoy.
+7. **Deuda técnica.** Create React App está abandonado (la alternativa natural es Vite), y Ionic 6, React 18 y react-router 5 están varias versiones atrás. No bloquean nada hoy.

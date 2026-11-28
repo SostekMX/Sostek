@@ -2,6 +2,7 @@
 
 > Cómo llega cada pieza de Sostek a producción, qué variables necesita y cómo se deshace un deploy.
 > De quién es cada cuenta y cómo pedir acceso está en [`ACCESOS.md`](ACCESOS.md).
+> **Migración planeada:** el próximo semestre el backend y la base pasan de Render y MongoDB Atlas a Supabase (ve `ACCESOS.md`). Este documento describe lo que corre hoy.
 
 ## Resumen
 
@@ -46,7 +47,7 @@ Después revisa dos cosas:
 |---|---|---|
 | `DB_URL` | Connection string de Atlas | Requerida |
 | `JWT_CODE` | Secreto largo y aleatorio | Requerida. Si cambia, todas las sesiones abiertas se cierran |
-| `CORS_ORIGIN` | `https://sostek.vercel.app` | Orígenes extra, separados por coma (ver «CORS y dominio propio») |
+| `CORS_ORIGIN` | `https://sostek.vercel.app` | Orígenes extra, separados por coma (ver «CORS») |
 | `FRONTEND_URL` | `https://sostek.vercel.app` | Arma el link del correo de recuperación de contraseña |
 | `EMAIL_USER`, `EMAIL_PASS` | Cuenta de Gmail y su contraseña de aplicación | Sin ellas, la recuperación de contraseña no manda correos |
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Credenciales de Cloudinary | Para subir avatares |
@@ -76,14 +77,11 @@ Después revisa dos cosas:
   mongorestore --uri="<DB_URL>" --nsInclude=SostekDB.<coleccion> --drop respaldo/<fecha>
   ```
 
-## CORS y dominio propio
+## CORS
 
 El backend solo responde a los orígenes de su lista: `localhost:3000`, `localhost:8100` y los de `CORS_ORIGIN`. Un origen que no esté ahí no puede pedir **nada**, ni siquiera el contenido público.
 
-Para publicar en un dominio nuevo (por ejemplo, `app.sostek.com.mx`, si la facultad asigna uno):
-1. En Vercel, ve a **Domains** y agrega el dominio. Configura en el proveedor el DNS que pida Vercel.
-2. En Render, agrega el dominio a `CORS_ORIGIN` (separado por coma) y cambia `FRONTEND_URL` a ese dominio.
-3. Revisa en una ventana privada que el dominio nuevo cargue contenido y que el correo de recuperación apunte a él.
+**Dominio propio: descartado** (noviembre de 2026). La app se queda en `sostek.vercel.app`. Si algún día el frontend cambia de URL, agrégala a `CORS_ORIGIN` (separada por coma), cambia `FRONTEND_URL` a esa URL y revisa en una ventana privada que cargue contenido.
 
 ## Sitios abandonados
 
@@ -95,6 +93,8 @@ Para publicar en un dominio nuevo (por ejemplo, `app.sostek.com.mx`, si la facul
 Quién puede darlos de baja está en `ACCESOS.md`.
 
 ## Apps nativas (iOS y Android)
+
+> **Fuera de alcance** (noviembre de 2026): se descartó publicar en App Store y en Google Play. Esta sección queda solo como referencia, por si algún día se retoma.
 
 El frontend está envuelto en Capacitor 4 (`capacitor.config.ts`: `appId` `com.itesm.sostek`, `webDir` `build`). **Las apps nunca se publicaron**: el proyecto de iOS no tiene equipo de firma y `android/` no existe (está en `.gitignore`). Nada de esta sección se probó en la entrega de noviembre de 2026, porque no había Mac disponible.
 
@@ -120,4 +120,4 @@ npx cap open android
 **Antes de publicar en las tiendas:**
 - **CORS.** La app nativa le pide al backend desde su propio origen: `capacitor://localhost` en iOS y `http://localhost` en Android. Hay que agregar los dos a `CORS_ORIGIN`; si no, la app abre vacía.
 - **Versión de Capacitor.** Capacitor 4 es de 2022, y las tiendas exigen SDKs recientes: Google Play pide un `targetSdkVersion` actual y Apple, un Xcode reciente. Lo más probable es que haya que actualizar Capacitor, y con él Ionic, antes de publicar.
-- **Cuentas.** Publicar requiere Apple Developer Program (pago anual) y Google Play Console (pago único), de preferencia a nombre de la institución (ve `ACCESOS.md`).
+- **Cuentas.** Publicar requiere Apple Developer Program (pago anual) y Google Play Console (pago único), de preferencia a nombre de la institución.

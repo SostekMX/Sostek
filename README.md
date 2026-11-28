@@ -93,6 +93,6 @@ src/
 | [`AVANCE_SOSTEK.md`](AVANCE_SOSTEK.md) | Estado actual: qué está hecho, qué falta, bugs conocidos y prioridades |
 | [`ARQUITECTURA.md`](ARQUITECTURA.md) | Cómo encajan el frontend, el backend y los datos, y las fricciones reales |
 | [`API_CONTRACTS.md`](API_CONTRACTS.md) | El contrato de cada endpoint del backend que consume `src/api/` |
-| [`DESPLIEGUE.md`](DESPLIEGUE.md) | Producción: Vercel, Render, variables, CORS, rollback y apps nativas |
-| [`ACCESOS.md`](ACCESOS.md) | Las cuentas del proyecto, quién las administra y cómo pedir acceso |
+| [`DESPLIEGUE.md`](DESPLIEGUE.md) | Producción: Vercel, Render, variables, CORS, rollback y apps nativas (como referencia) |
+| [`ACCESOS.md`](ACCESOS.md) | Las cuentas del proyecto, quién las administra, cómo pedir acceso y la migración a Supabase |
 | [`docs/historial/`](docs/historial/) | Bitácoras e investigaciones de sesiones pasadas |

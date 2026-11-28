@@ -392,6 +392,9 @@ ese MongoDB: unos 780 MB en Windows y unos 120 MB en Linux o macOS.
 El paso a paso de cada pieza (variables, CORS, rollback) está en `DESPLIEGUE.md`, y de quién
 es cada cuenta, en `ACCESOS.md`.
 
+**Migración planeada:** el próximo semestre el backend y la base pasan de Render y MongoDB
+Atlas a Supabase. Este documento describe lo que corre hoy.
+
 Cada repo tiene su workflow de GitHub Actions, que corre en cada push y en cada PR a `main`
 o a `development`:
 - En el frontend, corre los tests y compila el build.
@@ -444,8 +447,8 @@ Un test del backend lo revisa. Si cambias una categoría en un lado, cámbiala e
 
 Un frontend en un dominio que no está en `CORS_ORIGIN` no puede pedir nada al backend,
 ni siquiera el contenido público. Por eso el sitio viejo de Render
-(`sostek-frontend.onrender.com`) abre pero se queda vacío. Si algún día hay dominio propio,
-hay que agregarlo a `CORS_ORIGIN` en Render (ve `DESPLIEGUE.md`).
+(`sostek-frontend.onrender.com`) abre pero se queda vacío. Si algún día cambia la URL del
+frontend, hay que agregarla a `CORS_ORIGIN` en Render (ve `DESPLIEGUE.md`).
 
 ### Vercel trata los warnings como errores (*despliegue*)
 
