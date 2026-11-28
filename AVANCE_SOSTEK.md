@@ -290,7 +290,10 @@ Esto queda para quien siga, más o menos en orden de importancia:
 1. **Migración a Supabase (próximo semestre).** El backend y la base de datos pasan de Render y MongoDB Atlas a Supabase. Las cuentas actuales no se van a transferir: hasta la migración, la app sigue en las cuentas de un alumno anterior (`ACCESOS.md`).
 2. **Sitios abandonados.** Dar de baja el sitio estático de Render y `sostek.pages.dev`, o redirigirlos a `sostek.vercel.app`.
 3. **Pruebas en producción** con una cuenta de prueba, no la de nadie real: guardar el puntaje, favoritos, recuperar la contraseña por correo y eliminar la cuenta. Se verificaron con el código y con tests, pero no en el navegador contra producción.
-4. **Quiz:** los 6 tests y su retroalimentación ya son los finales de Carlos. Falta decidir si el resultado se guarda en el perfil y traducir el contenido al inglés (ve la tabla de «Incompleto»).
+4. **Quiz:**
+   - Los 6 tests y su retroalimentación ya son los finales de Carlos.
+   - Falta decidir si el resultado se guarda en el perfil y traducir el contenido al inglés (ve la tabla de «Incompleto»).
+   - **La «Revisión por pregunta» muestra la respuesta óptima.** En los resultados, cada pregunta que no se contestó con la óptima enseña cuál era y cuánto valía. Si coordinación no quiere que los alumnos la vean, se quita el bloque `quiz-fb__answer--best` de `src/pages/quiz/QuizResults.tsx`. También se puede quitar la sección completa de revisión (la que usa `quiz.review`).
 5. **Imágenes de los artículos.** Están enlazadas a sitios ajenos y algunas ya no cargan. Conviene subirlas a Cloudinary y cambiar las URLs en `seed/content/articles.json` (backend).
 6. **JUEGA online:** sigue como placeholder.
 7. **Deuda técnica.** Create React App está abandonado (la alternativa natural es Vite), y Ionic 6, React 18 y react-router 5 están varias versiones atrás. No bloquean nada hoy.
