@@ -99,6 +99,7 @@ El árbol completo, con un comentario por carpeta, está en [`README.md`](README
 | Juego online | `Tab2.tsx` | Placeholder "en construcción" |
 | Quiz: guardar el resultado | Backend y `QuizResults.tsx` | No se guarda en el perfil: `POST /user/score` solo tiene `score_test`, que usa la evaluación. Haría falta un campo nuevo |
 | Quiz en inglés | `seed/quiz_data.json` (backend) y `src/i18n/content.en.json` | La interfaz sí está traducida; las preguntas, las opciones y los tramos del quiz salen en español |
+| Evaluaciones en inglés | `src/i18n/content.en.json` | Las 137 preguntas están traducidas, pero falta que una persona revise la traducción: un matiz mal traducido cambia lo que marca el alumno. Además, las fechas (`<input type="date">`) siguen el idioma del navegador, y las slides de las presentaciones son imágenes, así que no cambian con el botón de idioma |
 | Apps nativas | `ios/`, `capacitor.config.ts` | **Fuera de alcance** (noviembre de 2026): no habrá apps en App Store ni en Google Play. Nunca se publicaron; los pasos quedan como referencia en `DESPLIEGUE.md` |
 
 ---
@@ -289,7 +290,10 @@ Esto queda para quien siga, más o menos en orden de importancia:
 
 1. **Migración a Supabase (próximo semestre).** El backend y la base de datos pasan de Render y MongoDB Atlas a Supabase. Las cuentas actuales no se van a transferir: hasta la migración, la app sigue en las cuentas de un alumno anterior (`ACCESOS.md`).
 2. **Sitios abandonados.** Dar de baja el sitio estático de Render y `sostek.pages.dev`, o redirigirlos a `sostek.vercel.app`.
-3. **Pruebas en producción** con una cuenta de prueba, no la de nadie real: guardar el puntaje, favoritos, recuperar la contraseña por correo y eliminar la cuenta. Se verificaron con el código y con tests, pero no en el navegador contra producción.
+3. **Pruebas en producción** con una cuenta de prueba, no la de nadie real: guardar el puntaje, favoritos, recuperar la contraseña por correo y eliminar la cuenta. Se verificaron con el código y con tests, pero no en el navegador contra producción. También falta revisar en un iPhone y un iPad reales:
+   - el vidrio esmerilado;
+   - la pantalla completa de las presentaciones;
+   - el iPad en horizontal, que mide más de 768 px y por eso muestra la versión de escritorio. Eso es a propósito.
 4. **Quiz:**
    - Los 6 tests y su retroalimentación ya son los finales de Carlos.
    - Falta decidir si el resultado se guarda en el perfil y traducir el contenido al inglés (ve la tabla de «Incompleto»).

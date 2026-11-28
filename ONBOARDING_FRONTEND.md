@@ -44,6 +44,10 @@ npm run start          # http://localhost:3000
 2. En `Sostek/.env`, pon `REACT_APP_BACKEND_URL=http://localhost:8081`.
 3. Reinicia los dos.
 
+**Dos trampas al levantar el frontend:**
+- **La URL del backend va en `.env`, no delante del comando.** En Git Bash de Windows, `REACT_APP_BACKEND_URL=… npx ionic serve` no funciona: la variable llega en minúsculas, la app no la reconoce y cae a `localhost:8080`.
+- **Si al reiniciar el frontend aparece en el puerto 3001**, el servidor anterior sigue vivo con el 3000. Cortar `ionic` no siempre cierra el `react-scripts` que lanzó. El backend solo acepta `localhost:3000` y `localhost:8100`, así que en el 3001 todo sale vacío. Cierra el `node` que quedó escuchando en el 3000 y vuelve a arrancar.
+
 ---
 
 ## 1. Historia rápida: por qué el proyecto está armado así
